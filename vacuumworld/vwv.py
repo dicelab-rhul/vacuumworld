@@ -6,15 +6,15 @@
 """
 Created on Fri May 31 20:12:24 2019
 
-@author: ben
+@author: ben, Nausheen
 
 from IPython import get_ipython
 get_ipython().magic('reset -sf')
 """
 from GridEnvironment import GridPhysics, GridAmbient,GridEnvironment
 from GridSensor import CommunicationSensor,VisionSensor
+from  Object import Dirt
 
-from Object import Dirt
 
 from GridWorldAction import  DropDirtAction,ChangeOrientationAction,ForwardMoveMentAction,SpeakAction,MoveLeftAction,BroadcastAction,MoveRightAction,CleanDirtAction
 from GridEnvironmentActuator import MovementActuator,CleaningDirtActuator, DropDirtActuator,CommunicationActuator
@@ -353,7 +353,7 @@ class VWInterface(tk.Frame):
 
 def _play():
     print('play')
-   
+    actionList=[DropDirtAction,ForwardMoveMentAction,MoveRightAction,MoveLeftAction,CleanDirtAction,SpeakAction,BroadcastAction]
     phy = GridPhysics({VisionSensor:[Observation,GridVisionPerception,ActionResultPerception], 
                    CommunicationSensor:[Message]})
     
@@ -393,9 +393,8 @@ def _play():
             dirts.append(d1)
              
     amb= GridAmbient(agents,dirts,env)
-    actionList=[DropDirtAction,ForwardMoveMentAction,MoveRightAction,MoveLeftAction,CleanDirtAction,SpeakAction,BroadcastAction]
     e= GridEnvironment(phy,amb,actionList,sensors)
-    e.simulate(4)
+    e.simulate(10)
 
 def _back():
     print('back')

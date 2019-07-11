@@ -13,7 +13,7 @@ agent = namedtuple('agent', 'name colour direction')
 dirt = namedtuple('dirt', 'name colour')
 coord = namedtuple('coordinate', 'x y')
 
-perception = namedtuple('perception', 'observation message')
+perception = namedtuple('perception', 'observation messages')
 
 message = namedtuple('message', 'sender content')
 observation = namedtuple('observation', 'center left right forward forwardleft forwardright')

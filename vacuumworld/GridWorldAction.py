@@ -42,11 +42,8 @@ class ForwardMoveMentAction(PhysicalAction):
            agentlocation=pm.state[coord(j,i)] 
            if(agentlocation.agent):
               if(agentlocation.agent.name==self.getActor()):
-              
-               
-                
-                  pm.replace_agent((self.__newcoord__.x,self.__newcoord__.y), agentlocation.agent)
-                  pm.replace_agent((self.__currentcoord__.x,self.__currentcoord__.y), None)
+                 pm.replace_agent((self.__newcoord__.x,self.__newcoord__.y), agentlocation.agent)
+                 pm.replace_agent((self.__currentcoord__.x,self.__currentcoord__.y), None)
       
            
     
@@ -67,7 +64,7 @@ class ForwardMoveMentAction(PhysicalAction):
       co2=coord(co.x,co.y+1)
      else:   #north
       co2=coord(co.x,co.y-1)
-     #print(co2) 
+
      return co2          
 
 
@@ -198,7 +195,6 @@ class CleanDirtAction(PhysicalAction):
            if(loc.agent):
               if(loc.agent.name==self.getActor()):
                  pm.replace_dirt((super().getCoordinate().x,super().getCoordinate().y),None)
-                 
                  print("Cleaned dirt")            
         
         
@@ -217,19 +213,20 @@ class DropDirtAction(PhysicalAction):
   
    
     def execute(self, ambient):
-     print("IN DROP DIRT")  
+   #  print("IN DROP DIRT")  
      pm=ambient.getPlacementMap()
      for i in range(pm.dim):
          for j in range(pm.dim):
            loc=pm.state[coord(j,i)] 
-           if(loc.agent):
-              if(loc.agent.name==self.getActor()):
+           if(loc.agent and loc.agent.name==self.getActor()):
                 
                n=random.randint(1,3) 
                if(n==1):   
-                pm.replace_dirt((super().getCoordinate().x,super().getCoordinate().y), 'orange')
+                dirt1=pm.dirt('orange')   
                else:
-                pm.replace_dirt((super().getCoordinate().x,super().getCoordinate().y), 'green')
+                dirt1=pm.dirt('green')  
+               print(dirt1) 
+               pm.place_dirt((super().getCoordinate().x,super().getCoordinate().y), dirt1)
                    
           
 class SpeakAction(CommunicationAction):
@@ -284,10 +281,7 @@ class BroadcastAction(CommunicationAction):
           return False    
     
   def execute(self, env):  # environment reference reqired here
-      
-
-        
-       for a in env.getAmbient().getAgents(): 
+      for a in env.getAmbient().getAgents(): 
          per=Message(self.getSender(),a.getName(),self.getMessage())
          env.getPhysics().notifySinglePerception(per)
-         print(a.getName())  
+        # print(a.getName())  

@@ -2,15 +2,13 @@ from pystarworlds.Agent import Mind
 
 
 
-from Coordinate import Coordinate
-from Orientation_Direction import Orientation
 from GridPerception import Observation,Message
 from GridWorldAction import  MoveRightAction,MoveLeftAction,ChangeOrientationAction,ForwardMoveMentAction,SpeakAction,NoMoveMentAction,CleanDirtAction,DropDirtAction
 from pystarworlds.Agent import AgentBody 
 from pystarworlds.Factories import ActionFactory 
 from VWFactories import Speak,SpeakToAll,Move,TurnLeft,TurnRight,DropDirt
 from vwc import coord,colour,location,action,observation,perception,message
-from EntityType import ActorType
+
 import random
 class UserBody(AgentBody):
     

@@ -28,3 +28,7 @@ def run(white_agent, green_agent=None, orange_agent=None):
     orange_ok = vw.__validate_agent(orange_agent, 'orange')
     if white_ok and green_ok and orange_ok:
         vwv.run()
+
+
+    
+

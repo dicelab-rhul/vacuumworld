@@ -2,14 +2,13 @@ from pystarworlds.Agent import Mind
 
 
 
-from Coordinate import Coordinate
-from Orientation_Direction import Orientation
+
 from GridPerception import Observation,Message,ActionResultPerception
 from GridWorldAction import  MoveRightAction,MoveLeftAction,ForwardMoveMentAction,SpeakAction,NoMoveMentAction,BroadcastAction,CleanDirtAction,DropDirtAction
 from pystarworlds.Agent import AgentBody
 from pystarworlds.Factories import ActionFactory 
 from VWFactories import Speak,SpeakToAll,Move,TurnLeft,TurnRight,CleanDirt
-from EntityType import ActorType
+
 from vwc import coord,colour,location,action,observation,perception,message
 from collections import namedtuple
 
@@ -56,20 +55,35 @@ class CleaningAgentMind(Mind):
     super().perceive()
     perceptions=super()._getPerceptions()
     messages=None#[]
-    mess=None
     obser=None
+    messages = []
     for per in perceptions:
       if(type(per)==Observation):
          obser=per.observation
       elif(type(per)==Message):
-          mess=message(per.getSender(),per.getMessage())
+          messages.append(message(per.getSender(),per.getMessage()))
     #      messages.append(mess)
-    self.percept=perception(obser,mess)
+    self.percept=perception(obser,messages)
     self.getBody().setCoordinate(self.percept.observation.center.coordinate)
     self.getBody().setOrientation(self.percept.observation.center.agent.direction)
+
+    
+    def do(self):
+#        if ...
+ #           return actions.move
+       pass  
+        
+    
+    
     
    def decide(self):  # deliberate
-            
+    #   mind.do()
+       
+       
+   #    mind.speak()
+       
+
+
     
        if(self.percept==None):
           print("--zero perception--")
@@ -82,6 +96,8 @@ class CleaningAgentMind(Mind):
         
         
         elif self.percept.observation.center.agent!=None and self.percept.observation.center.dirt!=None:
+         #  print(self.percept.observation.center.agent)
+          # print(self.percept.observation.center.dirt)
            if((self.percept.observation.center.agent.colour=="green"  or  self.percept.observation.center.agent.colour=="white")and(self.percept.observation.center.dirt.colour=="green")):
                      print("clean")
                      act=CleanDirt(self)
@@ -99,24 +115,25 @@ class CleaningAgentMind(Mind):
                    act=TurnLeft(self)
                    if(self.percept.observation.forward!=None):
                      if(self.percept.observation.forward.agent!=None):
-                        act=Speak(self,self.percept.observation.forward.agent.name,"Bai you were blocking me")
+                        act=Speak(self,self.percept.observation.forward.agent.name,"Excuse me you are blocking me")
                        
               
         elif (self.percept.observation.center.agent and self.percept.observation.forward!=None and self.percept.observation.forward.agent==None):
-                   print("move forward")
+                   print("move forward and broadcast ")
                    act=Move(self)
                    act=SpeakToAll(self,"AAAOAAA")
                    
-                
+
   
         
-        if self.percept.message==None:
+        if self.percept.messages==None:
             print("No message perception")
                 
         else:
-            print(self.percept.message.sender)
-            print(self.percept.message.content)
-         
+            for message in self.percept.messages:
+             print(message.sender)
+             print(message.content)
+          
         
 
 

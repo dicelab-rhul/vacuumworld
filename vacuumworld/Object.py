@@ -11,9 +11,9 @@ class NonCognitiveObject(Identifiable):
 # -*- coding: utf-8 -*-
 
 class Dirt(NonCognitiveObject):
-    def __init__(self, color):
-      self.__color__=color
+    def __init__(self, colour):
+      self.__colour__=colour
          
-    def getColor(self):
-        return self.__color__
+    def getColour(self):
+        return self.__colour__
         

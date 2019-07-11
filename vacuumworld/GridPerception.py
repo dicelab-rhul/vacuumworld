@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 from pystarworlds.Perception import Perception
-from Coordinate import Coordinate
-from Orientation_Direction import Orientation
+
 from collections import namedtuple
-from EntityType import CellType, AgentColor,DirtColor
+
 from vw import PhysicalAllocationMap
 
 from vwc import coord,colour,location,agent,observation
-
-
 
 
 class VisionPerception(Perception):
@@ -22,15 +19,15 @@ class VisionPerception(Perception):
                if(agentlocation.agent):
                    if(agentlocation.agent.name==agid):
                     self.__coordinate__=agentlocation.coordinate
-                    self.__orientation__ = agentlocation.agent.direction
-                    self.__color__=agentlocation.agent.colour
+                    self.__direction__ = agentlocation.agent.direction
+                    self.__colour__=agentlocation.agent.colour
 
-  def getOrientation(self):
-     return self.__orientation__
+  def getDirection(self):
+     return self.__direction__
   def getCoordinates(self):
      return self.__coordinate__
-  def getColor(self):
-     return self.__color__
+  def getColour(self):
+     return self.__colour__
   
     
       
@@ -52,12 +49,11 @@ class Observation(GridVisionPerception):
                   if(location.agent.name==agid):
                      
                      center=location
-                     wall=pm.isOutsideGrid(center.coordinate)
                      self.perceptionGrid["own"]= center
-                    # self.observation.own=location
+                   
                     
                      tcoord=self.getFrontCoordinate(center.coordinate,center.agent.direction)
-                     print(tcoord)
+                   #  print(tcoord)
                      wall=pm.isOutsideGrid(tcoord)
                      if(wall):
                        location=None
@@ -65,8 +61,7 @@ class Observation(GridVisionPerception):
                        location=pm.state[tcoord]
                          
                      self.perceptionGrid["front"]=location
-                     #self.observation.front.location=location
-                 
+                                     
                      
                      
                      
@@ -77,7 +72,7 @@ class Observation(GridVisionPerception):
                      else:
                        location=pm.state[tcoord]
                      self.perceptionGrid["left"]=location
-#                     observation.left=location
+#                     
                  
                      
                      
@@ -90,7 +85,7 @@ class Observation(GridVisionPerception):
                        location=pm.state[tcoord]
                      
                      self.perceptionGrid["right"]=location
-                #     self.observation.right=location
+                
                  
                      
                      
@@ -102,7 +97,6 @@ class Observation(GridVisionPerception):
                        location=pm.state[tcoord]
                      
                      self.perceptionGrid["frontleft"]=location#,wall)
-                  #   self.observation.frontleft=location
                   
                      
                      tcoord=self.getFrontRightCoordinate(center.coordinate,center.agent.direction)
@@ -113,9 +107,9 @@ class Observation(GridVisionPerception):
                        location=pm.state[tcoord]
                      
                      self.perceptionGrid["frontright"]=location#,wall)
-                 #    self.observation.frontright=location
+                
        self.observation=observation(self.perceptionGrid['own'],self.perceptionGrid['left'],self.perceptionGrid['right'],self.perceptionGrid['front'],self.perceptionGrid['frontleft'],self.perceptionGrid['frontright'])             
-     #  print(self.perceptionGrid)           
+    #   print(self.perceptionGrid)           
 ##################################################### def getFrontCoordinate(self,co,orientation):
     def getFrontCoordinate(self,co,orientation):
      
@@ -127,7 +121,7 @@ class Observation(GridVisionPerception):
       co2=coord(co.x,co.y+1)
      else:   #north
       co2=coord(co.x,co.y-1)
-     #print(co2) 
+     
      return co2 
     def getLeftCoordinate(self,co,orientation):
     
@@ -161,9 +155,9 @@ class Observation(GridVisionPerception):
      elif (orientation=="west"):
       co2=coord(co.x-1,co.y-1)
      elif (orientation=="south"):
-      co2=coord(co.x+1,co.y-1)
-     else:   #north
       co2=coord(co.x-1,co.y+1)
+     else:   #north
+      co2=coord(co.x+1,co.y-1)
    
      return co2
  
