@@ -29,6 +29,7 @@ import traceback
 import os
 
 from collections import OrderedDict as odict
+from PIL import Image, ImageTk
 
 
 #from Slider import Slider
