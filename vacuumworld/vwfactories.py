@@ -6,25 +6,39 @@ Created on Fri Jun 28 13:34:00 2019
 
 
 """
-from pystarworlds.Factories import PerceptionFactory,RuleFactory,ActionFactory
-from GridPerception import Observation,Message,ActionResultPerception
-from GridWorldAction import  MoveRightAction,MoveLeftAction,ForwardMoveMentAction,SpeakAction,NoMoveMentAction,BroadcastAction,CleanDirtAction,DropDirtAction
+from pystarworlds.Factories import PerceptionFactory,Rule,Executor
+#from GridPerception import Observation,Message,ActionResultPerception
+#from GridWorldAction import  MoveRightAction,MoveLeftAction,ForwardMoveMentAction,SpeakAction,NoMoveMentAction,BroadcastAction,CleanDirtAction,DropDirtAction
 
-class VWGridPerceptionFactory(PerceptionFactory):
+#from .vwperception import Observation
+from .vw import Grid
+from . import vwaction
+from . import vwc
+
+class VWObservationFactory(PerceptionFactory):
     
     def __init__(self):
-        super().__init__(Observation)
+        super().__init__(vwc.observation)
         
+    def __call__(self, ambient, sensor):
+        sensor.owner
+        agent = ambient.agents[sensor.owner]
+        c = agent.coordinate
+        f = Grid.DIRECTIONS[agent.orientation]
+        l = Grid.DIRECTIONS[vwc.left(agent.orientation)]
+        r = Grid.DIRECTIONS[vwc.right(agent.orientation)]
+        obs = vwc.observation(ambient.grid.state[c], 
+                        ambient.grid.state[vwc.add(c, f)], 
+                        ambient.grid.state[vwc.add(c, l)],
+                        ambient.grid.state[vwc.add(c, r)], 
+                        ambient.grid.state[vwc.add(vwc.add(c,f),l)],
+                        ambient.grid.state[vwc.add(vwc.add(c,f),r)])
+        return obs
     
-    def __call__(self, env, agent,s):
-        if(s.getOwner()==(agent.getID())):
-           return Observation(agent.getID(), env.getAmbient())            
-       
-class ForwardActionRuleFactory(RuleFactory):
+class ForwardActionRuleFactory(Rule):
     
     def __init__(self):
-        super().__init__(ForwardMoveMentAction)
-        
+        super().__init__(vwaction.ForwardMoveMentAction)
     
     def __call__(self, env, action):
        flag=True
@@ -35,10 +49,10 @@ class ForwardActionRuleFactory(RuleFactory):
         
        return flag             
        
-class TurnLeftActionRuleFactory(RuleFactory):
+class TurnLeftActionRuleFactory(Rule):
     
     def __init__(self):
-        super().__init__(MoveLeftAction)
+        super().__init__(vwaction.MoveLeftAction)
         
     
     def __call__(self, env, action):
@@ -47,10 +61,10 @@ class TurnLeftActionRuleFactory(RuleFactory):
        #    flag=False  
        return flag             
        
-class TurnRightActionRuleFactory(RuleFactory):
+class TurnRightActionRuleFactory(Rule):
     
     def __init__(self):
-        super().__init__(MoveRightAction)
+        super().__init__(vwaction.MoveRightAction)
         
     
     def __call__(self, env, action):
@@ -67,10 +81,10 @@ class TurnRightActionRuleFactory(RuleFactory):
       
     
     
-class CleanActionRuleFactory(RuleFactory):
+class CleanActionRuleFactory(Rule):
     
     def __init__(self):
-        super().__init__(CleanDirtAction)
+        super().__init__(vwaction.CleanDirtAction)
         
     
     def __call__(self, env, action):
@@ -93,10 +107,10 @@ class CleanActionRuleFactory(RuleFactory):
          return True
        else:
          return False   
-class DropActionRuleFactory(RuleFactory):
+class DropActionRuleFactory(Rule):
     
     def __init__(self):
-        super().__init__(DropDirtAction)
+        super().__init__(vwaction.DropDirtAction)
         
     
     def __call__(self, env, action):
@@ -106,84 +120,85 @@ class DropActionRuleFactory(RuleFactory):
        if(env.getAmbient().getPlacementMap().agentSittingOnDirt(action.getCoordinate())): 
           flag=False
        return flag             
-class SpeakActionRuleFactory(RuleFactory):
+class SpeakActionRuleFactory(Rule):
     
     def __init__(self):
-        super().__init__(SpeakAction)
+        super().__init__(vwaction.SpeakAction)
         
     
     def __call__(self, env, action):
        flag=True
       # if(ambient.getPlacementMap().notValidOrientation(action.getOrient())):
        #    flag=False  
-       return flag       
-class SpeakToAllActionRuleFactory(RuleFactory):
+       return flag 
+      
+class SpeakToAllActionRuleFactory(Rule):
     
     def __init__(self):
-        super().__init__(BroadcastAction)
+        super().__init__(vwaction.BroadcastAction)
         
     
     def __call__(self, env, action):
        flag=True
-               
-       return flag                     
-class ForwardActionExecuteFactory(ActionFactory):
+       return flag
+                     
+class ForwardActionExecuteFactory(Executor):
     
     def __init__(self):
-        super().__init__(ForwardMoveMentAction)
+        super().__init__(vwaction.ForwardMoveMentAction)
         
     
     def __call__(self, env, action):
         action.execute(env.getAmbient())  
         
-class TurnLeftActionExecuteFactory(ActionFactory):
+class TurnLeftActionExecuteFactory(Executor):
     
     def __init__(self):
-        super().__init__(MoveLeftAction)
+        super().__init__(vwaction.MoveLeftAction)
         
     
     def __call__(self, env, action):
         action.execute(env.getAmbient())     
        
-class TurnRightActionExecuteFactory(ActionFactory):
+class TurnRightActionExecuteFactory(Executor):
     
     def __init__(self):
-        super().__init__(MoveRightAction)
+        super().__init__(vwaction.MoveRightAction)
         
     
     def __call__(self, env, action):
         action.execute(env.getAmbient())             
        
-class CleanActionExecuteFactory(ActionFactory):
+class CleanActionExecuteFactory(Executor):
     
     def __init__(self):
-        super().__init__(CleanDirtAction)
+        super().__init__(vwaction.CleanDirtAction)
         
     
     def __call__(self, env, action):
         action.execute(env.getAmbient())           
      
-class DropActionExecuteFactory(ActionFactory):
+class DropActionExecuteFactory(Executor):
     
     def __init__(self):
-        super().__init__(DropDirtAction)
+        super().__init__(vwaction.DropDirtAction)
         
     
     def __call__(self, env, action):
         action.execute(env.getAmbient()) 
-class SpeakActionExecuteFactory(RuleFactory):
+class SpeakActionExecuteFactory(Rule):
     
     def __init__(self):
-        super().__init__(SpeakAction)
+        super().__init__(vwaction.SpeakAction)
         
     
     def __call__(self, env, action):
         action.execute(env)          
         
-class SpeakToAllActionExecuteFactory(ActionFactory):
+class SpeakToAllActionExecuteFactory(Executor):
     
     def __init__(self):
-        super().__init__(BroadcastAction)
+        super().__init__(vwaction.BroadcastAction)
         
     
     def __call__(self, env, action):
@@ -191,66 +206,66 @@ class SpeakToAllActionExecuteFactory(ActionFactory):
        
         action.execute(env)       
         
-class Move(ActionFactory):
+class Move(Executor):
     
     def __init__(self, agentmind):
-        super().__init__(ForwardMoveMentAction)
-        act=ForwardMoveMentAction(agentmind.getName(),agentmind.getBody().getCoordinate(),agentmind.getBody().getOrientation())
+        super().__init__(vwaction.ForwardMoveMentAction)
+        act=vwaction.ForwardMoveMentAction(agentmind.getName(),agentmind.getBody().getCoordinate(),agentmind.getBody().getOrientation())
         for ac in agentmind.getBody().getActuators():
             if(ac.isCompatible(act)):
                 ac.attempt(act)
         
-class TurnLeft(ActionFactory):
+class TurnLeft(Executor):
     
     def __init__(self, agentmind):
-         super().__init__(MoveLeftAction)
-         act=MoveLeftAction(agentmind.getName(),agentmind.getBody().getCoordinate(),agentmind.getBody().getOrientation())
+         super().__init__(vwaction.MoveLeftAction)
+         act=vwaction.MoveLeftAction(agentmind.getName(),agentmind.getBody().getCoordinate(),agentmind.getBody().getOrientation())
          for ac in agentmind.getBody().getActuators():
             if(ac.isCompatible(act)):
                 ac.attempt(act)
         
 
-class TurnRight(ActionFactory):
+class TurnRight(Executor):
     
     def __init__(self, agentmind):
-        super().__init__(MoveRightAction)
-        act=MoveRightAction(agentmind.getName(),agentmind.getBody().getCoordinate(),agentmind.getBody().getOrientation())
+        super().__init__(vwaction.MoveRightAction)
+        act=vwaction.MoveRightAction(agentmind.getName(),agentmind.getBody().getCoordinate(),agentmind.getBody().getOrientation())
         for ac in agentmind.getBody().getActuators():
             if(ac.isCompatible(act)):
                 ac.attempt(act)
         
-class CleanDirt(ActionFactory):
+class CleanDirt(Executor):
     
     def __init__(self, agentmind):
-        super().__init__(CleanDirtAction)
-        act=CleanDirtAction(agentmind.getName(),agentmind.getBody().getCoordinate(),agentmind.getBody().getOrientation())
+        super().__init__(vwaction.CleanDirtAction)
+        act=vwaction.CleanDirtAction(agentmind.getName(),agentmind.getBody().getCoordinate(),agentmind.getBody().getOrientation())
         for ac in agentmind.getBody().getActuators():
             if(ac.isCompatible(act)):
                 ac.attempt(act)
         
-class DropDirt(ActionFactory):
+class DropDirt(Executor):
     
     def __init__(self, agentmind):
-        super().__init__(DropDirtAction)
-        act=DropDirtAction(agentmind.getName(),agentmind.getBody().getCoordinate(),agentmind.getBody().getOrientation())
+        super().__init__(vwaction.DropDirtAction)
+        act=vwaction.DropDirtAction(agentmind.getName(),agentmind.getBody().getCoordinate(),agentmind.getBody().getOrientation())
         for ac in agentmind.getBody().getActuators():
             if(ac.isCompatible(act)):
                 ac.attempt(act)
                
                 
-class Speak(ActionFactory):
+class Speak(Executor):
     
     def __init__(self, agentmind,receiver,message):
-        super().__init__(SpeakAction)
-        act=SpeakAction(agentmind.getName(),receiver,message)
+        super().__init__(vwaction.SpeakAction)
+        act=vwaction.SpeakAction(agentmind.getName(),receiver,message)
         for ac in agentmind.getBody().getActuators():
             if(ac.isCompatible(act)):
                 ac.attempt(act)                
-class SpeakToAll(ActionFactory):
+class SpeakToAll(Executor):
     
     def __init__(self, agentmind,message):
-        super().__init__(BroadcastAction)
-        act=BroadcastAction(agentmind.getName(),message)
+        super().__init__(vwaction.BroadcastAction)
+        act=vwaction.BroadcastAction(agentmind.getName(),message)
         for ac in agentmind.getBody().getActuators():
             if(ac.isCompatible(act)):
                 ac.attempt(act)    

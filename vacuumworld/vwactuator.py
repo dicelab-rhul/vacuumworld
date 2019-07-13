@@ -1,6 +1,6 @@
 from pystarworlds.Actuator import Actuator
-from GridWorldAction import ForwardMoveMentAction,MoveRightAction,MoveLeftAction,SpeakAction, CleanDirtAction,DropDirtAction,BroadcastAction
 
+from . import vwaction
 
 class PhysicalActuator(Actuator):
     def __init__(self,l):
@@ -17,17 +17,19 @@ class PhysicalActuator(Actuator):
 
 class MovementActuator(PhysicalActuator):
     def __init__(self):
-      super().__init__([ForwardMoveMentAction,MoveRightAction,MoveLeftAction]) 
+      super().__init__([vwaction.ForwardMoveMentAction,
+                       vwaction.MoveRightAction,
+                       vwaction.MoveLeftAction]) 
     
     
 class CommunicationActuator(Actuator):
     def __init__(self):
-      super().__init__([SpeakAction,BroadcastAction]) 
+      super().__init__([ vwaction.SpeakAction, vwaction.BroadcastAction]) 
     
 class DropDirtActuator(PhysicalActuator):
     def __init__(self):
-      super().__init__([DropDirtAction]) 
+      super().__init__([ vwaction.DropDirtAction]) 
  
 class CleaningDirtActuator(PhysicalActuator):
     def __init__(self):
-      super().__init__([CleanDirtAction]) 
+      super().__init__([ vwaction.CleanDirtAction]) 

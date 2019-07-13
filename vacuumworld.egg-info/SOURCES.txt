@@ -8,8 +8,17 @@ res/locations/agent/user.png
 res/locations/agent/white.png
 res/locations/dirt/green_dirt.png
 res/locations/dirt/orange_dirt.png
+vacuumworld/GridEnvironment.py
+vacuumworld/GridEnvironmentActuator.py
+vacuumworld/GridPerception.py
+vacuumworld/GridSensor.py
+vacuumworld/GridWorldAction.py
 vacuumworld/Slider.py
+vacuumworld/VWFactories.py
 vacuumworld/__init__.py
+vacuumworld/agent.py
+vacuumworld/saveload.py
+vacuumworld/user.py
 vacuumworld/vw.py
 vacuumworld/vwc.py
 vacuumworld/vwv.py

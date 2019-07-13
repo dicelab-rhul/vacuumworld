@@ -7,16 +7,18 @@ Created on Sun Jun  2 23:16:51 2019
 """
 
 
-from vwc import location, dirt, agent, coord
+from .vwc import location, dirt, agent, coord
+from collections import defaultdict
 from inspect import signature
-import numpy as np
- 
+#import numpy as np
+
 #--------------------------------------------------------
 
 AGENT_COLOURS = set(['user', 'orange', 'green', 'white'])
 DIRT_COLOURS = set(['orange', 'green'])
-DIRECTIONS = {'north':(0,-1), 'south':(0,1), 'west':(0,-1), 'east':(0,1)}
 
+
+    
 def __validate_agent(agent, colour):
     agent_dir = set(dir(agent))
     
@@ -56,10 +58,10 @@ def __validate_agent(agent, colour):
                 print('ERROR:' + colour + ' agent speak must be defined with no arguments, speak(self) or speak()')
                 return False
     return True
-   
-    
+
 #change the name to grid if you want!
-class PhysicalAllocationMap:
+class Grid:
+    DIRECTIONS = {'north':(0,-1), 'south':(0,1), 'west':(-1,0), 'east':(1,0)}
     
     ID_PREFIX_DIRT = 'D-'
     ID_PREFIX_AGENT = 'A-'
@@ -71,9 +73,11 @@ class PhysicalAllocationMap:
        self.reset(dim)
        self.agent_count = 0
        self.dirt_count = 0 
+       self.cycle = 0
        
     def reset(self, dim):
-        self.state = {}
+        self.cycle = 0
+        self.state = defaultdict(None)
         for i in range(dim):
             for j in range(dim):
                 self.state[coord(j,i)] = location(coord(j,i), None, None)
@@ -91,14 +95,13 @@ class PhysicalAllocationMap:
     def dirt(self, colour):
         assert(colour in DIRT_COLOURS)
         self.dirt_count += 1
-        return dirt(PhysicalAllocationMap.ID_PREFIX_DIRT + str(self.dirt_count), colour)
+        return dirt(Grid.ID_PREFIX_DIRT + str(self.dirt_count), colour)
     
     def agent(self, colour, direction):
-        print('agent!')
         assert(colour in AGENT_COLOURS)
-        assert(direction in DIRECTIONS.keys())
+        assert(direction in Grid.DIRECTIONS.keys())
         self.agent_count += 1
-        return agent(PhysicalAllocationMap.ID_PREFIX_AGENT + str(self.agent_count), colour, direction)            
+        return agent(Grid.ID_PREFIX_AGENT + str(self.agent_count), colour, direction)            
     
     def replace_agent(self, coordinate, agent):
       
@@ -132,9 +135,9 @@ class PhysicalAllocationMap:
         _from = self._as_coord(_from)
         _to = self._as_coord(_to)
   
-        
         assert(self.state[_from].agent != None)
         assert(self.state[_to].agent == None)
+        
         from_loc = self.state[_from]
         to_loc = self.state[_to]
         self.state[_to] = location(to_loc.coordinate, to_loc.dirt, from_loc.agent)
@@ -150,8 +153,11 @@ class PhysicalAllocationMap:
     
     ####################################################################
     
+    #u??????? se in bounds
     def isOutsideGrid(self, coordinate):
+        raise RuntimeError # use _in_bounds
         return coordinate.x < 0 or coordinate.x >= self.dim or coordinate.y < 0 or coordinate.y >= self.dim
+    
     def isOccupiedByActor(self, coordinate):
         print(coordinate)
        
@@ -176,6 +182,7 @@ class PhysicalAllocationMap:
         assert(self._in_bounds(coordinate))
         loc = self.state[coordinate]
         return loc
+    
     def agentSittingOnDirt(self,coordinate):         
         assert(self._in_bounds(coordinate))
         loc =self.state[coordinate] 
@@ -183,19 +190,4 @@ class PhysicalAllocationMap:
                return True
         else:
                return False              
-            
-    def makeGUI(self):
-     pres = [ [0]*self.dim for i in range(self.dim)]
-  
-     for i in range(self.dim):
-      for j in range(self.dim):
-          entity=self.state[(i,j)]
-          if entity.agent==None and entity.dirt==None: 
-             pres[j][i]='_'
-          elif entity.agent:          
-                pres[j][i]='0'
-         
-          elif(entity.dirt): 
-             pres[j][i]='~'
-              
-     print(np.matrix(pres))
+

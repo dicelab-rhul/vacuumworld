@@ -1,18 +1,14 @@
 # -*- coding: utf-8 -*-
 from pystarworlds.Perception import Perception
+from .vwc import coord,observation
 
-from collections import namedtuple
-
-from vw import PhysicalAllocationMap
-
-from vwc import coord,colour,location,agent,observation
-
-
+#what is all this   ? just use the named tuples defined in vwc..?
+'''
 class VisionPerception(Perception):
   def __init__(self,agid,ambient):  # id of agent sent not full agent
       super().__init__(agid)
       
-      pm=ambient.getPlacementMap()
+      pm=ambient.grid
       for i in range(pm.dim):
             for j in range(pm.dim):
                agentlocation=pm.state[coord(j,i)]
@@ -24,8 +20,10 @@ class VisionPerception(Perception):
 
   def getDirection(self):
      return self.__direction__
+ 
   def getCoordinates(self):
      return self.__coordinate__
+ 
   def getColour(self):
      return self.__colour__
   
@@ -36,6 +34,7 @@ class GridVisionPerception(VisionPerception):
        super().__init__(agid,ambient)
        
      
+
 class Observation(GridVisionPerception):
     def __init__(self,agid,ambient):  # id of agent sent not full agent
        super().__init__(agid,ambient)
@@ -180,7 +179,7 @@ class Observation(GridVisionPerception):
     def getCoordinate(self,t):
          g=self.perceptionGrid[t] 
          return g.location.coordinate
-     
+ '''    
    
  
 class Message(Perception):

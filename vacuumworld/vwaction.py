@@ -1,10 +1,11 @@
 from pystarworlds.Action import Action
 
-from GridPerception import Message
-from vwc import coord,colour,direction,location
+from .vwperception import Message
+from .vwc import coord
+
 import random
 
-
+#why is this here
 class PhysicalAction(Action):
      def __init__(self,ag,coord1):
       super().__init__(ag)  
@@ -21,11 +22,8 @@ class SensingAction(Action):
     
 class ForwardMoveMentAction(PhysicalAction):
  
-    def __init__(self,ag,coord1, orient):
+    def __init__(self, ag, coord1, orient):
         super().__init__(ag,coord1)
-        
-       
-        
         coord2=self.getFrontCoordinate(coord1,orient)
         
         self.__newcoord__=coord(coord2.x,coord2.y)
@@ -176,15 +174,11 @@ class CleanDirtAction(PhysicalAction):
     def __init__(self,ag,coord,orient):
         super().__init__(ag,coord)
         
-     
-       
     def isSame(self, action):
         if (type(self)==type(action)):
           return  ((super().getActor()==action.getActor()))
         else:
           return False    
-   
-  
    
     def execute(self, ambient):
        
