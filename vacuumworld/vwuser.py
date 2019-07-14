@@ -39,7 +39,7 @@ class UserMind(Mind):
     #      messages.append(mess)
      
         
- 
+    #what is this
     self.percept=vwc.perception(obser,None)
     self.getBody().setCoordinate(self.percept.observation.center.coordinate)
     self.getBody().setOrientation(self.percept.observation.center.agent.direction)

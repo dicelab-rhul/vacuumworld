@@ -2,34 +2,17 @@ from pystarworlds.Actuator import Actuator
 
 from . import vwaction
 
-class PhysicalActuator(Actuator):
-    def __init__(self,l):
-      super().__init__(l)
-      self.firstattempt=True
-    def attempt(self, action):
-     if(self.firstattempt):
-       super().attempt(action)
-       self.firstattempt=False
-    
-    def act(self):
-       self.firstattempt=True
-       return super().act() 
-
-class MovementActuator(PhysicalActuator):
+class CleaningAgentActuator(Actuator):
     def __init__(self):
-      super().__init__([vwaction.ForwardMoveMentAction,
-                       vwaction.MoveRightAction,
-                       vwaction.MoveLeftAction]) 
-    
-    
+      super(CleaningAgentActuator, self).__init__([vwaction.MoveAction,
+                                                   vwaction.TurnAction,
+                                                   vwaction.CleanAction]) 
+class UserActuator(Actuator):
+    def __init__(self):
+      super(CleaningAgentActuator, self).__init__([vwaction.MoveAction,
+                                                   vwaction.TurnAction,
+                                                   vwaction.DropAction]) 
 class CommunicationActuator(Actuator):
     def __init__(self):
-      super().__init__([ vwaction.SpeakAction, vwaction.BroadcastAction]) 
+      super().__init__([vwaction.CommunicativeAction]) 
     
-class DropDirtActuator(PhysicalActuator):
-    def __init__(self):
-      super().__init__([ vwaction.DropDirtAction]) 
- 
-class CleaningDirtActuator(PhysicalActuator):
-    def __init__(self):
-      super().__init__([ vwaction.CleanDirtAction]) 

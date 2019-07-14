@@ -17,7 +17,8 @@ from inspect import signature
 AGENT_COLOURS = set(['user', 'orange', 'green', 'white'])
 DIRT_COLOURS = set(['orange', 'green'])
 
-
+class VacuumWorldInternalError(Exception):
+    pass
     
 def __validate_agent(agent, colour):
     agent_dir = set(dir(agent))
@@ -31,19 +32,19 @@ def __validate_agent(agent, colour):
             return False
         else:
             if len(signature(agent.do).parameters) != 0:
-                print('ERROR:' + colour + ': agent do must be defined with no arguments, do(self) or d()')
+                print('ERROR:' + colour + ': agent do must be defined with no arguments, do(self) or do()')
                 return False
         
-    if not 'perceive' in agent_dir:
-        print('ERROR:' + colour + ' agent must define the perceive method')
+    if not 'revise' in agent_dir:
+        print('ERROR:' + colour + ' agent must define the revise method')
         return False
     else:
-        if not callable(agent.perceive):
-            print('ERROR:' + colour + ' agent perceive must be callable')
+        if not callable(agent.revise):
+            print('ERROR:' + colour + ' agent revise must be callable')
             return False
         else:
-             if len(signature(agent.perceive).parameters) != 1:
-                print('ERROR:' + colour + ' agent perceive must be defined with one argument, perceive(self, percept) or perceive(percept)')
+             if len(signature(agent.revise).parameters) != 2:
+                print('ERROR:' + colour + ' agent revise must be defined with two arguments, revise(self, observation, messages) or revise(observation, messages)')
                 return False
         
     if not 'speak' in agent_dir:
@@ -77,7 +78,7 @@ class Grid:
        
     def reset(self, dim):
         self.cycle = 0
-        self.state = defaultdict(None)
+        self.state = defaultdict(lambda: None)
         for i in range(dim):
             for j in range(dim):
                 self.state[coord(j,i)] = location(coord(j,i), None, None)

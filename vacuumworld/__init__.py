@@ -13,21 +13,19 @@ from . import vwc
 
 __all__ = ('vw', 'vwv', 'vwc')
 
-# do some things
-
-import copy
-
 def run(white_agent, green_agent=None, orange_agent=None):
     if green_agent is None:
-        green_agent = copy.deepcopy(white_agent)
+        green_agent = white_agent
     if orange_agent is None:
-        orange_agent = copy.deepcopy(white_agent)
+        orange_agent = white_agent
         
     white_ok = vw.__validate_agent(white_agent, 'white')
     green_ok = vw.__validate_agent(green_agent, 'green')
     orange_ok = vw.__validate_agent(orange_agent, 'orange')
     if white_ok and green_ok and orange_ok:
-        vwv.run()
+        vwv.run({vwc.colour.white:white_agent, 
+                 vwc.colour.green:green_agent, 
+                 vwc.colour.orange:orange_agent})
 
 
     

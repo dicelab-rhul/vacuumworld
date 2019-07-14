@@ -402,7 +402,7 @@ def _finish():
     finish = True
 
 
-def run():  
+def run(_minds):  
     #required to avoid problems with running after errors (root must be destoryed!)
     
     
@@ -420,6 +420,9 @@ def run():
         global main_menu
         global main_interface
         global grid
+        global minds
+        minds = _minds
+        
         grid = Grid(INITIAL_ENVIRONMENT_DIM)
 
         #saveload.load('/test.vw', grid)
@@ -448,10 +451,11 @@ def simulate():
             play_event.wait()
             return play_event.is_set()
         global reset
+        
         while wait() and not finish:
             if reset:
                 global env
-                env = init_environment(grid)
+                env = init_environment(grid, minds)
                 grid.cycle = 0
                 reset = False
                 

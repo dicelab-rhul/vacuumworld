@@ -9,8 +9,9 @@ from . import vwfactories as factory
 from .vwc import colour, observation, message
 
 
-from pystarworlds.Environment import Ambient,Physics, Environment
-
+from pystarworlds.Environment import Ambient, Physics, Environment
+from pystarworlds.Event import Event
+import copy
 
 
 #from VWFactories import VWGridPerceptionFactory,ForwardActionRuleFactory,TurnLeftActionRuleFactory,TurnRightActionRuleFactory,CleanActionRuleFactory,DropActionRuleFactory,SpeakActionRuleFactory,SpeakToAllActionRuleFactory,ForwardActionExecuteFactory,TurnLeftActionExecuteFactory,TurnRightActionExecuteFactory,CleanActionExecuteFactory,DropActionExecuteFactory,SpeakActionExecuteFactory,SpeakToAllActionExecuteFactory
@@ -19,28 +20,26 @@ from pystarworlds.Environment import Ambient,Physics, Environment
 #from vw import Direction
 #from pystarworlds.Identifiable import Identifiable
 
-def init(grid):
-    return GridEnvironment(GridAmbient(grid))
+def init(grid, minds):
+    return GridEnvironment(GridAmbient(grid, minds))
     
 class GridAmbient(Ambient):
     
-    def __init__(self, grid):
+    def __init__(self, grid, minds):
         self.grid = grid
         agents=[]
         dirts=[]
         for entity in grid.state.values():       
             if entity.agent:       
                 if entity.agent.colour != colour.user:
-                    ag = vwagent.CleaningAgentBody(vwagent.CleaningAgentMind(),
-                              [act.MovementActuator(), act.CommunicationActuator(), act.CleaningDirtActuator()],
-                              [sense.VisionSensor(), sense.CommunicationSensor()],
-                              entity.agent.direction,
-                              entity.coordinate,
-                              entity.agent.colour)
+                    ag = vwagent.CleaningAgentBody(copy.deepcopy(minds[entity.agent.colour]),
+                                                   entity.agent.orientation,
+                                                   entity.coordinate,
+                                                   entity.agent.colour)
                     agents.append(ag)
                 else:                        
                     ag = vwuser.UserBody(vwuser.UserMind(),
-                               [act.MovementActuator(), act.DropDirtActuator()],
+                               [act.UserActuator(), act.CommunicationActuator()],
                                [sense.VisionSensor(), sense.CommunicationSensor()],
                                entity.agent.direction,
                                entity.coordinate,
@@ -58,35 +57,53 @@ class GridEnvironment(Environment):
     
     def __init__(self, ambient):
         
-        actions = [action.DropDirtAction, action.ForwardMoveMentAction, action.MoveRightAction,
-                   action.MoveLeftAction, action.CleanDirtAction, action.SpeakAction, action.BroadcastAction]
+        actions = [action.DropAction, action.MoveAction,
+                   action.TurnAction, action.CleanAction, 
+                   action.CommunicativeAction]
         
         physics = GridPhysics({sense.VisionSensor:[observation], 
                                sense.CommunicationSensor:[message]})
         
-        super(GridEnvironment, self).__init__(physics, ambient, actions,
-             [s for a in ambient.agents.values() for s in a.sensors]) #Nausheen use this in Environment
+        super(GridEnvironment, self).__init__(physics, ambient, [ObservationProcess()], actions,
+             [s for a in ambient.agents.values() for s in a.sensors()]) #Nausheen use this in Environment
         
-        self.perception_factories = [factory.VWObservationFactory()]
+        self.perception_factories = [factory.ObservationFactory()]
         
-        #make this a dictionary type(action) -> rule
-        self.rule_factories = [factory.ForwardActionRuleFactory(),
-                               factory.TurnLeftActionRuleFactory(),
-                               factory.TurnRightActionRuleFactory(),
-                               factory.CleanActionRuleFactory(),
-                               factory.DropActionRuleFactory(),
-                               factory.SpeakActionRuleFactory(),
-                               factory.SpeakToAllActionRuleFactory()]
+        '''
+        rules = [factory.ForwardActionRuleFactory(),
+                   factory.TurnLeftActionRuleFactory(),
+                   factory.TurnRightActionRuleFactory(),
+                   factory.CleanActionRuleFactory(),
+                   factory.DropActionRuleFactory(),
+                   factory.SpeakActionRuleFactory(),
+                   factory.SpeakToAllActionRuleFactory()]
         
-        #make this a dictionary type(action) -> rule
-        self.executeaction_factories = [factory.ForwardActionExecuteFactory(),
-                                        factory.TurnLeftActionExecuteFactory(),
-                                        factory.TurnRightActionExecuteFactory(),
-                                        factory.CleanActionExecuteFactory(),
-                                        factory.DropActionExecuteFactory(),
-                                        factory.SpeakActionExecuteFactory(),
-                                        factory.SpeakToAllActionExecuteFactory()]
-          
+
+        #rename this to rules
+        self.rule_factories = {r._type:r for r in rules}
+
+        executors = [factory.ForwardActionExecuteFactory(),
+                        factory.TurnLeftActionExecuteFactory(),
+                        factory.TurnRightActionExecuteFactory(),
+                        factory.CleanActionExecuteFactory(),
+                        factory.DropActionExecuteFactory(),
+                        factory.SpeakActionExecuteFactory(),
+                        factory.SpeakToAllActionExecuteFactory()]
+  
+        self.executeaction_factories = {e._type:e for e in executors}
+        '''
+
+class ObservationProcess:
+    
+    def __init__(self):
+        self. obs_factory = factory.ObservationFactory()
+    
+    def __call__(self, env):
+        for agent in env.ambient.agents.values():
+            print("observation for agent", agent)
+            env.physics.notify_agent(agent, self.obs_factory(env.ambient, agent))
+
+
 #####################################################################################################################
 '''
    def sendFailedAttemptsResponse(self,action, result):
