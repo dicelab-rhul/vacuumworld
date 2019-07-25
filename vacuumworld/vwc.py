@@ -7,10 +7,25 @@ Created on Sat Jun  1 21:53:28 2019
 """
 
 from collections import namedtuple
+
 location = namedtuple('location', 'coordinate agent dirt')
 agent = namedtuple('agent', 'name colour orientation')
 dirt = namedtuple('dirt', 'name colour')
-coord = namedtuple('coordinate', 'x y')
+_coord = namedtuple('coordinate', 'x y')
+
+class coord(_coord):
+    
+    def __add__(self, other):
+        return coord(self[0] + other[0], self[1] + other[1])
+    
+    def __sub__(self, other):
+        return coord(self[0] - other[0], self[1] - other[1])
+    
+    def __mul__(self, other):
+        return coord(self[0] * other[0], self[1] * other[1])
+    
+    def __div__(self, other):
+        return coord(int(self[0] / other[0]), int(self[1] / other[1]))
 
 perception = namedtuple('perception', 'observation messages')
 
@@ -23,11 +38,6 @@ class observation(_observation):
         return (x for x in super(observation, self).__iter__() if x is not None)
 
 orientation = namedtuple('orientation', 'north east south west')('north', 'east', 'south', 'west')
-direction = namedtuple('direction', 'left right')('left', 'right')
-
-colour = namedtuple('colour', 'white orange green user')('white', 'orange', 'green', 'user')
-
-perception_types = namedtuple('types', 'message observation')('message', 'observation')
 
 def left(_orientation):
     return orientation[(orientation.index(_orientation) + 1) % 4]
@@ -35,35 +45,21 @@ def left(_orientation):
 def right(_orientation):
     return orientation[(orientation.index(_orientation) - 1) % 4]
 
-def add(c1, c2):
-    return coord(c1[0] + c2[0], c1[1] + c2[1])
+direction = namedtuple('direction', 'left right')(left, right)
 
-class ActionFactory:
-    
-    def __init__(self, name):
-        self.name = name
-    
-    def __call__(self):
-        return (self.name,)
+colour = namedtuple('colour', 'white orange green user')('white', 'orange', 'green', 'user')
 
-class SpeakActionFactory(ActionFactory):
-    
-    def __init__(self, name):
-        super(SpeakActionFactory, self).__init__(name)
-        
-    def __call__(self, _message, *_to):
-        assert(isinstance(_message, str))
-        for t in _to:
-            assert(isinstance(t, str))
-        return (self.name, _message, *_to)
-
-action = namedtuple('actions', 'move turn_left, turn_right clean idle speak')(\
-        ActionFactory('move'), ActionFactory('turn_left'), ActionFactory('turn_right'), 
-        ActionFactory('clean'), ActionFactory('idle'), SpeakActionFactory('speak'))
+_colour_dirt = set(['orange','green'])
+_colour_agent = set(['orange','green','white'])
+_colour_user = set(['user'])
 
 
-
-
+action = namedtuple('actions', 'move turn clean idle speak')(
+                    lambda : ('move',), 
+                    lambda _direction : ('turn', _direction), 
+                    lambda : ('clean',), 
+                    lambda : ('idle',), 
+                    lambda message, *to : ('speak', message, *to))
 
 
 

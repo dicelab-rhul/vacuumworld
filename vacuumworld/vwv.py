@@ -145,7 +145,7 @@ class CanvasDragManager:
 
             
     def on_drop(self, event):
-        print('drop')
+        #print('drop')
         if self._in_bounds(event.x, event.y):
             self._on_drop(event, self)
         self.dragging = False
@@ -174,12 +174,19 @@ class VWInterface(tk.Frame):
         self.placed_images = {}
         self.canvas_dirts = {}
         self.canvas_agents = {}
+        self.all_images = {}
         
         self._init_dragables()
         self._init_options()
         
         self.grid_lines = []
         self._draw_grid(DEFAULT_GRID_SIZE, grid.dim)
+        
+        #for k,v in self.all_images.items():
+        #    print(k,v)
+       
+        
+        
         self.canvas.pack()
     
     def pack_buttons(self, b1, b2):
@@ -257,6 +264,22 @@ class VWInterface(tk.Frame):
         self.canvas_dirts.clear()
         self.placed_images.clear()
         
+    def _redraw(self):
+        self._reset_canvas()
+        for coord, location in grid.state.items():
+            if location:
+                if location.agent:
+                    print("AGENT:", coord, location)
+                    #re do this? ... perhaps we only need to create tk_images once along with pil images!
+                    tk_img = ImageTk.PhotoImage(self.all_images[(location.agent.colour, location.agent.orientation)])
+                    item = self.canvas.create_image(coord.x * DEFAULT_LOCATION_SIZE + tk_img.width()/2 + 2, 
+                                                    coord.y * DEFAULT_LOCATION_SIZE + tk_img.height()/2 + 2, image=tk_img)
+                    self.canvas_agents[coord] = item
+                    self.placed_images[coord] = tk_img
+                elif location.dirt:
+                    pass 
+        self._draw_grid(DEFAULT_GRID_SIZE, grid.dim)
+            
     def _draw_grid(self, size, env_dim):
         x = 0
         y = 0
@@ -266,7 +289,13 @@ class VWInterface(tk.Frame):
            self.grid_lines.append(self.canvas.create_line(0,y,DEFAULT_GRID_SIZE,y))
            y += inc
            x += inc
-           
+
+              
+    def _get_image_key(self, name):
+        s = name.split("_")
+        return (s[0], s[1])
+
+        
     def _init_dragables(self):
         #load all images
         files = get_location_img_files(LOCATION_AGENT_IMAGES_PATH)
@@ -278,9 +307,11 @@ class VWInterface(tk.Frame):
             file = os.path.join(LOCATION_AGENT_IMAGES_PATH, name) +  '.png'
             img = self._scale(Image.open(file), DEFAULT_LOCATION_SIZE)
             images = self._construct_images(img, name + '_')
+            #self.all_images.update(images)
             y = DEFAULT_LOCATION_SIZE
             for img_name, img in images.items():
                 tk_img = ImageTk.PhotoImage(img)
+                self.all_images[self._get_image_key(img_name)] = img
                 item = self.canvas.create_image(x + img.width/2,y + img.height/2, image=tk_img)
                 drag_manager = CanvasDragManager(img_name, self.grid, self.canvas, item, self.drag_on_start, self.drag_on_drop)
                 self.dragables[item] = (drag_manager, img, tk_img)
@@ -294,6 +325,7 @@ class VWInterface(tk.Frame):
         for name in names:
             file = os.path.join(LOCATION_DIRT_IMAGES_PATH, name) +  '.png'
             img = self._scale(Image.open(file), DEFAULT_LOCATION_SIZE)
+            self.all_images[self._get_image_key(name)] = img
             tk_img = ImageTk.PhotoImage(img)
             item = self.canvas.create_image(x + img.width/2,y + img.height/2, image=tk_img)
             drag_manager = CanvasDragManager(name, self.grid, self.canvas, item, self.drag_on_start, self.drag_on_drop)
@@ -310,7 +342,6 @@ class VWInterface(tk.Frame):
     def on_resize(self, value):
         value =  value + Grid.GRID_MIN_SIZE
         if value != self.grid.dim:
-            print('resize', value)
             self.grid.reset(value)
             self._reset_canvas()
             self._draw_grid(DEFAULT_GRID_SIZE, grid.dim)
@@ -318,12 +349,12 @@ class VWInterface(tk.Frame):
     def drag_on_start(self, event):
         drag_manager, image, _ = self.dragables[event.widget.find_closest(event.x, event.y)[0]]
         size = min(DEFAULT_LOCATION_SIZE, DEFAULT_GRID_SIZE  / self.grid.dim)
-        print('size', size)
+
         drag_manager.drag_image = ImageTk.PhotoImage(self._scale(image, size))
         drag_manager.drag = self.canvas.create_image(event.x, event.y, image=drag_manager.drag_image)
         self.canvas.itemconfigure(drag_manager.drag, state='hidden')
         self.canvas.tag_lower(drag_manager.drag)
-        print(drag_manager.drag)
+
         #keep the currently selected draggable on the top
         for d in self.canvas_dirts.values():
             self.canvas.tag_lower(d)
@@ -335,7 +366,7 @@ class VWInterface(tk.Frame):
         inc = int(DEFAULT_GRID_SIZE / self.grid.dim)
         x = int(event.x / inc) 
         y = int(event.y / inc)
-        print(drag_manager.name, x,y)
+
         self.placed_images[(x,y)] = drag_manager.drag_image        
         #update the environment state
         colour, obj = drag_manager.name.split('_')
@@ -345,14 +376,14 @@ class VWInterface(tk.Frame):
             if (x,y) in self.canvas_dirts:
                 self.canvas.delete(self.canvas_dirts[(x,y)])
             self.canvas_dirts[(x,y)] = drag_manager.drag
-            print(dirt1)
+
         else: #its and agent
             agent1 =  grid.agent(colour, obj)
             grid.replace_agent((x,y), agent1)
             if (x,y) in self.canvas_agents:
                 self.canvas.delete(self.canvas_agents[(x,y)])
             self.canvas_agents[(x,y)] = drag_manager.drag
-            print(agent1)
+
        
     def show_hide_side(self, state):
         for item in self.dragables.keys():
@@ -460,8 +491,11 @@ def simulate():
                 reset = False
                 
             print("evolve", grid.cycle)
+            #for k,v in grid.state.items():
+            #    print(k,v)
             env.evolveEnvironment()
             grid.cycle += 1
+            main_interface._redraw()
             time.sleep(1)
     except:
         _error()

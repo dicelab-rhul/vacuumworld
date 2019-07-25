@@ -15,7 +15,6 @@ from . import vwactuator
 from . import vwagent 
 from . import vwaction
 
-
 class CleaningAgentBody(AgentBody):
     
     def __init__(self, mind, orientation, coordinate, colour):
@@ -35,30 +34,27 @@ class CleaningAgentMind(Mind):
         self.surrogate = surrogate
        
     def cycle(self):
-        print("cycle!")
-        
+ 
         observation = [percept for percept in self.body._sensors["vision"]]
-        print(observation)
         assert(len(observation) == 1)
         
         
         messages = [percept for percept in self.body._sensors["communication"]]
-        self.surrogate.revise(observation, messages)
+        self.surrogate.revise(*observation, messages)
         
         physical_action = self.surrogate.do()
         communicative_action = self.surrogate.speak()
         
-        assert(isinstance(communicative_action, vwaction.CommunicativeAction))
-        assert(isinstance(physical_action, vwaction.VWPhysicalAction))
+        if communicative_action is not None:
+            assert isinstance(communicative_action, tuple)
+            action = vwaction._action_factories[communicative_action[0]](self.body.ID, *communicative_action[1:])
+            self.body._actuators["communication"].attempt(action)
+        if physical_action is not None and physical_action[0] != 'idle':
+            assert isinstance(physical_action, tuple)
+            action = vwaction._action_factories[physical_action[0]](self.body.ID, *physical_action[1:])
+            self.body._actuators["physical"].attempt(action)
+              
         
-        self.body._actuators["communication"].attempt(communicative_action)
-        self.body._actuators["physical"].attempt(physical_action)
-        
-        '''
-        for sensor in self.body.sensors:
-            for percept in sensor:
-                print(sensor, "->", percept)
-        '''
 
 
     

@@ -27,7 +27,7 @@ class Slider(tk.Canvas):
             self.x = start * inc
             self.inc = start
             
-        print('start', start)
+
         self.background_item = self.create_rectangle(-1,-1, width+1, height+1, fill='white')
         self.slider_item = self.create_rectangle(self.x, 0, self.x + self.slide_item_dim, height, fill='black') #self.create_image(img, 0, 0)
         self.bind("<ButtonPress-1>", self.on_start)
@@ -59,14 +59,3 @@ class Slider(tk.Canvas):
             x = self.inc
         self.release_callback(int(x))
        
-'''
-root = tk.Tk()
-
-gb = Slider(root, lambda x: print(x), None, 100, 10, increments=3)
-gb.pack()
-
-
-root.mainloop()
-
-root.destroy()
-'''

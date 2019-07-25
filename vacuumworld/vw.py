@@ -78,10 +78,14 @@ class Grid:
        
     def reset(self, dim):
         self.cycle = 0
-        self.state = defaultdict(lambda: None)
+        self.state = {}
         for i in range(dim):
             for j in range(dim):
                 self.state[coord(j,i)] = location(coord(j,i), None, None)
+            self.state[coord(-1, i)] = None
+            self.state[coord(i, -1)] = None
+            self.state[coord(dim, i)] = None
+            self.state[coord(i, dim)] = None
         self.dim = dim
         self.agent_count = 0
         self.dirt_count = 0
@@ -92,6 +96,7 @@ class Grid:
     def _as_coord(self, coordinate):
         if not isinstance(coordinate, coord):
             return coord(coordinate[0], coordinate[1])
+        return coordinate
     
     def dirt(self, colour):
         assert(colour in DIRT_COLOURS)
@@ -105,9 +110,7 @@ class Grid:
         return agent(Grid.ID_PREFIX_AGENT + str(self.agent_count), colour, direction)            
     
     def replace_agent(self, coordinate, agent):
-      
          coordinate = self._as_coord(coordinate)
-       
          assert(self._in_bounds(coordinate))
          loc = self.state[coordinate]
          self.state[coordinate] = location(coordinate, agent, loc.dirt)
@@ -131,64 +134,26 @@ class Grid:
         assert(self.state[coordinate].dirt == None)
         loc = self.state[coordinate]
         self.state[coordinate] = location(coordinate, loc.agent, dirt)
+    
+    def remove_dirt(self, coordinate):
+        assert(self._in_bounds(coordinate))
+        loc = self.state[coordinate]
+        self.state[coordinate] = location(coordinate, loc.agent, None)
         
     def move_agent(self, _from, _to):
         _from = self._as_coord(_from)
         _to = self._as_coord(_to)
-  
         assert(self.state[_from].agent != None)
         assert(self.state[_to].agent == None)
         
         from_loc = self.state[_from]
         to_loc = self.state[_to]
-        self.state[_to] = location(to_loc.coordinate, to_loc.dirt, from_loc.agent)
-        self.state[_from] = location(from_loc.coordinate, from_loc.dirt, None)
+        self.state[_to] = location(to_loc.coordinate, from_loc.agent, to_loc.dirt)
+        self.state[_from] = location(from_loc.coordinate, None, from_loc.dirt)
         
     def turn_agent(self, _coordinate, direction):
-        print(direction)
         assert(self.state[_coordinate].agent != None)
         loc = self.state[_coordinate]
         ag = loc.agent
-        self.state[_coordinate] = location(_coordinate, agent(ag.name, ag.colour, direction),loc.dirt)
-
-    
-    ####################################################################
-    
-    #u??????? se in bounds
-    def isOutsideGrid(self, coordinate):
-        raise RuntimeError # use _in_bounds
-        return coordinate.x < 0 or coordinate.x >= self.dim or coordinate.y < 0 or coordinate.y >= self.dim
-    
-    def isOccupiedByActor(self, coordinate):
-        print(coordinate)
-       
-        assert(self._in_bounds(coordinate))
-        loc = self.state[coordinate]
-        if loc.agent:
-            return True
-        else:
-            return False
-    def isUser(self, agentName):
-        for i in range(self.dim):
-           for j in range(self.dim):
-             loc =self.state[coord(j,i)] 
-             if loc.agent:
-                 if loc.agent.name==agentName and loc.agent.colour=="user":
-                     return True
-        return False    
-    
-    def getlocation(self, coordinate):
-        print(coordinate)
-       
-        assert(self._in_bounds(coordinate))
-        loc = self.state[coordinate]
-        return loc
-    
-    def agentSittingOnDirt(self,coordinate):         
-        assert(self._in_bounds(coordinate))
-        loc =self.state[coordinate] 
-        if loc.agent and loc.dirt:
-               return True
-        else:
-               return False              
+        self.state[_coordinate] = location(_coordinate, agent(ag.name, ag.colour, direction), loc.dirt)
 
