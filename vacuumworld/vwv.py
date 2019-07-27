@@ -6,15 +6,14 @@
 """
 Created on Fri May 31 20:12:24 2019
 
-@author: ben, Nausheen
-
-from IPython import get_ipython
-get_ipython().magic('reset -sf')
+@author Benedict Wilkins
 """
 
 import tkinter as tk
 import traceback
 import os
+import time
+from threading import Thread, Event
 
 from collections import OrderedDict as odict
 from PIL import Image, ImageTk
@@ -198,10 +197,30 @@ class VWInterface(tk.Frame):
         parent.bind('<d>', self.rotate_agent_right)
         
         self.canvas.bind('<Double-Button-1>', self.remove_top)
+        self.canvas.bind('<Button-1>', self.select)
         
         self.currently_selected = None
         self.running = False
-        
+        self.rectangle_selected = None
+    
+    
+    def deselect(self):
+        self.selected = None
+        if self.rectangle_selected:
+            self.canvas.delete(self.rectangle_selected)
+        self.rectangle_selected = None
+    
+    def select(self, event):
+        if not self.running and _in_bounds(event.x, event.y):
+            self.deselect()
+            inc = DEFAULT_GRID_SIZE / self.grid.dim
+            coordinate = vwc.coord(int(event.x / inc), int(event.y / inc))
+            self.selected = grid.state[coordinate]
+            xx = coordinate.x * inc
+            yy = coordinate.y * inc
+            self.rectangle_selected = self.canvas.create_rectangle((xx, yy, xx + inc, yy + inc), fill='', width=3)
+     
+    
     def remove_top(self, event):
         if not self.running and _in_bounds(event.x, event.y):
             print("remove top")           
@@ -230,7 +249,7 @@ class VWInterface(tk.Frame):
     def rotate_agent(self, event, direction):
         #print('left', event)
         print(self.selected)
-        if self.selected:
+        if self.selected and self.selected.agent:
             self.remove_agent(self.selected.coordinate)
             new_orientation =  direction(self.selected.agent.orientation)
             tk_img = self.all_images_tk_scaled[(self.selected.agent.colour, new_orientation)]
@@ -332,6 +351,8 @@ class VWInterface(tk.Frame):
     def _lines_to_front(self):
         for line in self.grid_lines:
             self.canvas.tag_raise(line)
+        if self.rectangle_selected:
+            self.canvas.tag_raise(self.rectangle_selected)
             
     def _reset_canvas_agents(self):
         for a in self.canvas_agents.values():
@@ -477,15 +498,15 @@ class VWInterface(tk.Frame):
             if (x,y) in self.canvas_agents:
                 self.canvas.delete(self.canvas_agents[(x,y)])
             self.canvas_agents[(x,y)] = drag_manager.drag
-            self.selected = grid.state[vwc.coord(x,y)]
+        
+        self.select(event)
        
     def show_hide_side(self, state):
         for item in self.dragables.keys():
             self.canvas.itemconfigure(item, state=state)
         self.canvas.itemconfig(self.options, state=state)
 
-import time
-from threading import Thread, Event
+
 
 def _fast():
     global TIME_STEP
@@ -504,6 +525,7 @@ def _reset():
 def _play():
     print('play')
     play_event.set()
+    main_interface.deselect()
     main_interface.running = True
     main_interface.pack_buttons('stop', 'pause','fast')
     main_interface.show_hide_side('hidden')
