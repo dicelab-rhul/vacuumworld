@@ -215,6 +215,7 @@ class VWInterface(tk.Frame):
             self.deselect()
             inc = DEFAULT_GRID_SIZE / self.grid.dim
             coordinate = vwc.coord(int(event.x / inc), int(event.y / inc))
+            print("SELECT:", self.grid.state[coordinate])
             self.selected = grid.state[coordinate]
             xx = coordinate.x * inc
             yy = coordinate.y * inc
@@ -252,9 +253,10 @@ class VWInterface(tk.Frame):
         if self.selected and self.selected.agent:
             self.remove_agent(self.selected.coordinate)
             new_orientation =  direction(self.selected.agent.orientation)
+            inc = DEFAULT_GRID_SIZE / self.grid.dim
             tk_img = self.all_images_tk_scaled[(self.selected.agent.colour, new_orientation)]
-            item = self.canvas.create_image(self.selected.coordinate.x * DEFAULT_LOCATION_SIZE + tk_img.width()/2 + 2, 
-                                            self.selected.coordinate.y * DEFAULT_LOCATION_SIZE + tk_img.height()/2 + 2, image=tk_img)
+            item = self.canvas.create_image(self.selected.coordinate.x * inc + inc/2, 
+                                            self.selected.coordinate.y * inc + inc/2, image=tk_img)
             self.canvas_agents[self.selected.coordinate] = item
             self.grid.turn_agent(self.selected.coordinate, new_orientation)
             self.selected = self.grid.state[self.selected.coordinate]
@@ -336,18 +338,22 @@ class VWInterface(tk.Frame):
         self.grid_scale_slider.pack(side='left')
         f.pack()
     
-    def _reset_canvas(self, lines=True):
+    def _reset_canvas(self, lines=True, dirts=True, agents=True, select=True):
         if lines:
             for line in self.grid_lines:
                 self.canvas.delete(line)
             self.grid_lines.clear()
-        for a in self.canvas_agents.values():
-            self.canvas.delete(a)
-        self.canvas_agents.clear()
-        for d in self.canvas_dirts.values():
-            self.canvas.delete(d)
-        self.canvas_dirts.clear()
-
+        if agents:
+            for a in self.canvas_agents.values():
+                self.canvas.delete(a)
+            self.canvas_agents.clear()
+        if dirts:
+            for d in self.canvas_dirts.values():
+                self.canvas.delete(d)
+            self.canvas_dirts.clear()
+        if select:
+            self.deselect()
+        
     def _lines_to_front(self):
         for line in self.grid_lines:
             self.canvas.tag_raise(line)
@@ -360,24 +366,27 @@ class VWInterface(tk.Frame):
         self.canvas_agents.clear()
         
     def _redraw(self):
-        self._reset_canvas(lines=False)
+        self._reset_canvas(lines=False, dirts=False)
+        inc = DEFAULT_GRID_SIZE / self.grid.dim
         for coord, location in grid.state.items():
             if location:
                 if location.agent:
                     print("AGENT:", coord, location)
-                    #re do this? ... perhaps we only need to create tk_images once along with pil images!
                     tk_img = self.all_images_tk_scaled[(location.agent.colour, location.agent.orientation)]
-                    item = self.canvas.create_image(coord.x * DEFAULT_LOCATION_SIZE + tk_img.width()/2 + 2, 
-                                                    coord.y * DEFAULT_LOCATION_SIZE + tk_img.height()/2 + 2, image=tk_img)
+                    item = self.canvas.create_image(coord.x * inc + inc/2, 
+                                                    coord.y * inc + inc/2, image=tk_img)
                     self.canvas_agents[coord] = item
-                elif location.dirt:
-                    print("DIRT:", coord, location)
-                    #re do this? ... perhaps we only need to create tk_images once along with pil images!
-                    tk_img = self.all_images_tk_scaled[(location.dirt.colour, 'dirt')]
-                    item = self.canvas.create_image(coord.x * DEFAULT_LOCATION_SIZE + tk_img.width()/2 + 2, 
-                                                    coord.y * DEFAULT_LOCATION_SIZE + tk_img.height()/2 + 2, image=tk_img)
-                    self.canvas_dirts[coord] = item
-        self._lines_to_front()
+                    self.canvas.tag_lower(item) #keep the agent behind the grid lines
+                    if coord in self.canvas_dirts: #keep the dirt behind the agent
+                        self.canvas.tag_lower(self.canvas_dirts[coord]) 
+                if location.dirt:
+                    if self.canvas_dirts.get(coord, None) is None:
+                        print("DDDIRT:",  coord, location)
+                        tk_img = self.all_images_tk_scaled[(location.dirt.colour, 'dirt')]
+                        item = self.canvas.create_image(coord.x * inc + inc/2, coord.y * inc + inc/2, image=tk_img)
+                        self.canvas_dirts[coord] = item
+                        self.canvas.tag_lower(item) #keep dirt behind agents and grid lines
+        #self._lines_to_front()
             
     def _draw_grid(self, env_dim, size = DEFAULT_GRID_SIZE):
         x = 0
@@ -479,26 +488,28 @@ class VWInterface(tk.Frame):
 
 
     def drag_on_drop(self, event, drag_manager):
-
-        inc = int(DEFAULT_GRID_SIZE / self.grid.dim)
+        #TODO stream line to work with select
+        
+        inc = DEFAULT_GRID_SIZE / self.grid.dim
         x = int(event.x / inc) 
         y = int(event.y / inc)
-    
+        coord = vwc.coord(x,y)
         #update the environment state
         colour, obj = drag_manager.key
         if obj == 'dirt':
             dirt1 =  grid.dirt(colour)
-            grid.replace_dirt((x,y), dirt1)
-            if (x,y) in self.canvas_dirts:
-                self.canvas.delete(self.canvas_dirts[(x,y)])
-            self.canvas_dirts[(x,y)] = drag_manager.drag
+            grid.replace_dirt(coord, dirt1)
+            if coord in self.canvas_dirts:
+                self.canvas.delete(self.canvas_dirts[coord])
+            self.canvas_dirts[coord] = drag_manager.drag
         else: #its and agent
             agent1 =  grid.agent(colour, obj)
-            grid.replace_agent((x,y), agent1)
-            if (x,y) in self.canvas_agents:
-                self.canvas.delete(self.canvas_agents[(x,y)])
-            self.canvas_agents[(x,y)] = drag_manager.drag
-        
+            grid.replace_agent(coord, agent1)
+            if coord in self.canvas_agents:
+                self.canvas.delete(self.canvas_agents[coord])
+            self.canvas_agents[coord] = drag_manager.drag
+        print("DROP:", self.grid.state[coord])
+
         self.select(event)
        
     def show_hide_side(self, state):
@@ -601,17 +612,19 @@ def run(_minds):
         
         global env_thread
         global play_event, finish, reset
+
         reset = True
         finish = False
+
         play_event = Event()
         
         env_thread = Thread(target=simulate, daemon=True)
         env_thread.start()
-        
+
         root.mainloop()   
     except:
         _error()
-        
+
 
 def simulate():  
     try:
@@ -619,6 +632,7 @@ def simulate():
             play_event.wait()
             return play_event.is_set()
         global reset
+        global should_update
         
         while wait() and not finish:
             if reset:
@@ -633,7 +647,7 @@ def simulate():
             #    print(k,v)
             env.evolveEnvironment()
             grid.cycle += 1
-            main_interface._redraw()
+            root.after(0, main_interface._redraw)
 
     except:
         _error()
