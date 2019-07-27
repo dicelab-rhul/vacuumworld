@@ -29,7 +29,8 @@ class CleanExecutor(Executor):
     def __call__(self, env, action):
         agent = env.ambient.agents[action.__actor__]
         #precondition
-        if env.ambient.grid.state[agent.coordinate].dirt:  
+        location = env.ambient.grid.state[agent.coordinate]
+        if location.dirt and location.agent.colour == location.dirt.colour:  
             env.ambient.grid.remove_dirt(agent.coordinate)
 
 class DropExecutor(Executor):

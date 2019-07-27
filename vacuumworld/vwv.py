@@ -25,7 +25,7 @@ from PIL import Image, ImageTk
 from .slider import Slider
 from .vw import Grid
 from .vwenvironment import init as init_environment
-
+from . import vwc
 
 #might need to change this for the real package...
 PATH = os.path.dirname(__file__) + "/../"
@@ -98,6 +98,10 @@ class VWMainMenu(tk.Frame):
 def _start():
     main_menu.pack_forget()
     main_interface.pack()
+
+def _in_bounds(x,y):
+    return x < DEFAULT_GRID_SIZE and x > 0 and y < DEFAULT_GRID_SIZE and y > 0
+    
     
 class CanvasDragManager:
     
@@ -119,9 +123,6 @@ class CanvasDragManager:
         self.dragging = False
         self.grid = grid
 
-    def _in_bounds(self, x,y):
-        return x < DEFAULT_GRID_SIZE and x > 0 and y < DEFAULT_GRID_SIZE and y > 0
-        
     def on_start(self, event):
         if not self.dragging:
             self._on_start(event)
@@ -149,7 +150,7 @@ class CanvasDragManager:
             
     def on_drop(self, event):
         #print('drop')
-        if self._in_bounds(event.x, event.y):
+        if _in_bounds(event.x, event.y):
             self._on_drop(event, self)
         self.dragging = False
         
@@ -177,24 +178,74 @@ class VWInterface(tk.Frame):
         self.canvas_dirts = {}
         self.canvas_agents = {}
         
-        self.all_images = {}
-        self.all_images_tk = {}
-        self.all_images_tk_scaled = {}
+        self.all_images = {} #stores all PIL images
+        self.all_images_tk = {} #stores all tk images
+        self.all_images_tk_scaled = {} #stores all tk images scale to fit grid
+        self.grid_lines = [] #stores line objects
+        
         self._init_images()
-
         self._init_dragables()
         self._init_options()
 
-        
-        self.grid_lines = []
-        self._draw_grid(DEFAULT_GRID_SIZE, grid.dim)
-        
-        #for k,v in self.all_images.items():
-        #    print(k,v)
-       
-        
-        
+        self._draw_grid(grid.dim)
+    
         self.canvas.pack()
+        
+        #bind keys for rotation
+        parent.bind('<Left>', self.rotate_agent_left)
+        parent.bind('<Right>', self.rotate_agent_right)
+        parent.bind('<a>', self.rotate_agent_left)
+        parent.bind('<d>', self.rotate_agent_right)
+        
+        self.canvas.bind('<Double-Button-1>', self.remove_top)
+        
+        self.currently_selected = None
+        self.running = False
+        
+    def remove_top(self, event):
+        if not self.running and _in_bounds(event.x, event.y):
+            print("remove top")           
+            inc = DEFAULT_GRID_SIZE / self.grid.dim
+            coordinate = vwc.coord(int(event.x / inc), int(event.y / inc))
+            location = grid.state[coordinate]
+            if location.agent:
+                self.remove_agent(coordinate)
+                self.grid.remove_agent(coordinate)
+            elif grid.state[coordinate].dirt:
+                self.remove_dirt(coordinate)
+                self.grid.remove_dirt(coordinate)
+                
+    #remove an agent from the view
+    def remove_dirt(self, coordinate):
+        old = self.canvas_dirts[coordinate]
+        self.canvas.delete(old)
+        del old
+    
+    #remove an agent from the view
+    def remove_agent(self, coordinate):
+        old = self.canvas_agents[coordinate]
+        self.canvas.delete(old)
+        del old
+    
+    def rotate_agent(self, event, direction):
+        #print('left', event)
+        print(self.selected)
+        if self.selected:
+            self.remove_agent(self.selected.coordinate)
+            new_orientation =  direction(self.selected.agent.orientation)
+            tk_img = self.all_images_tk_scaled[(self.selected.agent.colour, new_orientation)]
+            item = self.canvas.create_image(self.selected.coordinate.x * DEFAULT_LOCATION_SIZE + tk_img.width()/2 + 2, 
+                                            self.selected.coordinate.y * DEFAULT_LOCATION_SIZE + tk_img.height()/2 + 2, image=tk_img)
+            self.canvas_agents[self.selected.coordinate] = item
+            self.grid.turn_agent(self.selected.coordinate, new_orientation)
+            self.selected = self.grid.state[self.selected.coordinate]
+            self._lines_to_front()
+            
+    def rotate_agent_left(self, event):
+        self.rotate_agent(event, vwc.left)
+            
+    def rotate_agent_right(self, event):
+        self.rotate_agent(event, vwc.right)
     
     def pack_buttons(self, *buttons):
         for button in self.buttons.values():
@@ -219,14 +270,15 @@ class VWInterface(tk.Frame):
         self.buttons['pause'] = VWButton(self.button_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['pause']), _pause)
         self.buttons['stop'] = VWButton(self.button_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['stop']), _stop)
         self.buttons['fast'] = VWButton(self.button_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['fast']), _fast)
-       
+        self.buttons['reset'] = VWButton(self.button_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['reset']), _reset)
+        
         self.buttons_tag = self.canvas.create_window((DEFAULT_GRID_SIZE + 2 + VWInterface.SIDE_PANEL_WIDTH/2,
                                                       DEFAULT_LOCATION_SIZE/2), 
                                                       width=VWInterface.SIDE_PANEL_WIDTH, 
                                                       height=DEFAULT_LOCATION_SIZE, 
                                                       window=self.button_frame)
                 
-        self.pack_buttons('play', 'fast')
+        self.pack_buttons('play', 'reset', 'fast')
     
     def _init_options(self):
         background = 'red'
@@ -265,10 +317,11 @@ class VWInterface(tk.Frame):
         self.grid_scale_slider.pack(side='left')
         f.pack()
     
-    def _reset_canvas(self):
-        for line in self.grid_lines:
-            self.canvas.delete(line)
-        self.grid_lines.clear()
+    def _reset_canvas(self, lines=True):
+        if lines:
+            for line in self.grid_lines:
+                self.canvas.delete(line)
+            self.grid_lines.clear()
         for a in self.canvas_agents.values():
             self.canvas.delete(a)
         self.canvas_agents.clear()
@@ -276,9 +329,17 @@ class VWInterface(tk.Frame):
             self.canvas.delete(d)
         self.canvas_dirts.clear()
 
+    def _lines_to_front(self):
+        for line in self.grid_lines:
+            self.canvas.tag_raise(line)
+            
+    def _reset_canvas_agents(self):
+        for a in self.canvas_agents.values():
+            self.canvas.delete(a)
+        self.canvas_agents.clear()
         
     def _redraw(self):
-        self._reset_canvas()
+        self._reset_canvas(lines=False)
         for coord, location in grid.state.items():
             if location:
                 if location.agent:
@@ -295,16 +356,15 @@ class VWInterface(tk.Frame):
                     item = self.canvas.create_image(coord.x * DEFAULT_LOCATION_SIZE + tk_img.width()/2 + 2, 
                                                     coord.y * DEFAULT_LOCATION_SIZE + tk_img.height()/2 + 2, image=tk_img)
                     self.canvas_dirts[coord] = item
-
-        self._draw_grid(DEFAULT_GRID_SIZE, grid.dim)
+        self._lines_to_front()
             
-    def _draw_grid(self, size, env_dim):
+    def _draw_grid(self, env_dim, size = DEFAULT_GRID_SIZE):
         x = 0
         y = 0
         inc = size / env_dim
         for i in range(env_dim + 1):
-           self.grid_lines.append(self.canvas.create_line(x,0,x,DEFAULT_GRID_SIZE))
-           self.grid_lines.append(self.canvas.create_line(0,y,DEFAULT_GRID_SIZE,y))
+           self.grid_lines.append(self.canvas.create_line(x,0,x,size))
+           self.grid_lines.append(self.canvas.create_line(0,y,size,y))
            y += inc
            x += inc
 
@@ -377,7 +437,7 @@ class VWInterface(tk.Frame):
             self.grid.reset(value)
             self._reset_canvas()
             self._scaled_tk() 
-            self._draw_grid(DEFAULT_GRID_SIZE, grid.dim)
+            self._draw_grid(grid.dim)
 
     def drag_on_start(self, event):
         drag_manager, img_key = self.dragables[event.widget.find_closest(event.x, event.y)[0]]
@@ -388,6 +448,7 @@ class VWInterface(tk.Frame):
         
         self.canvas.itemconfigure(drag_manager.drag, state='hidden')
         self.canvas.tag_lower(drag_manager.drag)
+        self.selected = None 
 
         #keep the currently selected draggable on the top
         for a in self.canvas_agents.values():
@@ -410,14 +471,13 @@ class VWInterface(tk.Frame):
             if (x,y) in self.canvas_dirts:
                 self.canvas.delete(self.canvas_dirts[(x,y)])
             self.canvas_dirts[(x,y)] = drag_manager.drag
-
         else: #its and agent
             agent1 =  grid.agent(colour, obj)
             grid.replace_agent((x,y), agent1)
             if (x,y) in self.canvas_agents:
                 self.canvas.delete(self.canvas_agents[(x,y)])
             self.canvas_agents[(x,y)] = drag_manager.drag
-
+            self.selected = grid.state[vwc.coord(x,y)]
        
     def show_hide_side(self, state):
         for item in self.dragables.keys():
@@ -428,13 +488,23 @@ import time
 from threading import Thread, Event
 
 def _fast():
-    print('fast')
     global TIME_STEP
     TIME_STEP = max(TIME_STEP_MIN, TIME_STEP / 2.)
+    print('fast', TIME_STEP)
+    
+#resets the grid and enviroment
+def _reset():
+    print('reset')
+    global reset
+    reset = True
+    main_interface._reset_canvas(lines=False)
+    grid.reset(grid.dim)
+    reset_time_step()
 
 def _play():
     print('play')
     play_event.set()
+    main_interface.running = True
     main_interface.pack_buttons('stop', 'pause','fast')
     main_interface.show_hide_side('hidden')
   
@@ -444,7 +514,8 @@ def _stop():
     reset = True
     play_event.clear()
     reset_time_step()
-    main_interface.pack_buttons('play', 'fast')
+    main_interface.running = False
+    main_interface.pack_buttons('play', 'reset', 'fast')
     main_interface.show_hide_side('normal')
 
 def _resume():
@@ -534,12 +605,13 @@ def simulate():
                 grid.cycle = 0
                 reset = False
                 
+            time.sleep(TIME_STEP)
             print("evolve", grid.cycle)
             #for k,v in grid.state.items():
             #    print(k,v)
             env.evolveEnvironment()
             grid.cycle += 1
             main_interface._redraw()
-            time.sleep(TIME_STEP)
+
     except:
         _error()

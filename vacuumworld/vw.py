@@ -144,6 +144,11 @@ class Grid:
         loc = self.state[coordinate]
         self.state[coordinate] = location(coordinate, loc.agent, None)
         
+    def remove_agent(self, coordinate):
+        assert(self._in_bounds(coordinate))
+        loc = self.state[coordinate]
+        self.state[coordinate] = location(coordinate, None, loc.dirt)
+        
     def move_agent(self, _from, _to):
         _from = self._as_coord(_from)
         _to = self._as_coord(_to)
@@ -155,9 +160,9 @@ class Grid:
         self.state[_to] = location(to_loc.coordinate, from_loc.agent, to_loc.dirt)
         self.state[_from] = location(from_loc.coordinate, None, from_loc.dirt)
         
-    def turn_agent(self, _coordinate, direction):
+    def turn_agent(self, _coordinate, orientation):
         assert(self.state[_coordinate].agent != None)
         loc = self.state[_coordinate]
         ag = loc.agent
-        self.state[_coordinate] = location(_coordinate, agent(ag.name, ag.colour, direction), loc.dirt)
+        self.state[_coordinate] = location(_coordinate, agent(ag.name, ag.colour, orientation), loc.dirt)
 

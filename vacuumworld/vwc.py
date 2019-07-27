@@ -47,10 +47,10 @@ orientation_map = {orientation.north:coord(0,-1),
                    orientation.east:coord(1,0)}
 
 def left(_orientation):
-    return orientation[(orientation.index(_orientation) + 1) % 4]
+    return orientation[(orientation.index(_orientation) - 1) % 4]
 
 def right(_orientation):
-    return orientation[(orientation.index(_orientation) - 1) % 4]
+    return orientation[(orientation.index(_orientation) + 1) % 4]
 
 direction = namedtuple('direction', 'left right')(left, right)
 
