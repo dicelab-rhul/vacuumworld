@@ -86,6 +86,10 @@ class Grid:
             self.state[coord(i, -1)] = None
             self.state[coord(dim, i)] = None
             self.state[coord(i, dim)] = None
+        self.state[coord(-1,-1)] = None
+        self.state[coord(-1, dim)] = None
+        self.state[coord(dim,-1)] = None
+        self.state[coord(dim, dim)] = None
         self.dim = dim
         self.agent_count = 0
         self.dirt_count = 0

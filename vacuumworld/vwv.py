@@ -29,11 +29,13 @@ from .vwenvironment import init as init_environment
 
 #might need to change this for the real package...
 PATH = os.path.dirname(__file__) + "/../"
-
+TIME_STEP_MIN = 1. / 2.**4
+DEFAULT_TIME_STEP = 1 #in seconds
+TIME_STEP = DEFAULT_TIME_STEP 
 WIDTH = 640
 HEIGHT = 480
 ROOT_FONT = "Verdana 10 bold" #font.Font(family='Helvetica', size=36, weight='bold')
-BUTTON_PATH = PATH + "res/button.png"
+BUTTON_PATH = PATH + "res/"
 LOCATION_AGENT_IMAGES_PATH = PATH + "res/locations/agent"
 LOCATION_DIRT_IMAGES_PATH = PATH + "res/locations/dirt"
 DEFAULT_LOCATION_SIZE = 60
@@ -82,7 +84,7 @@ class VWMainMenu(tk.Frame):
         
         self.buttons = {}
 
-        button_image = ImageTk.PhotoImage(Image.open(BUTTON_PATH))
+        button_image = ImageTk.PhotoImage(Image.open(BUTTON_PATH + 'button.png'))
         self.button_frame = tk.Frame(self)
         
         self.buttons['start'] = VWButton(self.button_frame, button_image, _start, 'start')
@@ -99,7 +101,7 @@ def _start():
     
 class CanvasDragManager:
     
-    def __init__(self, name, grid, canvas, item, on_start, on_drop):
+    def __init__(self, key, grid, canvas, item, on_start, on_drop):
         self.x = 0
         self.y = 0
         self.canvas = canvas
@@ -110,12 +112,13 @@ class CanvasDragManager:
         self.canvas.tag_bind(item, "<B1-Motion>", self.on_drag)
         self.canvas.tag_bind(item, "<ButtonRelease-1>", self.on_drop)
         #self.canvas.configure(cursor="hand1")  
+        
+        self.key = key
         self.drag_image = None
         self.drag = None
         self.dragging = False
         self.grid = grid
-        self.name = name
-        
+
     def _in_bounds(self, x,y):
         return x < DEFAULT_GRID_SIZE and x > 0 and y < DEFAULT_GRID_SIZE and y > 0
         
@@ -171,13 +174,17 @@ class VWInterface(tk.Frame):
         
         self.grid = grid
         
-        self.placed_images = {}
         self.canvas_dirts = {}
         self.canvas_agents = {}
-        self.all_images = {}
         
+        self.all_images = {}
+        self.all_images_tk = {}
+        self.all_images_tk_scaled = {}
+        self._init_images()
+
         self._init_dragables()
         self._init_options()
+
         
         self.grid_lines = []
         self._draw_grid(DEFAULT_GRID_SIZE, grid.dim)
@@ -189,31 +196,37 @@ class VWInterface(tk.Frame):
         
         self.canvas.pack()
     
-    def pack_buttons(self, b1, b2):
+    def pack_buttons(self, *buttons):
         for button in self.buttons.values():
             button._button.pack_forget()
-        self.buttons[b1].pack('left')
-        self.buttons[b2].pack('right')
+        for button in buttons:
+            self.buttons[button].pack('left')
     
     def _init_buttons(self):
         self.buttons = {}
-        button_image = tk.PhotoImage(file=BUTTON_PATH)
+       
+        
+        buttons = get_location_img_files(BUTTON_PATH)
+        buttons = {b.split('.')[0]:b for b in buttons}
+        
+        
         self.button_frame = tk.Frame(self)
         self.button_frame.configure(bg='white')
-        self.buttons['back'] = VWButton(self.button_frame, button_image, _back, 'back')
-        self.buttons['play'] = VWButton(self.button_frame, button_image, _play, 'play')
         
-        self.buttons['resume']  = VWButton(self.button_frame, button_image, _resume, 'resume')
-        self.buttons['pause'] = VWButton(self.button_frame, button_image, _pause, 'pause')
-        self.buttons['stop'] = VWButton(self.button_frame, button_image, _stop, 'stop')
-
+        play_tk = tk.PhotoImage(file=BUTTON_PATH + buttons['play'])
+        self.buttons['play'] = VWButton(self.button_frame, play_tk , _play)
+        self.buttons['resume'] = VWButton(self.button_frame, play_tk, _resume)
+        self.buttons['pause'] = VWButton(self.button_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['pause']), _pause)
+        self.buttons['stop'] = VWButton(self.button_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['stop']), _stop)
+        self.buttons['fast'] = VWButton(self.button_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['fast']), _fast)
+       
         self.buttons_tag = self.canvas.create_window((DEFAULT_GRID_SIZE + 2 + VWInterface.SIDE_PANEL_WIDTH/2,
                                                       DEFAULT_LOCATION_SIZE/2), 
                                                       width=VWInterface.SIDE_PANEL_WIDTH, 
                                                       height=DEFAULT_LOCATION_SIZE, 
                                                       window=self.button_frame)
                 
-        self.pack_buttons('back', 'play')
+        self.pack_buttons('play', 'fast')
     
     def _init_options(self):
         background = 'red'
@@ -262,7 +275,7 @@ class VWInterface(tk.Frame):
         for d in self.canvas_dirts.values():
             self.canvas.delete(d)
         self.canvas_dirts.clear()
-        self.placed_images.clear()
+
         
     def _redraw(self):
         self._reset_canvas()
@@ -271,13 +284,18 @@ class VWInterface(tk.Frame):
                 if location.agent:
                     print("AGENT:", coord, location)
                     #re do this? ... perhaps we only need to create tk_images once along with pil images!
-                    tk_img = ImageTk.PhotoImage(self.all_images[(location.agent.colour, location.agent.orientation)])
+                    tk_img = self.all_images_tk_scaled[(location.agent.colour, location.agent.orientation)]
                     item = self.canvas.create_image(coord.x * DEFAULT_LOCATION_SIZE + tk_img.width()/2 + 2, 
                                                     coord.y * DEFAULT_LOCATION_SIZE + tk_img.height()/2 + 2, image=tk_img)
                     self.canvas_agents[coord] = item
-                    self.placed_images[coord] = tk_img
                 elif location.dirt:
-                    pass 
+                    print("DIRT:", coord, location)
+                    #re do this? ... perhaps we only need to create tk_images once along with pil images!
+                    tk_img = self.all_images_tk_scaled[(location.dirt.colour, 'dirt')]
+                    item = self.canvas.create_image(coord.x * DEFAULT_LOCATION_SIZE + tk_img.width()/2 + 2, 
+                                                    coord.y * DEFAULT_LOCATION_SIZE + tk_img.height()/2 + 2, image=tk_img)
+                    self.canvas_dirts[coord] = item
+
         self._draw_grid(DEFAULT_GRID_SIZE, grid.dim)
             
     def _draw_grid(self, size, env_dim):
@@ -290,86 +308,102 @@ class VWInterface(tk.Frame):
            y += inc
            x += inc
 
-              
     def _get_image_key(self, name):
         s = name.split("_")
         return (s[0], s[1])
+    
+    def _init_images(self):
+        # agents
+        files = get_location_img_files(LOCATION_AGENT_IMAGES_PATH)
+        image_names = [file.split('.')[0] for file in files]
+        
+        for img_name in image_names:
+            file = os.path.join(LOCATION_AGENT_IMAGES_PATH, img_name) +  '.png'
+            img = self._scale(Image.open(file), DEFAULT_LOCATION_SIZE)
+            images = self._construct_images(img, img_name + '_')
+            for img_name, img in images.items():
+                img_key = self._get_image_key(img_name)
+                tk_img = ImageTk.PhotoImage(img)
+                self.all_images[img_key] = img
+                self.all_images_tk[img_key] = tk_img
+                
+        # dirts     
+        files = get_location_img_files(LOCATION_DIRT_IMAGES_PATH)
+        images_names = [file.split('.')[0] for file in files]
 
+        for name in images_names:
+            file = os.path.join(LOCATION_DIRT_IMAGES_PATH, name) +  '.png'
+            img = self._scale(Image.open(file), DEFAULT_LOCATION_SIZE)
+            img_key = self._get_image_key(name)
+            tk_img = ImageTk.PhotoImage(img)
+            self.all_images[img_key] = img
+            self.all_images_tk[img_key] = tk_img
+        
+        self._scaled_tk()
+            
+    def _construct_images(self, img, name):
+        #change this from magic strings... (use vwc orientation)
+        return odict({name + 'north':img, 
+                      name + 'west':img.copy().rotate(90), 
+                      name + 'south':img.copy().rotate(180), 
+                      name + 'east':img.copy().rotate(270)})
+    
+    def _scaled_tk(self):
+        size = min(DEFAULT_LOCATION_SIZE, DEFAULT_GRID_SIZE  / self.grid.dim)
+        for name, image in self.all_images.items():
+            self.all_images_tk_scaled[name] = ImageTk.PhotoImage(self._scale(image, size))
         
     def _init_dragables(self):
         #load all images
-        files = get_location_img_files(LOCATION_AGENT_IMAGES_PATH)
-        names = [file.split('.')[0] for file in files]
         self.dragables = {}
-        x = DEFAULT_GRID_SIZE + 2
-        #for agents
-        for name in names:
-            file = os.path.join(LOCATION_AGENT_IMAGES_PATH, name) +  '.png'
-            img = self._scale(Image.open(file), DEFAULT_LOCATION_SIZE)
-            images = self._construct_images(img, name + '_')
-            #self.all_images.update(images)
-            y = DEFAULT_LOCATION_SIZE
-            for img_name, img in images.items():
-                tk_img = ImageTk.PhotoImage(img)
-                self.all_images[self._get_image_key(img_name)] = img
-                item = self.canvas.create_image(x + img.width/2,y + img.height/2, image=tk_img)
-                drag_manager = CanvasDragManager(img_name, self.grid, self.canvas, item, self.drag_on_start, self.drag_on_drop)
-                self.dragables[item] = (drag_manager, img, tk_img)
-                y += DEFAULT_LOCATION_SIZE
-            x += DEFAULT_LOCATION_SIZE
+        ix = DEFAULT_GRID_SIZE + DEFAULT_LOCATION_SIZE / 2 + 2
+        iy = DEFAULT_LOCATION_SIZE +  DEFAULT_LOCATION_SIZE / 2
+        keys = [('orange', 'north'), ('green', 'north'), ('white', 'north'), ('user', 'north'), ('orange', 'dirt'), ('green', 'dirt')]
+        #print(self.all_images)
+        for i, key in enumerate(keys):
+            item = self.canvas.create_image(ix + (i % 2) * DEFAULT_LOCATION_SIZE, 
+                                            iy + (int(i/2) % 3) * DEFAULT_LOCATION_SIZE, image=self.all_images_tk[key])
+            drag_manager = CanvasDragManager(key, self.grid, self.canvas, item, self.drag_on_start, self.drag_on_drop)
+            self.dragables[item] = (drag_manager, key)
             
-        #and for dirt...
-        files = get_location_img_files(LOCATION_DIRT_IMAGES_PATH)
-        names = [file.split('.')[0] for file in files]
-        x = DEFAULT_GRID_SIZE + 2
-        for name in names:
-            file = os.path.join(LOCATION_DIRT_IMAGES_PATH, name) +  '.png'
-            img = self._scale(Image.open(file), DEFAULT_LOCATION_SIZE)
-            self.all_images[self._get_image_key(name)] = img
-            tk_img = ImageTk.PhotoImage(img)
-            item = self.canvas.create_image(x + img.width/2,y + img.height/2, image=tk_img)
-            drag_manager = CanvasDragManager(name, self.grid, self.canvas, item, self.drag_on_start, self.drag_on_drop)
-            self.dragables[item] = (drag_manager, img, tk_img)
-            x += DEFAULT_LOCATION_SIZE
-    
-    def _construct_images(self, img, name):
-        return odict({name + 'north':img, name + 'west':img.copy().rotate(90), name + 'south':img.copy().rotate(180), name + 'east':img.copy().rotate(270)})
-    
     def _scale(self, img, lsize):
         scale = lsize / max(img.width, img.height)
         return img.resize((int(img.width  * scale), int(img.height * scale)), Image.BICUBIC)
     
+    #resize the grid
     def on_resize(self, value):
         value =  value + Grid.GRID_MIN_SIZE
         if value != self.grid.dim:
             self.grid.reset(value)
             self._reset_canvas()
+            self._scaled_tk() 
             self._draw_grid(DEFAULT_GRID_SIZE, grid.dim)
-    
-    def drag_on_start(self, event):
-        drag_manager, image, _ = self.dragables[event.widget.find_closest(event.x, event.y)[0]]
-        size = min(DEFAULT_LOCATION_SIZE, DEFAULT_GRID_SIZE  / self.grid.dim)
 
-        drag_manager.drag_image = ImageTk.PhotoImage(self._scale(image, size))
+    def drag_on_start(self, event):
+        drag_manager, img_key = self.dragables[event.widget.find_closest(event.x, event.y)[0]]
+
+        drag_manager.drag_image = self.all_images_tk_scaled[img_key]#ImageTk.PhotoImage(self._scale(image, size))
+
         drag_manager.drag = self.canvas.create_image(event.x, event.y, image=drag_manager.drag_image)
+        
         self.canvas.itemconfigure(drag_manager.drag, state='hidden')
         self.canvas.tag_lower(drag_manager.drag)
 
         #keep the currently selected draggable on the top
-        for d in self.canvas_dirts.values():
-            self.canvas.tag_lower(d)
         for a in self.canvas_agents.values():
             self.canvas.tag_lower(a)
+        for d in self.canvas_dirts.values():
+            self.canvas.tag_lower(d)
+
 
     def drag_on_drop(self, event, drag_manager):
 
         inc = int(DEFAULT_GRID_SIZE / self.grid.dim)
         x = int(event.x / inc) 
         y = int(event.y / inc)
-
-        self.placed_images[(x,y)] = drag_manager.drag_image        
+    
         #update the environment state
-        colour, obj = drag_manager.name.split('_')
+        colour, obj = drag_manager.key
         if obj == 'dirt':
             dirt1 =  grid.dirt(colour)
             grid.replace_dirt((x,y), dirt1)
@@ -393,10 +427,15 @@ class VWInterface(tk.Frame):
 import time
 from threading import Thread, Event
 
+def _fast():
+    print('fast')
+    global TIME_STEP
+    TIME_STEP = max(TIME_STEP_MIN, TIME_STEP / 2.)
+
 def _play():
     print('play')
     play_event.set()
-    main_interface.pack_buttons('stop', 'pause')
+    main_interface.pack_buttons('stop', 'pause','fast')
     main_interface.show_hide_side('hidden')
   
 def _stop():
@@ -404,18 +443,20 @@ def _stop():
     global reset
     reset = True
     play_event.clear()
-    main_interface.pack_buttons('back', 'play')
+    reset_time_step()
+    main_interface.pack_buttons('play', 'fast')
     main_interface.show_hide_side('normal')
 
 def _resume():
     print('resume')
     play_event.set()
-    main_interface.pack_buttons('stop', 'pause')
+    main_interface.pack_buttons('stop', 'pause','fast')
     
 def _pause():
     print('pause')
     play_event.clear()
-    main_interface.pack_buttons('stop', 'resume')
+    reset_time_step()
+    main_interface.pack_buttons('stop', 'resume','fast')
         
 def _back():
     print('back')
@@ -431,7 +472,10 @@ def _finish():
     root.destroy()
     global finish
     finish = True
-
+    
+def reset_time_step():
+    global TIME_STEP, DEFAULT_TIME_STEP
+    TIME_STEP = DEFAULT_TIME_STEP
 
 def run(_minds):  
     #required to avoid problems with running after errors (root must be destoryed!)
@@ -496,6 +540,6 @@ def simulate():
             env.evolveEnvironment()
             grid.cycle += 1
             main_interface._redraw()
-            time.sleep(1)
+            time.sleep(TIME_STEP)
     except:
         _error()

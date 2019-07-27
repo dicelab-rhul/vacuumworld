@@ -1,19 +1,13 @@
-
-from . import vwsensor as sense
-from . import vwactuator as act
 from . import vwaction as action
 from . import vwuser
 from . import vwagent
-from . import vwfactories as factory
+from . import vwc
 
-from .vwc import colour, observation, message
+from pystarworlds.Environment import Ambient, Physics, Environment, Process
+from pystarworlds.Identifiable import Identifiable
 
-
-from pystarworlds.Environment import Ambient, Physics, Environment
-from pystarworlds.Event import Event
 import copy
 
-from . import vwfactories
 
 #from VWFactories import VWGridPerceptionFactory,ForwardActionRuleFactory,TurnLeftActionRuleFactory,TurnRightActionRuleFactory,CleanActionRuleFactory,DropActionRuleFactory,SpeakActionRuleFactory,SpeakToAllActionRuleFactory,ForwardActionExecuteFactory,TurnLeftActionExecuteFactory,TurnRightActionExecuteFactory,CleanActionExecuteFactory,DropActionExecuteFactory,SpeakActionExecuteFactory,SpeakToAllActionExecuteFactory
 #from GridPerception import Observation,Message,ActionResultPerception
@@ -33,23 +27,22 @@ class GridAmbient(Ambient):
         for entity in grid.state.values(): 
             if entity:
                 if entity.agent:       
-                    if entity.agent.colour != colour.user:
-                        ag = vwagent.CleaningAgentBody(copy.deepcopy(minds[entity.agent.colour]),
+                    if entity.agent.colour != vwc.colour.user:
+                        ag = vwagent.CleaningAgentBody(entity.agent.name,
+                                                       copy.deepcopy(minds[entity.agent.colour]),
                                                        entity.agent.orientation,
                                                        entity.coordinate,
                                                        entity.agent.colour)
-                        ag.ID = entity.agent.name
                         agents.append(ag)
                     else:                        
-                        ag = vwuser.UserBody(vwuser.UserMind(),
-                                   [act.UserActuator(), act.CommunicationActuator()],
-                                   [sense.VisionSensor(), sense.CommunicationSensor()],
-                                   entity.agent.direction,
-                                   entity.coordinate,
-                                   entity.agent.colour)
+                        ag = vwuser.UserBody(entity.agent.name, 
+                                             vwuser.UserMind(),
+                                             entity.agent.orientation,
+                                             entity.coordinate,
+                                             entity.agent.colour)
                         agents.append(ag)
                 elif(entity.dirt):       
-                    dirts.append(entity.dirt)
+                    dirts.append(Dirt(entity.dirt))
         super(GridAmbient, self).__init__(agents, dirts)
 
 
@@ -64,51 +57,35 @@ class GridEnvironment(Environment):
                    action.TurnAction, action.CleanAction, 
                    action.CommunicativeAction]
         
-        executors = [vwfactories.CommunicationExecutor(), 
-                     vwfactories.DropExecutor(), 
-                     vwfactories.CleanExecutor(), 
-                     vwfactories.TurnExecutor(), 
-                     vwfactories.MoveExecutor()]
-        preconditions = [vwfactories.MovePrecondition(),
-                         vwfactories.CleanPrecondition(),
-                         vwfactories.DropPrecondition()]
-        
-        
-        physics = GridPhysics({sense.VisionSensor:[observation], 
-                               sense.CommunicationSensor:[message]},
-                               preconditions,
-                               executors)
+        physics = GridPhysics(actions)
         
         super(GridEnvironment, self).__init__(physics, ambient, [ObservationProcess()], actions)
-        
-        self.perception_factories = [factory.ObservationFactory()]
 
-class ObservationProcess:
+class Dirt(Identifiable):
     
-    def __init__(self):
-        self. obs_factory = factory.ObservationFactory()
+    def __init__(self, dirt):
+        self.ID = dirt.name
+        super(Dirt, self).__init__()
+        self.dirt = dirt
+
+class ObservationProcess(Process):
     
     def __call__(self, env):
         for agent in env.ambient.agents.values():
-            env.physics.notify_agent(agent, self.obs_factory(env.ambient, agent))
-
-
-#####################################################################################################################
-'''
-   def sendFailedAttemptsResponse(self,action, result):
-      per=ActionResultPerception(action.getActor(),type(action), result)
-
-
-      sensors = self.getPhysics().EventSensorsDirectory[type(per)] # get type of all sensors to be notified
-      for s in sensors:
-          if(s.getOwner()==(per.getOwner())):
-             s.notifyEvent(per)
-'''
-###################################################################################################################
-
-
-
-############################################################    Factories              #
-
+            env.physics.notify_agent(agent, self.__get_perception__(env.ambient, agent))
+            
+    def __get_perception__(self, ambient, agent):
+        c = agent.coordinate
+        f = vwc.orientation_map[agent.orientation]
+        l = vwc.orientation_map[vwc.left(agent.orientation)]
+        r = vwc.orientation_map[vwc.right(agent.orientation)]
+        #center left right forward forwardleft forwardright
+        obs = vwc.observation(ambient.grid.state[c], 
+                        ambient.grid.state[c + l],
+                        ambient.grid.state[c + r], 
+                        ambient.grid.state[c + f], 
+                        ambient.grid.state[c + f + l],
+                        ambient.grid.state[c + f + r])            
+        return obs
 
 

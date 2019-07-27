@@ -5,7 +5,7 @@ Created on Sat Jun  1 21:53:28 2019
 
 @author: ben
 """
-
+from pystarworlds import Identifiable
 from collections import namedtuple
 
 location = namedtuple('location', 'coordinate agent dirt')
@@ -26,6 +26,8 @@ class coord(_coord):
     
     def __div__(self, other):
         return coord(int(self[0] / other[0]), int(self[1] / other[1]))
+    
+
 
 perception = namedtuple('perception', 'observation messages')
 
@@ -38,6 +40,11 @@ class observation(_observation):
         return (x for x in super(observation, self).__iter__() if x is not None)
 
 orientation = namedtuple('orientation', 'north east south west')('north', 'east', 'south', 'west')
+
+orientation_map = {orientation.north:coord(0,-1), 
+                   orientation.south:coord(0,1), 
+                   orientation.west:coord(-1,0), 
+                   orientation.east:coord(1,0)}
 
 def left(_orientation):
     return orientation[(orientation.index(_orientation) + 1) % 4]
