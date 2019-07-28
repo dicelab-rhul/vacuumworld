@@ -76,6 +76,12 @@ class Grid:
        self.dirt_count = 0 
        self.cycle = 0
        
+    def replace_all(self, grid):
+        self.state = grid.state
+        self.agent_count = grid.agent_count
+        self.dirt_count = grid.dirt_count
+        self.cycle = grid.cycle
+       
     def reset(self, dim):
         self.cycle = 0
         self.state = {}

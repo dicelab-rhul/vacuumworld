@@ -25,6 +25,7 @@ from .slider import Slider
 from .vw import Grid
 from .vwenvironment import init as init_environment
 from . import vwc
+from . import saveload
 
 #might need to change this for the real package...
 PATH = os.path.dirname(__file__) + "/../"
@@ -74,7 +75,7 @@ class VWDifficultyButton(VWButton):
     
     def __init__(self, root, img, fun):
         self.imgs = [ImageTk.PhotoImage(img)]
-        self.imgs.extend([self.next_image(img, i * 100) for i in range(1, DIFFICULTY_LEVELS)])
+        self.imgs.extend([self.next_image(img, i * (255/(DIFFICULTY_LEVELS-1))) for i in range(1, DIFFICULTY_LEVELS)])
         super(VWDifficultyButton, self).__init__(root, self.imgs[0], self.onclick)
         self.difficulty = 0
         self._rfun = fun
@@ -193,7 +194,8 @@ class VWInterface(tk.Frame):
         #self.canvas.create_rectangle(0,0,481,481,fill="blue") # placeholder for grid
         #self.drag = self.canvas.create_rectangle(230,230,10,10, fill='yellow')
 
-        self._init_buttons()
+        buttons = self._init_buttons()
+
 
         self.canvas.configure(background=BACKGROUND_COLOUR_GRID)
         
@@ -209,7 +211,7 @@ class VWInterface(tk.Frame):
         
         self._init_images()
         self._init_dragables()
-        self._init_options()
+        self._init_options(buttons)
 
         self._draw_grid(grid.dim)
     
@@ -293,9 +295,10 @@ class VWInterface(tk.Frame):
     def rotate_agent_right(self, event):
         self.rotate_agent(event, vwc.right)
     
-    def pack_buttons(self, *buttons):
-        for button in self.buttons.values():
-            button._button.pack_forget()
+    def pack_buttons(self, *buttons, forget=True):
+        if forget:
+            for button in self.buttons.values():
+               button._button.pack_forget()
         for button in buttons:
             self.buttons[button].pack('left')
     
@@ -329,8 +332,9 @@ class VWInterface(tk.Frame):
                                                       window=self.button_frame)
                 
         self.pack_buttons('play', 'reset', 'fast', 'difficulty')
+        return buttons
     
-    def _init_options(self):
+    def _init_options(self, buttons):
         background = 'red'
         x = DEFAULT_GRID_SIZE + 2
         y = 6 * DEFAULT_LOCATION_SIZE
@@ -339,22 +343,22 @@ class VWInterface(tk.Frame):
         self.options_frame = tk.Frame(self)
         self.options = self.canvas.create_window((x + w/2,y + h/2), width=w, height=h, window=self.options_frame)
         self.options_frame.configure(bg=background)
-       
+        
+        self.options_button_frame = tk.Frame(self.options_frame, bg='white')
+        self.buttons_options = {}
+        self.buttons_options['save'] = VWButton(self.options_button_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['save']), _save)
+        self.buttons_options['load'] = VWButton(self.options_button_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['load']), _load)
+        self.buttons_options['save'].pack('left')
+        self.buttons_options['load'].pack('right')
+        files= saveload.files()
+        self.load_menu = tk.OptionMenu(self.options_button_frame, tk.StringVar(), '', *files, command=_load)
+        self.load_menu.pack()
+        self.options_button_frame.pack()
+        
         self._size_slider_option(self.options_frame, background)
-        self._save_option(self.options_frame, background)
-        self._load_option(self.options_frame, background)
-    
-    def _save_option(self, parent, bg):
-        f = tk.Frame(parent, bg=bg)
-        t = tk.Label(f, text=" save ", bg=bg, font = ROOT_FONT)
-        t.pack(side='left')
-        f.pack()
-    
-    def _load_option(self, parent, bg):
-        f = tk.Frame(parent, bg=bg)
-        t = tk.Label(f, text=" load ", bg=bg, font = ROOT_FONT)
-        t.pack(side='left')
-        f.pack()
+        #self._save_option(self.options_frame, background)
+        #self._load_option(self.options_frame, background)
+  
     
     def _size_slider_option(self, parent, bg):
         f = tk.Frame(parent, bg=bg)
@@ -556,7 +560,18 @@ def _fast():
 def _difficulty():
     global user_mind
     user_mind = main_interface.user_mind()
-   
+
+def _save(file=None):
+    file = 'test1'
+    print('save', file)
+    saveload.save(grid, file)
+    main_interface.load_menu["menu"].add_command(label=file, command=_load)
+
+def _load(file):
+    print('load', file)
+    grid.replace_all(saveload.load(file))
+    main_interface._redraw()
+
 #resets the grid and enviroment
 def _reset():
     print('reset')
@@ -571,7 +586,7 @@ def _play():
     play_event.set()
     main_interface.deselect()
     main_interface.running = True
-    main_interface.pack_buttons('stop', 'pause','fast')
+    main_interface.pack_buttons('stop', 'pause', 'fast')
     main_interface.show_hide_side('hidden')
   
 def _stop():
@@ -581,7 +596,7 @@ def _stop():
     play_event.clear()
     reset_time_step()
     main_interface.running = False
-    main_interface.pack_buttons('play', 'reset', 'fast')
+    main_interface.pack_buttons('play', 'reset', 'fast', 'difficulty')
     main_interface.show_hide_side('normal')
 
 def _resume():
