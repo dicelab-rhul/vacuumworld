@@ -5,7 +5,7 @@ Created on Sat Jun  1 21:53:28 2019
 
 @author: ben
 """
-from pystarworlds import Identifiable
+import random as rand
 from collections import namedtuple
 
 location = namedtuple('location', 'coordinate agent dirt')
@@ -60,6 +60,7 @@ _colour_dirt = set(['orange','green'])
 _colour_agent = set(['orange','green','white'])
 _colour_user = set(['user'])
 
+action_names = namedtuple('action_names', 'move turn clean drop idle speak')('move','turn','drop','clean','idle','speak')
 
 action = namedtuple('actions', 'move turn clean idle speak')(
                     lambda : ('move',), 
@@ -67,6 +68,13 @@ action = namedtuple('actions', 'move turn clean idle speak')(
                     lambda : ('clean',), 
                     lambda : ('idle',), 
                     lambda message, *to : ('speak', message, *to))
+
+def random(actions, p=None):
+    if p is None:
+        return rand.choice(actions)
+    else:
+        assert len(actions) == len(p)
+        return rand.choices(actions, weights=p, k=1)[0]
 
 
 

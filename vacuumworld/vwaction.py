@@ -30,16 +30,21 @@ class CleanExecutor(Executor):
         agent = env.ambient.agents[action.__actor__]
         #precondition
         location = env.ambient.grid.state[agent.coordinate]
-        if location.dirt and location.agent.colour == location.dirt.colour:  
+        if location.dirt and (location.agent.colour == location.dirt.colour or location.agent.colour == vwc.colour.white):  
             env.ambient.grid.remove_dirt(agent.coordinate)
+            #TODO remove dirt from list of objects in ambient
 
 class DropExecutor(Executor):
         
     def __call__(self, env, action):
         agent = env.ambient.agents[action.__actor__]
         #precondition
-        if not env.ambient.grid.state[agent.coordinate].dirt:  
-            env.ambient.grid.place_dirt(agent.coordinate, env.ambient.dirt(action.colour))
+        if not env.ambient.grid.state[agent.coordinate].dirt: 
+
+            env.ambient.grid.place_dirt(agent.coordinate, env.ambient.grid.dirt(action.colour))
+            #location = env.ambient.grid.state[agent.coordinate]
+            #print(location)
+            #TODO add new dirt to list of objects in ambient
         
 class CommunicativeExecutor(Executor):
 
@@ -76,6 +81,7 @@ class TurnAction(VWPhysicalAction):
     executor = TurnExecutor
     def __init__(self, direction):
         super(TurnAction, self).__init__()
+        assert direction in vwc.direction
         self.direction = direction
 
 class CommunicativeAction(Action):
@@ -91,6 +97,9 @@ class CommunicativeAction(Action):
 class ActionFactory:
     
     def __init__(self):
+        pass
+    
+    def __call__(self):
         pass
     
 class DropActionFactory(ActionFactory):
@@ -122,7 +131,8 @@ class SpeakActionFactory(ActionFactory):
         return CommunicativeAction(_message, *_to)
     
 _action_factories = {'move':lambda: MoveAction(), 
-                     'turn':TurnActionFactory(), 
                      'clean':lambda: CleanAction(), 
-                     'drop':lambda: DropAction(),
+                     'idle':lambda: None,
+                     'turn':TurnActionFactory(), 
+                     'drop':DropActionFactory(),
                      'speak':SpeakActionFactory()}

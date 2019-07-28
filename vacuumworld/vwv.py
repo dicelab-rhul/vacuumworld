@@ -42,6 +42,7 @@ DEFAULT_GRID_SIZE = 480
 BACKGROUND_COLOUR_SIDE = 'grey'
 BACKGROUND_COLOUR_GRID = 'white'
 
+DIFFICULTY_LEVELS = 3
 INITIAL_ENVIRONMENT_DIM = 8
         
 def get_location_img_files(path):
@@ -68,6 +69,30 @@ class VWButton:
         
     def pack(self, side):
         self._button.pack(side=side)
+        
+class VWDifficultyButton(VWButton):
+    
+    def __init__(self, root, img, fun):
+        self.imgs = [ImageTk.PhotoImage(img)]
+        self.imgs.extend([self.next_image(img, i * 100) for i in range(1, DIFFICULTY_LEVELS)])
+        super(VWDifficultyButton, self).__init__(root, self.imgs[0], self.onclick)
+        self.difficulty = 0
+        self._rfun = fun
+        
+    def next_image(self, img, red):
+        img_dif = Image.new("RGB", img.size)
+        img_dif.paste(img)
+        rr, gg, bb = img_dif.split()
+        rr = rr.point(lambda p: p + red)
+        img_dif = Image.merge("RGB", (rr, gg, bb)) 
+        return ImageTk.PhotoImage(img_dif)
+
+    def onclick(self):
+        self.difficulty = (self.difficulty + 1) % len(self.imgs)
+        self.img = self.imgs[self.difficulty]
+        self._button.config(image=self.img)
+        self._rfun() #update the global variable .... TODO change this
+        
         
 class VWMainMenu(tk.Frame):
     
@@ -293,13 +318,17 @@ class VWInterface(tk.Frame):
         self.buttons['fast'] = VWButton(self.button_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['fast']), _fast)
         self.buttons['reset'] = VWButton(self.button_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['reset']), _reset)
         
+        _img_dif = Image.open(BUTTON_PATH + buttons['difficulty'])
+        self.buttons['difficulty'] = VWDifficultyButton(self.button_frame, _img_dif, _difficulty)
+        #self.buttons['difficulty'] = VWButton(self.button_frame, _img_dif, _difficulty)
+        
         self.buttons_tag = self.canvas.create_window((DEFAULT_GRID_SIZE + 2 + VWInterface.SIDE_PANEL_WIDTH/2,
                                                       DEFAULT_LOCATION_SIZE/2), 
                                                       width=VWInterface.SIDE_PANEL_WIDTH, 
                                                       height=DEFAULT_LOCATION_SIZE, 
                                                       window=self.button_frame)
                 
-        self.pack_buttons('play', 'reset', 'fast')
+        self.pack_buttons('play', 'reset', 'fast', 'difficulty')
     
     def _init_options(self):
         background = 'red'
@@ -366,12 +395,12 @@ class VWInterface(tk.Frame):
         self.canvas_agents.clear()
         
     def _redraw(self):
-        self._reset_canvas(lines=False, dirts=False)
+        self._reset_canvas(lines=False, )
         inc = DEFAULT_GRID_SIZE / self.grid.dim
         for coord, location in grid.state.items():
             if location:
                 if location.agent:
-                    print("AGENT:", coord, location)
+                    #print("AGENT:", coord, location)
                     tk_img = self.all_images_tk_scaled[(location.agent.colour, location.agent.orientation)]
                     item = self.canvas.create_image(coord.x * inc + inc/2, 
                                                     coord.y * inc + inc/2, image=tk_img)
@@ -380,12 +409,11 @@ class VWInterface(tk.Frame):
                     if coord in self.canvas_dirts: #keep the dirt behind the agent
                         self.canvas.tag_lower(self.canvas_dirts[coord]) 
                 if location.dirt:
-                    if self.canvas_dirts.get(coord, None) is None:
-                        print("DDDIRT:",  coord, location)
-                        tk_img = self.all_images_tk_scaled[(location.dirt.colour, 'dirt')]
-                        item = self.canvas.create_image(coord.x * inc + inc/2, coord.y * inc + inc/2, image=tk_img)
-                        self.canvas_dirts[coord] = item
-                        self.canvas.tag_lower(item) #keep dirt behind agents and grid lines
+                    #print("DDDIRT:",  coord, location)
+                    tk_img = self.all_images_tk_scaled[(location.dirt.colour, 'dirt')]
+                    item = self.canvas.create_image(coord.x * inc + inc/2, coord.y * inc + inc/2, image=tk_img)
+                    self.canvas_dirts[coord] = item
+                    self.canvas.tag_lower(item) #keep dirt behind agents and grid lines
         #self._lines_to_front()
             
     def _draw_grid(self, env_dim, size = DEFAULT_GRID_SIZE):
@@ -517,13 +545,18 @@ class VWInterface(tk.Frame):
             self.canvas.itemconfigure(item, state=state)
         self.canvas.itemconfig(self.options, state=state)
 
-
+    def user_mind(self):
+        return self.buttons['difficulty'].difficulty
 
 def _fast():
     global TIME_STEP
     TIME_STEP = max(TIME_STEP_MIN, TIME_STEP / 2.)
-    print('fast', TIME_STEP)
+    print('fast', TIME_STEP)    
     
+def _difficulty():
+    global user_mind
+    user_mind = main_interface.user_mind()
+   
 #resets the grid and enviroment
 def _reset():
     print('reset')
@@ -602,6 +635,9 @@ def run(_minds):
         global minds
         minds = _minds
         
+        global user_mind
+        user_mind = 0
+        
         grid = Grid(INITIAL_ENVIRONMENT_DIM)
 
         #saveload.load('/test.vw', grid)
@@ -625,6 +661,8 @@ def run(_minds):
     except:
         _error()
 
+#TODO, be able to select user mind from gui 
+
 
 def simulate():  
     try:
@@ -633,11 +671,12 @@ def simulate():
             return play_event.is_set()
         global reset
         global should_update
+        global user_mind
         
         while wait() and not finish:
             if reset:
                 global env
-                env = init_environment(grid, minds)
+                env = init_environment(grid, minds, user_mind)
                 grid.cycle = 0
                 reset = False
                 
@@ -647,7 +686,8 @@ def simulate():
             #    print(k,v)
             env.evolveEnvironment()
             grid.cycle += 1
-            root.after(0, main_interface._redraw)
+            if not finish:
+                root.after(0, main_interface._redraw)
 
     except:
         _error()

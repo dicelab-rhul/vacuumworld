@@ -1,7 +1,7 @@
 from . import vwaction as action
-from . import vwuser
 from . import vwagent
 from . import vwc
+from . import vwuser
 
 from pystarworlds.Environment import Ambient, Physics, Environment, Process
 from pystarworlds.Identifiable import Identifiable
@@ -15,7 +15,8 @@ import copy
 #from vw import Direction
 #from pystarworlds.Identifiable import Identifiable
 
-def init(grid, minds):
+def init(grid, minds, user_mind):
+    minds[vwc.colour.user] = vwuser.USERS[user_mind]()
     return GridEnvironment(GridAmbient(grid, minds))
     
 class GridAmbient(Ambient):
@@ -24,27 +25,21 @@ class GridAmbient(Ambient):
         self.grid = grid
         agents=[]
         dirts=[]
-        for entity in grid.state.values(): 
-            if entity:
-                if entity.agent:       
-                    if entity.agent.colour != vwc.colour.user:
-                        ag = vwagent.CleaningAgentBody(entity.agent.name,
-                                                       copy.deepcopy(minds[entity.agent.colour]),
-                                                       entity.agent.orientation,
-                                                       entity.coordinate,
-                                                       entity.agent.colour)
-                        agents.append(ag)
-                    else:                        
-                        ag = vwuser.UserBody(entity.agent.name, 
-                                             vwuser.UserMind(),
-                                             entity.agent.orientation,
-                                             entity.coordinate,
-                                             entity.agent.colour)
-                        agents.append(ag)
-                elif(entity.dirt):       
-                    dirts.append(Dirt(entity.dirt))
+        for location in grid.state.values(): 
+            if location:
+                if location.agent:       
+                    agents.append(self.init_agent(location, self.get_type(location), minds))
+                if location.dirt:       
+                    dirts.append(Dirt(location.dirt))
         super(GridAmbient, self).__init__(agents, dirts)
-
+    
+    def get_type(self, location):
+        return vwagent.agent_type[int(location.agent.colour == vwc.colour.user)]
+        
+    def init_agent(self, location, _type, minds):
+        return vwagent.VWBody(_type, location.agent.name, copy.deepcopy(minds[location.agent.colour]),
+                              location.agent.orientation, location.coordinate, location.agent.colour)
+        
 
 class GridPhysics(Physics):
     pass
