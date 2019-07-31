@@ -33,7 +33,7 @@ class EasyUser:
 
         if not self.observation.forward: #there is a wall infront
             if not self.observation.left:
-                action.turn(vwc.direction.right)
+                return action.turn(vwc.direction.right)
             if not self.observation.right:
                 return action.turn(vwc.direction.left)
             return vwc.random(self.move_actions[1:])
