@@ -2,3 +2,4 @@ __pycache__/*
 vacuumworld.egg-info/*
 vacuumworld/__pycache__/*
 .spyproject/*
+vacuumworld/test/__pycache__/*
