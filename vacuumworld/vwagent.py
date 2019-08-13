@@ -1,4 +1,4 @@
-from pystarworlds.Agent import Mind, Body
+from pystar.Agent import Mind, Body
 
 from . import vwsensor
 from . import vwactuator

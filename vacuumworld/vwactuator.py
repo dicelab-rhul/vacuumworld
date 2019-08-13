@@ -1,4 +1,4 @@
-from pystarworlds.Agent import Actuator
+from pystar.Agent import Actuator
 
 from . import vwaction
 
