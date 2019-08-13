@@ -351,7 +351,8 @@ class VWInterface(tk.Frame):
         self.buttons_options['save'].pack('left')
         self.buttons_options['load'].pack('right')
         files= saveload.files()
-        self.load_menu = tk.OptionMenu(self.options_button_frame, tk.StringVar(), '', *files, command=_load)
+        self.load_option_variable = tk.StringVar()
+        self.load_menu = tk.OptionMenu(self.options_button_frame, self.load_option_variable, '', *files, command=_load)
         self.load_menu.pack()
         self.options_button_frame.pack()
         
@@ -565,12 +566,14 @@ def _save(file=None):
     file = 'test1'
     print('save', file)
     saveload.save(grid, file)
-    main_interface.load_menu["menu"].add_command(label=file, command=_load)
+    #TODO dont add the file more than once!
+    main_interface.load_menu["menu"].add_command(label=file, command=tk._setit(main_interface.load_option_variable, file))
 
 def _load(file):
-    print('load', file)
-    grid.replace_all(saveload.load(file))
-    main_interface._redraw()
+    if len(file) > 0:
+        print('load', file)
+        grid.replace_all(saveload.load(file))
+        main_interface._redraw()
 
 #resets the grid and enviroment
 def _reset():
