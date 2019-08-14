@@ -28,16 +28,16 @@ from . import vwc
 from . import saveload
 
 #might need to change this for the real package...
-PATH = os.path.dirname(__file__) + "/../"
+PATH = os.path.dirname(__file__)
 TIME_STEP_MIN = 1. / 2.**4
 DEFAULT_TIME_STEP = 1 #in seconds
 TIME_STEP = DEFAULT_TIME_STEP 
 WIDTH = 640
 HEIGHT = 480
 ROOT_FONT = "Verdana 10 bold" #font.Font(family='Helvetica', size=36, weight='bold')
-BUTTON_PATH = PATH + "res/"
-LOCATION_AGENT_IMAGES_PATH = PATH + "res/locations/agent"
-LOCATION_DIRT_IMAGES_PATH = PATH + "res/locations/dirt"
+BUTTON_PATH = PATH + "/res/"
+LOCATION_AGENT_IMAGES_PATH = PATH + "/res/locations/agent"
+LOCATION_DIRT_IMAGES_PATH = PATH + "/res/locations/dirt"
 DEFAULT_LOCATION_SIZE = 60
 DEFAULT_GRID_SIZE = 480
 BACKGROUND_COLOUR_SIDE = 'grey'

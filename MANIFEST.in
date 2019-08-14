@@ -6,6 +6,6 @@ Created on Sun Jun  2 21:49:14 2019
 @author: ben
 """
 
-include res/*.png
-include res/locations/agent/*.png
-include res/locations/dirt/*.png
+include vacuumworld/res/*.png
+include vacuumworld/res/locations/agent/*.png
+include vacuumworld/res/locations/dirt/*.png

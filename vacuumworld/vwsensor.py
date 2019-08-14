@@ -1,4 +1,4 @@
-from pystar.Agent import Sensor
+from pystarworlds.Agent import Sensor
 
 from .vwc import observation, message
 

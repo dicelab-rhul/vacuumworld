@@ -20,6 +20,8 @@ DIRT_COLOURS = set(['orange', 'green'])
 class VacuumWorldInternalError(Exception):
     pass
     
+
+#TODO throw errors instead of returning
 def __validate_agent(agent, colour):
     agent_dir = set(dir(agent))
     
@@ -30,10 +32,9 @@ def __validate_agent(agent, colour):
         if not callable(agent.do):
             print('ERROR:' + colour + 'agent do must be callable')
             return False
-        else:
-            if len(signature(agent.do).parameters) != 0:
-                print('ERROR:' + colour + ': agent do must be defined with no arguments, do(self) or do()')
-                return False
+        if len(signature(agent.do).parameters) != 0:
+            print('ERROR:' + colour + ': agent do must be defined with no arguments, do(self) or do()')
+            return False
         
     if not 'revise' in agent_dir:
         print('ERROR:' + colour + ' agent must define the revise method')
@@ -42,10 +43,10 @@ def __validate_agent(agent, colour):
         if not callable(agent.revise):
             print('ERROR:' + colour + ' agent revise must be callable')
             return False
-        else:
-             if len(signature(agent.revise).parameters) != 2:
-                print('ERROR:' + colour + ' agent revise must be defined with two arguments, revise(self, observation, messages) or revise(observation, messages)')
-                return False
+
+        if len(signature(agent.revise).parameters) != 2:
+            print('ERROR:' + colour + ' agent revise must be defined with two arguments, revise(self, observation, messages) or revise(observation, messages)')
+            return False
         
     if not 'speak' in agent_dir:
         print('ERROR:' + colour + ':agent must define the speak method')
@@ -54,10 +55,9 @@ def __validate_agent(agent, colour):
         if not callable(agent.speak):
             print('ERROR:' + colour + ' agent speak must be callable')
             return False
-        else:
-             if len(signature(agent.speak).parameters) != 0:
-                print('ERROR:' + colour + ' agent speak must be defined with no arguments, speak(self) or speak()')
-                return False
+        if len(signature(agent.speak).parameters) != 0:
+            print('ERROR:' + colour + ' agent speak must be defined with no arguments, speak(self) or speak()')
+            return False
     return True
 
 #change the name to grid if you want!
@@ -71,10 +71,11 @@ class Grid:
     GRID_MAX_SIZE = 13
     
     def __init__(self, dim):
-       self.reset(dim)
-       self.agent_count = 0
-       self.dirt_count = 0 
-       self.cycle = 0
+        self.state = None
+        self.reset(dim)
+        self.agent_count = 0
+        self.dirt_count = 0 
+        self.cycle = 0
        
     def replace_all(self, grid):
         self.state = grid.state

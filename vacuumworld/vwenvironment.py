@@ -3,8 +3,8 @@ from . import vwagent
 from . import vwc
 from . import vwuser
 
-from pystar.Environment import Ambient, Physics, Environment, Process
-from pystar.Identifiable import Identifiable
+from pystarworlds.Environment import Ambient, Physics, Environment, Process
+from pystarworlds.Identifiable import Identifiable
 
 import copy
 
@@ -13,7 +13,7 @@ import copy
 #from GridPerception import Observation,Message,ActionResultPerception
 #from GridWorldAction import ForwardMoveMentAction,MoveLeftAction,MoveRightAction, CleanDirtAction,DropDirtAction, SpeakAction,BroadcastAction
 #from vw import Direction
-#from pystar.Identifiable import Identifiable
+#from pystarworlds.Identifiable import Identifiable
 
 def init(grid, minds, user_mind):
     minds[vwc.colour.user] = vwuser.USERS[user_mind]()

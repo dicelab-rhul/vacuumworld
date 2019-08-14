@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from pystar.Perception import Perception
+from pystarworlds.Perception import Perception
 
 #maybe we use this... who knows!
 class ActionResultPerception(Perception):

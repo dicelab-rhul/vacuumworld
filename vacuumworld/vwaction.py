@@ -1,4 +1,4 @@
-from pystar.Event import Action, Executor
+from pystarworlds.Event import Action, Executor
 
 from . import vwc
 

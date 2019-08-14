@@ -6,23 +6,21 @@ Created on Sun Jun  2 21:22:31 2019
 @author: ben
 """
 
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Mar 19 13:12:18 2019
+import setuptools
 
-@author: ben
-"""
-
-from setuptools import setup
-
-setup(name='vacuumworld',
-      version='0.0.1',
+setuptools.setup(name='vacuumworld',
+      version='4.0.2',
       description='',
-      url='',
+      url='https://github.com/dicelab-rhul/vacuumworld',
       author='Benedict Wilkins',
       author_email='brjw@hotmail.co.uk',
-      license='MIT',
+      license='GNU General Public License v3 (GPLv3)T',
       packages=['vacuumworld'],
-      zip_safe=False,
-      include_package_data=True)
+      include_package_data=True,
+      install_requires=['pystarworlds', 'pillow'],
+      classifiers=[
+        "Programming Language :: Python :: 3.7",
+        "Development Status :: 2 - Pre-Alpha",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+        "Operating System :: OS Independent",
+      ])
