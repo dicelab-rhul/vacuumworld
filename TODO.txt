@@ -1,0 +1,7 @@
+vacuumworld/vw.py:23:#TODO throw errors instead of returning
+vacuumworld/vwv.py:94:self._rfun() #update the global variable .... TODO change this
+vacuumworld/vwv.py:523:#TODO stream line to work with select
+vacuumworld/vwv.py:568:#TODO dont add the file more than once!
+vacuumworld/vwv.py:681:#TODO, be able to select user mind from gui
+vacuumworld/vwaction.py:34:#TODO remove dirt from list of objects in ambient
+vacuumworld/vwaction.py:46:#TODO add new dirt to list of objects in ambient
