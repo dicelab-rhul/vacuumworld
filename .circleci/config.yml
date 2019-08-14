@@ -33,9 +33,7 @@ jobs:
           name: Find TODOs
           command: |
             . venv/bin/activate
-            cd vacuumworld
-            python ../.circleci/todo.py
-            cd ..
+            python .circleci/todo.py vacuumworld
       
       - store_artifacts:
           path: TODO.txt
