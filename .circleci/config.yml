@@ -21,7 +21,6 @@ jobs:
             python3 -m venv venv
             . venv/bin/activate
             python setup.py install
-            pip install pillow
             pip install -U pytest
       
       - run:
@@ -34,15 +33,17 @@ jobs:
           name: Find TODOs
           command: |
             . venv/bin/activate
-            python .circleci/todo.py
+            cd vacuumworld
+            python ../.circleci/todo.py
+            cd ..
       
       - store_artifacts:
-          path: todo.txt
-          destination: todo.txt
+          path: TODO.txt
+          destination: TODO.txt
 
       # run tests!
       - run:
-          name: Run Tests and Save Results
+          name: Run Tests
           command: |
             . venv/bin/activate
             python -m pytest vacuumworld/test

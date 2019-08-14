@@ -21,7 +21,7 @@ def test_agent_added_properly(): # whenever agent method is called agent is adde
     grid.agent('green','north')
     assert grid.agent_count==1 
    # assert grid.agent_count==2 
-def test_agentPlacedProperly(self): # whenever agent is placed Is  it placed properly
+def test_agentPlacedProperly(): # whenever agent is placed Is  it placed properly
     grid = Grid(5)
     agent1 = grid.agent('green','north')
     grid.replace_agent((coord(2,1)), agent1)
@@ -59,7 +59,7 @@ def test_agentRemovedProperly():
     grid.remove_agent(coord(1,1))
     loc = grid.state[coord(1,1)]
     assert loc.agent==None
-def test_agentMoveProperly(self):
+def test_agentMoveProperly():
     grid = Grid(4)
     agent1 = grid.agent('orange','east')
     grid.replace_agent((coord(0,0)), agent1)
