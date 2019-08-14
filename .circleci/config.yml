@@ -15,43 +15,35 @@ jobs:
     steps:
       - checkout
 
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "requirements.txt" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-
       - run:
           name: Install Dependencies
           command: |
             python3 -m venv venv
             . venv/bin/activate
-            python v1alpha1/setup.py install 
-
-      - save_cache:
-          paths:
-            - ./venv
-
-          key: v1-dependencies-{{ checksum "requirements.txt" }}
-        
-      - run:
-          name: Set Environment Variables
-          command: |
-            export LOG_DIR=~/logs
+            python setup.py install
+            pip install pillow
+            pip install -U pytest
       
       - run:
           name: Make Logs Directory
           command: |
-            mkdir $LOG_DIR
+            mkdir ~/logs
+
+      # look for TODOs
+      - run:
+          name: Find TODOs
+          command: |
+            . venv/bin/activate
+            python .circleci/todo.py
+      
+      - store_artifacts:
+          path: todo.txt
+          destination: todo.txt
 
       # run tests!
       - run:
           name: Run Tests and Save Results
           command: |
             . venv/bin/activate
-            python -m pytest vacuumworld/test > ${LOG_DIR}/results.txt
-
-      - store_artifacts:
-          path: $LOG_DIR
-          destination: results.txt
+            python -m pytest vacuumworld/test
+      
