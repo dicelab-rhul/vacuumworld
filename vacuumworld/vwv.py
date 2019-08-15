@@ -223,21 +223,24 @@ class VWInterface(tk.Frame):
 
         self.canvas.bind('<Double-Button-1>', self.remove_top)
         self.canvas.bind('<Button-1>', self.select)
-
+        self.canvas.bind('<Motion>', self.on_mouse_move)
+        self.canvas.bind("<Leave>", self.on_leave_canvas)
+        
+        
         self.currently_selected = None
         self.running = False
         self.rectangle_selected = None
-
+        
     def _init_buttons(self):
         self.buttons = {}
 
-
+        bg = 'white'
         buttons = get_location_img_files(BUTTON_PATH)
         buttons = {b.split('.')[0]:b for b in buttons}
 
 
         self.button_frame = tk.Frame(self)
-        self.button_frame.configure(bg='red')
+        self.button_frame.configure(bg=bg)
 
         play_tk = tk.PhotoImage(file=BUTTON_PATH + buttons['play'])
         self.buttons['play'] = VWButton(self.button_frame, play_tk , _play)
@@ -251,9 +254,6 @@ class VWInterface(tk.Frame):
         self.buttons['difficulty'] = VWDifficultyButton(self.button_frame, _img_dif, _difficulty)
         #self.buttons['difficulty'] = VWButton(self.button_frame, _img_dif, _difficulty)
 
-
-        
-
         self.buttons_options = {}
         self.buttons['save'] = VWButton(self.button_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['save']), _save)
         self.buttons['load'] = VWButton(self.button_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['load']), _load)
@@ -264,11 +264,19 @@ class VWInterface(tk.Frame):
         self.load_menu = tk.OptionMenu(self.button_frame, self.load_option_variable, '', *files, command=_load)
         self.load_menu.pack()
 
-        self._init_size_slider(self.button_frame, 'red')
+        self._init_size_slider(self.button_frame, 'white')
         
         self.pack_buttons('play', 'reset', 'fast', 'difficulty', 'save', 'load')
         self.button_frame.pack(side='bottom')
         
+        
+        self.info_frame = tk.Frame(self.button_frame, bg=bg)
+        self.coordinate_text = tk.StringVar()
+        self.coordinate_text.set("(-,-)")
+        self.coordinate_label = tk.Label(self.info_frame, textvariable=self.coordinate_text, font=ROOT_FONT, bg=bg)
+        self.coordinate_label.pack()
+
+        self.info_frame.pack(side='right')
         return buttons
     
     def _init_size_slider(self, parent, bg):
@@ -281,9 +289,6 @@ class VWInterface(tk.Frame):
                                         start=(DEFAULT_GRID_SIZE/DEFAULT_LOCATION_SIZE) - Grid.GRID_MIN_SIZE)
         self.grid_scale_slider.pack(side='left')
         f.pack(side='bottom')
-        
-
-        
         
     def _init_dragables(self):
         #load all images
@@ -371,9 +376,6 @@ class VWInterface(tk.Frame):
                button._button.pack_forget()
         for button in buttons:
             self.buttons[button].pack('left')
-
-   
-   
 
     def _reset_canvas(self, lines=True, dirts=True, agents=True, select=True):
         if lines:
@@ -491,6 +493,16 @@ class VWInterface(tk.Frame):
             self._reset_canvas()
             self._scaled_tk()
             self._draw_grid(grid.dim)
+    
+    def on_leave_canvas(self, event):
+        self.coordinate_text.set('(-,-)')
+    
+    def on_mouse_move(self, event):
+        if _in_bounds(event.x, event.y):
+            inc = DEFAULT_GRID_SIZE / self.grid.dim
+            self.coordinate_text.set('({},{})'.format(int(event.x / inc), int(event.y / inc)))
+        else:
+            self.coordinate_text.set('(-,-)')
 
     def drag_on_start(self, event):
         drag_manager, img_key = self.dragables[event.widget.find_closest(event.x, event.y)[0]]
@@ -508,7 +520,6 @@ class VWInterface(tk.Frame):
             self.canvas.tag_lower(a)
         for d in self.canvas_dirts.values():
             self.canvas.tag_lower(d)
-
 
     def drag_on_drop(self, event, drag_manager):
         #TODO stream line to work with select
