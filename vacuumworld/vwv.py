@@ -282,6 +282,8 @@ class VWInterface(tk.Frame):
         self.grid_scale_slider.pack(side='left')
         f.pack(side='bottom')
         
+
+        
         
     def _init_dragables(self):
         #load all images
@@ -289,7 +291,7 @@ class VWInterface(tk.Frame):
         self.dragables = {}
 
         ix = DEFAULT_GRID_SIZE + DEFAULT_LOCATION_SIZE / 2 + 2
-        iy = DEFAULT_LOCATION_SIZE / 2 + 2
+        iy = DEFAULT_LOCATION_SIZE / 2 + 4
         
         #print(self.all_images)
         for i, key in enumerate(keys):
@@ -537,7 +539,13 @@ class VWInterface(tk.Frame):
     def show_hide_side(self, state):
         for item in self.dragables.keys():
             self.canvas.itemconfigure(item, state=state)
-        self.canvas.itemconfig(self.options, state=state)
+        if state == 'hidden':
+            self.grid_scale_slider.pack_forget()
+            self.load_menu.pack_forget()
+        elif state == 'normal':
+            self.grid_scale_slider.pack(side='bottom')
+            self.load_menu.pack()
+        #self.canvas.itemconfig(self.options, state=state)
 
     def user_mind(self):
         return self.buttons['difficulty'].difficulty
