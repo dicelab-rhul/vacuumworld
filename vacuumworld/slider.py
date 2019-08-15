@@ -10,7 +10,7 @@ import tkinter as tk
 class Slider(tk.Canvas):
     
     def __init__(self, parent, release_callback, img, width, height, increments = 0, slider_width = 8, start = 0, **kwargs):
-        super(Slider, self).__init__(parent,  width=width, height=height, **kwargs)
+        super(Slider, self).__init__(parent, width=width, height=height, bd=0, highlightthickness=0, relief='ridge', bg='white', **kwargs)
         self.release_callback = release_callback
         
         
@@ -21,14 +21,14 @@ class Slider(tk.Canvas):
         self.x = start
         self.inc = 0
         if start > width:
-            start = width - self.slide_item_dim
+            start = width - self.slide_item_dim/2
         if increments: 
             inc = int((width - self.slide_item_dim) / self.increments)
             self.x = start * inc
             self.inc = start
             
 
-        self.background_item = self.create_rectangle(-1,-1, width+1, height+1, fill='white')
+        self.background_item = self.create_rectangle(0,0, width-1, height-1, fill='white')
         self.slider_item = self.create_rectangle(self.x, 0, self.x + self.slide_item_dim, height, fill='black') #self.create_image(img, 0, 0)
         self.bind("<ButtonPress-1>", self.on_start)
         self.bind("<B1-Motion>", self.on_drag)
