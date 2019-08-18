@@ -8,21 +8,24 @@ Created on Sun Jun  2 23:16:51 2019
 
 
 from .vwc import location, dirt, agent, coord
-from collections import defaultdict
 from inspect import signature
-#import numpy as np
+from .vwenvironment import GridEnvironment, GridAmbient
 
 #--------------------------------------------------------
 
 AGENT_COLOURS = set(['user', 'orange', 'green', 'white'])
 DIRT_COLOURS = set(['orange', 'green'])
 
+
+
+def init(grid, minds):
+    return GridEnvironment(GridAmbient(grid, minds))
+
 class VacuumWorldInternalError(Exception):
     pass
     
-
 #TODO throw errors instead of returning
-def __validate_agent(agent, colour):
+def __validate_mind(agent, colour):
     agent_dir = set(dir(agent))
     
     if not 'do' in agent_dir:

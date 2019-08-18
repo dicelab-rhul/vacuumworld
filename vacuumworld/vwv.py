@@ -243,6 +243,7 @@ class VWInterface(tk.Frame):
         self.button_frame.configure(bg=bg)
 
         play_tk = tk.PhotoImage(file=BUTTON_PATH + buttons['play'])
+
         self.buttons['play'] = VWButton(self.button_frame, play_tk , _play)
         self.buttons['resume'] = VWButton(self.button_frame, play_tk, _resume)
         self.buttons['pause'] = VWButton(self.button_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['pause']), _pause)
@@ -578,6 +579,7 @@ def _save(file=None):
     main_interface.load_menu["menu"].add_command(label=file, command=tk._setit(main_interface.load_option_variable, file))
 
 def _load(file=''):
+    print(file)
     if len(file) > 0:
         print('load', file)
         grid.replace_all(saveload.load(file))
