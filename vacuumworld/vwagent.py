@@ -57,6 +57,7 @@ class VWMind(Mind):
             actuator.attempt(action)
             
         if physical_action is not None:
+
             validate_action(physical_action)
             _assert(physical_action[0] != vwc.action_names.speak, 'please use speak() for communication and not do()')
             action = vwaction._action_factories[physical_action[0]](*physical_action[1:])

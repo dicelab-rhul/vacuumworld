@@ -104,6 +104,12 @@ class Grid:
         self.agent_count = 0
         self.dirt_count = 0
         
+    def _get_agents(self):
+        return {coord:location.agent for coord,location in self.state.items() if location and location.agent}
+    
+    def _get_dirts(self):
+        return {coord:location.dirt for coord,location in self.state.items() if location and location.dirt}
+        
     def _in_bounds(self, coordinate):
         return coordinate.x >= 0 and coordinate.x < self.dim and coordinate.y >= 0 and coordinate.y < self.dim
     

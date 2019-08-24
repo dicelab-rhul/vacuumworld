@@ -124,7 +124,7 @@ class SpeakActionFactory(ActionFactory):
         super(SpeakActionFactory, self).__init__()
         
     def __call__(self, _message, *_to):
-        assert(isinstance(_message, str))
+        assert(isinstance(_message, (str, int, float, bool)))
         for t in _to:
             #print(_actor, _message, _to)
             assert(isinstance(t, str))

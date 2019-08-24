@@ -29,31 +29,28 @@ def run(white_mind, green_mind=None, orange_mind=None):
         __MARKING_HASH = r'c0bd538fd8bdaac7a98802fd9f0ddda29aa6bea3705e88b9dc32ab5d4821fa58'
         __MARKING_PASSWORD_FILE = 'password.txt'
         import hashlib
-        try:
-             with open(__MARKING_PASSWORD_FILE, 'rb') as f:
-                 password = f.readline()
-                 m = hashlib.sha256(password)
-                 if m.hexdigest() == __MARKING_HASH:
-                     #import vacuumworldmarking #import the marking module
-                     global __CURRENT
-                     if __CURRENT is not None:
-                          raise ValueError("Student called run more than once... oh dear")
-                     __CURRENT = (white_mind, green_mind, orange_mind)  
-                 else:
-                     raise ValueError('incorrect password')
-        except:
-           print("Dont mess with the __MARKING parameter if your not a marker!")
-        return
-    
-    white_ok = vw.__validate_mind(white_mind, 'white')    
-    green_ok = vw.__validate_mind(green_mind, 'green')
-    orange_ok = vw.__validate_mind(orange_mind, 'orange')
-    if white_ok and green_ok and orange_ok:
-        vwv.run({vwc.colour.white:white_mind, 
-                 vwc.colour.green:green_mind, 
-                 vwc.colour.orange:orange_mind})
+        with open(__MARKING_PASSWORD_FILE, 'rb') as f:
+             password = f.readline()
+             m = hashlib.sha256(password)
+             if m.hexdigest() == __MARKING_HASH:
+                 #import vacuumworldmarking #import the marking module
+                 global __CURRENT
+                 if __CURRENT is not None:
+                      raise ValueError("Student called run more than once... oh dear")
+                 __CURRENT = (white_mind, green_mind, orange_mind)  
+             else:
+                 raise ValueError('Incorrect marking password')
+    else:
+        white_ok = vw.__validate_mind(white_mind, 'white')    
+        green_ok = vw.__validate_mind(green_mind, 'green')
+        orange_ok = vw.__validate_mind(orange_mind, 'orange')
+        if white_ok and green_ok and orange_ok:
+            vwv.run({vwc.colour.white:white_mind, 
+                     vwc.colour.green:green_mind, 
+                     vwc.colour.orange:orange_mind})
 
 
-
-    
+def grid_size(agent_id, size):
+    assert(isinstance(agent_id, str))
+    #for marking purposes
 

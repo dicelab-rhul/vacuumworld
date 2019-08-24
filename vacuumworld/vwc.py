@@ -66,7 +66,7 @@ action = namedtuple('actions', 'move turn clean idle speak')(
                     lambda : ('move',), 
                     lambda _direction : ('turn', _direction), 
                     lambda : ('clean',), 
-                    lambda : ('idle',), 
+                    lambda : None, 
                     lambda message, *to : ('speak', message, *to))
 
 def random(actions, p=None):
