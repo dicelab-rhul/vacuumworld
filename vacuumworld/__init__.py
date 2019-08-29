@@ -50,7 +50,7 @@ def run(white_mind, green_mind=None, orange_mind=None):
                      vwc.colour.orange:orange_mind})
 
 
-def grid_size(agent_id, size):
-    assert(isinstance(agent_id, str))
+def grid_size(size):
+    pass
     #for marking purposes
 

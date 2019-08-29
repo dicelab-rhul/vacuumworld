@@ -9,10 +9,10 @@ import tkinter as tk
 
 class Slider(tk.Canvas):
     
-    def __init__(self, parent, release_callback, img, width, height, increments = 0, slider_width = 8, start = 0, **kwargs):
+    def __init__(self, parent, release_callback, slide_callback, img, width, height, increments = 0, slider_width = 8, start = 0, **kwargs):
         super(Slider, self).__init__(parent, width=width, height=height, bd=0, highlightthickness=0, relief='ridge', bg='white', **kwargs)
         self.release_callback = release_callback
-        
+        self.slide_callback = slide_callback
         
         self.increments = increments
         self.slider_image = img
@@ -44,8 +44,10 @@ class Slider(tk.Canvas):
                 x = self.inc * inc
 
             dx = x - self.x
-            self.move(self.slider_item, dx, 0)
-            self.x = x
+            if dx != 0:
+                self.move(self.slider_item, dx, 0)
+                self.slide_callback(self.inc)
+                self.x = x
     
     def on_start(self, event):
         self._move_slider(event)

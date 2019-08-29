@@ -10,11 +10,14 @@ import os
 import pickle
 
 def save(grid, file):
-    file = file + ".vw"
+    if not file.endswith('.vw'):
+        file = file + ".vw"
     with open(file, 'wb') as f:
          pickle.dump(grid, f)
     
 def load(file):
+    if not file.endswith('.vw'):
+        file = file + ".vw"
     with open(file, 'rb') as f:
         return pickle.load(f)
 

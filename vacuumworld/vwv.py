@@ -22,6 +22,7 @@ from PIL import Image, ImageTk
 #from Slider import Slider
 #from vw import Environment
 from .slider import Slider
+from .autocomplete import AutocompleteEntry
 from .vw import Grid
 from .vwenvironment import init as init_environment
 from . import vwc
@@ -40,7 +41,7 @@ LOCATION_AGENT_IMAGES_PATH = PATH + "/res/locations/agent"
 LOCATION_DIRT_IMAGES_PATH = PATH + "/res/locations/dirt"
 DEFAULT_LOCATION_SIZE = 60
 DEFAULT_GRID_SIZE = 480
-BACKGROUND_COLOUR_SIDE = 'grey'
+BACKGROUND_COLOUR_SIDE = 'white'
 BACKGROUND_COLOUR_GRID = 'white'
 
 DIFFICULTY_LEVELS = 3
@@ -70,6 +71,9 @@ class VWButton:
 
     def pack(self, side):
         self._button.pack(side=side)
+        
+    def grid(self, row, col):
+        self._button.grid(row=row,column=col)
 
 class VWDifficultyButton(VWButton):
 
@@ -186,9 +190,10 @@ class VWInterface(tk.Frame):
 
     def __init__(self, parent, grid):
         super(VWInterface, self).__init__(parent)
+        self.parent = parent
         self.configure(background=BACKGROUND_COLOUR_SIDE)
         self.canvas = tk.Canvas(self, width=DEFAULT_GRID_SIZE+VWInterface.SIDE_PANEL_WIDTH,
-                                height=DEFAULT_GRID_SIZE,
+                                height=DEFAULT_GRID_SIZE + 1,
                                 bd=0,
                                 highlightthickness=0)
         #self.canvas.create_rectangle(0,0,481,481,fill="blue") # placeholder for grid
@@ -213,13 +218,14 @@ class VWInterface(tk.Frame):
 
         self._draw_grid(grid.dim)
 
-        self.canvas.pack()
+        self.canvas.grid(row=0,column=0) #packing
 
         #bind keys for rotation
         parent.bind('<Left>', self.rotate_agent_left)
         parent.bind('<Right>', self.rotate_agent_right)
         parent.bind('<a>', self.rotate_agent_left)
         parent.bind('<d>', self.rotate_agent_right)
+        self.parent = parent
 
         self.canvas.bind('<Double-Button-1>', self.remove_top)
         self.canvas.bind('<Button-1>', self.select)
@@ -230,6 +236,7 @@ class VWInterface(tk.Frame):
         self.currently_selected = None
         self.running = False
         self.rectangle_selected = None
+        self.selected = None
         
     def _init_buttons(self):
         self.buttons = {}
@@ -238,58 +245,82 @@ class VWInterface(tk.Frame):
         buttons = get_location_img_files(BUTTON_PATH)
         buttons = {b.split('.')[0]:b for b in buttons}
 
+        self.button_frame = tk.Frame(self, bg=bg)
 
-        self.button_frame = tk.Frame(self)
-        self.button_frame.configure(bg=bg)
 
         play_tk = tk.PhotoImage(file=BUTTON_PATH + buttons['play'])
-
-        self.buttons['play'] = VWButton(self.button_frame, play_tk , _play)
-        self.buttons['resume'] = VWButton(self.button_frame, play_tk, _resume)
-        self.buttons['pause'] = VWButton(self.button_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['pause']), _pause)
-        self.buttons['stop'] = VWButton(self.button_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['stop']), _stop)
-        self.buttons['fast'] = VWButton(self.button_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['fast']), _fast)
-        self.buttons['reset'] = VWButton(self.button_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['reset']), _reset)
-
+        #play_tk = Image.open(BUTTON_PATH + buttons['play'])
+        
+        #left side contains buttons and slider
+        self.left_frame = tk.Frame(self.button_frame, bg=bg)
+        self.slider_frame = tk.Frame(self.left_frame, bg=bg)
+        self.control_buttons_frame = tk.Frame(self.left_frame, bg=bg)
+        
+        self.buttons['play'] = VWButton(self.control_buttons_frame, play_tk , _play)
+        self.buttons['resume'] = VWButton(self.control_buttons_frame, play_tk, _resume)
+        self.buttons['pause'] = VWButton(self.control_buttons_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['pause']), _pause)
+        self.buttons['stop'] = VWButton(self.control_buttons_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['stop']), _stop)
+        self.buttons['fast'] = VWButton(self.control_buttons_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['fast']), _fast)
+        self.buttons['reset'] = VWButton(self.control_buttons_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['reset']), _reset)
+        
         _img_dif = Image.open(BUTTON_PATH + buttons['difficulty'])
-        self.buttons['difficulty'] = VWDifficultyButton(self.button_frame, _img_dif, _difficulty)
-        #self.buttons['difficulty'] = VWButton(self.button_frame, _img_dif, _difficulty)
-
-        self.buttons_options = {}
-        self.buttons['save'] = VWButton(self.button_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['save']), _save)
-        self.buttons['load'] = VWButton(self.button_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['load']), _load)
+        self.buttons['difficulty'] = VWDifficultyButton(self.control_buttons_frame, _img_dif, _difficulty)
         
+        self.pack_buttons('play', 'reset', 'fast', 'difficulty')
         
+        #init the slider
+        self._init_size_slider(self.slider_frame, bg)
+        
+        self.control_buttons_frame.pack(side='bottom')
+        self.slider_frame.pack(side='top')
+        self.left_frame.pack(side='left', fill=tk.X)
+  
+        #middle contains save and load
+        self.mid_frame = tk.Frame(self.button_frame, bg=bg)
+        self.saveload_frame = tk.Frame(self.mid_frame, bg=bg)
+    
+        #buttons
+        self.buttons['save'] = VWButton(self.saveload_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['save']), lambda: _save(self.load_menu))
+        self.buttons['load'] = VWButton(self.saveload_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['load']), lambda: _load(self.load_menu))
+        #entry box
         files = saveload.files()
-        self.load_option_variable = tk.StringVar()
-        self.load_menu = tk.OptionMenu(self.button_frame, self.load_option_variable, '', *files, command=_load)
-        self.load_menu.pack()
+        self.load_menu = AutocompleteEntry(files, 4, self.mid_frame)
+        self.load_menu.bind('<Button-1>', lambda _: self.deselect())
+        self.load_menu.pack(side='top')
+    
+        self.pack_buttons('save', 'load')
+        self.saveload_frame.pack(side='bottom')
+        self.mid_frame.pack(side='left', padx=16)
 
-        self._init_size_slider(self.button_frame, 'white')
-        
-        self.pack_buttons('play', 'reset', 'fast', 'difficulty', 'save', 'load')
-        self.button_frame.pack(side='bottom')
-        
-        
+        #init information frame
         self.info_frame = tk.Frame(self.button_frame, bg=bg)
+       
+        self.size_text = tk.StringVar()
+        self.size_text.set("size: " + str(INITIAL_ENVIRONMENT_DIM))
+        self.size_label = tk.Label(self.info_frame, textvariable=self.size_text, font=ROOT_FONT, bg=bg)
+        self.size_label.pack(side='top')
+
         self.coordinate_text = tk.StringVar()
         self.coordinate_text.set("(-,-)")
         self.coordinate_label = tk.Label(self.info_frame, textvariable=self.coordinate_text, font=ROOT_FONT, bg=bg)
-        self.coordinate_label.pack()
+        self.coordinate_label.pack(side='top')
 
-        self.info_frame.pack(side='right')
+        self.info_frame.pack(side='left', padx=16, ipadx=32, expand=True)
+        self.button_frame.grid(row=1, column=0, pady=3, sticky=tk.W+tk.E)
+
         return buttons
     
-    def _init_size_slider(self, parent, bg):
-        f = tk.Frame(parent, bg=bg)
-        t = tk.Label(f, text=" size ", bg=bg, font = ROOT_FONT)
-        t.pack(side='left')
+    
+    def _init_size_slider(self, parent, bg, length=200):
+        #f = tk.Frame(parent, bg=bg)
+        #t = tk.Label(f, text=" size ", bg=bg, font = ROOT_FONT)
+        #t.pack(side='left')
         increments = Grid.GRID_MAX_SIZE - Grid.GRID_MIN_SIZE
-        self.grid_scale_slider = Slider(f, self.on_resize, None, 16*increments*2, 16,
+        self.grid_scale_slider = Slider(parent, self.on_resize, self.on_resize_slide, None, length, 16,
                                         increments=increments,
                                         start=(DEFAULT_GRID_SIZE/DEFAULT_LOCATION_SIZE) - Grid.GRID_MIN_SIZE)
-        self.grid_scale_slider.pack(side='left')
-        f.pack(side='bottom')
+        self.grid_scale_slider.pack(side='top')
+        #f.pack(side='bottom')
         
     def _init_dragables(self):
         #load all images
@@ -306,7 +337,6 @@ class VWInterface(tk.Frame):
             drag_manager = CanvasDragManager(key, self.grid, self.canvas, item, self.drag_on_start, self.drag_on_drop)
             self.dragables[item] = (drag_manager, key)
 
-
     def deselect(self):
         self.selected = None
         if self.rectangle_selected:
@@ -316,6 +346,7 @@ class VWInterface(tk.Frame):
     def select(self, event):
         if not self.running and _in_bounds(event.x, event.y):
             self.deselect()
+            self.focus()
             inc = DEFAULT_GRID_SIZE / self.grid.dim
             coordinate = vwc.coord(int(event.x / inc), int(event.y / inc))
             print("SELECT:", self.grid.state[coordinate])
@@ -352,8 +383,8 @@ class VWInterface(tk.Frame):
 
     def rotate_agent(self, event, direction):
         #print('left', event)
-        print(self.selected)
         if self.selected and self.selected.agent:
+            print(self.selected)
             self.remove_agent(self.selected.coordinate)
             new_orientation =  direction(self.selected.agent.orientation)
             inc = DEFAULT_GRID_SIZE / self.grid.dim
@@ -375,8 +406,8 @@ class VWInterface(tk.Frame):
         if forget:
             for button in self.buttons.values():
                button._button.pack_forget()
-        for button in buttons:
-            self.buttons[button].pack('left')
+        for i in range(len(buttons)):
+            self.buttons[buttons[i]].grid(row=0, col=i)
 
     def _reset_canvas(self, lines=True, dirts=True, agents=True, select=True):
         if lines:
@@ -432,8 +463,8 @@ class VWInterface(tk.Frame):
         y = 0
         inc = size / env_dim
         for i in range(env_dim + 1):
-           self.grid_lines.append(self.canvas.create_line(x,0,x,size))
-           self.grid_lines.append(self.canvas.create_line(0,y,size,y))
+           self.grid_lines.append(self.canvas.create_line(x,0,x,size+1))
+           self.grid_lines.append(self.canvas.create_line(0,y,size+1,y))
            y += inc
            x += inc
 
@@ -494,6 +525,9 @@ class VWInterface(tk.Frame):
             self._reset_canvas()
             self._scaled_tk()
             self._draw_grid(grid.dim)
+            
+    def on_resize_slide(self, value):
+        self.size_text.set("size:" + str(value + Grid.GRID_MIN_SIZE))
     
     def on_leave_canvas(self, event):
         self.coordinate_text.set('(-,-)')
@@ -571,21 +605,23 @@ def _difficulty():
     global user_mind
     user_mind = main_interface.user_mind()
 
-def _save(file=None):
-    file = 'test1'
-    print('save', file)
-    saveload.save(grid, file)
-    #TODO dont add the file more than once!
-    main_interface.load_menu["menu"].add_command(label=file, command=tk._setit(main_interface.load_option_variable, file))
-
-def _load(file=''):
-    print(file)
+def _save(saveloadmenu):
+    file = saveloadmenu.var.get()
     if len(file) > 0:
-        print('load', file)
-        grid.replace_all(saveload.load(file))
-        main_interface._redraw()
-    else:
-        print('no file selected')
+        print('save', file)
+        saveload.save(grid, file)
+        saveloadmenu.lista = saveload.files()
+
+def _load(saveloadmenu):
+    file = saveloadmenu.var.get()
+    if len(file) > 0:
+        if not file.endswith('.vw'):
+            file = file + ".vw"
+        if file in saveloadmenu.lista:
+            print('load', file)
+            grid.replace_all(saveload.load(file))
+            main_interface._redraw()
+
 #resets the grid and enviroment
 def _reset():
     print('reset')
