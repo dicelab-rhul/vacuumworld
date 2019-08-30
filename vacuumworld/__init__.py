@@ -17,7 +17,7 @@ __all__ = ('vw', 'vwv', 'vwc')
 __MARKING = False
 __CURRENT = None
 
-def run(white_mind, green_mind=None, orange_mind=None):
+def run(white_mind, green_mind=None, orange_mind=None, **kwargs):
 
     
     if green_mind is None:
@@ -47,7 +47,7 @@ def run(white_mind, green_mind=None, orange_mind=None):
         if white_ok and green_ok and orange_ok:
             vwv.run({vwc.colour.white:white_mind, 
                      vwc.colour.green:green_mind, 
-                     vwc.colour.orange:orange_mind})
+                     vwc.colour.orange:orange_mind}, **kwargs)
 
 
 def grid_size(size):

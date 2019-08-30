@@ -30,9 +30,11 @@ from . import saveload
 
 #might need to change this for the real package...
 PATH = os.path.dirname(__file__)
-TIME_STEP_MIN = 1. / 2.**4
-DEFAULT_TIME_STEP = 1 #in seconds
-TIME_STEP = DEFAULT_TIME_STEP
+TIME_STEP_MIN = 0.04
+TIME_STEP_BASE = 1. - TIME_STEP_MIN #in seconds
+TIME_STEP = TIME_STEP_BASE
+TIME_STEP_MODIFIER = 1.
+
 WIDTH = 640
 HEIGHT = 480
 ROOT_FONT = "Verdana 10 bold" #font.Font(family='Helvetica', size=36, weight='bold')
@@ -123,13 +125,6 @@ class VWMainMenu(tk.Frame):
         self.button_frame.pack()
 
         self.pack()
-
-def _start():
-    main_menu.pack_forget()
-    main_interface.pack()
-
-def _in_bounds(x,y):
-    return x < DEFAULT_GRID_SIZE and x > 0 and y < DEFAULT_GRID_SIZE and y > 0
 
 
 class CanvasDragManager:
@@ -606,11 +601,19 @@ class VWInterface(tk.Frame):
 
     def user_mind(self):
         return self.buttons['difficulty'].difficulty
+    
 
 def _fast():
-    global TIME_STEP
-    TIME_STEP = max(TIME_STEP_MIN, TIME_STEP / 2.)
-    print('fast', TIME_STEP)
+    global TIME_STEP, TIME_STEP_BASE, TIME_STEP_MODIFIER
+    TIME_STEP_MODIFIER /= 2.
+    TIME_STEP = TIME_STEP_BASE * TIME_STEP_MODIFIER + TIME_STEP_MIN
+    print("INFO: simulation speed set to: {:10.4f} s/cycle".format(TIME_STEP))
+
+def reset_time_step():
+    global TIME_STEP, TIME_STEP_BASE, TIME_STEP_MODIFIER
+    TIME_STEP_MODIFIER = 1.
+    TIME_STEP = TIME_STEP_BASE * TIME_STEP_MODIFIER + TIME_STEP_MIN
+    print("INFO: simulation speed set to: {:10.4f} s/cycle".format(TIME_STEP))
 
 def _difficulty():
     global user_mind
@@ -632,7 +635,9 @@ def _load(saveloadmenu):
             print('load', file)
             grid.replace_all(saveload.load(file))
             main_interface._redraw()
-
+            
+            
+    
 #resets the grid and enviroment
 def _reset():
     print('reset')
@@ -685,15 +690,18 @@ def _finish():
     root.destroy()
     global finish
     finish = True
+    
+def _start():
+    main_menu.pack_forget()
+    main_interface.pack()
 
-def reset_time_step():
-    global TIME_STEP, DEFAULT_TIME_STEP
-    TIME_STEP = DEFAULT_TIME_STEP
+def _in_bounds(x,y):
+    return x < DEFAULT_GRID_SIZE and x > 0 and y < DEFAULT_GRID_SIZE and y > 0
 
-def run(_minds):
+def run(_minds, skip = False, play = False, speed = 0, load = None):
     #required to avoid problems with running after errors (root must be destoryed!)
-
-
+    assert(speed >= 0 and speed <= 1)
+        
   #  import saveload
 
     try:
@@ -717,9 +725,28 @@ def run(_minds):
         grid = Grid(INITIAL_ENVIRONMENT_DIM)
 
         #saveload.load('/test.vw', grid)
-
-        main_menu = VWMainMenu(root, _start, _finish)
-        main_interface = VWInterface(root, grid)
+        
+        if not skip:    
+            main_menu = VWMainMenu(root, _start, _finish)
+            main_interface = VWInterface(root, grid)
+        else:
+            main_interface = VWInterface(root, grid)
+            main_interface.pack()
+            
+        if play:
+            if load is None:
+                raise ValueError("argument \"load\" must be specified if argument play = True")
+            load = saveload.format_file(load)
+            files = saveload.files()
+            if not load in files:
+                raise ValueError("invalid file name:" + str(load) + "valid files include:" + str(files))
+            print("INFO: autoplay enabled")
+            
+        if load is not None:
+            grid.replace_all(saveload.load(load))
+            main_interface._redraw()
+            print("INFO: successfully loaded: ", load)
+            
         #print(dir(main_menu.canvas))
 
         global env_thread
@@ -732,6 +759,16 @@ def run(_minds):
 
         env_thread = Thread(target=simulate, daemon=True)
         env_thread.start()
+        
+        #set up simulation speed
+        global TIME_STEP
+        global TIME_STEP_MODIFIER
+        TIME_STEP_MODIFIER = 1 - speed
+        TIME_STEP = TIME_STEP_BASE * TIME_STEP_MODIFIER + TIME_STEP_MIN
+        print("INFO: simulation speed set to: {:10.4f} s/cycle".format(TIME_STEP))
+                
+        if play:
+            _play()
 
         root.mainloop()
     except:
@@ -757,7 +794,7 @@ def simulate():
                 reset = False
 
             time.sleep(TIME_STEP)
-            print("evolve", grid.cycle)
+            print("------------ cycle {} ------------ ".format(grid.cycle))
             #for k,v in grid.state.items():
             #    print(k,v)
             env.evolveEnvironment()

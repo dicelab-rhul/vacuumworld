@@ -21,6 +21,15 @@ def load(file):
     with open(file, 'rb') as f:
         return pickle.load(f)
 
+def exists(file):
+    file = format_file(file)
+    return file in files()
+    
+def format_file(file):
+    if not file.endswith('.vw'):
+        file = file + ".vw"
+    return file
+
 def files():
     return [file for file in os.listdir('.') if file.endswith(".vw")]
     

@@ -22,7 +22,6 @@ def init(grid, minds, user_mind):
 class GridAmbient(Ambient):
     
     def __init__(self, grid, minds):
-        mind_keys = [key for key in minds]
         self.grid = grid
         agents=[]
         dirts=[]
