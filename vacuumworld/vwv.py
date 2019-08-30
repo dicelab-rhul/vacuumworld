@@ -262,17 +262,19 @@ class VWInterface(tk.Frame):
         self.buttons['stop'] = VWButton(self.control_buttons_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['stop']), _stop)
         self.buttons['fast'] = VWButton(self.control_buttons_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['fast']), _fast)
         self.buttons['reset'] = VWButton(self.control_buttons_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['reset']), _reset)
+
         
         _img_dif = Image.open(BUTTON_PATH + buttons['difficulty'])
         self.buttons['difficulty'] = VWDifficultyButton(self.control_buttons_frame, _img_dif, _difficulty)
         
-        self.pack_buttons('play', 'reset', 'fast', 'difficulty')
+        self.pack_buttons('play', 'reset', 'fast', 'difficulty', forget=False)
         
         #init the slider
         self._init_size_slider(self.slider_frame, bg)
         
-        self.control_buttons_frame.pack(side='bottom')
-        self.slider_frame.pack(side='top')
+        self.slider_frame.grid(row=0,column=0)#.pack(side='top')
+        self.control_buttons_frame.grid(row=1,column=0,sticky=tk.W)#.pack(side='bottom')
+
         self.left_frame.pack(side='left', fill=tk.X)
   
         #middle contains save and load
@@ -288,24 +290,31 @@ class VWInterface(tk.Frame):
         self.load_menu.bind('<Button-1>', lambda _: self.deselect())
         self.load_menu.pack(side='top')
     
-        self.pack_buttons('save', 'load')
+        self.pack_buttons('save', 'load', forget=False)
         self.saveload_frame.pack(side='bottom')
-        self.mid_frame.pack(side='left', padx=16)
+        self.mid_frame.pack(side='left')
 
         #init information frame
         self.info_frame = tk.Frame(self.button_frame, bg=bg)
-       
+        
+        _size_frame = tk.Frame(self.info_frame, bg=bg)
         self.size_text = tk.StringVar()
-        self.size_text.set("size: " + str(INITIAL_ENVIRONMENT_DIM))
-        self.size_label = tk.Label(self.info_frame, textvariable=self.size_text, font=ROOT_FONT, bg=bg)
-        self.size_label.pack(side='top')
-
+        self.size_text.set(str(INITIAL_ENVIRONMENT_DIM))
+        self.size_label = tk.Label(_size_frame, textvariable=self.size_text, width=2, font=ROOT_FONT, bg=bg)
+        self.size_label.grid(row=0, column=1, sticky=tk.E)
+        
+        _size = tk.StringVar()
+        _size.set("size:")
+        _size_label =  tk.Label(_size_frame, textvariable=_size, font=ROOT_FONT, bg=bg)
+        _size_label.grid(row=0, column=0, sticky=tk.W)
+        _size_frame.grid(row=0, column=0, stick=tk.W)
+        
         self.coordinate_text = tk.StringVar()
         self.coordinate_text.set("(-,-)")
         self.coordinate_label = tk.Label(self.info_frame, textvariable=self.coordinate_text, font=ROOT_FONT, bg=bg)
-        self.coordinate_label.pack(side='top')
+        self.coordinate_label.grid(row=1, column=0, sticky=tk.W)
 
-        self.info_frame.pack(side='left', padx=16, ipadx=32, expand=True)
+        self.info_frame.pack(side='left', expand=True)
         self.button_frame.grid(row=1, column=0, pady=3, sticky=tk.W+tk.E)
 
         return buttons
@@ -405,9 +414,9 @@ class VWInterface(tk.Frame):
     def pack_buttons(self, *buttons, forget=True):
         if forget:
             for button in self.buttons.values():
-               button._button.pack_forget()
+               button._button.grid_remove()
         for i in range(len(buttons)):
-            self.buttons[buttons[i]].grid(row=0, col=i)
+            self.buttons[buttons[i]]._button.grid(row=0, column=i, sticky=tk.W)
 
     def _reset_canvas(self, lines=True, dirts=True, agents=True, select=True):
         if lines:
@@ -527,7 +536,7 @@ class VWInterface(tk.Frame):
             self._draw_grid(grid.dim)
             
     def on_resize_slide(self, value):
-        self.size_text.set("size:" + str(value + Grid.GRID_MIN_SIZE))
+        self.size_text.set(str(value + Grid.GRID_MIN_SIZE))
     
     def on_leave_canvas(self, event):
         self.coordinate_text.set('(-,-)')
@@ -587,10 +596,12 @@ class VWInterface(tk.Frame):
             self.canvas.itemconfigure(item, state=state)
         if state == 'hidden':
             self.grid_scale_slider.pack_forget()
-            self.load_menu.pack_forget()
+            self.mid_frame.pack_forget()
+            self.info_frame.pack_forget()
         elif state == 'normal':
             self.grid_scale_slider.pack(side='bottom')
-            self.load_menu.pack()
+            self.mid_frame.pack(side='left')
+            self.info_frame.pack(side='left', expand=True)
         #self.canvas.itemconfig(self.options, state=state)
 
     def user_mind(self):
@@ -646,7 +657,7 @@ def _stop():
     play_event.clear()
     reset_time_step()
     main_interface.running = False
-    main_interface.pack_buttons('play', 'reset', 'fast', 'difficulty')
+    main_interface.pack_buttons('play', 'reset', 'fast', 'difficulty', 'save', 'load')
     main_interface.show_hide_side('normal')
 
 def _resume():
