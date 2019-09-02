@@ -757,7 +757,7 @@ def run(_minds, skip = False, play = False, speed = 0, load = None):
 
         play_event = Event()
 
-        env_thread = Thread(target=simulate, daemon=True)
+        env_thread = Thread(target=simulate, daemon=False)
         env_thread.start()
         
         #set up simulation speed
@@ -765,7 +765,7 @@ def run(_minds, skip = False, play = False, speed = 0, load = None):
         global TIME_STEP_MODIFIER
         TIME_STEP_MODIFIER = 1 - speed
         TIME_STEP = TIME_STEP_BASE * TIME_STEP_MODIFIER + TIME_STEP_MIN
-        print("INFO: simulation speed set to: {:10.4f} s/cycle".format(TIME_STEP))
+        print("INFO: simulation speed set to: {:5.4f} s/cycle".format(TIME_STEP))
                 
         if play:
             _play()
@@ -776,6 +776,8 @@ def run(_minds, skip = False, play = False, speed = 0, load = None):
 
 #TODO, be able to select user mind from gui
 
+TIME_SPLIT = 100
+import datetime
 
 def simulate():
     try:
@@ -792,8 +794,14 @@ def simulate():
                 env = init_environment(grid, minds, user_mind)
                 grid.cycle = 0
                 reset = False
-
-            time.sleep(TIME_STEP)
+            
+            _t1 = datetime.datetime.now()
+            #fix schedular bug...? hmm
+            _TIME_STEP = TIME_STEP/TIME_SPLIT
+            for i in range(TIME_SPLIT):
+                time.sleep(_TIME_STEP)
+            print("cycle_time:", _t1 - datetime.datetime.now())
+            
             print("------------ cycle {} ------------ ".format(grid.cycle))
             #for k,v in grid.state.items():
             #    print(k,v)

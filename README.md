@@ -6,3 +6,9 @@ LOCAL INSTALL PROCEEDURE:
 2. Clone the repository
 3. Navigate to the vacuumworld directory (the one that contains setup.py) in terminal
 4. pip install -e .
+
+
+PIPY UPDATE:
+
+python3 setup.py sdist bdist_wheel
+python -m twine upload dist/* 
