@@ -782,8 +782,13 @@ TIME_SPLIT = 1000
 def simulate():
     try:
         def wait():
+            _t1 = time.time() * 1000
             play_event.wait()
-            return play_event.is_set()
+            is_set =  play_event.is_set()
+            print("wait()_time:", time.time() * 1000 - _t1)
+            return is_set
+
+        
         global reset
         global should_update
         global user_mind
@@ -800,15 +805,19 @@ def simulate():
             _TIME_STEP = TIME_STEP/TIME_SPLIT
             for i in range(TIME_SPLIT):
                 time.sleep(_TIME_STEP)
-            print("cycle_time:", _t1 -  time.time() * 1000)
+            print("sleep_time:", time.time() * 1000 - _t1)
             
             print("------------ cycle {} ------------ ".format(grid.cycle))
             #for k,v in grid.state.items():
             #    print(k,v)
+            
+            _t1 = time.time() * 1000
             env.evolveEnvironment()
+            print("evolve_time:", time.time() * 1000 - _t1)
+
             grid.cycle += 1
             if not finish:
                 root.after(0, main_interface._redraw)
-
+            
     except:
         _error()
