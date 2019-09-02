@@ -776,8 +776,8 @@ def run(_minds, skip = False, play = False, speed = 0, load = None):
 
 #TODO, be able to select user mind from gui
 
-TIME_SPLIT = 100
-import datetime
+TIME_SPLIT = 1000
+
 
 def simulate():
     try:
@@ -795,12 +795,12 @@ def simulate():
                 grid.cycle = 0
                 reset = False
             
-            _t1 = datetime.datetime.now()
+            _t1 = time.time() * 1000
             #fix schedular bug...? hmm
             _TIME_STEP = TIME_STEP/TIME_SPLIT
             for i in range(TIME_SPLIT):
                 time.sleep(_TIME_STEP)
-            print("cycle_time:", _t1 - datetime.datetime.now())
+            print("cycle_time:", _t1 -  time.time() * 1000)
             
             print("------------ cycle {} ------------ ".format(grid.cycle))
             #for k,v in grid.state.items():
