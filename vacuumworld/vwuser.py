@@ -63,8 +63,7 @@ class MediumUser:
         self.id = None
         
     def do(self): 
-        #for obs in self.observation:
-        #  print(obs)
+
 
         #there is a wall forward of the agent
         if not self.observation.forward:

@@ -55,7 +55,7 @@ class AutocompleteEntry(tk.Entry):
                     self.lb_up = False
         
     def selection(self, event):
-        print(event)
+        #print(event)
         if self.lb_up:
             self.var.set(self.lb.get(tk.ACTIVE))
             self.lb.destroy()
@@ -64,7 +64,7 @@ class AutocompleteEntry(tk.Entry):
 
     def up(self, event):
         if self.lb_up and not self.lb.curselection() == ():
-            print('up', self.lb.curselection())
+            #print('up', self.lb.curselection())
             index = self.lb.curselection()[0]
             if index >= 0:
                 self.lb.yview_scroll(-1, "units")
@@ -76,7 +76,7 @@ class AutocompleteEntry(tk.Entry):
 
     def down(self, event):
         if self.lb_up:
-            print('down', self.lb.curselection(), len(self.lista))
+            #print('down', self.lb.curselection(), len(self.lista))
             if self.lb.curselection() == ():
                 self.lb.selection_set(first=0)
                 self.lb.activate(0) 
@@ -86,16 +86,15 @@ class AutocompleteEntry(tk.Entry):
             if int(index) + 1 < len(self.lista):
                 if int(index) + 1 >= self.height:
                     self.lb.yview_scroll(1, "units") 
-                    print('scroll')
+                    #print('scroll')
                 
                 self.lb.selection_clear(first=index)
                 index = str(int(index)+1)        
                 self.lb.selection_set(first=index)
                 self.lb.activate(index) 
-
-
+                
     def comparison(self):
-        print("compare")
+        #print("compare")
         pattern = re.compile('.*' + self.var.get() + '.*')
         return [w for w in self.lista if re.match(pattern, w)]
 

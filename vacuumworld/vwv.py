@@ -590,7 +590,7 @@ class VWInterface(tk.Frame):
             if coord in self.canvas_agents:
                 self.canvas.delete(self.canvas_agents[coord])
             self.canvas_agents[coord] = drag_manager.drag
-        print("DROP:", self.grid.state[coord])
+        print("INFO: drop", self.grid.state[coord])
         
         self.select(event)
 
@@ -762,9 +762,6 @@ def run(_minds, skip = False, play = False, speed = 0, load = None):
             main_interface._redraw()
             print("INFO: successfully loaded: ", load)
             
-        #print(dir(main_menu.canvas))
- 
-        
         global env_thread
         global play_event, finish, reset
 
@@ -849,4 +846,4 @@ class TimeRecord:
         self._t = time.time() * 1000
     
     def __exit__(self, type, value, traceback):
-        print("{0} time: {1}".format(self._name, time.time()  * 1000 - self._t))
+        print("INFO: {0} time: {1}".format(self._name, time.time()  * 1000 - self._t))

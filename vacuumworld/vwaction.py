@@ -43,7 +43,7 @@ class DropExecutor(Executor):
 
             env.ambient.grid.place_dirt(agent.coordinate, env.ambient.grid.dirt(action.colour))
             #location = env.ambient.grid.state[agent.coordinate]
-            #print(location)
+           
             #TODO add new dirt to list of objects in ambient
         
 class CommunicativeExecutor(Executor):
@@ -126,7 +126,6 @@ class SpeakActionFactory(ActionFactory):
     def __call__(self, _message, *_to):
         assert(isinstance(_message, (str, int, float, bool)))
         for t in _to:
-            #print(_actor, _message, _to)
             assert(isinstance(t, str))
         return CommunicativeAction(_message, *_to)
     
