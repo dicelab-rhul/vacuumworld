@@ -615,13 +615,13 @@ def _fast():
     global TIME_STEP, TIME_STEP_BASE, TIME_STEP_MODIFIER
     TIME_STEP_MODIFIER /= 2.
     TIME_STEP = TIME_STEP_BASE * TIME_STEP_MODIFIER + TIME_STEP_MIN
-    print("INFO: simulation speed set to: {:10.4f} s/cycle".format(TIME_STEP))
+    print("INFO: simulation speed set to {:1.4f} s/cycle".format(TIME_STEP))
 
 def reset_time_step():
     global TIME_STEP, TIME_STEP_BASE, TIME_STEP_MODIFIER
     TIME_STEP_MODIFIER = 1.
     TIME_STEP = TIME_STEP_BASE * TIME_STEP_MODIFIER + TIME_STEP_MIN
-    print("INFO: simulation speed set to: {:10.4f} s/cycle".format(TIME_STEP))
+    print("INFO: simulation speed set to {:1.4f} s/cycle".format(TIME_STEP))
 
 def _difficulty():
     global user_mind
@@ -778,7 +778,7 @@ def run(_minds, skip = False, play = False, speed = 0, load = None):
         global TIME_STEP_MODIFIER
         TIME_STEP_MODIFIER = 1 - speed
         TIME_STEP = TIME_STEP_BASE * TIME_STEP_MODIFIER + TIME_STEP_MIN
-        print("INFO: simulation speed set to: {:5.4f} s/cycle".format(TIME_STEP))
+        print("INFO: simulation speed set to {:1.4f} s/cycle".format(TIME_STEP))
                 
         if play:
             _play()
