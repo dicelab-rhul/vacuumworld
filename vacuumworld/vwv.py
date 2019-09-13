@@ -41,6 +41,7 @@ ROOT_FONT = "Verdana 10 bold" #font.Font(family='Helvetica', size=36, weight='bo
 BUTTON_PATH = PATH + "/res/"
 LOCATION_AGENT_IMAGES_PATH = PATH + "/res/locations/agent"
 LOCATION_DIRT_IMAGES_PATH = PATH + "/res/locations/dirt"
+MAIN_MENU_IMAGE_PATH = PATH + "/res/start_menu.png"
 DEFAULT_LOCATION_SIZE = 60
 DEFAULT_GRID_SIZE = 480
 BACKGROUND_COLOUR_SIDE = 'white'
@@ -106,18 +107,25 @@ class VWMainMenu(tk.Frame):
     def __init__(self, root, _start, _exit):
         super(VWMainMenu,self).__init__(root)
         self.configure(background='white')
-        self.canvas = tk.Canvas(self, width=480,
-                                height=480,
+        WIDTH = 480
+        HEIGHT = 480
+        self.canvas = tk.Canvas(self, width=WIDTH + 1,
+                                height=HEIGHT + 1,
                                 bd=0,
                                 highlightthickness=0)
-        self.canvas.create_rectangle(0,0,481,481,fill="blue") # placeholder for image
+        #self.canvas.create_rectangle(0,0,481,481,fill="blue") # placeholder for image
+        
+        self.image_tk = tk.PhotoImage(file=MAIN_MENU_IMAGE_PATH)
+        self.image = self.canvas.create_image(WIDTH/2,HEIGHT/2,image=self.image_tk)
+        
+        self.button_frame = tk.Frame(self)
+        
+        #self.canvas.create_window(WIDTH/2, HEIGHT-100, window =  self.button_frame)
         self.canvas.pack()
-
         self.buttons = {}
 
         button_image = ImageTk.PhotoImage(Image.open(BUTTON_PATH + 'button.png'))
-        self.button_frame = tk.Frame(self)
-
+        
         self.buttons['start'] = VWButton(self.button_frame, button_image, _start, 'start')
         self.buttons['exit'] = VWButton(self.button_frame, button_image, _exit, 'exit')
         self.buttons['start'].pack('left')
@@ -757,7 +765,7 @@ def run(_minds, skip = False, play = False, speed = 0, load = None):
 
         play_event = Event()
 
-        env_thread = Thread(target=simulate, daemon=False)
+        env_thread = Thread(target=simulate, daemon=True)
         env_thread.start()
         
         #set up simulation speed
@@ -776,16 +784,11 @@ def run(_minds, skip = False, play = False, speed = 0, load = None):
 
 #TODO, be able to select user mind from gui
 
-TIME_SPLIT = 1000
-
-
 def simulate():
     try:
         def wait():
-            _t1 = time.time() * 1000
             play_event.wait()
             is_set =  play_event.is_set()
-            print("wait()_time:", time.time() * 1000 - _t1)
             return is_set
 
         
@@ -794,30 +797,48 @@ def simulate():
         global user_mind
 
         while wait() and not finish:
-            if reset:
-                global env
-                env = init_environment(grid, minds, user_mind)
-                grid.cycle = 0
-                reset = False
+            #with TimeRecord(str(TIME_STEP)): #ms:
+            with Sleep(TIME_STEP*1000):
+                if reset:
+                    global env
+                    env = init_environment(grid, minds, user_mind)
+                    grid.cycle = 0
+                    reset = False
+                
+                print("------------ cycle {} ------------ ".format(grid.cycle))
+                
+                env.evolveEnvironment()
             
-            _t1 = time.time() * 1000
-            #fix schedular bug...? hmm
-            _TIME_STEP = TIME_STEP/TIME_SPLIT
-            for i in range(TIME_SPLIT):
-                time.sleep(_TIME_STEP)
-            print("sleep_time:", time.time() * 1000 - _t1)
-            
-            print("------------ cycle {} ------------ ".format(grid.cycle))
-            #for k,v in grid.state.items():
-            #    print(k,v)
-            
-            _t1 = time.time() * 1000
-            env.evolveEnvironment()
-            print("evolve_time:", time.time() * 1000 - _t1)
+                grid.cycle += 1
+                if not finish:
+                    root.after(0, main_interface._redraw)
 
-            grid.cycle += 1
-            if not finish:
-                root.after(0, main_interface._redraw)
-            
     except:
         _error()
+        
+        
+t = lambda: int(round(time.time() * 1000))
+
+class Sleep:
+    
+    def __init__(self, wait):
+        self.wait = wait
+       
+    def __enter__(self):
+        self.start = t()
+        self.finish = self.start + self.wait
+    
+    def __exit__(self, type, value, traceback):
+        while t() < self.finish:
+            time.sleep(1./1000.)  
+            
+class TimeRecord:
+    
+    def __init__(self, name):
+        self._name = name
+    
+    def __enter__(self,):
+        self._t = time.time() * 1000
+    
+    def __exit__(self, type, value, traceback):
+        print("{0} time: {1}".format(self._name, time.time()  * 1000 - self._t))
