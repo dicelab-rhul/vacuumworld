@@ -18,13 +18,13 @@ class Slider(tk.Canvas):
         self.slider_image = img
         self.slide_item_dim = slider_width
         
-        self.x = start
-        self.inc = 0
+        self.x = start #real position of the slider
+        self.inc = 0   #incremental position of the slider [0-increments] 
         if start > width:
             start = width - self.slide_item_dim/2
         if increments: 
-            inc = int((width - self.slide_item_dim) / self.increments)
-            self.x = start * inc
+            dx = int((width - self.slide_item_dim) / self.increments)
+            self.x = start * dx
             self.inc = start
             
 
@@ -34,6 +34,18 @@ class Slider(tk.Canvas):
         self.bind("<B1-Motion>", self.on_drag)
         self.bind("<ButtonRelease-1>", self.on_drop)
     
+    def set_position(self, inc, callback=True):
+        if inc != self.inc:
+            inc = max(0, min(inc, self.increments))
+            width = self.winfo_width() - self.slide_item_dim
+            old_x = self.x
+            self.x = inc * int(width / self.increments)
+            self.inc = inc
+            self.move(self.slider_item, self.x - old_x, 0)
+            if callback:
+                self.slide_callback(self.inc)
+                self.release_callback(self.inc)
+        
     def _move_slider(self, event):
         width = self.winfo_width() - self.slide_item_dim
         x = event.x     

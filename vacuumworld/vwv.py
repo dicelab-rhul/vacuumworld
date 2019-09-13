@@ -449,7 +449,7 @@ class VWInterface(tk.Frame):
         self.canvas_agents.clear()
 
     def _redraw(self):
-        self._reset_canvas(lines=False, )
+        self._reset_canvas(lines=False)
         inc = DEFAULT_GRID_SIZE / self.grid.dim
         for coord, location in grid.state.items():
             if location:
@@ -643,8 +643,10 @@ def _load(saveloadmenu):
             print('INFO: load:', file)
             data = saveload.load(file)
             if data is not None:
+                main_interface.grid_scale_slider.set_position(data.dim - grid.GRID_MIN_SIZE)
                 grid.replace_all(data)
                 main_interface._redraw()
+
             
             
     
@@ -659,11 +661,13 @@ def _reset():
 
 def _play():
     print('INFO: play')
+
     play_event.set()
-    main_interface.deselect()
-    main_interface.running = True
     main_interface.pack_buttons('stop', 'pause', 'fast')
     main_interface.show_hide_side('hidden')
+    main_interface.deselect()
+    main_interface.running = True
+              
 
 def _stop():
     print('INFO: stop')
@@ -677,6 +681,7 @@ def _stop():
 
 def _resume():
     print('INFO: resume')
+    
     play_event.set()
     main_interface.pack_buttons('stop', 'pause','fast')
 
@@ -790,15 +795,17 @@ def run(_minds, skip = False, play = False, speed = 0, load = None):
 def simulate():
     try:
         def wait():
+            should_sleep = not play_event.is_set()
             play_event.wait()
-            is_set =  play_event.is_set()
-            return is_set
-
+            if should_sleep:
+                with Sleep(TIME_STEP*1000):
+                     pass
+            return True
         
         global reset
         global should_update
         global user_mind
-
+        
         while wait() and not finish:
             #with TimeRecord(str(TIME_STEP)): #ms:
             with Sleep(TIME_STEP*1000):

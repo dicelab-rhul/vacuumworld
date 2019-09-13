@@ -81,6 +81,7 @@ class Grid:
         self.cycle = 0
        
     def replace_all(self, grid):
+        self.dim = grid.dim
         self.state = grid.state
         self.agent_count = grid.agent_count
         self.dirt_count = grid.dirt_count
