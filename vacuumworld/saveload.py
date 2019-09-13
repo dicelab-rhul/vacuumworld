@@ -8,18 +8,32 @@ Created on Tue Jun  4 16:39:05 2019
 
 import os
 import pickle
+import traceback
 
+FILE_PATH = "files/"
+
+def init():
+    if not os.path.isdir("./" + FILE_PATH):
+        os.mkdir("./" + FILE_PATH)
+    
 def save(grid, file):
     if not file.endswith('.vw'):
         file = file + ".vw"
-    with open(file, 'wb') as f:
-         pickle.dump(grid, f)
+    try: 
+        with open(FILE_PATH + file, 'wb') as f:
+             pickle.dump(grid, f)
+    except:
+        traceback.print_exc()
     
 def load(file):
     if not file.endswith('.vw'):
         file = file + ".vw"
-    with open(file, 'rb') as f:
-        return pickle.load(f)
+    try:
+        with open(FILE_PATH + file, 'rb') as f:
+            return pickle.load(f)
+    except:
+        traceback.print_exc()
+
 
 def exists(file):
     file = format_file(file)
@@ -31,6 +45,9 @@ def format_file(file):
     return file
 
 def files():
-    return [file for file in os.listdir('.') if file.endswith(".vw")]
-    
+    try:
+        return [file for file in os.listdir('./' + FILE_PATH) if file.endswith(".vw")]
+    except:
+        traceback.print_exc()
+        return []
 

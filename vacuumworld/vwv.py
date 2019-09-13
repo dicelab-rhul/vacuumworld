@@ -630,7 +630,7 @@ def _difficulty():
 def _save(saveloadmenu):
     file = saveloadmenu.var.get()
     if len(file) > 0:
-        print('save', file)
+        print('INFO: save', file)
         saveload.save(grid, file)
         saveloadmenu.lista = saveload.files()
 
@@ -640,15 +640,17 @@ def _load(saveloadmenu):
         if not file.endswith('.vw'):
             file = file + ".vw"
         if file in saveloadmenu.lista:
-            print('load', file)
-            grid.replace_all(saveload.load(file))
-            main_interface._redraw()
+            print('INFO: load:', file)
+            data = saveload.load(file)
+            if data is not None:
+                grid.replace_all(data)
+                main_interface._redraw()
             
             
     
 #resets the grid and enviroment
 def _reset():
-    print('reset')
+    print('INFO: reset')
     global reset
     reset = True
     main_interface._reset_canvas(lines=False)
@@ -656,7 +658,7 @@ def _reset():
     reset_time_step()
 
 def _play():
-    print('play')
+    print('INFO: play')
     play_event.set()
     main_interface.deselect()
     main_interface.running = True
@@ -664,7 +666,7 @@ def _play():
     main_interface.show_hide_side('hidden')
 
 def _stop():
-    print('stop')
+    print('INFO: stop')
     global reset
     reset = True
     play_event.clear()
@@ -674,18 +676,18 @@ def _stop():
     main_interface.show_hide_side('normal')
 
 def _resume():
-    print('resume')
+    print('INFO: resume')
     play_event.set()
     main_interface.pack_buttons('stop', 'pause','fast')
 
 def _pause():
-    print('pause')
+    print('INFO: pause')
     play_event.clear()
     reset_time_step()
     main_interface.pack_buttons('stop', 'resume','fast')
 
 def _back():
-    print('back')
+    print('INFO: back')
     play_event.clear()
     main_interface.pack_forget()
     main_menu.pack()
@@ -731,7 +733,7 @@ def run(_minds, skip = False, play = False, speed = 0, load = None):
         user_mind = 0
 
         grid = Grid(INITIAL_ENVIRONMENT_DIM)
-
+        saveload.init()
         #saveload.load('/test.vw', grid)
         
         if not skip:    
@@ -756,7 +758,8 @@ def run(_minds, skip = False, play = False, speed = 0, load = None):
             print("INFO: successfully loaded: ", load)
             
         #print(dir(main_menu.canvas))
-
+ 
+        
         global env_thread
         global play_event, finish, reset
 
@@ -812,10 +815,8 @@ def simulate():
                 grid.cycle += 1
                 if not finish:
                     root.after(0, main_interface._redraw)
-
     except:
         _error()
-        
         
 t = lambda: int(round(time.time() * 1000))
 
