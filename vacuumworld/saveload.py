@@ -46,7 +46,9 @@ def format_file(file):
 
 def files():
     try:
-        return [file for file in os.listdir('./' + FILE_PATH) if file.endswith(".vw")]
+        f = [file for file in os.listdir('./' + FILE_PATH) if file.endswith(".vw")]
+        f.sort()
+        return f
     except:
         traceback.print_exc()
         return []
