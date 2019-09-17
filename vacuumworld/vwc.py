@@ -60,14 +60,23 @@ _colour_dirt = set(['orange','green'])
 _colour_agent = set(['orange','green','white'])
 _colour_user = set(['user'])
 
-action_names = namedtuple('action_names', 'move turn clean drop idle speak')('move','turn','drop','clean','idle','speak')
+move = namedtuple('move', '')
+turn = namedtuple('turn', 'direction')
+clean = namedtuple('clean', '')
+drop = namedtuple('drop', '')
+idle = namedtuple('idle', '')
+speak = namedtuple('speak', 'message to')
+action_types = namedtuple('actions_types', 'move turn clean drop idle speak')(move, turn, clean, drop, idle, speak)
 
 action = namedtuple('actions', 'move turn clean idle speak')(
-                    lambda : ('move',), 
-                    lambda _direction : ('turn', _direction), 
-                    lambda : ('clean',), 
-                    lambda : None, 
-                    lambda message, *to : ('speak', message, *to))
+                    lambda : move(), 
+                    lambda _direction : turn(_direction),  
+                    lambda : clean(),
+                    lambda : idle(),
+                    lambda message, *to : speak(message, to))
+
+
+
 
 def random(actions, p=None):
     if p is None:

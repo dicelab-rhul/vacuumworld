@@ -44,30 +44,50 @@ class VWMind(Mind):
         
         messages = [percept for percept in self.body._sensors["communication"]]
         self.surrogate.revise(*observation, messages)
-        
-        physical_action = self.surrogate.do()
-        communicative_action = self.surrogate.speak()
-        
-        if communicative_action is not None:
-            validate_action(communicative_action)
-            _assert(communicative_action[0] == vwc.action_names.speak, 'please use vwc.action.speak for communication')
-            _assert(len(communicative_action) >= 2, 'please use vwc.action.speak for communication')
-            action = vwaction._action_factories[communicative_action[0]](*communicative_action[1:])
-            actuator, = self.body.find_actuators(action)
-            actuator.attempt(action)
-            
-        if physical_action is not None:
+    
+        actions = self.surrogate.decide()
 
-            validate_action(physical_action)
-            _assert(physical_action[0] != vwc.action_names.speak, 'please use speak() for communication and not do()')
-            action = vwaction._action_factories[physical_action[0]](*physical_action[1:])
-            actuator = self.body.find_actuators(action)
-            _assert(len(actuator) == 1, 'invalid action ' + physical_action[0] + ' for agent') #the actuator doesnt exists for the agent?
-            actuator[0].attempt(action)
-              
+        if actions is None:
+            return
+        
+        speak_actions = []
+        physical_actions = []
+
+        if isinstance(actions, tuple):
+            if type(actions) in vwc.action_types:
+               actions = [actions]
+            for action in actions:
+                if action is None:
+                    continue
+                if type(action) in vwc.action_types:
+                    if type(action) == vwc.idle:
+                        continue
+                    if type(action) == vwc.speak:
+                        _a = vwaction._action_factories[type(action).__name__](action.message, *action.to)
+                        speak_actions.append((_a, type(action).__name__))
+                    else:
+                        _a = vwaction._action_factories[type(action).__name__](*action[:])
+                        physical_actions.append((_a, type(action).__name__))
+                elif callable(action):
+                    raise ActionError(str(action) + " should not be callable, did you forget ()?")
+                else:
+                    raise ActionError(str(action) + " is an invalid action.")
+                    
+            _assert(len(speak_actions) <= 1, ' an agent can perform at most one speech action per cycle, attempted:' + str([s[1] for s in speak_actions]))
+            _assert(len(physical_actions) <= 1, 'an agent can perform at most one physical action per cycle, attempted:' +  str([s[1] for s in physical_actions]))
+            
+            for action in speak_actions + physical_actions:
+                actuators = self.body.find_actuators(action[0])
+                _assert(len(actuators) == 1,  str(action[1]) + ' for agent - actuator does not exist')
+                actuators[0].attempt(action[0])
+        else:
+            raise ActionError(str(actions) + " is an invalid action.")
+        
 def validate_action(action):
-    _assert(isinstance(action, tuple), str(action) + 'please make use of vwc.action')
-    _assert(action[0] in vwc.action_names,  str(action) + 'must be one of ' + str(list(vwc.action_names)) + ' from vwc.action')
+    pass
+    #_assert(not callable(action), 'invalid action, did you forget to call the action? - e.g. move()')
+    #_assert(isinstance(action, tuple), str(action) + 'please make use of vwc.action')
+   #_assert(action[0] in vwc.action_names,  str(action) + 'must be one of ' + str(list(vwc.action_names)) + ' from vwc.action')
 
 class ActionError(Exception):
     

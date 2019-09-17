@@ -129,9 +129,9 @@ class SpeakActionFactory(ActionFactory):
             assert(isinstance(t, str))
         return CommunicativeAction(_message, *_to)
     
-_action_factories = {'move':lambda: MoveAction(), 
-                     'clean':lambda: CleanAction(), 
-                     'idle':lambda: None,
-                     'turn':TurnActionFactory(), 
-                     'drop':DropActionFactory(),
-                     'speak':SpeakActionFactory()}
+_action_factories = {vwc.move.__name__:lambda: MoveAction(), 
+                     vwc.clean.__name__:lambda: CleanAction(), 
+                     vwc.idle.__name__:lambda: None,
+                     vwc.turn.__name__:TurnActionFactory(), 
+                     vwc.drop.__name__:DropActionFactory(),
+                     vwc.speak.__name__:SpeakActionFactory()}

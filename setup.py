@@ -9,7 +9,7 @@ Created on Sun Jun  2 21:22:31 2019
 import setuptools
 
 setuptools.setup(name='vacuumworld',
-      version='4.1.0',
+      version='4.1.1',
       description='',
       url='https://github.com/dicelab-rhul/vacuumworld',
       author='Benedict Wilkins',

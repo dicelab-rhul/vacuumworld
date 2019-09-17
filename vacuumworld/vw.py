@@ -26,44 +26,47 @@ class VacuumWorldInternalError(Exception):
     
 #TODO throw errors instead of returning
 def __validate_mind(agent, colour):
-    agent_dir = set(dir(agent))
+            
+    def decide_def(fun):
+        if not callable(fun):
+            raise VacuumWorldInternalError("{0} agent: decide must be callable".format(colour))            
+        if len(signature(fun).parameters) != 0:
+            raise VacuumWorldInternalError("{0} agent: decide must be defined with no arguments, do(self)".format(colour))
     
-    if not 'do' in agent_dir:
-        print('ERROR:' + colour + ' agent must define the do method')
-        return False
-    else:
-        if not callable(agent.do):
-            print('ERROR:' + colour + 'agent do must be callable')
-            return False
-        if len(signature(agent.do).parameters) != 0:
-            print('ERROR:' + colour + ': agent do must be defined with no arguments, do(self) or do()')
-            return False
-        
-    if not 'revise' in agent_dir:
-        print('ERROR:' + colour + ' agent must define the revise method')
-        return False
-    else:
-        if not callable(agent.revise):
-            print('ERROR:' + colour + ' agent revise must be callable')
-            return False
+    def revise_def(fun):
+        if not callable(fun):
+            raise VacuumWorldInternalError("{0} agent: revise must be callable".format(colour, fun.__name__))            
+        if len(signature(fun).parameters) != 2:
+            raise VacuumWorldInternalError("{0} agent: revise must be defined with two arguments, revise(self, observation, messages)".format(colour))
+            
+    MUST_BE_DEFINED = {'decide':decide_def, 
+                       'revise':revise_def}
+    agent_dir = set(dir(agent))
 
-        if len(signature(agent.revise).parameters) != 2:
-            print('ERROR:' + colour + ' agent revise must be defined with two arguments, revise(self, observation, messages) or revise(observation, messages)')
-            return False
-        
-    if not 'speak' in agent_dir:
-        print('ERROR:' + colour + ':agent must define the speak method')
-        return False
+    for fun,validate in MUST_BE_DEFINED.items():
+        if fun in agent_dir:
+            validate(getattr(agent, fun))
+        else:
+            raise VacuumWorldInternalError("{0} agent: must define method: {1}".format(colour, fun))
+            
+    #must contain grid_size... for the coursework, really we should place this somewhere else as it is not general!
+    if 'grid_size' in agent_dir:
+        agent.grid_size = -1
     else:
-        if not callable(agent.speak):
-            print('ERROR:' + colour + ' agent speak must be callable')
-            return False
-        if len(signature(agent.speak).parameters) != 0:
-            print('ERROR:' + colour + ' agent speak must be defined with no arguments, speak(self) or speak()')
-            return False
-    return True
+        raise VacuumWorldInternalError("{0} agent: must define the attribute: grid_size, (see coursework question 1)".format(colour)) 
+        
+    #do some sneaky stuff!!!
+    def sneaky_setattr(self, key, value):
+        print("SNEAKY!", key, value)
+        if key != '_changed':
+            self._changed = True
+       # super(Point, self).__setattr__(key, value)
+           
+    agent.__setattr__ = sneaky_setattr
+        
+    return True    
+    
 
-#change the name to grid if you want!
 class Grid:
     DIRECTIONS = {'north':(0,-1), 'south':(0,1), 'west':(-1,0), 'east':(1,0)}
     

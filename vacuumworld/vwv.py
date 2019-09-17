@@ -77,6 +77,10 @@ class VWButton:
         
     def grid(self, row, col):
         self._button.grid(row=row,column=col)
+        
+    def destroy(self):
+        self._button.destroy()
+        self.img.destroy()
 
 class VWDifficultyButton(VWButton):
 
@@ -251,7 +255,7 @@ class VWInterface(tk.Frame):
         self.button_frame = tk.Frame(self, bg=bg)
 
 
-        play_tk = tk.PhotoImage(file=BUTTON_PATH + buttons['play'])
+        play_tk = tk.PhotoImage(file=BUTTON_PATH + buttons['play']) # ImageTk.PhotoImage(Image.open(BUTTON_PATH + buttons['play'])) #
         #play_tk = Image.open(BUTTON_PATH + buttons['play'])
         
         #left side contains buttons and slider
@@ -699,9 +703,9 @@ def _back():
 
 def _error(*_):
     traceback.print_exc()
-    _finish()
 
 def _finish():
+    global root
     root.destroy()
     global finish
     finish = True
@@ -718,16 +722,14 @@ def run(_minds, skip = False, play = False, speed = 0, load = None):
     assert(speed >= 0 and speed <= 1)
         
   #  import saveload
-
+    global root
+    tk.Tk.report_callback_exception = _error
+    root = tk.Tk()
+    root.title("Vacuum World")
+    root.protocol("WM_DELETE_WINDOW", _finish)
+    root.configure(background='white')
+    
     try:
-        global root
-        tk.Tk.report_callback_exception = _error
-
-        root = tk.Tk()
-        root.title("Vacuum World")
-        root.protocol("WM_DELETE_WINDOW", _finish)
-        root.configure(background='white')
-
         global main_menu
         global main_interface
         global grid
@@ -770,7 +772,7 @@ def run(_minds, skip = False, play = False, speed = 0, load = None):
 
         play_event = Event()
 
-        env_thread = Thread(target=simulate, daemon=True)
+        env_thread = Thread(target=simulate, daemon=False)
         env_thread.start()
         
         #set up simulation speed
@@ -782,10 +784,14 @@ def run(_minds, skip = False, play = False, speed = 0, load = None):
                 
         if play:
             _play()
-
         root.mainloop()
+        
     except:
         _error()
+        _finish()
+
+
+
 
 #TODO, be able to select user mind from gui
 
@@ -820,7 +826,8 @@ def simulate():
                 if not finish:
                     root.after(0, main_interface._redraw)
     except:
-        _error()
+       _error()
+       root.after(0, _finish)
         
 t = lambda: int(round(time.time() * 1000))
 

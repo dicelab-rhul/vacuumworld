@@ -47,14 +47,6 @@ def run(white_mind, green_mind=None, orange_mind=None, **kwargs):
                      vwc.colour.green:green_mind, 
                      vwc.colour.orange:orange_mind}, **kwargs)
 
-from .vwagent import VWMind
-import inspect
 
-def grid_size(size):    #for marking purposes    
-    #sneaky.... do not try at home ;)
-    caller = inspect.currentframe().f_back
-    while not isinstance(caller.f_locals.get('self', None), VWMind):
-        caller = caller.f_back
-    print("Agent <{0}> has found n={1}".format(caller.f_locals['self'].body.ID, size))
 
 
