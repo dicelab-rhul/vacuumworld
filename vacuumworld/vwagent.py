@@ -33,9 +33,12 @@ class VWBody(Body):
 
 class VWMind(Mind):
     
-    def __init__(self, surrogate):
+    def __init__(self, surrogate, observers = []):
         super(VWMind, self).__init__()
         self.surrogate = surrogate
+        self.observers = []
+        for observer in observers:
+            self.observers.append()
        
     def cycle(self):
  
@@ -82,6 +85,10 @@ class VWMind(Mind):
                 actuators[0].attempt(action[0])
         else:
             raise ActionError(str(actions) + " is an invalid action.")
+            
+            
+        
+        
         
 def validate_action(action):
     pass

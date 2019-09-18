@@ -27,6 +27,7 @@ from .vw import Grid
 from .vwenvironment import init as init_environment
 from . import vwc
 from . import saveload
+from . import vwuser
 
 #might need to change this for the real package...
 PATH = os.path.dirname(__file__)
@@ -47,7 +48,7 @@ DEFAULT_GRID_SIZE = 480
 BACKGROUND_COLOUR_SIDE = 'white'
 BACKGROUND_COLOUR_GRID = 'white'
 
-DIFFICULTY_LEVELS = 3
+DIFFICULTY_LEVELS = len(vwuser.USERS)
 INITIAL_ENVIRONMENT_DIM = 8
 
 def get_location_img_files(path):

@@ -29,7 +29,7 @@ class EasyUser:
         self.actions = [action.drop(vwc.colour.green), action.drop(vwc.colour.orange)]
         self.actions.extend(self.move_actions)
         
-    def do(self): 
+    def decide(self): 
 
         if not self.observation.forward: #there is a wall infront
             if not self.observation.left:
@@ -48,9 +48,6 @@ class EasyUser:
     
         #otherwise do a random action (including dropping dirt)
         return vwc.random(self.actions, [0.2, 0.2, 0.45, 0.075, 0.075])
-        
-    def speak(self):
-        pass
             
     def revise(self, observation, messages):
         self.id = observation.center.agent.name
@@ -62,9 +59,7 @@ class MediumUser:
         self.observation = None
         self.id = None
         
-    def do(self): 
-
-
+    def decide(self): 
         #there is a wall forward of the agent
         if not self.observation.forward:
             if not self.observation.left: #wall left and forward
@@ -125,16 +120,10 @@ class MediumUser:
     def random_all(self):
         return vwc.random([action.move(), action.drop(vwc.colour.green), action.drop(vwc.colour.orange),
                            action.turn(vwc.direction.left), action.turn(vwc.direction.right)], [0.6, 0.15, 0.15, 0.05, 0.05]) 
-#
-    def speak(self):
-        pass
             
     def revise(self, observation, messages):
         self.id = observation.center.agent.name
         self.observation = observation
 
-class HardUser:
-    pass
-        
 #the users that can be used in vacuumworld
-USERS = [EasyUser, MediumUser, HardUser]
+USERS = [EasyUser, MediumUser]

@@ -16,8 +16,6 @@ from .vwenvironment import GridEnvironment, GridAmbient
 AGENT_COLOURS = set(['user', 'orange', 'green', 'white'])
 DIRT_COLOURS = set(['orange', 'green'])
 
-
-
 def init(grid, minds):
     return GridEnvironment(GridAmbient(grid, minds))
 
@@ -26,7 +24,7 @@ class VacuumWorldInternalError(Exception):
     
 #TODO throw errors instead of returning
 def __validate_mind(agent, colour):
-            
+    
     def decide_def(fun):
         if not callable(fun):
             raise VacuumWorldInternalError("{0} agent: decide must be callable".format(colour))            
@@ -38,7 +36,7 @@ def __validate_mind(agent, colour):
             raise VacuumWorldInternalError("{0} agent: revise must be callable".format(colour, fun.__name__))            
         if len(signature(fun).parameters) != 2:
             raise VacuumWorldInternalError("{0} agent: revise must be defined with two arguments, revise(self, observation, messages)".format(colour))
-            
+             
     MUST_BE_DEFINED = {'decide':decide_def, 
                        'revise':revise_def}
     agent_dir = set(dir(agent))
@@ -48,24 +46,9 @@ def __validate_mind(agent, colour):
             validate(getattr(agent, fun))
         else:
             raise VacuumWorldInternalError("{0} agent: must define method: {1}".format(colour, fun))
-            
-    #must contain grid_size... for the coursework, really we should place this somewhere else as it is not general!
-    if 'grid_size' in agent_dir:
-        agent.grid_size = -1
-    else:
-        raise VacuumWorldInternalError("{0} agent: must define the attribute: grid_size, (see coursework question 1)".format(colour)) 
-        
-    #do some sneaky stuff!!!
-    def sneaky_setattr(self, key, value):
-        print("SNEAKY!", key, value)
-        if key != '_changed':
-            self._changed = True
-       # super(Point, self).__setattr__(key, value)
-           
-    agent.__setattr__ = sneaky_setattr
         
     return True    
-    
+ 
 
 class Grid:
     DIRECTIONS = {'north':(0,-1), 'south':(0,1), 'west':(-1,0), 'east':(1,0)}

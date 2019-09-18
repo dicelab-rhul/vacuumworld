@@ -15,9 +15,24 @@ __all__ = ('vw', 'vwv', 'vwc')
 
 __MARKING = False
 __CURRENT = None
+__OBSERVE = {'grid_size':lambda *_: None}
+
 
 def run(white_mind, green_mind=None, orange_mind=None, **kwargs):
     
+    def validate_mind(mind, colour, observe):
+        for obs in observe:
+            if not obs in set(dir(mind)):
+                raise vw.VacuumWorldInternalError("{0} agent: must define the attribute: {1}, (see coursework question 1)".format(colour, obs)) 
+ 
+        def sneaky_setattr(self, name, value):
+            if name in observe: 
+                observe[name](mind, colour, name, value)
+            super(type(mind), self).__setattr__(name, value)
+        type(mind).__setattr__ = sneaky_setattr
+        
+        return vw.__validate_mind(mind, colour)
+        
     if green_mind is None:
         green_mind = white_mind
     if orange_mind is None:
@@ -39,9 +54,12 @@ def run(white_mind, green_mind=None, orange_mind=None, **kwargs):
              else:
                  raise ValueError('Incorrect marking password')
     else:
-        white_ok = vw.__validate_mind(white_mind, 'white')    
-        green_ok = vw.__validate_mind(green_mind, 'green')
-        orange_ok = vw.__validate_mind(orange_mind, 'orange')
+        white_ok = validate_mind(white_mind, 'white', __OBSERVE)    
+        green_ok = validate_mind(green_mind, 'green', __OBSERVE)
+        orange_ok = validate_mind(orange_mind, 'orange', __OBSERVE)
+        
+        #must contain grid_size... for the coursework, really we should place this somewhere else as it is not general!
+        
         if white_ok and green_ok and orange_ok:
             vwv.run({vwc.colour.white:white_mind, 
                      vwc.colour.green:green_mind, 
