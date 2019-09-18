@@ -8,7 +8,10 @@ Created on Sun Jun  2 23:16:51 2019
 
 
 from .vwc import location, dirt, agent, coord
+from .vwagent import VWMind
+import inspect
 from inspect import signature
+
 from .vwenvironment import GridEnvironment, GridAmbient
 
 #--------------------------------------------------------
@@ -48,7 +51,7 @@ def __validate_mind(agent, colour):
             raise VacuumWorldInternalError("{0} agent: must define method: {1}".format(colour, fun))
         
     return True    
- 
+
 
 class Grid:
     DIRECTIONS = {'north':(0,-1), 'south':(0,1), 'west':(-1,0), 'east':(1,0)}
