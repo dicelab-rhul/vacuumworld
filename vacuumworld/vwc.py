@@ -75,8 +75,15 @@ action = namedtuple('actions', 'move turn clean idle speak')(
                     lambda : idle(),
                     lambda message, *to : speak(message, to))
 
-
-
+def size(message):
+    _size = 0
+    if type(message) in (list, tuple): 
+        _size += len(message) + 1
+        for e in message:
+            _size += size(e)
+    else:
+        _size += len(str(message))
+    return _size
 
 def random(actions, p=None):
     if p is None:

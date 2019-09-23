@@ -8,10 +8,11 @@ Created on Sun Jun  2 23:16:51 2019
 
 
 from .vwc import location, dirt, agent, coord
-from .vwagent import VWMind
-import inspect
-from inspect import signature
+from .vwc import colour as vwcolour
+from .vwc import orientation as vworientation
 
+import random
+from inspect import signature
 from .vwenvironment import GridEnvironment, GridAmbient
 
 #--------------------------------------------------------
@@ -21,6 +22,9 @@ DIRT_COLOURS = set(['orange', 'green'])
 
 def init(grid, minds):
     return GridEnvironment(GridAmbient(grid, minds))
+
+def minds(mind):
+    return {colour:mind for colour in AGENT_COLOURS}
 
 class VacuumWorldInternalError(Exception):
     pass
@@ -52,6 +56,24 @@ def __validate_mind(agent, colour):
         
     return True    
 
+def random_grid(size, green, white, orange, user, orange_dirt, green_dirt):
+    assert green + white + orange + user <= size
+    assert orange_dirt + green_dirt <= size
+    grid = Grid(size)
+    #for agents
+    coords = random.choices([key for key,value in grid.state.items() if value is not None] , k = green + white + orange)
+    agents = {vwcolour.white:white, vwcolour.orange:orange, 
+              vwcolour.green:green, vwcolour.user:user}
+    for c, num in agents.items():
+        for j in range(num):
+            grid.place_agent(coords.pop(-1), grid.agent(c, random.choice(vworientation)))
+    #for dirts
+    dirts = {vwcolour.orange:orange_dirt,vwcolour.green:green}
+    coords = random.choices([key for key,value in grid.state.items() if value is not None] , k = orange_dirt + green_dirt)
+    for colour, num in dirts.items():
+        for j in range(num):
+            grid.place_dirt(coords.pop(-1), grid.dirt(colour))
+    return grid
 
 class Grid:
     DIRECTIONS = {'north':(0,-1), 'south':(0,1), 'west':(-1,0), 'east':(1,0)}
@@ -171,4 +193,16 @@ class Grid:
         loc = self.state[_coordinate]
         ag = loc.agent
         self.state[_coordinate] = location(_coordinate, agent(ag.name, ag.colour, orientation), loc.dirt)
+    
+
+
+
+    def __str__(self):
+        header = "{0}: size: {1}, agents: {2}, dirts: {3}, ".format(str(type(self)), self.dim, self.agent_count, self.dirt_count)
+        filled = {coord:location for coord,location in self.state.items()  if location is not None and (location.agent is not None or location.dirt is not None)}
+        body = "\n".join([str(location) for location in filled.values()])
+        return "\n".join([header, body])
+        
+    def __repr__(self):
+        return str(self)
 

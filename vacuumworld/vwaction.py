@@ -2,6 +2,9 @@ from pystarworlds.Event import Action, Executor
 
 from . import vwc
 
+import sys
+
+
 ###################### action executors ###################### 
 
 class MoveExecutor(Executor):
@@ -120,18 +123,49 @@ class TurnActionFactory(ActionFactory):
     
 class SpeakActionFactory(ActionFactory):
     
+    LIMIT = 10
+    
     def __init__(self):
         super(SpeakActionFactory, self).__init__()
         
     def __call__(self, _message, *_to):
-        assert(isinstance(_message, (str, int, float, bool)))
+        self.__validate_message(_message)
+        _size = vwc.size(_message)
+        if _size > SpeakActionFactory.LIMIT:
+            _message = self.__chop(_message)
         for t in _to:
             assert(isinstance(t, str))
         return CommunicativeAction(_message, *_to)
     
+    def __validate_message(self, message):
+        assert(type(message) in (str, int, float, bool, list, tuple, type(None)))
+        if type(message) in (list, tuple, set):
+            for e in message:
+               self.__validate_message(e)
+               
+    def __chop(self, message):
+        _size = vwc.size(message)
+
+        while _size > SpeakActionFactory.LIMIT and type(message) in (list, tuple):
+            if len(message) == 1:
+                message = message[0]
+                break
+            message, _size = self.__chop(message[:-1])
+        
+        if vwc.size(message) > SpeakActionFactory.LIMIT:
+            _t = type(message)
+            message = _t(str(message)[:SpeakActionFactory.LIMIT])
+            _size = vwc.size(message)
+        return message, _size
+
 _action_factories = {vwc.move.__name__:lambda: MoveAction(), 
                      vwc.clean.__name__:lambda: CleanAction(), 
                      vwc.idle.__name__:lambda: None,
                      vwc.turn.__name__:TurnActionFactory(), 
                      vwc.drop.__name__:DropActionFactory(),
                      vwc.speak.__name__:SpeakActionFactory()}
+
+
+
+    
+    

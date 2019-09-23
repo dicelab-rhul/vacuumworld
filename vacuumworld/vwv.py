@@ -827,8 +827,9 @@ def simulate():
                 if not finish:
                     root.after(0, main_interface._redraw)
     except:
-       _error()
-       root.after(0, _finish)
+        print("INFO: SIMULATION ERROR")
+        _error()
+        root.after(0, _finish)
         
 t = lambda: int(round(time.time() * 1000))
 
