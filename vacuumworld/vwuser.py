@@ -6,17 +6,7 @@ Created on Sun Jul 28 12:00:27 2019
 @author: ben
 """
 from . import vwc
-
-
-from collections import namedtuple
-
-#the actions a user may take
-action = namedtuple('user_actions', 'move turn drop idle speak')(
-                    lambda : ('move',), 
-                    lambda _direction : ('turn', _direction), 
-                    lambda _colour: ('drop', _colour), 
-                    lambda : ('idle',), 
-                    lambda message, *to : ('speak', message, *to))
+from .vwc import action
 
 
 

@@ -63,15 +63,16 @@ _colour_user = set(['user'])
 move = namedtuple('move', '')
 turn = namedtuple('turn', 'direction')
 clean = namedtuple('clean', '')
-drop = namedtuple('drop', '')
+drop = namedtuple('drop', 'colour')
 idle = namedtuple('idle', '')
 speak = namedtuple('speak', 'message to')
 action_types = namedtuple('actions_types', 'move turn clean drop idle speak')(move, turn, clean, drop, idle, speak)
 
-action = namedtuple('actions', 'move turn clean idle speak')(
+action = namedtuple('actions', 'move turn clean drop idle speak')(
                     lambda : move(), 
                     lambda _direction : turn(_direction),  
                     lambda : clean(),
+                    lambda _colour: drop(_colour),
                     lambda : idle(),
                     lambda message, *to : speak(message, to))
 
@@ -81,7 +82,7 @@ def size(message):
         _size += len(message) + 1
         for e in message:
             _size += size(e)
-    else:
+    elif message is not None:
         _size += len(str(message))
     return _size
 

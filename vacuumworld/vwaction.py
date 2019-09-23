@@ -2,9 +2,6 @@ from pystarworlds.Event import Action, Executor
 
 from . import vwc
 
-import sys
-
-
 ###################### action executors ###################### 
 
 class MoveExecutor(Executor):
@@ -123,7 +120,7 @@ class TurnActionFactory(ActionFactory):
     
 class SpeakActionFactory(ActionFactory):
     
-    LIMIT = 10
+    LIMIT = 100
     
     def __init__(self):
         super(SpeakActionFactory, self).__init__()
