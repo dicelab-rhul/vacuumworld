@@ -11,6 +11,7 @@ from .vwc import location, dirt, agent, coord
 from .vwc import colour as vwcolour
 from .vwc import orientation as vworientation
 
+
 import random
 from inspect import signature
 from .vwenvironment import GridEnvironment, GridAmbient

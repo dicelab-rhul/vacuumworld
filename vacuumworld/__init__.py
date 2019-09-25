@@ -9,9 +9,7 @@ Created on Sun Jun  2 21:23:17 2019
 from . import vw
 from . import vwv
 from . import vwc
-
-from .vwagent import VWMind
-import inspect
+from . import vwutils
 
 __all__ = ('vw', 'vwv', 'vwc')
 
@@ -21,13 +19,7 @@ __OBSERVE = {'grid_size':None}
 
 
 def run(white_mind, green_mind=None, orange_mind=None, **kwargs):
-    
-    def __agentID():
-        caller = inspect.currentframe().f_back
-        while not isinstance(caller.f_locals.get('self', None), VWMind):
-            caller = caller.f_back
-        return caller.f_locals['self'].body.ID
-    
+
     def __validate_mind(mind, colour, observe):
         for obs in observe:
             if not obs in set(dir(mind)):
@@ -35,7 +27,7 @@ def run(white_mind, green_mind=None, orange_mind=None, **kwargs):
         def sneaky_setattr(self, name, value):
             if name in observe: 
                 if observe[name] == None:
-                    print("Agent {0} updated {1}: {2}".format(__agentID(), name, value))
+                    print("Agent {0} updated {1}: {2}".format(vwutils.callerID(), name, value))
                 else:
                     observe[name](mind, colour, name, value)
             super(type(mind), self).__setattr__(name, value)

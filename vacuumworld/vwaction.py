@@ -1,6 +1,8 @@
-from pystarworlds.Event import Action, Executor
+from warnings import warn
 
+from pystarworlds.Event import Action, Executor
 from . import vwc
+from . import vwutils
 
 ###################### action executors ###################### 
 
@@ -129,7 +131,9 @@ class SpeakActionFactory(ActionFactory):
         self.__validate_message(_message)
         _size = vwc.size(_message)
         if _size > SpeakActionFactory.LIMIT:
-            _message = self.__chop(_message)
+            _osize = _size
+            _message, _size = self.__chop(_message)
+            vwutils.warn_agent("WARNING: Agent: {0} Message trimmed from {1} to {2}", _osize, _size)
         for t in _to:
             assert(isinstance(t, str))
         return CommunicativeAction(_message, *_to)
