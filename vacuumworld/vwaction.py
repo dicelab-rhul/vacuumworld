@@ -133,7 +133,7 @@ class SpeakActionFactory(ActionFactory):
         if _size > SpeakActionFactory.LIMIT:
             _osize = _size
             _message, _size = self.__chop(_message)
-            vwutils.warn_agent("WARNING: Agent: {0} Message trimmed from {1} to {2}", _osize, _size)
+            vwutils.warn_agent("Agent: {0} message trimmed from {1} to {2}", _osize, _size)
         for t in _to:
             assert(isinstance(t, str))
         return CommunicativeAction(_message, *_to)

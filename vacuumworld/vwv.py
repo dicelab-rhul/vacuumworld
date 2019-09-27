@@ -757,7 +757,7 @@ def run(_minds, skip = False, play = False, speed = 0, load = None):
             load = saveload.format_file(load)
             files = saveload.files()
             if not load in files:
-                raise ValueError("invalid file name:" + str(load) + "valid files include:" + str(files))
+                raise ValueError("invalid file name: " + str(load) + " valid files include:" + str(files))
             print("INFO: autoplay enabled")
             
         if load is not None:

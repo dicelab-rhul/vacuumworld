@@ -11,10 +11,9 @@ from .vwc import location, dirt, agent, coord
 from .vwc import colour as vwcolour
 from .vwc import orientation as vworientation
 
+from .vwenvironment import GridEnvironment, GridAmbient
 
 import random
-from inspect import signature
-from .vwenvironment import GridEnvironment, GridAmbient
 
 #--------------------------------------------------------
 
@@ -27,54 +26,28 @@ def init(grid, minds):
 def minds(mind):
     return {colour:mind for colour in AGENT_COLOURS}
 
-class VacuumWorldInternalError(Exception):
-    pass
-    
-#TODO throw errors instead of returning
-def __validate_mind(agent, colour):
-    
-    def decide_def(fun):
-        if not callable(fun):
-            raise VacuumWorldInternalError("{0} agent: decide must be callable".format(colour))            
-        if len(signature(fun).parameters) != 0:
-            raise VacuumWorldInternalError("{0} agent: decide must be defined with no arguments, do(self)".format(colour))
-    
-    def revise_def(fun):
-        if not callable(fun):
-            raise VacuumWorldInternalError("{0} agent: revise must be callable".format(colour, fun.__name__))            
-        if len(signature(fun).parameters) != 2:
-            raise VacuumWorldInternalError("{0} agent: revise must be defined with two arguments, revise(self, observation, messages)".format(colour))
-             
-    MUST_BE_DEFINED = {'decide':decide_def, 
-                       'revise':revise_def}
-    agent_dir = set(dir(agent))
-
-    for fun,validate in MUST_BE_DEFINED.items():
-        if fun in agent_dir:
-            validate(getattr(agent, fun))
-        else:
-            raise VacuumWorldInternalError("{0} agent: must define method: {1}".format(colour, fun))
-        
-    return True    
-
-def random_grid(size, green, white, orange, user, orange_dirt, green_dirt):
-    assert green + white + orange + user <= size
-    assert orange_dirt + green_dirt <= size
+def random_grid(size, white, green, orange, user, orange_dirt, green_dirt):
+    assert green + white + orange + user <= size * size
+    assert orange_dirt + green_dirt <= size * size
     grid = Grid(size)
     #for agents
-    coords = random.choices([key for key,value in grid.state.items() if value is not None] , k = green + white + orange)
+    coords = random.sample([key for key,value in grid.state.items() if value is not None] , k = green + white + orange + user)
     agents = {vwcolour.white:white, vwcolour.orange:orange, 
               vwcolour.green:green, vwcolour.user:user}
     for c, num in agents.items():
         for j in range(num):
+
             grid.place_agent(coords.pop(-1), grid.agent(c, random.choice(vworientation)))
     #for dirts
-    dirts = {vwcolour.orange:orange_dirt,vwcolour.green:green}
-    coords = random.choices([key for key,value in grid.state.items() if value is not None] , k = orange_dirt + green_dirt)
-    for colour, num in dirts.items():
+    dirts = {vwcolour.orange:orange_dirt,vwcolour.green:green_dirt}
+    coords = random.sample([key for key,value in grid.state.items() if value is not None] , k = orange_dirt + green_dirt)
+    for c, num in dirts.items():
         for j in range(num):
-            grid.place_dirt(coords.pop(-1), grid.dirt(colour))
+            grid.place_dirt(coords.pop(-1), grid.dirt(c))
     return grid
+
+
+
 
 class Grid:
     DIRECTIONS = {'north':(0,-1), 'south':(0,1), 'west':(-1,0), 'east':(1,0)}
@@ -195,9 +168,6 @@ class Grid:
         ag = loc.agent
         self.state[_coordinate] = location(_coordinate, agent(ag.name, ag.colour, orientation), loc.dirt)
     
-
-
-
     def __str__(self):
         header = "{0}: size: {1}, agents: {2}, dirts: {3}, ".format(str(type(self)), self.dim, self.agent_count, self.dirt_count)
         filled = {coord:location for coord,location in self.state.items()  if location is not None and (location.agent is not None or location.dirt is not None)}

@@ -23,8 +23,9 @@ class GridAmbient(Ambient):
     
     def __init__(self, grid, minds):
         self.grid = grid
-        agents=[]
-        dirts=[]
+        self.mind_types = set(type(mind) for mind in minds)
+        agents = []
+        dirts = []
         for location in grid.state.values(): 
             if location:
                 if location.agent:       
@@ -55,6 +56,7 @@ class GridEnvironment(Environment):
         physics = GridPhysics(actions)
         
         super(GridEnvironment, self).__init__(physics, ambient, [ObservationProcess()], actions)
+        
 
 class Dirt(Identifiable):
     
