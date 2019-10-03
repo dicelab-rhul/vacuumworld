@@ -69,20 +69,20 @@ class ObservationProcess(Process):
     
     def __call__(self, env):
         for agent in env.ambient.agents.values():
-            env.physics.notify_agent(agent, self.__get_perception__(env.ambient, agent))
+            env.physics.notify_agent(agent, self.get_perception(env.ambient.grid, agent))
             
-    def __get_perception__(self, ambient, agent):
+    def get_perception(self, grid, agent):
         c = agent.coordinate
         f = vwc.orientation_map[agent.orientation]
         l = vwc.orientation_map[vwc.left(agent.orientation)]
         r = vwc.orientation_map[vwc.right(agent.orientation)]
         #center left right forward forwardleft forwardright
-        obs = vwc.observation(ambient.grid.state[c], 
-                        ambient.grid.state[c + l],
-                        ambient.grid.state[c + r], 
-                        ambient.grid.state[c + f], 
-                        ambient.grid.state[c + f + l],
-                        ambient.grid.state[c + f + r])            
+        obs = vwc.observation(grid.state[c], 
+                        grid.state[c + l],
+                        grid.state[c + r], 
+                        grid.state[c + f], 
+                        grid.state[c + f + l],
+                        grid.state[c + f + r])            
         return obs
 
 
