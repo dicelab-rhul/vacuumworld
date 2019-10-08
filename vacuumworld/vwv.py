@@ -773,7 +773,7 @@ def run(_minds, skip = False, play = False, speed = 0, load = None):
 
         play_event = Event()
 
-        env_thread = Thread(target=simulate, daemon=False)
+        env_thread = Thread(target=simulate, daemon=True)
         env_thread.start()
         
         #set up simulation speed
