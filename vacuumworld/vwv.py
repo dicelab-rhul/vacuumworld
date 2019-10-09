@@ -131,7 +131,6 @@ class VWMainMenu(tk.Frame):
         self.buttons = {}
 
         button_image = Image.open(BUTTON_PATH + 'button.png')
-        print(button_image)
         self.buttons['start'] = VWButton(self.button_frame, button_image, _start, 'start')
         self.buttons['exit'] = VWButton(self.button_frame, button_image, _exit, 'exit')
         
