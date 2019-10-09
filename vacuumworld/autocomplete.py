@@ -8,15 +8,17 @@ import tkinter as tk
 import re
 
 class AutocompleteEntry(tk.Entry):
+    
     def __init__(self, lista, height, *args, **kwargs):
         tk.Entry.__init__(self, *args, **kwargs)
         self.dropdown_parent = args[0]
-        self.lista = lista        
+        self.lista = lista
         self.var = self["textvariable"]
+        self.font = kwargs.get('font', None)
         if self.var == '':
             self.var = self["textvariable"] = tk.StringVar()
         self.var.trace('w', self.changed)
-        self.height = height
+        self.height = int(height)
         #self.bind("<Key>", self.changed)
         self.bind("<Right>", self.selection)
         self.bind("<Return>", self.selection)
@@ -38,10 +40,10 @@ class AutocompleteEntry(tk.Entry):
             words = self.comparison()
             if words:            
                 if not self.lb_up:
-                    self.lb = tk.Listbox(self.dropdown_parent, height=self.height)
+                    self.lb = tk.Listbox(self.dropdown_parent, font=self.font, height=self.height)
                     
                     self.lb.bind("<Double-Button-1>", self.selection)
-                    print(self.winfo_x(), self.winfo_y()+self.winfo_height())
+                    #print(self.winfo_x(), self.winfo_y()+self.winfo_height())
                     self.lb.place(x=self.winfo_x(), y=self.winfo_y()+self.winfo_height())
                     #self.lb.place(x=381, y=300)
                     self.lb_up = True

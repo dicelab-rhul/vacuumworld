@@ -36,15 +36,26 @@ TIME_STEP_BASE = 1. - TIME_STEP_MIN #in seconds
 TIME_STEP = TIME_STEP_BASE
 TIME_STEP_MODIFIER = 1.
 
-WIDTH = 640
-HEIGHT = 480
-ROOT_FONT = "Verdana 10 bold" #font.Font(family='Helvetica', size=36, weight='bold')
+
+WIDTH = 480     #default - depends on layout manager
+HEIGHT = 480    #default - depends on layout manager
+
 BUTTON_PATH = PATH + "/res/"
 LOCATION_AGENT_IMAGES_PATH = PATH + "/res/locations/agent"
 LOCATION_DIRT_IMAGES_PATH = PATH + "/res/locations/dirt"
 MAIN_MENU_IMAGE_PATH = PATH + "/res/start_menu.png"
+
 DEFAULT_LOCATION_SIZE = 60
 DEFAULT_GRID_SIZE = 480
+DEFAULT_BUTTON_SIZE = 50
+
+SCALE_MODIFIER = 1
+
+GRID_SIZE = DEFAULT_GRID_SIZE * SCALE_MODIFIER
+LOCATION_SIZE = DEFAULT_LOCATION_SIZE * SCALE_MODIFIER
+BUTTON_SIZE = DEFAULT_BUTTON_SIZE * SCALE_MODIFIER
+ROOT_FONT = ('Verdana', int(10 * SCALE_MODIFIER), '')
+
 BACKGROUND_COLOUR_SIDE = 'white'
 BACKGROUND_COLOUR_GRID = 'white'
 
@@ -57,21 +68,13 @@ def get_location_img_files(path):
 class VWButton:
 
     def __init__(self, root, img, fun, text = None):
-        self.img = img
+        self.img = ImageTk.PhotoImage(img)
         self.fun = fun
-        self._button = tk.Button(root,
-                                 text = text,
-                                 bd=0,
-                                 font = ROOT_FONT,
-                                 fg='white',
-                                 highlightthickness = 0,
-                                 bg='white',
-                                 activebackground='white',
-                                 activeforeground='white',
-                                 highlightcolor='white',
-                                 compound = 'center',
+        self._button = tk.Button(root, text = text, bd=0, font = ROOT_FONT, fg='white',
+                                 highlightthickness = 0, bg='white', activebackground='white',
+                                 activeforeground='white', highlightcolor='white', compound = 'center',
                                  command = fun)
-        self._button.config(image=img)
+        self._button.config(image=self.img)
 
     def pack(self, side):
         self._button.pack(side=side)
@@ -88,7 +91,7 @@ class VWDifficultyButton(VWButton):
     def __init__(self, root, img, fun):
         self.imgs = [ImageTk.PhotoImage(img)]
         self.imgs.extend([self.next_image(img, i * (255/(DIFFICULTY_LEVELS-1))) for i in range(1, DIFFICULTY_LEVELS)])
-        super(VWDifficultyButton, self).__init__(root, self.imgs[0], self.onclick)
+        super(VWDifficultyButton, self).__init__(root, img, self.onclick)
         self.difficulty = 0
         self._rfun = fun
 
@@ -112,15 +115,13 @@ class VWMainMenu(tk.Frame):
     def __init__(self, root, _start, _exit):
         super(VWMainMenu,self).__init__(root)
         self.configure(background='white')
-        WIDTH = 480
-        HEIGHT = 480
         self.canvas = tk.Canvas(self, width=WIDTH + 1,
                                 height=HEIGHT + 1,
                                 bd=0,
                                 highlightthickness=0)
         #self.canvas.create_rectangle(0,0,481,481,fill="blue") # placeholder for image
         
-        self.image_tk = tk.PhotoImage(file=MAIN_MENU_IMAGE_PATH)
+        self.image_tk = ImageTk.PhotoImage(file=MAIN_MENU_IMAGE_PATH)
         self.image = self.canvas.create_image(WIDTH/2,HEIGHT/2,image=self.image_tk)
         
         self.button_frame = tk.Frame(self)
@@ -129,10 +130,11 @@ class VWMainMenu(tk.Frame):
         self.canvas.pack()
         self.buttons = {}
 
-        button_image = ImageTk.PhotoImage(Image.open(BUTTON_PATH + 'button.png'))
-        
+        button_image = Image.open(BUTTON_PATH + 'button.png')
+        print(button_image)
         self.buttons['start'] = VWButton(self.button_frame, button_image, _start, 'start')
         self.buttons['exit'] = VWButton(self.button_frame, button_image, _exit, 'exit')
+        
         self.buttons['start'].pack('left')
         self.buttons['exit'].pack('left')
         self.button_frame.pack()
@@ -169,12 +171,12 @@ class CanvasDragManager:
 
     def on_drag(self, event):
 
-        inc = DEFAULT_GRID_SIZE / self.grid.dim
+        inc = GRID_SIZE / self.grid.dim
         x = int(event.x / inc) * inc + (inc / 2) + 1
         y = int(event.y / inc) * inc + (inc / 2) + 1
 
         if x != self.x or y != self.y:
-            if x <= DEFAULT_GRID_SIZE:
+            if x <= GRID_SIZE:
                 self.canvas.itemconfigure(self.drag, state='normal')
             else:
                 self.canvas.itemconfigure(self.drag, state='hidden')
@@ -186,7 +188,6 @@ class CanvasDragManager:
 
 
     def on_drop(self, event):
-        #print('drop')
         if _in_bounds(event.x, event.y):
             self._on_drop(event, self)
         self.dragging = False
@@ -194,14 +195,12 @@ class CanvasDragManager:
 
 class VWInterface(tk.Frame):
 
-    SIDE_PANEL_WIDTH = DEFAULT_LOCATION_SIZE + 4
-
     def __init__(self, parent, grid):
         super(VWInterface, self).__init__(parent)
         self.parent = parent
         self.configure(background=BACKGROUND_COLOUR_SIDE)
-        self.canvas = tk.Canvas(self, width=DEFAULT_GRID_SIZE+VWInterface.SIDE_PANEL_WIDTH,
-                                height=DEFAULT_GRID_SIZE + 1,
+        self.canvas = tk.Canvas(self, width=GRID_SIZE+LOCATION_SIZE+4,
+                                height=GRID_SIZE + 1,
                                 bd=0,
                                 highlightthickness=0)
         #self.canvas.create_rectangle(0,0,481,481,fill="blue") # placeholder for grid
@@ -224,7 +223,7 @@ class VWInterface(tk.Frame):
         self._init_images()
         self._init_dragables()
 
-        self._draw_grid(grid.dim)
+        self._draw_grid(grid.dim, GRID_SIZE)
 
         self.canvas.grid(row=0,column=0) #packing
 
@@ -255,33 +254,32 @@ class VWInterface(tk.Frame):
 
         self.button_frame = tk.Frame(self, bg=bg)
 
-
-        play_tk = tk.PhotoImage(file=BUTTON_PATH + buttons['play']) # ImageTk.PhotoImage(Image.open(BUTTON_PATH + buttons['play'])) #
-        #play_tk = Image.open(BUTTON_PATH + buttons['play'])
         
+        play_img = self._scale(Image.open(BUTTON_PATH + buttons['play']), BUTTON_SIZE)
+
         #left side contains buttons and slider
         self.left_frame = tk.Frame(self.button_frame, bg=bg)
         self.slider_frame = tk.Frame(self.left_frame, bg=bg)
         self.control_buttons_frame = tk.Frame(self.left_frame, bg=bg)
         
-        self.buttons['play'] = VWButton(self.control_buttons_frame, play_tk , _play)
-        self.buttons['resume'] = VWButton(self.control_buttons_frame, play_tk, _resume)
-        self.buttons['pause'] = VWButton(self.control_buttons_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['pause']), _pause)
-        self.buttons['stop'] = VWButton(self.control_buttons_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['stop']), _stop)
-        self.buttons['fast'] = VWButton(self.control_buttons_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['fast']), _fast)
-        self.buttons['reset'] = VWButton(self.control_buttons_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['reset']), _reset)
+        self.buttons['play'] = VWButton(self.control_buttons_frame, play_img , _play)
+        self.buttons['resume'] = VWButton(self.control_buttons_frame, play_img, _resume)
+        self.buttons['pause'] = VWButton(self.control_buttons_frame, self._scale(Image.open(BUTTON_PATH + buttons['pause']), BUTTON_SIZE), _pause)
+        self.buttons['stop'] = VWButton(self.control_buttons_frame, self._scale(Image.open(BUTTON_PATH + buttons['stop']), BUTTON_SIZE), _stop)
+        self.buttons['fast'] = VWButton(self.control_buttons_frame, self._scale(Image.open(BUTTON_PATH + buttons['fast']), BUTTON_SIZE), _fast)
+        self.buttons['reset'] = VWButton(self.control_buttons_frame, self._scale(Image.open(BUTTON_PATH + buttons['reset']), BUTTON_SIZE), _reset)
 
         
-        _img_dif = Image.open(BUTTON_PATH + buttons['difficulty'])
-        self.buttons['difficulty'] = VWDifficultyButton(self.control_buttons_frame, _img_dif, _difficulty)
+        dif_img = self._scale(Image.open(BUTTON_PATH + buttons['difficulty']), BUTTON_SIZE)
+        self.buttons['difficulty'] = VWDifficultyButton(self.control_buttons_frame, dif_img, _difficulty)
         
         self.pack_buttons('play', 'reset', 'fast', 'difficulty', forget=False)
         
         #init the slider
         self._init_size_slider(self.slider_frame, bg)
         
-        self.slider_frame.grid(row=0,column=0)#.pack(side='top')
-        self.control_buttons_frame.grid(row=1,column=0,sticky=tk.W)#.pack(side='bottom')
+        self.slider_frame.grid(row=0, column=0)#.pack(side='top')
+        self.control_buttons_frame.grid(row=1, column=0, sticky=tk.W)#.pack(side='bottom')
 
         self.left_frame.pack(side='left', fill=tk.X)
   
@@ -290,11 +288,13 @@ class VWInterface(tk.Frame):
         self.saveload_frame = tk.Frame(self.mid_frame, bg=bg)
     
         #buttons
-        self.buttons['save'] = VWButton(self.saveload_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['save']), lambda: _save(self.load_menu))
-        self.buttons['load'] = VWButton(self.saveload_frame, tk.PhotoImage(file=BUTTON_PATH + buttons['load']), lambda: _load(self.load_menu))
+        self.buttons['save'] = VWButton(self.saveload_frame, self._scale(Image.open(BUTTON_PATH + buttons['save']), BUTTON_SIZE), lambda: _save(self.load_menu))
+        self.buttons['load'] = VWButton(self.saveload_frame, self._scale(Image.open(BUTTON_PATH + buttons['load']), BUTTON_SIZE), lambda: _load(self.load_menu))
+        
+        
         #entry box
         files = saveload.files()
-        self.load_menu = AutocompleteEntry(files, 4, self.mid_frame)
+        self.load_menu = AutocompleteEntry(files, 3, self.mid_frame, font=ROOT_FONT)
         self.load_menu.bind('<Button-1>', lambda _: self.deselect())
         self.load_menu.pack(side='top')
     
@@ -333,9 +333,10 @@ class VWInterface(tk.Frame):
         #t = tk.Label(f, text=" size ", bg=bg, font = ROOT_FONT)
         #t.pack(side='left')
         increments = Grid.GRID_MAX_SIZE - Grid.GRID_MIN_SIZE
-        self.grid_scale_slider = Slider(parent, self.on_resize, self.on_resize_slide, None, length, 16,
+        self.grid_scale_slider = Slider(parent, self.on_resize, self.on_resize_slide, None, length * SCALE_MODIFIER, 16 * SCALE_MODIFIER,
+                                        slider_width = length * SCALE_MODIFIER / (increments * 3),
                                         increments=increments,
-                                        start=(DEFAULT_GRID_SIZE/DEFAULT_LOCATION_SIZE) - Grid.GRID_MIN_SIZE)
+                                        start=(GRID_SIZE/LOCATION_SIZE) - Grid.GRID_MIN_SIZE)
         self.grid_scale_slider.pack(side='top')
         #f.pack(side='bottom')
         
@@ -344,13 +345,12 @@ class VWInterface(tk.Frame):
         keys = [('white', 'north'), ('orange', 'north'), ('green', 'north'), ('user', 'north'), ('orange', 'dirt'), ('green', 'dirt')]
         self.dragables = {}
 
-        ix = DEFAULT_GRID_SIZE + DEFAULT_LOCATION_SIZE / 2 + 2
-        iy = DEFAULT_LOCATION_SIZE / 2 + 4
+        ix = GRID_SIZE + LOCATION_SIZE / 2 + 2
+        iy = LOCATION_SIZE / 2 + 4
         
         #print(self.all_images)
         for i, key in enumerate(keys):
-            item = self.canvas.create_image(ix,
-                                            iy + i * DEFAULT_LOCATION_SIZE, image=self.all_images_tk[key])
+            item = self.canvas.create_image(ix, iy + i * LOCATION_SIZE, image=self.all_images_tk[key])
             drag_manager = CanvasDragManager(key, self.grid, self.canvas, item, self.drag_on_start, self.drag_on_drop)
             self.dragables[item] = (drag_manager, key)
 
@@ -364,7 +364,7 @@ class VWInterface(tk.Frame):
         if not self.running and _in_bounds(event.x, event.y):
             self.deselect()
             self.focus()
-            inc = DEFAULT_GRID_SIZE / self.grid.dim
+            inc = GRID_SIZE / self.grid.dim
             coordinate = vwc.coord(int(event.x / inc), int(event.y / inc))
             print("SELECT:", self.grid.state[coordinate])
             self.selected = grid.state[coordinate]
@@ -376,7 +376,7 @@ class VWInterface(tk.Frame):
     def remove_top(self, event):
         if not self.running and _in_bounds(event.x, event.y):
             print("remove top")
-            inc = DEFAULT_GRID_SIZE / self.grid.dim
+            inc = GRID_SIZE / self.grid.dim
             coordinate = vwc.coord(int(event.x / inc), int(event.y / inc))
             location = grid.state[coordinate]
             if location.agent:
@@ -404,7 +404,7 @@ class VWInterface(tk.Frame):
             print(self.selected)
             self.remove_agent(self.selected.coordinate)
             new_orientation =  direction(self.selected.agent.orientation)
-            inc = DEFAULT_GRID_SIZE / self.grid.dim
+            inc = GRID_SIZE / self.grid.dim
             tk_img = self.all_images_tk_scaled[(self.selected.agent.colour, new_orientation)]
             item = self.canvas.create_image(self.selected.coordinate.x * inc + inc/2,
                                             self.selected.coordinate.y * inc + inc/2, image=tk_img)
@@ -455,7 +455,7 @@ class VWInterface(tk.Frame):
 
     def _redraw(self):
         self._reset_canvas(lines=False)
-        inc = DEFAULT_GRID_SIZE / self.grid.dim
+        inc = GRID_SIZE / self.grid.dim
         for coord, location in grid.state.items():
             if location:
                 if location.agent:
@@ -475,7 +475,7 @@ class VWInterface(tk.Frame):
                     self.canvas.tag_lower(item) #keep dirt behind agents and grid lines
         #self._lines_to_front()
 
-    def _draw_grid(self, env_dim, size = DEFAULT_GRID_SIZE):
+    def _draw_grid(self, env_dim, size):
         x = 0
         y = 0
         inc = size / env_dim
@@ -496,7 +496,7 @@ class VWInterface(tk.Frame):
 
         for img_name in image_names:
             file = os.path.join(LOCATION_AGENT_IMAGES_PATH, img_name) +  '.png'
-            img = self._scale(Image.open(file), DEFAULT_LOCATION_SIZE)
+            img = self._scale(Image.open(file), LOCATION_SIZE)
             images = self._construct_images(img, img_name + '_')
             for img_name, img in images.items():
                 img_key = self._get_image_key(img_name)
@@ -510,7 +510,7 @@ class VWInterface(tk.Frame):
 
         for name in images_names:
             file = os.path.join(LOCATION_DIRT_IMAGES_PATH, name) +  '.png'
-            img = self._scale(Image.open(file), DEFAULT_LOCATION_SIZE)
+            img = self._scale(Image.open(file), LOCATION_SIZE)
             img_key = self._get_image_key(name)
             tk_img = ImageTk.PhotoImage(img)
             self.all_images[img_key] = img
@@ -526,13 +526,14 @@ class VWInterface(tk.Frame):
                       name + 'east':img.copy().rotate(270)})
 
     def _scaled_tk(self):
-        size = min(DEFAULT_LOCATION_SIZE, DEFAULT_GRID_SIZE  / self.grid.dim)
+        size = min(LOCATION_SIZE, GRID_SIZE  / self.grid.dim)
+        #print("SIZE: ", size)
         for name, image in self.all_images.items():
             self.all_images_tk_scaled[name] = ImageTk.PhotoImage(self._scale(image, size))
 
     def _scale(self, img, lsize):
         scale = lsize / max(img.width, img.height)
-        return img.resize((int(img.width  * scale), int(img.height * scale)), Image.BICUBIC)
+        return img.resize((int(img.width * scale), int(img.height * scale)), Image.BICUBIC)
 
     #resize the grid
     def on_resize(self, value):
@@ -541,7 +542,7 @@ class VWInterface(tk.Frame):
             self.grid.reset(value)
             self._reset_canvas()
             self._scaled_tk()
-            self._draw_grid(grid.dim)
+            self._draw_grid(grid.dim, GRID_SIZE)
             
     def on_resize_slide(self, value):
         self.size_text.set(str(value + Grid.GRID_MIN_SIZE))
@@ -551,7 +552,7 @@ class VWInterface(tk.Frame):
     
     def on_mouse_move(self, event):
         if _in_bounds(event.x, event.y):
-            inc = DEFAULT_GRID_SIZE / self.grid.dim
+            inc = GRID_SIZE / self.grid.dim
             self.coordinate_text.set('({},{})'.format(int(event.x / inc), int(event.y / inc)))
         else:
             self.coordinate_text.set('(-,-)')
@@ -576,7 +577,7 @@ class VWInterface(tk.Frame):
     def drag_on_drop(self, event, drag_manager):
         #TODO stream line to work with select
 
-        inc = DEFAULT_GRID_SIZE / self.grid.dim
+        inc = GRID_SIZE / self.grid.dim
         x = int(event.x / inc)
         y = int(event.y / inc)
         coord = vwc.coord(x,y)
@@ -716,13 +717,22 @@ def _start():
     main_interface.pack()
 
 def _in_bounds(x,y):
-    return x < DEFAULT_GRID_SIZE and x > 0 and y < DEFAULT_GRID_SIZE and y > 0
+    return x < GRID_SIZE and x > 0 and y < GRID_SIZE and y > 0
 
-def run(_minds, skip = False, play = False, speed = 0, load = None):
-    #required to avoid problems with running after errors (root must be destoryed!)
+def _scale(scale):
+    global SCALE_MODIFIER, GRID_SIZE, LOCATION_SIZE, BUTTON_SIZE, ROOT_FONT
+    SCALE_MODIFIER = scale
+    GRID_SIZE = DEFAULT_GRID_SIZE * SCALE_MODIFIER
+    LOCATION_SIZE = DEFAULT_LOCATION_SIZE * SCALE_MODIFIER
+    BUTTON_SIZE = DEFAULT_BUTTON_SIZE * SCALE_MODIFIER
+    ROOT_FONT = ('Verdana', int(10 * SCALE_MODIFIER), '')
+
+def run(_minds, skip = False, play = False, speed = 0, load = None, scale = 1):
     assert(speed >= 0 and speed <= 1)
-        
-  #  import saveload
+    assert scale > 0
+
+   
+  
     global root
     tk.Tk.report_callback_exception = _error
     root = tk.Tk()
@@ -730,6 +740,8 @@ def run(_minds, skip = False, play = False, speed = 0, load = None):
     root.protocol("WM_DELETE_WINDOW", _finish)
     root.configure(background='white')
     
+    _scale(scale)
+   
     try:
         global main_menu
         global main_interface
