@@ -115,14 +115,15 @@ class VWMainMenu(tk.Frame):
     def __init__(self, root, _start, _exit):
         super(VWMainMenu,self).__init__(root)
         self.configure(background='white')
-        self.canvas = tk.Canvas(self, width=WIDTH + 1,
-                                height=HEIGHT + 1,
+        self.canvas = tk.Canvas(self, width = GRID_SIZE + 1,
+                                height = GRID_SIZE + 1,
                                 bd=0,
                                 highlightthickness=0)
         #self.canvas.create_rectangle(0,0,481,481,fill="blue") # placeholder for image
-        
-        self.image_tk = ImageTk.PhotoImage(file=MAIN_MENU_IMAGE_PATH)
-        self.image = self.canvas.create_image(WIDTH/2,HEIGHT/2,image=self.image_tk)
+
+
+        self.img_tk = ImageTk.PhotoImage(Image.open(MAIN_MENU_IMAGE_PATH).resize((int(GRID_SIZE), int(GRID_SIZE)), Image.BICUBIC))
+        self.image = self.canvas.create_image(GRID_SIZE/2,GRID_SIZE/2,image=self.img_tk)
         
         self.button_frame = tk.Frame(self)
         
@@ -131,6 +132,7 @@ class VWMainMenu(tk.Frame):
         self.buttons = {}
 
         button_image = Image.open(BUTTON_PATH + 'button.png')
+        button_image = button_image.resize((int(button_image.width * SCALE_MODIFIER), int(button_image.height * SCALE_MODIFIER)), Image.BICUBIC)
         self.buttons['start'] = VWButton(self.button_frame, button_image, _start, 'start')
         self.buttons['exit'] = VWButton(self.button_frame, button_image, _exit, 'exit')
         
