@@ -4,6 +4,9 @@ from pystarworlds.Event import Action, Executor
 from . import vwc
 from . import vwutils
 
+import copy
+
+
 ###################### action executors ###################### 
 
 class MoveExecutor(Executor):
@@ -129,6 +132,8 @@ class SpeakActionFactory(ActionFactory):
         
     def __call__(self, _message, *_to):
         self.__validate_message(_message)
+        #create a deep copy to avoid possible reference cheating!
+        _message = copy.deepcopy(_message) 
         _size = vwc.size(_message)
         if _size > SpeakActionFactory.LIMIT:
             _osize = _size
