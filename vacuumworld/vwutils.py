@@ -15,6 +15,11 @@ from inspect import signature
 class VacuumWorldInternalError(Exception):
     pass
 
+class VacuumWorldActionError(VacuumWorldInternalError):
+    
+    def __init__(self, message):
+        super(VacuumWorldActionError, self).__init__("for agent: " + callerID() + "\n      " + message)
+
 def callerID():
     caller = inspect.currentframe().f_back
     while not isinstance(caller.f_locals.get('self', None), Mind):

@@ -343,7 +343,12 @@ class VWInterface(tk.Frame):
         
     def _init_dragables(self):
         #load all images
-        keys = [('white', 'north'), ('orange', 'north'), ('green', 'north'), ('user', 'north'), ('orange', 'dirt'), ('green', 'dirt')]
+        keys = [('white', 'north'), 
+                ('orange', 'north'), 
+                ('green', 'north'), 
+                ('user', 'north'), 
+                ('orange', 'dirt'), 
+                ('green', 'dirt')]
         self.dragables = {}
 
         ix = GRID_SIZE + LOCATION_SIZE / 2 + 2
@@ -404,9 +409,9 @@ class VWInterface(tk.Frame):
         if self.selected and self.selected.agent:
             print(self.selected)
             self.remove_agent(self.selected.coordinate)
-            new_orientation =  direction(self.selected.agent.orientation)
+            new_orientation =  direction(self.selected.agent.orientation).value
             inc = GRID_SIZE / self.grid.dim
-            tk_img = self.all_images_tk_scaled[(self.selected.agent.colour, new_orientation)]
+            tk_img = self.all_images_tk_scaled[(self.selected.agent.colour.value, new_orientation)]
             item = self.canvas.create_image(self.selected.coordinate.x * inc + inc/2,
                                             self.selected.coordinate.y * inc + inc/2, image=tk_img)
             self.canvas_agents[self.selected.coordinate] = item
@@ -415,10 +420,10 @@ class VWInterface(tk.Frame):
             self._lines_to_front()
 
     def rotate_agent_left(self, event):
-        self.rotate_agent(event, vwc.left)
+        self.rotate_agent(event, vwc.direction.left)
 
     def rotate_agent_right(self, event):
-        self.rotate_agent(event, vwc.right)
+        self.rotate_agent(event, vwc.direction.right)
 
     def pack_buttons(self, *buttons, forget=True):
         if forget:
@@ -461,7 +466,7 @@ class VWInterface(tk.Frame):
             if location:
                 if location.agent:
                     #print("AGENT:", coord, location)
-                    tk_img = self.all_images_tk_scaled[(location.agent.colour, location.agent.orientation)]
+                    tk_img = self.all_images_tk_scaled[(location.agent.colour.value, location.agent.orientation.value)]
                     item = self.canvas.create_image(coord.x * inc + inc/2,
                                                     coord.y * inc + inc/2, image=tk_img)
                     self.canvas_agents[coord] = item
@@ -470,7 +475,7 @@ class VWInterface(tk.Frame):
                         self.canvas.tag_lower(self.canvas_dirts[coord])
                 if location.dirt:
                     #print("DDDIRT:",  coord, location)
-                    tk_img = self.all_images_tk_scaled[(location.dirt.colour, 'dirt')]
+                    tk_img = self.all_images_tk_scaled[(location.dirt.colour.value, 'dirt')]
                     item = self.canvas.create_image(coord.x * inc + inc/2, coord.y * inc + inc/2, image=tk_img)
                     self.canvas_dirts[coord] = item
                     self.canvas.tag_lower(item) #keep dirt behind agents and grid lines
@@ -584,6 +589,7 @@ class VWInterface(tk.Frame):
         coord = vwc.coord(x,y)
         #update the environment state
         colour, obj = drag_manager.key
+        print(colour, obj)
         if obj == 'dirt':
             dirt1 =  grid.dirt(colour)
             grid.replace_dirt(coord, dirt1)
@@ -591,7 +597,7 @@ class VWInterface(tk.Frame):
                 self.canvas.delete(self.canvas_dirts[coord])
             self.canvas_dirts[coord] = drag_manager.drag
             self.canvas.tag_lower(self.canvas_dirts[coord])
-        else: #its and agent
+        else:
             agent1 =  grid.agent(colour, obj)
             grid.replace_agent(coord, agent1)
             if coord in self.canvas_agents:

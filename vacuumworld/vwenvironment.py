@@ -67,15 +67,20 @@ class Dirt(Identifiable):
 
 class ObservationProcess(Process):
     
+    orientation_map = {vwc.orientation.north:(0,-1),
+                       vwc.orientation.east:(1,0),
+                       vwc.orientation.south:(0,1),
+                       vwc.orientation.west:(-1,0)}
+
     def __call__(self, env):
         for agent in env.ambient.agents.values():
             env.physics.notify_agent(agent, self.get_perception(env.ambient.grid, agent))
             
     def get_perception(self, grid, agent):
         c = agent.coordinate
-        f = vwc.orientation_map[agent.orientation]
-        l = vwc.orientation_map[vwc.left(agent.orientation)]
-        r = vwc.orientation_map[vwc.right(agent.orientation)]
+        f = ObservationProcess.orientation_map[agent.orientation]
+        l = ObservationProcess.orientation_map[vwc.direction.left(agent.orientation)]
+        r = ObservationProcess.orientation_map[vwc.direction.right(agent.orientation)]
         #center left right forward forwardleft forwardright
         obs = vwc.observation(grid.state[c], 
                         grid.state[c + l],

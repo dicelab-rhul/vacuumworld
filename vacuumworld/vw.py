@@ -17,14 +17,11 @@ import random
 
 #--------------------------------------------------------
 
-AGENT_COLOURS = set(['user', 'orange', 'green', 'white'])
-DIRT_COLOURS = set(['orange', 'green'])
-
 def init(grid, minds):
     return GridEnvironment(GridAmbient(grid, minds))
 
 def minds(mind):
-    return {colour:mind for colour in AGENT_COLOURS}
+    return {colour:mind for colour in vwcolour}
 
 def random_grid(size, white, green, orange, user, orange_dirt, green_dirt):
     assert green + white + orange + user <= size * size
@@ -45,9 +42,6 @@ def random_grid(size, white, green, orange, user, orange_dirt, green_dirt):
         for j in range(num):
             grid.place_dirt(coords.pop(-1), grid.dirt(c))
     return grid
-
-
-
 
 class Grid:
     DIRECTIONS = {'north':(0,-1), 'south':(0,1), 'west':(-1,0), 'east':(1,0)}
@@ -104,16 +98,26 @@ class Grid:
             return coord(coordinate[0], coordinate[1])
         return coordinate
     
+    def _as_colour(self, colour):
+        if not colour in vwcolour:
+            return vwcolour[colour]
+        return colour
+            
+    def _as_orientation(self, orientation):
+        if not orientation in vworientation:
+            return vworientation[orientation]
+        return orientation
+    
     def dirt(self, colour):
-        assert(colour in DIRT_COLOURS)
+        colour = self._as_colour(colour)
         self.dirt_count += 1
         return dirt(Grid.ID_PREFIX_DIRT + str(self.dirt_count), colour)
     
-    def agent(self, colour, direction):
-        assert(colour in AGENT_COLOURS)
-        assert(direction in Grid.DIRECTIONS.keys())
+    def agent(self, colour, orientation):
+        colour = self._as_colour(colour)
+        orientation = self._as_orientation(orientation)
         self.agent_count += 1
-        return agent(Grid.ID_PREFIX_AGENT + str(self.agent_count), colour, direction)            
+        return agent(Grid.ID_PREFIX_AGENT + str(self.agent_count), colour, orientation)            
     
     def replace_agent(self, coordinate, agent):
          coordinate = self._as_coord(coordinate)
@@ -163,6 +167,7 @@ class Grid:
         self.state[_from] = location(from_loc.coordinate, None, from_loc.dirt)
         
     def turn_agent(self, _coordinate, orientation):
+        orientation = self._as_orientation(orientation)
         assert(self.state[_coordinate].agent != None)
         loc = self.state[_coordinate]
         ag = loc.agent

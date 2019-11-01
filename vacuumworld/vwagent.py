@@ -5,6 +5,9 @@ from . import vwactuator
 from . import vwagent 
 from . import vwaction
 from . import vwc
+from . import vwutils
+
+import traceback
 
 from collections import namedtuple
 agent_type = namedtuple('agent_type', 'cleaning user')('cleaning', 'user')
@@ -33,6 +36,14 @@ class VWBody(Body):
 
 class VWMind(Mind):
     
+    action_names = [vwc.action.move.__name__, vwc.action.clean.__name__, vwc.action.idle.__name__,
+                    vwc.action.drop.__name__, vwc.action.turn.__name__, vwc.action.speak.__name__]
+    speech_action_names = [vwc.action.speak.__name__]
+    physical_action_names =  [vwc.action.move.__name__, vwc.action.clean.__name__,
+                              vwc.action.drop.__name__, vwc.action.turn.__name__]
+    action_size = {vwc.action.move.__name__:1, vwc.action.clean.__name__:1, vwc.action.idle.__name__:1,
+                   vwc.action.drop.__name__:2, vwc.action.turn.__name__:2, vwc.action.speak.__name__:3}
+    
     def __init__(self, surrogate, observers = []):
         super(VWMind, self).__init__()
         self.surrogate = surrogate
@@ -41,7 +52,7 @@ class VWMind(Mind):
             self.observers.append()
        
     def cycle(self):
- 
+        
         observation = [percept for percept in self.body._sensors["vision"]]
         assert(len(observation) == 1)
         
@@ -49,58 +60,53 @@ class VWMind(Mind):
         self.surrogate.revise(*observation, messages)
     
         actions = self.surrogate.decide()
+        #https://pymotw.com/2/sys/tracing.html
+        #to get helpful exception information it will be better to trace decide!
 
         if actions is None:
             return
-        
-        speak_actions = []
-        physical_actions = []
-
-        if isinstance(actions, tuple):
-            if type(actions) in vwc.action_types:
-               actions = [actions]
-            for action in actions:
-                if action is None:
-                    continue
-                if type(action) in vwc.action_types:
-                    if type(action) == vwc.idle:
-                        continue
-                    if type(action) == vwc.speak:
-                        _a = vwaction._action_factories[type(action).__name__](action.message, *action.to)
-                        speak_actions.append((_a, type(action).__name__))
-                    else:
-                        _a = vwaction._action_factories[type(action).__name__](*action[:])
-                        physical_actions.append((_a, type(action).__name__))
-                elif callable(action):
-                    raise ActionError(str(action) + " should not be callable, did you forget ()?")
+        if type(actions) == tuple:
+            actions = tuple([action for action in actions if action is not None])
+            if len(actions) == 0:
+                return
+            
+            if type(actions[0]) == str: #validate a single action
+                self.attempt_action(self.validate_action(actions))
+                return 
+            elif type(actions[0]) == tuple: #validate multiple actions
+                if len(actions) == 2:
+                    if type(actions[1]) == tuple:
+                        actions = [self.validate_action(action) for action in actions]
+                        names = [action[0] for action in actions]
+                        is_speech = [name in VWMind.speech_action_names for name in names]
+                        is_physical = [name in VWMind.physical_action_names for name in names]
+                        if all(is_speech):
+                            raise vwutils.VacuumWorldActionError("An agent can perform at most 1 speech action per cycle (vwc.action.speak)")
+                        if all(is_physical):
+                            raise vwutils.VacuumWorldActionError("An agent can perform at most 1 physical action per cycle (vwc.action.clean, move, turn, idle, drop)")
+                        for action in actions:
+                            self.attempt_action(action)
+                        return
                 else:
-                    raise ActionError(str(action) + " is an invalid action.")
+                    vwutils.VacuumWorldActionError("Invalid action(s): " + str(actions) + ", an agent can perform at most 1 physical action and 1 speech action per cycle (a total of 2 actions)")
                     
-            _assert(len(speak_actions) <= 1, ' an agent can perform at most one speech action per cycle, attempted:' + str([s[1] for s in speak_actions]))
-            _assert(len(physical_actions) <= 1, 'an agent can perform at most one physical action per cycle, attempted:' +  str([s[1] for s in physical_actions]))
-            
-            for action in speak_actions + physical_actions:
-                actuators = self.body.find_actuators(action[0])
-                _assert(len(actuators) == 1,  str(action[1]) + ' for agent - actuator does not exist')
-                actuators[0].attempt(action[0])
-        else:
-            raise ActionError(str(actions) + " is an invalid action.")
-            
-            
-        
-        
-        
-def validate_action(action):
-    pass
-    #_assert(not callable(action), 'invalid action, did you forget to call the action? - e.g. move()')
-    #_assert(isinstance(action, tuple), str(action) + 'please make use of vwc.action')
-   #_assert(action[0] in vwc.action_names,  str(action) + 'must be one of ' + str(list(vwc.action_names)) + ' from vwc.action')
-
-class ActionError(Exception):
+        raise vwutils.VacuumWorldActionError("Invalid action(s): " + str(actions) + ", please use vwc.action")
     
-    def __init__(self, message):
-        super(ActionError, self).__init__("Invalid action: " + message)
-
-def _assert(condition, exception):
-    if not condition:
-        raise ActionError(exception)
+    def attempt_action(self, action):
+        _a = vwaction._action_factories[action[0]](*action[1:])
+        if _a is None: #idle action
+            return 
+        actuators = self.body.find_actuators(_a)
+        if len(actuators) != 1:
+            raise vwutils.VacuumWorldActionError("No actuator found for action: " + str(action))
+        actuators[0].attempt(_a)
+        
+    def validate_action(self, action):
+        if type(action) == tuple:
+            if len(action) > 0 and action[0] in VWMind.action_names:
+                if len(action) == VWMind.action_size[action[0]]:
+                    return action
+        elif callable(action):
+            raise vwutils.VacuumWorldActionError("Action should not be a function, did you forget the ()? - e.g. action.move()")
+        raise vwutils.VacuumWorldActionError("Invalid action: " + str(action) + " please use vwc.action.")
+        
