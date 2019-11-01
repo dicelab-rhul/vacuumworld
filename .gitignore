@@ -1,7 +1,6 @@
 __pycache__/*
 vacuumworld.egg-info/*
-vacuumworld/__pycache__/*
+*/__pycache__/*
 .spyproject/*
-vacuumworld/test/__pycache__/*
 dist/
 build/
