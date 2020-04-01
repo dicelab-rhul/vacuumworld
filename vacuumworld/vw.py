@@ -44,7 +44,7 @@ def random_grid(size, white, green, orange, user, orange_dirt, green_dirt):
     return grid
 
 class Grid:
-    DIRECTIONS = {'north':(0,-1), 'south':(0,1), 'west':(-1,0), 'east':(1,0)}
+    DIRECTIONS = {vworientation.north:(0,-1), vworientation.south:(0,1), vworientation.west:(-1,0), vworientation.east:(1,0)}
     
     ID_PREFIX_DIRT = 'D-'
     ID_PREFIX_AGENT = 'A-'
@@ -99,12 +99,12 @@ class Grid:
         return coordinate
     
     def _as_colour(self, colour):
-        if not colour in vwcolour:
+        if not isinstance(colour, vwcolour):
             return vwcolour[colour]
         return colour
             
     def _as_orientation(self, orientation):
-        if not orientation in vworientation:
+        if not isinstance(orientation, vworientation):
             return vworientation[orientation]
         return orientation
     

@@ -18,15 +18,12 @@ class VWBody(Body):
         mind = vwagent.VWMind(mind)
         assert _type in agent_type
         if _type == agent_type.cleaning:
-            actuators = {"physical":vwactuator.CleaningAgentActuator(),
-                         "communication":vwactuator.CommunicationActuator()}
+            actuators = [vwactuator.CleaningAgentActuator(), vwactuator.CommunicationActuator()]
         else:
-            actuators = {"physical":vwactuator.UserActuator(),
-                         "communication":vwactuator.CommunicationActuator()}
+            actuators = [vwactuator.UserActuator(), vwactuator.CommunicationActuator()]
 
-        sensors = {"vision":vwsensor.VisionSensor(),
-                   "communication":vwsensor.CommunicationSensor()}
-        self.ID = ID
+        sensors = [vwsensor.VisionSensor(), vwsensor.CommunicationSensor()]
+        #self.ID = ID #hmmm
         
         super(VWBody, self).__init__(mind, actuators, sensors)
         
@@ -52,11 +49,10 @@ class VWMind(Mind):
             self.observers.append()
        
     def cycle(self):
-        
-        observation = [percept for percept in self.body._sensors["vision"]]
+        observation = next(iter(self.body.perceive(vwsensor.VisionSensor.subscribe[0]).values()))
         assert(len(observation) == 1)
         
-        messages = [percept for percept in self.body._sensors["communication"]]
+        messages = next(iter(self.body.perceive(vwsensor.CommunicationSensor.subscribe[0]).values()))
         self.surrogate.revise(*observation, messages)
     
         actions = self.surrogate.decide()
@@ -65,6 +61,7 @@ class VWMind(Mind):
 
         if actions is None:
             return
+
         if type(actions) == tuple:
             actions = tuple([action for action in actions if action is not None])
             if len(actions) == 0:
@@ -96,7 +93,7 @@ class VWMind(Mind):
         _a = vwaction._action_factories[action[0]](*action[1:])
         if _a is None: #idle action
             return 
-        actuators = self.body.find_actuators(_a)
+        actuators = list(self.body.actuators.subscribed(type(_a)).values())
         if len(actuators) != 1:
             raise vwutils.VacuumWorldActionError("No actuator found for action: " + str(action))
         actuators[0].attempt(_a)

@@ -21,6 +21,7 @@ def test_agent_added_properly(): # whenever agent method is called agent is adde
     grid.agent('green','north')
     assert grid.agent_count==1 
    # assert grid.agent_count==2 
+   
 def test_agentPlacedProperly(): # whenever agent is placed Is  it placed properly
     grid = Grid(5)
     agent1 = grid.agent('green','north')

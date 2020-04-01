@@ -56,7 +56,13 @@ class orientation(Enum):
     east = 'east'
     south = 'south'
     west = 'west'
-    
+
+    def __eq__(self, other):
+        return super().__eq__(other) or self.value == other
+
+    def __hash__(self):
+        return hash(self.value)
+
     def __str__(self):
         return self.value
     
@@ -97,7 +103,9 @@ _colour_user = set(['user'])
 
 class coord(typing.NamedTuple):
     '''
-        A coordinate ``(x,y)``. Standard arethmetic operations ``(+,-,*,\)`` can be performed on this object.
+        A coordinate ``(x,y)``. Standard arethmetic operations ``(+ - * / //)`` can be performed on this object.
+        
+        Note that division (/ //) is always integer division.
         
         Attributes:
             * ``x (int)``: x component.
@@ -107,16 +115,27 @@ class coord(typing.NamedTuple):
     y : int
 
     def __add__(self, other):
+        if isinstance(other, int):
+            return coord(self[0] + other, self[1] + other)
         return coord(self[0] + other[0], self[1] + other[1])
     
     def __sub__(self, other):
+        if isinstance(other, int):
+            return coord(self[0] - other, self[1] - other)
         return coord(self[0] - other[0], self[1] - other[1])
     
     def __mul__(self, other):
+        if isinstance(other, int):
+            return coord(self[0] * other, self[1] * other)
         return coord(self[0] * other[0], self[1] * other[1])
     
-    def __div__(self, other):
-        return coord(int(self[0] / other[0]), int(self[1] / other[1]))
+    def __truediv__(self, other):
+        if isinstance(other, int):
+            return coord(self[0] // other, self[1] // other)
+        return coord(self[0] // other[0], self[1] // other[1])
+
+    def __floordiv__(self, other):
+        return self / other
 
 class agent(typing.NamedTuple):
     '''
@@ -204,16 +223,15 @@ class observation(typing.NamedTuple):
         This agent will turn if there is an agent in-front of it, move until it 
         reachs the edge of the grid and then remains idle.
     '''
-    
     center : location
     left : location
     right : location
     forward : location
     forwardleft : location
     forwardright : location
-    
+
     def __iter__(self):
-        return (x for x in super(observation, self).__iter__() if x is not None)
+        return (self[i] for i in range(len(self)) if self[i] is not None)
 
 class direction:
     '''
@@ -240,39 +258,20 @@ class direction:
                 self.right_orientation = direction.right(self.orientation)
     '''
 
-    class __Left:
-        
-        def __call__(self, _orientation):
-            '''
-                Turns an orientaiton left. Indicates a left turn in the turn action.                        
-            '''
-        
-            od = (orientation.north, orientation.east, orientation.south, orientation.west)
-            return od[(od.index(_orientation) - 1) % 4]
-        
-        def __str__(self):
-            return 'direction.left'
-        
-        def __repr__(self):
-            return str(self)
-        
-    class __Right:
-        
-        def __call__(self, _orientation):
-            '''
-                Indicates a right turn in the turn action.
-            '''
-            od = (orientation.north, orientation.east, orientation.south, orientation.west)
-            return od[(od.index(_orientation) + 1) % 4]
-        
-        def __str__(self):
-            return 'direction.right'
-        
-        def __repr__(self):
-            return str(self)
-    
-    left = __Left()
-    right = __Right()
+    def left(_orientation):
+        '''
+            Turns an orientation left. Indicates a left turn in the turn action.                        
+        '''
+        od = (orientation.north, orientation.east, orientation.south, orientation.west)
+        return od[(od.index(_orientation) - 1) % 4]
+
+    def right(_orientation):
+        '''
+            Turns an orientation left. Indicates a left turn in the turn action.                        
+        '''
+        od = (orientation.north, orientation.east, orientation.south, orientation.west)
+        return od[(od.index(_orientation) + 1) % 4]
+
 
 def size(message):
     '''

@@ -15,7 +15,7 @@ orientation_map = {vwc.orientation.north:(0,-1),
 class MoveExecutor(Executor):
     
     def __call__(self, env, action):
-        agent = env.ambient.agents[action.__actor__]
+        agent = env.ambient.agents[action.source]
         
         new_coordinate = agent.coordinate + orientation_map[agent.orientation]
         new_location = env.ambient.grid.state[new_coordinate]
@@ -27,7 +27,7 @@ class MoveExecutor(Executor):
 class TurnExecutor(Executor):
          
     def __call__(self, env, action):
-        agent = env.ambient.agents[action.__actor__]
+        agent = env.ambient.agents[action.source]
         new_orientation = action.direction(agent.orientation)
         env.ambient.grid.turn_agent(agent.coordinate, new_orientation)
         agent.orientation = new_orientation
@@ -35,7 +35,7 @@ class TurnExecutor(Executor):
 class CleanExecutor(Executor):
         
     def __call__(self, env, action):
-        agent = env.ambient.agents[action.__actor__]
+        agent = env.ambient.agents[action.source]
         #precondition
         location = env.ambient.grid.state[agent.coordinate]
         if location.dirt and (location.agent.colour == location.dirt.colour or location.agent.colour == vwc.colour.white):  
@@ -45,7 +45,7 @@ class CleanExecutor(Executor):
 class DropExecutor(Executor):
         
     def __call__(self, env, action):
-        agent = env.ambient.agents[action.__actor__]
+        agent = env.ambient.agents[action.source]
         #precondition
         if not env.ambient.grid.state[agent.coordinate].dirt: 
             env.ambient.grid.place_dirt(agent.coordinate, env.ambient.grid.dirt(action.colour))
@@ -58,9 +58,9 @@ class CommunicativeExecutor(Executor):
     def __call__(self, env, action):
         notify = action.to
         if len(notify) == 0: #send to everyone! do we want this?
-            notify = set(env.ambient.agents.keys()) - set([action.__actor__])
+            notify = set(env.ambient.agents.keys()) - set([action.source])
         for to in notify:
-            env.physics.notify_agent(env.ambient.agents[to], vwc.message(action.__actor__, action.content))
+            env.physics.notify_agent(env.ambient.agents[to], vwc.message(action.source, action.content))
             
 ###################### actions ###################### 
             
@@ -123,6 +123,7 @@ class TurnActionFactory(ActionFactory):
         
     def __call__(self, _direction):
         if not _direction in [vwc.direction.left, vwc.direction.right]:
+            print([vwc.direction.left, vwc.direction.right])
             raise VacuumWorldActionError("{0} is not a valid direction for a turn action.\nValid directions are vwc.direction.left or vwc.direction.right".format(str(_direction)))
         return TurnAction(_direction)
     

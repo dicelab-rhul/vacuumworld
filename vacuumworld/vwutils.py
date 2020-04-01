@@ -45,7 +45,7 @@ def process_minds(white_mind, green_mind=None, orange_mind=None, observers={}):
         orange_mind = white_mind
     
     validate_mind(white_mind, vwc.colour.white)
-    observe(white_mind, observers)
+    #observe(white_mind, observers) # I think this should be removed, it is quite fragile.
     
     return white_mind, green_mind, orange_mind
 

@@ -107,4 +107,3 @@ def drop(colour):
             ``('drop', colour)``
     '''
     return ('drop',colour)
-    
