@@ -50,19 +50,19 @@ class GridEnvironment(Environment):
     def __init__(self, ambient):
         
         actions = [action.DropAction, action.MoveAction,
-                   action.TurnAction, action.CleanAction, 
-                   action.CommunicativeAction]
+                    action.TurnAction, action.CleanAction, 
+                    action.CommunicativeAction]
         
         physics = GridPhysics(actions)
         
-        super(GridEnvironment, self).__init__(physics, ambient, [ObservationProcess()], actions)
+        super(GridEnvironment, self).__init__(physics, ambient, [ObservationProcess()])
         
 
 class Dirt(Identifiable):
     
-    def __init__(self, dirt):
-        self.ID = dirt.name
+    def __init__(self, dirt):        
         super(Dirt, self).__init__()
+        self._Identifiable__ID = dirt.name #hack...
         self.dirt = dirt
 
 class ObservationProcess(Process):
@@ -75,7 +75,9 @@ class ObservationProcess(Process):
     def __call__(self, env):
         for agent in env.ambient.agents.values():
             env.physics.notify_agent(agent, self.get_perception(env.ambient.grid, agent))
-            
+        return []
+
+
     def get_perception(self, grid, agent):
         c = agent.coordinate
         f = ObservationProcess.orientation_map[agent.orientation]

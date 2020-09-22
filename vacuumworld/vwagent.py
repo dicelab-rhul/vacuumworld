@@ -23,7 +23,7 @@ class VWBody(Body):
             actuators = [vwactuator.UserActuator(), vwactuator.CommunicationActuator()]
 
         sensors = [vwsensor.VisionSensor(), vwsensor.CommunicationSensor()]
-        #self.ID = ID #hmmm
+        self._Identifiable__ID = ID #hack...
         
         super(VWBody, self).__init__(mind, actuators, sensors)
         
