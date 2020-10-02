@@ -650,7 +650,8 @@ def _save(saveloadmenu):
 '''
 
 def _save(saveloadmenu):
-    result = saveload.save_dialog(grid)
+    file = saveloadmenu.var.get()
+    result = saveload.save_dialog(grid, file)
 
     if result:
         saveloadmenu.lista = saveload.files()
@@ -674,7 +675,9 @@ def _load(saveloadmenu):
 '''
 
 def _load(saveloadmenu):
-    data = saveload.load_dialog()
+    file = saveloadmenu.var.get()
+    data = saveload.load_dialog(file)
+
     if data:
         main_interface.grid_scale_slider.set_position(data.dim - grid.GRID_MIN_SIZE)
         grid.replace_all(data)
