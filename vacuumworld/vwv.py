@@ -674,8 +674,7 @@ def _reset():
 
 def simulate():
     try: 
-        global env, root, main_interface
-
+        global env, root, main_interface, after_hook
         if main_interface.running:
             print("------------ cycle {} ------------ ".format(grid.cycle))        
             env.evolveEnvironment()
@@ -683,13 +682,15 @@ def simulate():
             root.after(0, main_interface._redraw)
 
             time = int(TIME_STEP*1000)
-            root.after(time, simulate)
+            after_hook = root.after(time, simulate)
+        
     except:
         print("INFO: SIMULATION ERROR")
         _error()
         root.after(0, _finish)
     
 def _play():
+
     print('INFO: play')
     #play_event.set()
     main_interface.pack_buttons('stop', 'pause', 'fast')
@@ -697,12 +698,15 @@ def _play():
     main_interface.deselect()
     main_interface.running = True
 
-    global env, grid, minds, user_mind
+    global env, grid, minds, user_mind, after_hook
     env = init_environment(grid, minds, user_mind)
     grid.cycle = 0
 
-    simulate()
-
+    if after_hook: #prevent button spam
+        root.after_cancel(after_hook)
+    time = int(TIME_STEP*1000)
+    after_hook = root.after(time, simulate)
+    
 def _stop():
     print('INFO: stop')
     global reset
@@ -717,8 +721,15 @@ def _resume():
     print('INFO: resume')
     #play_event.set()
     main_interface.pack_buttons('stop', 'pause','fast')
+    
+    #root.after(int(TIME_STEP*1000), simulate)
+    
+    global after_hook
     main_interface.running = True
-    root.after(int(TIME_STEP*1000), simulate)
+    if after_hook: #prevent button spam
+        root.after_cancel(after_hook)
+    time = int(TIME_STEP*1000)
+    after_hook = root.after(time, simulate)
 
 def _pause():
     print('INFO: pause')
@@ -808,8 +819,9 @@ def run(_minds, skip = False, play = False, speed = 0, load = None, scale = 1):
             print("INFO: successfully loaded: ", load)
             
         global env_thread
-        global play_event, finish, reset
+        global play_event, finish, reset, after_hook
 
+        after_hook = None
         reset = True
         finish = False
 
