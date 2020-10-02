@@ -1,6 +1,3 @@
-
-
-
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
@@ -12,9 +9,8 @@ Created on Fri May 31 20:12:24 2019
 import tkinter as tk
 import traceback
 import os
-import time
-from threading import Thread, Event
 
+from threading import Event
 from collections import OrderedDict as odict
 from PIL import Image, ImageTk
 
@@ -28,6 +24,7 @@ from .vwenvironment import init as init_environment
 from . import vwc
 from . import saveload
 from . import vwuser
+from .vwutils import print_simulation_speed_message
 
 #might need to change this for the real package...
 PATH = os.path.dirname(__file__)
@@ -141,6 +138,9 @@ class VWMainMenu(tk.Frame):
         self.button_frame.pack()
 
         self.pack()
+
+        #We need to use eval() because tk::PlaceWindow is not exposed.
+        root.eval('tk::PlaceWindow %s center' % root.winfo_pathname(root.winfo_id()))
 
 
 class CanvasDragManager:
@@ -485,7 +485,7 @@ class VWInterface(tk.Frame):
         x = 0
         y = 0
         inc = size / env_dim
-        for i in range(env_dim + 1):
+        for _ in range(env_dim + 1):
            self.grid_lines.append(self.canvas.create_line(x,0,x,size+1))
            self.grid_lines.append(self.canvas.create_line(0,y,size+1,y))
            y += inc
@@ -628,41 +628,45 @@ def _fast():
     global TIME_STEP, TIME_STEP_BASE, TIME_STEP_MODIFIER
     TIME_STEP_MODIFIER /= 2.
     TIME_STEP = TIME_STEP_BASE * TIME_STEP_MODIFIER + TIME_STEP_MIN
-    print("INFO: simulation speed set to {:1.4f} s/cycle".format(TIME_STEP))
+
+    print_simulation_speed_message(time_step=TIME_STEP)
 
 def reset_time_step():
     global TIME_STEP, TIME_STEP_BASE, TIME_STEP_MODIFIER
     TIME_STEP_MODIFIER = 1.
     TIME_STEP = TIME_STEP_BASE * TIME_STEP_MODIFIER + TIME_STEP_MIN
-    print("INFO: simulation speed set to {:1.4f} s/cycle".format(TIME_STEP))
+
+    print_simulation_speed_message(time_step=TIME_STEP)
 
 def _difficulty():
     global user_mind
     user_mind = main_interface.user_mind()
 
+
 def _save(saveloadmenu):
     file = saveloadmenu.var.get()
-    if len(file) > 0:
-        print('INFO: save', file)
-        saveload.save(grid, file)
+    result = saveload.save_dialog(grid, file)
+
+    if result:
         saveloadmenu.lista = saveload.files()
+        print("The current grid was successfully saved.")
+    else:
+        print("The current grid was not saved.")
+
 
 def _load(saveloadmenu):
     file = saveloadmenu.var.get()
-    if len(file) > 0:
-        if not file.endswith('.vw'):
-            file = file + ".vw"
-        if file in saveloadmenu.lista:
-            print('INFO: load:', file)
-            data = saveload.load(file)
-            if data is not None:
-                main_interface.grid_scale_slider.set_position(data.dim - grid.GRID_MIN_SIZE)
-                grid.replace_all(data)
-                main_interface._redraw()
+    data = saveload.load_dialog(file)
 
+    if data:
+        main_interface.grid_scale_slider.set_position(data.dim - grid.GRID_MIN_SIZE)
+        grid.replace_all(data)
+        main_interface._redraw()
+        print("The saved grid was successfully loaded.")
+    else:
+        print("The state was not loaded.")
             
             
-    
 #resets the grid and enviroment
 def _reset():
     print('INFO: reset')
@@ -684,7 +688,7 @@ def simulate():
             time = int(TIME_STEP*1000)
             after_hook = root.after(time, simulate)
         
-    except:
+    except Exception:
         print("INFO: SIMULATION ERROR")
         _error()
         root.after(0, _finish)
@@ -795,7 +799,6 @@ def run(_minds, skip = False, play = False, speed = 0, load = None, scale = 1):
 
         grid = Grid(INITIAL_ENVIRONMENT_DIM)
         saveload.init()
-        #saveload.load('/test.vw', grid)
         
         if not skip:    
             main_menu = VWMainMenu(root, _start, _finish)
@@ -835,14 +838,15 @@ def run(_minds, skip = False, play = False, speed = 0, load = None, scale = 1):
         global TIME_STEP_MODIFIER
         TIME_STEP_MODIFIER = 1 - speed
         TIME_STEP = TIME_STEP_BASE * TIME_STEP_MODIFIER + TIME_STEP_MIN
-        print("INFO: simulation speed set to {:1.4f} s/cycle".format(TIME_STEP))
+
+        print_simulation_speed_message(time_step=TIME_STEP)
                 
         if play:
             _play()
 
         root.mainloop()
         
-    except:
+    except Exception:
         _error()
         _finish()
 

@@ -32,18 +32,18 @@ def random_grid(size, white, green, orange, user, orange_dirt, green_dirt):
     agents = {vwcolour.white:white, vwcolour.orange:orange, 
               vwcolour.green:green, vwcolour.user:user}
     for c, num in agents.items():
-        for j in range(num):
+        for _ in range(num):
 
             grid.place_agent(coords.pop(-1), grid.agent(c, random.choice(vworientation)))
     #for dirts
     dirts = {vwcolour.orange:orange_dirt,vwcolour.green:green_dirt}
     coords = random.sample([key for key,value in grid.state.items() if value is not None] , k = orange_dirt + green_dirt)
     for c, num in dirts.items():
-        for j in range(num):
+        for _ in range(num):
             grid.place_dirt(coords.pop(-1), grid.dirt(c))
     return grid
 
-class Grid:
+class Grid():
     DIRECTIONS = {vworientation.north:(0,-1), vworientation.south:(0,1), vworientation.west:(-1,0), vworientation.east:(1,0)}
     
     ID_PREFIX_DIRT = 'D-'
@@ -181,4 +181,3 @@ class Grid:
         
     def __repr__(self):
         return str(self)
-

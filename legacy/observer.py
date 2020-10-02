@@ -6,5 +6,7 @@ Created on Tue Sep 17 11:40:35 2019
 @author: ben
 """
 
-class Observer:
-    
+#TODO: this file contains an empty class which is never used.
+
+class Observer():
+    pass

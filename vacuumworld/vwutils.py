@@ -6,11 +6,12 @@ Created on Wed Sep 25 10:29:55 2019
 @author: ben
 """
 from pystarworlds.Agent import Mind
-
 from . import vwc
 
 import inspect
+
 from inspect import signature
+from os import devnull
 
 class VacuumWorldInternalError(Exception):
     pass
@@ -18,16 +19,16 @@ class VacuumWorldInternalError(Exception):
 class VacuumWorldActionError(VacuumWorldInternalError):
     
     def __init__(self, message):
-        super(VacuumWorldActionError, self).__init__("for agent: " + callerID() + "\n      " + message)
+        super(VacuumWorldActionError, self).__init__("for agent: " + caller_id() + "\n      " + message)
 
-def callerID():
+def caller_id():
     caller = inspect.currentframe().f_back
     while not isinstance(caller.f_locals.get('self', None), Mind):
         caller = caller.f_back
     return caller.f_locals['self'].body.ID
 
 def warn_agent(message, *args):
-    print("WARNING: " + message.format(callerID(), *args))
+    print("WARNING: " + message.format(caller_id(), *args))
 
 def process_minds(white_mind, green_mind=None, orange_mind=None, observers={}):
     assert white_mind is not None
@@ -50,7 +51,7 @@ def process_minds(white_mind, green_mind=None, orange_mind=None, observers={}):
     return white_mind, green_mind, orange_mind
 
 def raise_static_modification_error(agent, name, _):
-    raise VacuumWorldInternalError("Agent: {0} tried to modify the static field: {1} this is cheating!")
+    raise VacuumWorldInternalError("Agent: {0} tried to modify the static field: {1} this is cheating!".format(agent, name))
 
 def observe(mind, observers):
     for obs in observers:
@@ -60,7 +61,7 @@ def observe(mind, observers):
             # \ the attribute: {1}, (see coursework question 1)".format(colour, obs)) 
     def sneaky_setattr(self, name, value):
         if name in observers:
-            observers[name](callerID(), name, value)
+            observers[name](caller_id(), name, value)
         super(type(mind), self).__setattr__(name, value)
     type(mind).__setattr__ = sneaky_setattr
     return mind
@@ -74,11 +75,11 @@ def validate_mind(mind, colour):
         if not callable(fun):
             raise VacuumWorldInternalError("{0} agent: decide must be callable".format(colour))            
         if len(signature(fun).parameters) != 0:
-            raise VacuumWorldInternalError("{0} agent: decide must be defined with no arguments, do(self)".format(colour))
+            raise VacuumWorldInternalError("{0} agent: decide must be defined with no arguments, decide(self)".format(colour))
     
     def revise_def(fun):
         if not callable(fun):
-            raise VacuumWorldInternalError("{0} agent: revise must be callable".format(colour, fun.__name__))            
+            raise VacuumWorldInternalError("{0} agent: revise must be callable".format(colour))            
         if len(signature(fun).parameters) != 2:
             raise VacuumWorldInternalError("{0} agent: revise must be defined with two arguments, revise(self, observation, messages)".format(colour))
              
@@ -92,11 +93,14 @@ def validate_mind(mind, colour):
             validate(getattr(mind, fun))
         else:
             raise VacuumWorldInternalError("{0} agent: must define method: {1}".format(colour, fun))
-            
-            
-            
-            
-            
-            
-            
-            
+
+def print_simulation_speed_message(time_step):
+    print("INFO: simulation speed set to {:1.4f} s/cycle".format(time_step))
+
+def ignore(obj):
+    if not obj:
+        return
+
+    with open(devnull, "w") as f:
+        f.write(str(obj))
+        f.flush()

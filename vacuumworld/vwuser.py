@@ -7,10 +7,11 @@ Created on Sun Jul 28 12:00:27 2019
 """
 from . import vwc
 from .vwc import action
+from .vwutils import ignore
 
 
 
-class EasyUser:
+class EasyUser():
     
     def __init__(self):
         self.observation = None
@@ -42,8 +43,9 @@ class EasyUser:
     def revise(self, observation, messages):
         self.id = observation.center.agent.name
         self.observation = observation
+        ignore(messages)
         
-class MediumUser:
+class MediumUser():
 
     def __init__(self):
         self.observation = None
@@ -114,6 +116,7 @@ class MediumUser:
     def revise(self, observation, messages):
         self.id = observation.center.agent.name
         self.observation = observation
+        ignore(messages)
 
 #the users that can be used in vacuumworld
 USERS = [EasyUser, MediumUser]

@@ -74,6 +74,3 @@ def test_agentTurnProperly():
     grid.turn_agent((coord(0,0)),'south')
     assert grid.state[coord(0,0)].agent.orientation == orientation.south   # orientation has changed 
    # assert grid.state[coord(0,0)].agent.orientation=='south'  # orientation is same changed     
-        
-           
-        

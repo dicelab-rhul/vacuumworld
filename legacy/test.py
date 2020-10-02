@@ -6,6 +6,8 @@ Created on Thu Oct 31 12:26:59 2019
 @author: ben
 """
 
+#TODO: What is this about?
+
 def testing(a,b,c):
     '''
         Parameters:
@@ -16,6 +18,5 @@ def testing(a,b,c):
     print(a,b,c)
     
     
-testing()
-
-from 
+# I had to fix this broken line - EU
+testing(1,2,3)

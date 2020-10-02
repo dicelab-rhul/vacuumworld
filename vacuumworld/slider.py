@@ -72,4 +72,3 @@ class Slider(tk.Canvas):
         if self.increments:
             x = self.inc
         self.release_callback(int(x))
-       

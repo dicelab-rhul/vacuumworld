@@ -70,11 +70,9 @@ class VWPhysicalAction(Action):
     
 class MoveAction(VWPhysicalAction):
     executor = MoveExecutor
-    pass
              
 class CleanAction(VWPhysicalAction):
     executor = CleanExecutor
-    pass
 
 class DropAction(VWPhysicalAction):
     executor = DropExecutor
@@ -100,12 +98,14 @@ class CommunicativeAction(Action):
 
 ###################### create actions from label ###################### 
 
-class ActionFactory:
+class ActionFactory():
     
     def __init__(self):
+        # Useless
         pass
     
     def __call__(self):
+        # Useless
         pass
     
 class DropActionFactory(ActionFactory):
@@ -176,8 +176,3 @@ _action_factories = {vwc.action.move.__name__:lambda: MoveAction(),
                      vwc.action.turn.__name__:TurnActionFactory(), 
                      vwc.action.drop.__name__:DropActionFactory(),
                      vwc.action.speak.__name__:SpeakActionFactory()}
-
-
-
-    
-    
