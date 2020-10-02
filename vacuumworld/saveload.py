@@ -10,12 +10,26 @@ import os
 import pickle
 import traceback
 
+from tkinter.filedialog import asksaveasfile, askopenfile
+
 FILE_PATH = "files/"
 
 def init():
     if not os.path.isdir("./" + FILE_PATH):
         os.mkdir("./" + FILE_PATH)
     
+
+def save_dialog(grid):
+    try:
+        with asksaveasfile(mode="wb", initialdir=os.path.join(os.getcwd(), "files"), defaultextension=".vw") as f:
+            pickle.dump(grid, f)
+            return True
+    except AttributeError:
+        return False
+    except:
+        traceback.print_exc()
+        return False
+
 def save(grid, file):
     if not file.endswith('.vw'):
         file = file + ".vw"
@@ -24,6 +38,16 @@ def save(grid, file):
              pickle.dump(grid, f)
     except:
         traceback.print_exc()
+
+def load_dialog():
+    try:
+        with askopenfile(mode="rb", initialdir=os.path.join(os.getcwd(), "files")) as f:
+            return pickle.load(f)
+    except AttributeError:
+        return False
+    except:
+        traceback.print_exc()
+        return False
     
 def load(file):
     if not file.endswith('.vw'):

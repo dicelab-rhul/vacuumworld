@@ -640,13 +640,25 @@ def _difficulty():
     global user_mind
     user_mind = main_interface.user_mind()
 
+'''
 def _save(saveloadmenu):
     file = saveloadmenu.var.get()
     if len(file) > 0:
         print('INFO: save', file)
         saveload.save(grid, file)
         saveloadmenu.lista = saveload.files()
+'''
 
+def _save(saveloadmenu):
+    result = saveload.save_dialog(grid)
+
+    if result:
+        saveloadmenu.lista = saveload.files()
+        print("The current grid was successfully saved.")
+    else:
+        print("The current grid was not saved.")
+
+'''
 def _load(saveloadmenu):
     file = saveloadmenu.var.get()
     if len(file) > 0:
@@ -659,7 +671,17 @@ def _load(saveloadmenu):
                 main_interface.grid_scale_slider.set_position(data.dim - grid.GRID_MIN_SIZE)
                 grid.replace_all(data)
                 main_interface._redraw()
+'''
 
+def _load(saveloadmenu):
+    data = saveload.load_dialog()
+    if data:
+        main_interface.grid_scale_slider.set_position(data.dim - grid.GRID_MIN_SIZE)
+        grid.replace_all(data)
+        main_interface._redraw()
+        print("The saved grid was successfully loaded.")
+    else:
+        print("The state was not loaded.")
             
             
     
