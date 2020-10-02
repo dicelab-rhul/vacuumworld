@@ -24,6 +24,7 @@ from .vwenvironment import init as init_environment
 from . import vwc
 from . import saveload
 from . import vwuser
+from .vwutils import print_simulation_speed_message
 
 #might need to change this for the real package...
 PATH = os.path.dirname(__file__)
@@ -624,13 +625,15 @@ def _fast():
     global TIME_STEP, TIME_STEP_BASE, TIME_STEP_MODIFIER
     TIME_STEP_MODIFIER /= 2.
     TIME_STEP = TIME_STEP_BASE * TIME_STEP_MODIFIER + TIME_STEP_MIN
-    print("INFO: simulation speed set to {:1.4f} s/cycle".format(TIME_STEP))
+
+    print_simulation_speed_message(time_step=TIME_STEP)
 
 def reset_time_step():
     global TIME_STEP, TIME_STEP_BASE, TIME_STEP_MODIFIER
     TIME_STEP_MODIFIER = 1.
     TIME_STEP = TIME_STEP_BASE * TIME_STEP_MODIFIER + TIME_STEP_MIN
-    print("INFO: simulation speed set to {:1.4f} s/cycle".format(TIME_STEP))
+
+    print_simulation_speed_message(time_step=TIME_STEP)
 
 def _difficulty():
     global user_mind
@@ -855,7 +858,8 @@ def run(_minds, skip = False, play = False, speed = 0, load = None, scale = 1):
         global TIME_STEP_MODIFIER
         TIME_STEP_MODIFIER = 1 - speed
         TIME_STEP = TIME_STEP_BASE * TIME_STEP_MODIFIER + TIME_STEP_MIN
-        print("INFO: simulation speed set to {:1.4f} s/cycle".format(TIME_STEP))
+
+        print_simulation_speed_message(time_step=TIME_STEP)
                 
         if play:
             _play()

@@ -92,3 +92,6 @@ def validate_mind(mind, colour):
             validate(getattr(mind, fun))
         else:
             raise VacuumWorldInternalError("{0} agent: must define method: {1}".format(colour, fun))
+
+def print_simulation_speed_message(time_step):
+    print("INFO: simulation speed set to {:1.4f} s/cycle".format(time_step))
