@@ -5,8 +5,7 @@ sys.path.insert(0, myPath + '/../')
 
 
 from ..vw import Grid
-from ..vwc import coord
-
+from ..vwc import coord, orientation
 
 def test_wall_locations_exist():
     grid = Grid(5)
@@ -70,10 +69,10 @@ def test_agentMoveProperly():
     
 def test_agentTurnProperly():
     grid = Grid(4)
-    agent1 = grid.agent('orange','east')
+    agent1 = grid.agent('orange', 'east')
     grid.replace_agent((coord(0,0)), agent1)
     grid.turn_agent((coord(0,0)),'south')
-    assert grid.state[coord(0,0)].agent.orientation=='south'   # orientation has changed 
+    assert grid.state[coord(0,0)].agent.orientation == orientation.south   # orientation has changed 
    # assert grid.state[coord(0,0)].agent.orientation=='south'  # orientation is same changed     
         
            

@@ -57,12 +57,6 @@ class orientation(Enum):
     south = 'south'
     west = 'west'
 
-    def __eq__(self, other):
-        return super().__eq__(other) or self.value == other
-
-    def __hash__(self):
-        return hash(self.value)
-
     def __str__(self):
         return self.value
     

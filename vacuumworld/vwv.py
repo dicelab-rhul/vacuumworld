@@ -666,27 +666,48 @@ def _load(saveloadmenu):
 #resets the grid and enviroment
 def _reset():
     print('INFO: reset')
-    global reset
-    reset = True
     main_interface._reset_canvas(lines=False)
     grid.reset(grid.dim)
     reset_time_step()
+    global env
+    env = None
 
+def simulate():
+    try: 
+        global env, root, main_interface
+
+        if main_interface.running:
+            print("------------ cycle {} ------------ ".format(grid.cycle))        
+            env.evolveEnvironment()
+            grid.cycle += 1
+            root.after(0, main_interface._redraw)
+
+            time = int(TIME_STEP*1000)
+            root.after(time, simulate)
+    except:
+        print("INFO: SIMULATION ERROR")
+        _error()
+        root.after(0, _finish)
+    
 def _play():
     print('INFO: play')
-
-    play_event.set()
+    #play_event.set()
     main_interface.pack_buttons('stop', 'pause', 'fast')
     main_interface.show_hide_side('hidden')
     main_interface.deselect()
     main_interface.running = True
-              
+
+    global env, grid, minds, user_mind
+    env = init_environment(grid, minds, user_mind)
+    grid.cycle = 0
+
+    simulate()
 
 def _stop():
     print('INFO: stop')
     global reset
     reset = True
-    play_event.clear()
+    #play_event.clear()
     reset_time_step()
     main_interface.running = False
     main_interface.pack_buttons('play', 'reset', 'fast', 'difficulty', 'save', 'load')
@@ -694,15 +715,17 @@ def _stop():
 
 def _resume():
     print('INFO: resume')
-    
-    play_event.set()
+    #play_event.set()
     main_interface.pack_buttons('stop', 'pause','fast')
+    main_interface.running = True
+    root.after(int(TIME_STEP*1000), simulate)
 
 def _pause():
     print('INFO: pause')
-    play_event.clear()
+    #play_event.clear()
     reset_time_step()
     main_interface.pack_buttons('stop', 'resume','fast')
+    main_interface.running = False
 
 def _back():
     print('INFO: back')
@@ -792,8 +815,8 @@ def run(_minds, skip = False, play = False, speed = 0, load = None, scale = 1):
 
         play_event = Event()
 
-        env_thread = Thread(target=simulate, daemon=True)
-        env_thread.start()
+        #env_thread = Thread(target=simulate, daemon=True)
+        #env_thread.start()
         
         #set up simulation speed
         global TIME_STEP
@@ -804,6 +827,7 @@ def run(_minds, skip = False, play = False, speed = 0, load = None, scale = 1):
                 
         if play:
             _play()
+
         root.mainloop()
         
     except:
@@ -812,6 +836,11 @@ def run(_minds, skip = False, play = False, speed = 0, load = None, scale = 1):
 
 
 
+
+
+
+"""
+# TODO remove --- new simulate fixes time.sleep issue?
 
 #TODO, be able to select user mind from gui
 
@@ -875,3 +904,4 @@ class TimeRecord:
     
     def __exit__(self, type, value, traceback):
         print("INFO: {0} time: {1}".format(self._name, time.time()  * 1000 - self._t))
+"""
