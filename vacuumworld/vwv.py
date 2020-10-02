@@ -482,7 +482,7 @@ class VWInterface(tk.Frame):
         x = 0
         y = 0
         inc = size / env_dim
-        for i in range(env_dim + 1):
+        for _ in range(env_dim + 1):
            self.grid_lines.append(self.canvas.create_line(x,0,x,size+1))
            self.grid_lines.append(self.canvas.create_line(0,y,size+1,y))
            y += inc

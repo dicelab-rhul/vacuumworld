@@ -18,16 +18,16 @@ class VacuumWorldInternalError(Exception):
 class VacuumWorldActionError(VacuumWorldInternalError):
     
     def __init__(self, message):
-        super(VacuumWorldActionError, self).__init__("for agent: " + callerID() + "\n      " + message)
+        super(VacuumWorldActionError, self).__init__("for agent: " + caller_id() + "\n      " + message)
 
-def callerID():
+def caller_id():
     caller = inspect.currentframe().f_back
     while not isinstance(caller.f_locals.get('self', None), Mind):
         caller = caller.f_back
     return caller.f_locals['self'].body.ID
 
 def warn_agent(message, *args):
-    print("WARNING: " + message.format(callerID(), *args))
+    print("WARNING: " + message.format(caller_id(), *args))
 
 def process_minds(white_mind, green_mind=None, orange_mind=None, observers={}):
     assert white_mind is not None
@@ -60,7 +60,7 @@ def observe(mind, observers):
             # \ the attribute: {1}, (see coursework question 1)".format(colour, obs)) 
     def sneaky_setattr(self, name, value):
         if name in observers:
-            observers[name](callerID(), name, value)
+            observers[name](caller_id(), name, value)
         super(type(mind), self).__setattr__(name, value)
     type(mind).__setattr__ = sneaky_setattr
     return mind
