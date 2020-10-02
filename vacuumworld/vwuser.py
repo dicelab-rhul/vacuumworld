@@ -7,6 +7,7 @@ Created on Sun Jul 28 12:00:27 2019
 """
 from . import vwc
 from .vwc import action
+from .vwutils import ignore
 
 
 
@@ -39,9 +40,10 @@ class EasyUser():
         #otherwise do a random action (including dropping dirt)
         return vwc.random(self.actions, [0.2, 0.2, 0.45, 0.075, 0.075])
             
-    def revise(self, observation):
+    def revise(self, observation, messages):
         self.id = observation.center.agent.name
         self.observation = observation
+        ignore(messages)
         
 class MediumUser():
 
@@ -111,9 +113,10 @@ class MediumUser():
         return vwc.random([action.move(), action.drop(vwc.colour.green), action.drop(vwc.colour.orange),
                            action.turn(vwc.direction.left), action.turn(vwc.direction.right)], [0.6, 0.15, 0.15, 0.05, 0.05]) 
             
-    def revise(self, observation):
+    def revise(self, observation, messages):
         self.id = observation.center.agent.name
         self.observation = observation
+        ignore(messages)
 
 #the users that can be used in vacuumworld
 USERS = [EasyUser, MediumUser]

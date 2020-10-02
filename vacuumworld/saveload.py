@@ -40,13 +40,8 @@ def save_dialog(grid, file):
         traceback.print_exc()
         return False
 
-def load_dialog(file):
+def load_dialog(file=""):
     try:
-        if not file:
-            file = "".join(choice(ascii_letters) for _ in range(RANDOM_FILENAME_LENGTH)) + VW_EXTENSION
-        elif not file.endswith(VW_EXTENSION):
-            file += VW_EXTENSION
-
         with askopenfile(mode="rb", initialdir=FILES_DIR, initialfile=file) as f:
             return pickle.load(f)
     except AttributeError:

@@ -20,6 +20,7 @@ __email__ = "zavc926@live.rhul.ac.uk"
 import random as rand
 import typing
 from enum import Enum
+from . import action #This is NOT unused, despite it may look like that is the case. Do NOT remove this line.
 
 __all__ = ('action', 'observation', 'location', 'direction', 'agent', 'dirt', 'coord', 'size', 'random')
 
@@ -251,14 +252,16 @@ class direction:
                 self.right_orientation = direction.right(self.orientation)
     '''
 
-    def left(self, _orientation):
+    @staticmethod
+    def left(_orientation):
         '''
             Turns an orientation left. Indicates a left turn in the turn action.                        
         '''
         od = (orientation.north, orientation.east, orientation.south, orientation.west)
         return od[(od.index(_orientation) - 1) % 4]
 
-    def right(self, _orientation):
+    @staticmethod
+    def right(_orientation):
         '''
             Turns an orientation left. Indicates a left turn in the turn action.                        
         '''

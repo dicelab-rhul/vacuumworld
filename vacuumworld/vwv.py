@@ -139,6 +139,9 @@ class VWMainMenu(tk.Frame):
 
         self.pack()
 
+        #We need to use eval() because tk::PlaceWindow is not exposed.
+        root.eval('tk::PlaceWindow %s center' % root.winfo_pathname(root.winfo_id()))
+
 
 class CanvasDragManager:
 
@@ -639,14 +642,6 @@ def _difficulty():
     global user_mind
     user_mind = main_interface.user_mind()
 
-'''
-def _save(saveloadmenu):
-    file = saveloadmenu.var.get()
-    if len(file) > 0:
-        print('INFO: save', file)
-        saveload.save(grid, file)
-        saveloadmenu.lista = saveload.files()
-'''
 
 def _save(saveloadmenu):
     file = saveloadmenu.var.get()
@@ -658,20 +653,6 @@ def _save(saveloadmenu):
     else:
         print("The current grid was not saved.")
 
-'''
-def _load(saveloadmenu):
-    file = saveloadmenu.var.get()
-    if len(file) > 0:
-        if not file.endswith('.vw'):
-            file = file + ".vw"
-        if file in saveloadmenu.lista:
-            print('INFO: load:', file)
-            data = saveload.load(file)
-            if data is not None:
-                main_interface.grid_scale_slider.set_position(data.dim - grid.GRID_MIN_SIZE)
-                grid.replace_all(data)
-                main_interface._redraw()
-'''
 
 def _load(saveloadmenu):
     file = saveloadmenu.var.get()
@@ -686,7 +667,6 @@ def _load(saveloadmenu):
         print("The state was not loaded.")
             
             
-    
 #resets the grid and enviroment
 def _reset():
     print('INFO: reset')

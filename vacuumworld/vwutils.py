@@ -6,11 +6,12 @@ Created on Wed Sep 25 10:29:55 2019
 @author: ben
 """
 from pystarworlds.Agent import Mind
-
 from . import vwc
 
 import inspect
+
 from inspect import signature
+from os import devnull
 
 class VacuumWorldInternalError(Exception):
     pass
@@ -95,3 +96,11 @@ def validate_mind(mind, colour):
 
 def print_simulation_speed_message(time_step):
     print("INFO: simulation speed set to {:1.4f} s/cycle".format(time_step))
+
+def ignore(obj):
+    if not obj:
+        return
+
+    with open(devnull, "w") as f:
+        f.write(str(obj))
+        f.flush()
