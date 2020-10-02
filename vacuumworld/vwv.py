@@ -816,7 +816,6 @@ def run(_minds, skip = False, play = False, speed = 0, load = None, scale = 1):
 
         grid = Grid(INITIAL_ENVIRONMENT_DIM)
         saveload.init()
-        #saveload.load('/test.vw', grid)
         
         if not skip:    
             main_menu = VWMainMenu(root, _start, _finish)

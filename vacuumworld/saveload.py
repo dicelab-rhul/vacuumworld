@@ -4,25 +4,31 @@
 Created on Tue Jun  4 16:39:05 2019
 
 @author: ben
+@author: cloudstrife9999
 """
 
 import os
 import pickle
 import traceback
 
+from random import choice
+from string import ascii_letters
 from tkinter.filedialog import asksaveasfile, askopenfile
 
 FILES_DIR = os.path.join(os.getcwd(), "files")
 VW_EXTENSION = ".vw"
+RANDOM_FILENAME_LENGTH = 10
 
 def init():
     if not os.path.isdir(FILES_DIR):
         os.mkdir(FILES_DIR)
     
 
-def save_dialog(grid, file=""):
+def save_dialog(grid, file):
     try:
-        if file != "" and not  file.endswith(VW_EXTENSION):
+        if not file:
+            file = "".join(choice(ascii_letters) for _ in range(RANDOM_FILENAME_LENGTH)) + VW_EXTENSION
+        elif not file.endswith(VW_EXTENSION):
             file += VW_EXTENSION
 
         with asksaveasfile(mode="wb", initialdir=FILES_DIR, initialfile=file, defaultextension=VW_EXTENSION) as f:
@@ -34,9 +40,11 @@ def save_dialog(grid, file=""):
         traceback.print_exc()
         return False
 
-def load_dialog(file=""):
+def load_dialog(file):
     try:
-        if file != "" and not  file.endswith(VW_EXTENSION):
+        if not file:
+            file = "".join(choice(ascii_letters) for _ in range(RANDOM_FILENAME_LENGTH)) + VW_EXTENSION
+        elif not file.endswith(VW_EXTENSION):
             file += VW_EXTENSION
 
         with askopenfile(mode="rb", initialdir=FILES_DIR, initialfile=file) as f:
@@ -48,10 +56,14 @@ def load_dialog(file=""):
         return False
 
 def exists(file):
+    assert file
+
     file = format_file(file)
     return file in files()
     
 def format_file(file):
+    assert file
+
     if not file.endswith(VW_EXTENSION):
         file += VW_EXTENSION
     return file
