@@ -35,7 +35,6 @@ __version__ = "4.1.7"
 __maintainer__ = "Benedict Wilkins"
 __email__ = "zavc926@live.rhul.ac.uk"
 
-from . import vw
 from . import vwv
 from . import vwc
 from . import vwutils
@@ -79,7 +78,3 @@ def run(white_mind, green_mind=None, orange_mind=None, **kwargs):
     vwv.run({vwc.colour.white:white_mind, 
              vwc.colour.green:green_mind, 
              vwc.colour.orange:orange_mind}, **kwargs)
-
-
-
-

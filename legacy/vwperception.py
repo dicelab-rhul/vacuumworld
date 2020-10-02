@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#TODO: this import is broken, as pystarworlds does not seem to have any file named Perception
 from pystarworlds.Perception import Perception
 
 #maybe we use this... who knows!

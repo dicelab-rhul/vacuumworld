@@ -7,7 +7,6 @@ from . import vwaction
 from . import vwc
 from . import vwutils
 
-import traceback
 
 from collections import namedtuple
 agent_type = namedtuple('agent_type', 'cleaning user')('cleaning', 'user')
@@ -45,7 +44,7 @@ class VWMind(Mind):
         super(VWMind, self).__init__()
         self.surrogate = surrogate
         self.observers = []
-        for observer in observers:
+        for _ in observers:
             self.observers.append()
        
     def cycle(self):
@@ -100,10 +99,8 @@ class VWMind(Mind):
         
     def validate_action(self, action):
         if type(action) == tuple:
-            if len(action) > 0 and action[0] in VWMind.action_names:
-                if len(action) == VWMind.action_size[action[0]]:
+            if len(action) > 0 and action[0] in VWMind.action_names and len(action) == VWMind.action_size[action[0]]:
                     return action
         elif callable(action):
             raise vwutils.VacuumWorldActionError("Action should not be a function, did you forget the ()? - e.g. action.move()")
         raise vwutils.VacuumWorldActionError("Invalid action: " + str(action) + " please use vwc.action.")
-        

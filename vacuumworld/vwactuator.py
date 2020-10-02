@@ -10,4 +10,3 @@ class UserActuator(Actuator):
     
 class CommunicationActuator(Actuator):
     subscribe = [vwaction.CommunicativeAction]
-    

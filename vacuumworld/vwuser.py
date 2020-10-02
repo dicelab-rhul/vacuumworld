@@ -10,7 +10,7 @@ from .vwc import action
 
 
 
-class EasyUser:
+class EasyUser():
     
     def __init__(self):
         self.observation = None
@@ -39,11 +39,11 @@ class EasyUser:
         #otherwise do a random action (including dropping dirt)
         return vwc.random(self.actions, [0.2, 0.2, 0.45, 0.075, 0.075])
             
-    def revise(self, observation, messages):
+    def revise(self, observation):
         self.id = observation.center.agent.name
         self.observation = observation
         
-class MediumUser:
+class MediumUser():
 
     def __init__(self):
         self.observation = None
@@ -111,7 +111,7 @@ class MediumUser:
         return vwc.random([action.move(), action.drop(vwc.colour.green), action.drop(vwc.colour.orange),
                            action.turn(vwc.direction.left), action.turn(vwc.direction.right)], [0.6, 0.15, 0.15, 0.05, 0.05]) 
             
-    def revise(self, observation, messages):
+    def revise(self, observation):
         self.id = observation.center.agent.name
         self.observation = observation
 

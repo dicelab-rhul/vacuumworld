@@ -31,8 +31,8 @@ class Trace:
 
         if event == self._call:
             return self.__trace__
-        return
     
+    #TODO: arg is never used. Is this a bug?
     def __print__(self, frame, event, arg):
         co = frame.f_code
         func_name = co.co_name
@@ -45,7 +45,6 @@ class Trace:
         elif event == self._return:
             print(inspect.getsourcelines(frame))
             print('Return %s on line %s' % (func_name, line_no))
-        return
     
     def __enter__(self):
         sys.settrace(self.__trace__)
@@ -57,7 +56,6 @@ class Trace:
 def c(*args):
     print( 'input =', *args)
     #print( 'Leaving c()')
-    pass
 
 def b(arg):
     val = arg * 5
@@ -71,14 +69,4 @@ def a():
 TRACE_INTO = ['b']
 with Trace():
    a() 
-   
-   
-
-    
-    
-    
-    
-    
-    
-    
-    
+ 

@@ -91,5 +91,3 @@ class ObservationProcess(Process):
                         grid.state[c + f + l],
                         grid.state[c + f + r])            
         return obs
-
-

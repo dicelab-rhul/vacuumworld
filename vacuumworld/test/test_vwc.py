@@ -33,7 +33,7 @@ def test_dirt():
     d1.colour
 
 def test_location():
-    l1 = location(coord(0,0), agent(None,None,None), dirt(1,1))
+    assert location(coord(0,0), agent(None,None,None), dirt(1,1)) is not None
     
 def test_observation():
     o1 = observation(None,1,None,3,4,5) #type checks? NamedTuple is a pain...
@@ -55,7 +55,7 @@ def test(t):
     try:
         t()
         print("TEST PASSED: ", t.__name__)
-    except Exception as e:
+    except Exception:
         print("TEST FAILED: ", t.__name__)
         traceback.print_exc()
     

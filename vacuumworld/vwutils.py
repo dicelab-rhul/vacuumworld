@@ -50,7 +50,7 @@ def process_minds(white_mind, green_mind=None, orange_mind=None, observers={}):
     return white_mind, green_mind, orange_mind
 
 def raise_static_modification_error(agent, name, _):
-    raise VacuumWorldInternalError("Agent: {0} tried to modify the static field: {1} this is cheating!")
+    raise VacuumWorldInternalError("Agent: {0} tried to modify the static field: {1} this is cheating!".format(agent, name))
 
 def observe(mind, observers):
     for obs in observers:
@@ -74,11 +74,11 @@ def validate_mind(mind, colour):
         if not callable(fun):
             raise VacuumWorldInternalError("{0} agent: decide must be callable".format(colour))            
         if len(signature(fun).parameters) != 0:
-            raise VacuumWorldInternalError("{0} agent: decide must be defined with no arguments, do(self)".format(colour))
+            raise VacuumWorldInternalError("{0} agent: decide must be defined with no arguments, decide(self)".format(colour))
     
     def revise_def(fun):
         if not callable(fun):
-            raise VacuumWorldInternalError("{0} agent: revise must be callable".format(colour, fun.__name__))            
+            raise VacuumWorldInternalError("{0} agent: revise must be callable".format(colour))            
         if len(signature(fun).parameters) != 2:
             raise VacuumWorldInternalError("{0} agent: revise must be defined with two arguments, revise(self, observation, messages)".format(colour))
              
@@ -92,11 +92,3 @@ def validate_mind(mind, colour):
             validate(getattr(mind, fun))
         else:
             raise VacuumWorldInternalError("{0} agent: must define method: {1}".format(colour, fun))
-            
-            
-            
-            
-            
-            
-            
-            

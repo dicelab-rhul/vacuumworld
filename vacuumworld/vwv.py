@@ -1,6 +1,3 @@
-
-
-
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
@@ -12,9 +9,8 @@ Created on Fri May 31 20:12:24 2019
 import tkinter as tk
 import traceback
 import os
-import time
-from threading import Thread, Event
 
+from threading import Event
 from collections import OrderedDict as odict
 from PIL import Image, ImageTk
 
@@ -709,7 +705,7 @@ def simulate():
             time = int(TIME_STEP*1000)
             after_hook = root.after(time, simulate)
         
-    except:
+    except Exception:
         print("INFO: SIMULATION ERROR")
         _error()
         root.after(0, _finish)
@@ -867,7 +863,7 @@ def run(_minds, skip = False, play = False, speed = 0, load = None, scale = 1):
 
         root.mainloop()
         
-    except:
+    except Exception:
         _error()
         _finish()
 
