@@ -34,18 +34,18 @@ def process_minds(white_mind, green_mind=None, orange_mind=None, observers={}):
     assert white_mind is not None
     
     if green_mind is not None:
-        validate_mind(green_mind, vwc.colour.green)
+        validate_mind(green_mind, vwc.Colour.green)
         observe(green_mind, observers)
     else:
         green_mind = white_mind
         
     if orange_mind is not None:
-        validate_mind(orange_mind, vwc.colour.orange)
+        validate_mind(orange_mind, vwc.Colour.orange)
         observe(orange_mind, observers)
     else:
         orange_mind = white_mind
     
-    validate_mind(white_mind, vwc.colour.white)
+    validate_mind(white_mind, vwc.Colour.white)
     #observe(white_mind, observers) # I think this should be removed, it is quite fragile.
     
     return white_mind, green_mind, orange_mind

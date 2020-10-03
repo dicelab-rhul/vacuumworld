@@ -7,6 +7,8 @@ Created on Sat Jun  1 20:05:16 2019
 """
 import tkinter as tk
 
+from .vwutils import ignore
+
 class Slider(tk.Canvas):
     
     def __init__(self, parent, release_callback, slide_callback, img, width, height, increments = 0, slider_width = 8, start = 0, **kwargs):
@@ -66,8 +68,10 @@ class Slider(tk.Canvas):
         
     def on_drag(self, event):
         self._move_slider(event)
-        
+
     def on_drop(self, event):
+        ignore(event)
+
         x = self.x
         if self.increments:
             x = self.inc

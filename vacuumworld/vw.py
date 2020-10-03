@@ -7,9 +7,9 @@ Created on Sun Jun  2 23:16:51 2019
 """
 
 
-from .vwc import location, dirt, agent, coord
-from .vwc import colour as vwcolour
-from .vwc import orientation as vworientation
+from .vwc import Location, Dirt, Agent, Coord
+from .vwc import Colour as vwcolour
+from .vwc import Orientation as vworientation
 
 from .vwenvironment import GridEnvironment, GridAmbient
 
@@ -26,21 +26,25 @@ def minds(mind):
 def random_grid(size, white, green, orange, user, orange_dirt, green_dirt):
     assert green + white + orange + user <= size * size
     assert orange_dirt + green_dirt <= size * size
+
     grid = Grid(size)
+
     #for agents
     coords = random.sample([key for key,value in grid.state.items() if value is not None] , k = green + white + orange + user)
-    agents = {vwcolour.white:white, vwcolour.orange:orange, 
-              vwcolour.green:green, vwcolour.user:user}
+    agents = {vwcolour.white:white, vwcolour.orange:orange, vwcolour.green:green, vwcolour.user:user}
+
     for c, num in agents.items():
         for _ in range(num):
-
             grid.place_agent(coords.pop(-1), grid.agent(c, random.choice(vworientation)))
+
     #for dirts
     dirts = {vwcolour.orange:orange_dirt,vwcolour.green:green_dirt}
     coords = random.sample([key for key,value in grid.state.items() if value is not None] , k = orange_dirt + green_dirt)
+
     for c, num in dirts.items():
         for _ in range(num):
             grid.place_dirt(coords.pop(-1), grid.dirt(c))
+
     return grid
 
 class Grid():
@@ -69,17 +73,20 @@ class Grid():
     def reset(self, dim):
         self.cycle = 0
         self.state = {}
+
         for i in range(dim):
             for j in range(dim):
-                self.state[coord(j,i)] = location(coord(j,i), None, None)
-            self.state[coord(-1, i)] = None
-            self.state[coord(i, -1)] = None
-            self.state[coord(dim, i)] = None
-            self.state[coord(i, dim)] = None
-        self.state[coord(-1,-1)] = None
-        self.state[coord(-1, dim)] = None
-        self.state[coord(dim,-1)] = None
-        self.state[coord(dim, dim)] = None
+                self.state[Coord(j,i)] = Location(Coord(j,i), None, None)
+
+            self.state[Coord(-1, i)] = None
+            self.state[Coord(i, -1)] = None
+            self.state[Coord(dim, i)] = None
+            self.state[Coord(i, dim)] = None
+
+        self.state[Coord(-1,-1)] = None
+        self.state[Coord(-1, dim)] = None
+        self.state[Coord(dim,-1)] = None
+        self.state[Coord(dim, dim)] = None
         self.dim = dim
         self.agent_count = 0
         self.dirt_count = 0
@@ -93,85 +100,91 @@ class Grid():
     def _in_bounds(self, coordinate):
         return coordinate.x >= 0 and coordinate.x < self.dim and coordinate.y >= 0 and coordinate.y < self.dim
     
-    def _as_coord(self, coordinate):
-        if not isinstance(coordinate, coord):
-            return coord(coordinate[0], coordinate[1])
+    @staticmethod
+    def _as_coord(coordinate):
+        if not isinstance(coordinate, Coord):
+            return Coord(coordinate[0], coordinate[1])
+
         return coordinate
     
-    def _as_colour(self, colour):
+    @staticmethod
+    def _as_colour(colour):
         if not isinstance(colour, vwcolour):
             return vwcolour[colour]
+
         return colour
-            
-    def _as_orientation(self, orientation):
+
+    @staticmethod      
+    def _as_orientation(orientation):
         if not isinstance(orientation, vworientation):
             return vworientation[orientation]
+
         return orientation
     
     def dirt(self, colour):
-        colour = self._as_colour(colour)
+        colour = Grid._as_colour(colour)
         self.dirt_count += 1
-        return dirt(Grid.ID_PREFIX_DIRT + str(self.dirt_count), colour)
+        return Dirt(Grid.ID_PREFIX_DIRT + str(self.dirt_count), colour)
     
     def agent(self, colour, orientation):
-        colour = self._as_colour(colour)
-        orientation = self._as_orientation(orientation)
+        colour = Grid._as_colour(colour)
+        orientation = Grid._as_orientation(orientation)
         self.agent_count += 1
-        return agent(Grid.ID_PREFIX_AGENT + str(self.agent_count), colour, orientation)            
+        return Agent(Grid.ID_PREFIX_AGENT + str(self.agent_count), colour, orientation)            
     
     def replace_agent(self, coordinate, agent):
-         coordinate = self._as_coord(coordinate)
+         coordinate = Grid._as_coord(coordinate)
          assert(self._in_bounds(coordinate))
          loc = self.state[coordinate]
-         self.state[coordinate] = location(coordinate, agent, loc.dirt)
+         self.state[coordinate] = Location(coordinate, agent, loc.dirt)
          
     def replace_dirt(self, coordinate, dirt):
-         coordinate = self._as_coord(coordinate)
+         coordinate = Grid._as_coord(coordinate)
          assert(self._in_bounds(coordinate))
          loc = self.state[coordinate]
-         self.state[coordinate] = location(coordinate, loc.agent, dirt)
+         self.state[coordinate] = Location(coordinate, loc.agent, dirt)
         
     def place_agent(self, coordinate, agent):
-        coordinate = self._as_coord(coordinate)
+        coordinate = Grid._as_coord(coordinate)
         assert(self._in_bounds(coordinate))
         assert(self.state[coordinate].agent == None)
         loc = self.state[coordinate]
-        self.state[coordinate] = location(coordinate, agent, loc.dirt)
+        self.state[coordinate] = Location(coordinate, agent, loc.dirt)
         
     def place_dirt(self, coordinate, dirt):
-        coordinate = self._as_coord(coordinate)
+        coordinate = Grid._as_coord(coordinate)
         assert(self._in_bounds(coordinate))
         assert(self.state[coordinate].dirt == None)
         loc = self.state[coordinate]
-        self.state[coordinate] = location(coordinate, loc.agent, dirt)
+        self.state[coordinate] = Location(coordinate, loc.agent, dirt)
     
     def remove_dirt(self, coordinate):
         assert(self._in_bounds(coordinate))
         loc = self.state[coordinate]
-        self.state[coordinate] = location(coordinate, loc.agent, None)
+        self.state[coordinate] = Location(coordinate, loc.agent, None)
         
     def remove_agent(self, coordinate):
         assert(self._in_bounds(coordinate))
         loc = self.state[coordinate]
-        self.state[coordinate] = location(coordinate, None, loc.dirt)
+        self.state[coordinate] = Location(coordinate, None, loc.dirt)
         
     def move_agent(self, _from, _to):
-        _from = self._as_coord(_from)
-        _to = self._as_coord(_to)
+        _from = Grid._as_coord(_from)
+        _to = Grid._as_coord(_to)
         assert(self.state[_from].agent != None)
         assert(self.state[_to].agent == None)
         
         from_loc = self.state[_from]
         to_loc = self.state[_to]
-        self.state[_to] = location(to_loc.coordinate, from_loc.agent, to_loc.dirt)
-        self.state[_from] = location(from_loc.coordinate, None, from_loc.dirt)
+        self.state[_to] = Location(to_loc.coordinate, from_loc.agent, to_loc.dirt)
+        self.state[_from] = Location(from_loc.coordinate, None, from_loc.dirt)
         
     def turn_agent(self, _coordinate, orientation):
-        orientation = self._as_orientation(orientation)
+        orientation = Grid._as_orientation(orientation)
         assert(self.state[_coordinate].agent != None)
         loc = self.state[_coordinate]
         ag = loc.agent
-        self.state[_coordinate] = location(_coordinate, agent(ag.name, ag.colour, orientation), loc.dirt)
+        self.state[_coordinate] = Location(_coordinate, Agent(ag.name, ag.colour, orientation), loc.dirt)
     
     def __str__(self):
         header = "{0}: size: {1}, agents: {2}, dirts: {3}, ".format(str(type(self)), self.dim, self.agent_count, self.dirt_count)

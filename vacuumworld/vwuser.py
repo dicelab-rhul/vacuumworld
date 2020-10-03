@@ -16,17 +16,17 @@ class EasyUser():
     def __init__(self):
         self.observation = None
         self.id = None
-        self.move_actions = [action.move(), action.turn(vwc.direction.left), action.turn(vwc.direction.right)]
-        self.actions = [action.drop(vwc.colour.green), action.drop(vwc.colour.orange)]
+        self.move_actions = [action.move(), action.turn(vwc.Direction.left), action.turn(vwc.Direction.right)]
+        self.actions = [action.drop(vwc.Colour.green), action.drop(vwc.Colour.orange)]
         self.actions.extend(self.move_actions)
         
     def decide(self): 
 
         if not self.observation.forward: #there is a wall infront
             if not self.observation.left:
-                return action.turn(vwc.direction.right)
+                return action.turn(vwc.Direction.right)
             if not self.observation.right:
-                return action.turn(vwc.direction.left)
+                return action.turn(vwc.Direction.left)
             return vwc.random(self.move_actions[1:])
         
         #if there is already a dirt at this location, move or turn
@@ -55,63 +55,65 @@ class MediumUser():
         #there is a wall forward of the agent
         if not self.observation.forward:
             if not self.observation.left: #wall left and forward
-                return action.turn(vwc.direction.right)
+                return action.turn(vwc.Direction.right)
             if not self.observation.right: #wall right and forward
-                return action.turn(vwc.direction.left)
+                return action.turn(vwc.Direction.left)
             if self.observation.left.agent and self.observation.right.agent: #both left and right are full
-                return vwc.random([action.turn(vwc.direction.left), action.turn(vwc.direction.right)])
+                return vwc.random([action.turn(vwc.Direction.left), action.turn(vwc.Direction.right)])
             if self.observation.left.agent: #the left location is full
-                return action.turn(vwc.direction.right)
+                return action.turn(vwc.Direction.right)
             if self.observation.right.agent: #the right location is full
-                return action.turn(vwc.direction.left)
+                return action.turn(vwc.Direction.left)
             if self.observation.center.dirt: #both left and right are free, drop dirt?
-                return vwc.random([action.turn(vwc.direction.left), action.turn(vwc.direction.right)])
-            return vwc.random([action.turn(vwc.direction.left), action.turn(vwc.direction.right),
-                               action.drop(vwc.colour.green), action.drop(vwc.colour.orange)])
+                return vwc.random([action.turn(vwc.Direction.left), action.turn(vwc.Direction.right)])
+            return vwc.random([action.turn(vwc.Direction.left), action.turn(vwc.Direction.right),
+                               action.drop(vwc.Colour.green), action.drop(vwc.Colour.orange)])
             
         if self.observation.forward.agent:
             if not self.observation.left:
-                return action.turn(vwc.direction.right)
+                return action.turn(vwc.Direction.right)
             if not self.observation.right:
-                return action.turn(vwc.direction.left)
+                return action.turn(vwc.Direction.left)
             if self.observation.left.agent and self.observation.right.agent: #both left and right are full
-                return vwc.random([action.drop(vwc.colour.green), action.drop(vwc.colour.orange)])
+                return vwc.random([action.drop(vwc.Colour.green), action.drop(vwc.Colour.orange)])
             if self.observation.left.agent: #the left location is full
-                return action.turn(vwc.direction.right)
+                return action.turn(vwc.Direction.right)
             if self.observation.right.agent: #the right location is full
-                return action.turn(vwc.direction.left)
+                return action.turn(vwc.Direction.left)
             if self.observation.center.dirt: #both left and right are free, drop dirt?
-                return vwc.random([action.turn(vwc.direction.left), action.turn(vwc.direction.right)])
-            return vwc.random([action.turn(vwc.direction.left), action.turn(vwc.direction.right),
-                               action.drop(vwc.colour.green), action.drop(vwc.colour.orange)])
+                return vwc.random([action.turn(vwc.Direction.left), action.turn(vwc.Direction.right)])
+            return vwc.random([action.turn(vwc.Direction.left), action.turn(vwc.Direction.right),
+                               action.drop(vwc.Colour.green), action.drop(vwc.Colour.orange)])
         
         #if there is an agent in some direction, turn to face away from it aslong as there isnt a wall
         if self.observation.left and self.observation.left.agent and self.observation.right and self.observation.right.agent:
-            return self.move_or_drop()
+            return MediumUser.move_or_drop()
         if self.observation.left and self.observation.left.agent and self.observation.right:
-            return vwc.random([action.turn(vwc.direction.right), action.move()])
+            return vwc.random([action.turn(vwc.Direction.right), action.move()])
         if self.observation.right and self.observation.right.agent and self.observation.left:
-            return vwc.random([action.turn(vwc.direction.left), action.move()])
+            return vwc.random([action.turn(vwc.Direction.left), action.move()])
         
         if not self.observation.left:
             if self.observation.center.dirt:
-                return vwc.random([action.move(), action.turn(vwc.direction.right)], [0.9, 0.1])
-            return vwc.random([action.move(), action.turn(vwc.direction.right),
-                               action.drop(vwc.colour.green), action.drop(vwc.colour.orange)], [0.6, 0.25, 0.075, 0.075])
+                return vwc.random([action.move(), action.turn(vwc.Direction.right)], [0.9, 0.1])
+            return vwc.random([action.move(), action.turn(vwc.Direction.right),
+                               action.drop(vwc.Colour.green), action.drop(vwc.Colour.orange)], [0.6, 0.25, 0.075, 0.075])
         
         if not self.observation.right:
             if self.observation.center.dirt:
-                return vwc.random([action.move(), action.turn(vwc.direction.left)], [0.9, 0.1])
-            return vwc.random([action.move(), action.turn(vwc.direction.left),
-                               action.drop(vwc.colour.green), action.drop(vwc.colour.orange)], [0.6, 0.25, 0.075, 0.075])
-        return self.random_all()         
+                return vwc.random([action.move(), action.turn(vwc.Direction.left)], [0.9, 0.1])
+            return vwc.random([action.move(), action.turn(vwc.Direction.left),
+                               action.drop(vwc.Colour.green), action.drop(vwc.Colour.orange)], [0.6, 0.25, 0.075, 0.075])
+        return MediumUser.random_all()         
     
-    def move_or_drop(self):
-        return vwc.random([action.move(), action.drop(vwc.colour.green), action.drop(vwc.colour.orange)], [0.8, 0.1, 0.1])   
+    @staticmethod
+    def move_or_drop():
+        return vwc.random([action.move(), action.drop(vwc.Colour.green), action.drop(vwc.Colour.orange)], [0.8, 0.1, 0.1])   
      
-    def random_all(self):
-        return vwc.random([action.move(), action.drop(vwc.colour.green), action.drop(vwc.colour.orange),
-                           action.turn(vwc.direction.left), action.turn(vwc.direction.right)], [0.6, 0.15, 0.15, 0.05, 0.05]) 
+    @staticmethod
+    def random_all():
+        return vwc.random([action.move(), action.drop(vwc.Colour.green), action.drop(vwc.Colour.orange),
+                           action.turn(vwc.Direction.left), action.turn(vwc.Direction.right)], [0.6, 0.15, 0.15, 0.05, 0.05]) 
             
     def revise(self, observation, messages):
         self.id = observation.center.agent.name

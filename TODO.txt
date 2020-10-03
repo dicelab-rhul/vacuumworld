@@ -1,4 +1,3 @@
-vacuumworld/vw.py:23: #TODO throw errors instead of returning
 vacuumworld/vwv.py:94: self._rfun() #update the global variable .... TODO change this
 vacuumworld/vwv.py:523: #TODO stream line to work with select
 vacuumworld/vwv.py:568: #TODO dont add the file more than once!

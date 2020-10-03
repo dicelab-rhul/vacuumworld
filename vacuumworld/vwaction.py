@@ -7,10 +7,10 @@ import copy
 
 ###################### action executors ###################### 
 
-orientation_map = {vwc.orientation.north:(0,-1),
-                   vwc.orientation.east:(1,0),
-                   vwc.orientation.south:(0,1),
-                   vwc.orientation.west:(-1,0)}
+orientation_map = {vwc.Orientation.north:(0,-1),
+                   vwc.Orientation.east:(1,0),
+                   vwc.Orientation.south:(0,1),
+                   vwc.Orientation.west:(-1,0)}
 
 class MoveExecutor(Executor):
     
@@ -38,7 +38,7 @@ class CleanExecutor(Executor):
         agent = env.ambient.agents[action.source]
         #precondition
         location = env.ambient.grid.state[agent.coordinate]
-        if location.dirt and (location.agent.colour == location.dirt.colour or location.agent.colour == vwc.colour.white):  
+        if location.dirt and (location.agent.colour == location.dirt.colour or location.agent.colour == vwc.Colour.white):  
             env.ambient.grid.remove_dirt(agent.coordinate)
             #TODO remove dirt from list of objects in ambient
 
@@ -60,7 +60,7 @@ class CommunicativeExecutor(Executor):
         if len(notify) == 0: #send to everyone! do we want this?
             notify = set(env.ambient.agents.keys()) - set([action.source])
         for to in notify:
-            env.physics.notify_agent(env.ambient.agents[to], vwc.message(action.source, action.content))
+            env.physics.notify_agent(env.ambient.agents[to], vwc.Message(action.source, action.content))
             
 ###################### actions ###################### 
             
@@ -79,7 +79,7 @@ class DropAction(VWPhysicalAction):
     
     def __init__(self, colour):
         super(DropAction, self).__init__()
-        assert colour in [vwc.colour.orange, vwc.colour.green]
+        assert colour in [vwc.Colour.orange, vwc.Colour.green]
         self.colour = colour
         
 class TurnAction(VWPhysicalAction):
@@ -122,8 +122,8 @@ class TurnActionFactory(ActionFactory):
         super(TurnActionFactory, self).__init__()
         
     def __call__(self, _direction):
-        if not _direction in [vwc.direction.left, vwc.direction.right]:
-            print([vwc.direction.left, vwc.direction.right])
+        if not _direction in [vwc.Direction.left, vwc.Direction.right]:
+            print([vwc.Direction.left, vwc.Direction.right])
             raise VacuumWorldActionError("{0} is not a valid direction for a turn action.\nValid directions are vwc.direction.left or vwc.direction.right".format(str(_direction)))
         return TurnAction(_direction)
     
