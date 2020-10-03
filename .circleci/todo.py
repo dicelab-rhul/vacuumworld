@@ -18,7 +18,7 @@ parser.add_argument("d")
 args = parser.parse_args()
 
 for d in  os.walk(args.d):
-    FILES.extend([d[0] + '/' + f for f in d[2] if f.endswith('.py')])
+    FILES.extend([os.path.join(d[0], f) for f in d[2] if f.endswith('.py')])
 
 print(FILES)
 
