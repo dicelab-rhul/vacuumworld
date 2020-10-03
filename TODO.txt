@@ -1,14 +1,14 @@
-../legacy/vwperception.py:1: #TODO: this import is broken, as pystarworlds does not seem to have any file named Perception
-../legacy/observer.py:8: #TODO: this file contains an empty class which is never used.
-../legacy/test.py:8: #TODO: What is this about?
-../vacuumworld/vwv.py:107: self._rfun() #update the global variable .... TODO: change this
-../vacuumworld/vwv.py:331: #TODO: can `bg` be removed?
-../vacuumworld/vwv.py:407: #TODO: can `event` be removed?
-../vacuumworld/vwv.py:560: #TODO: can we remove `event`?
-../vacuumworld/vwv.py:589: #TODO stream line to work with select
-../vacuumworld/vwv.py:864: # TODO remove --- new simulate fixes time.sleep issue?
-../vacuumworld/vwv.py:866: #TODO, be able to select user mind from gui
-../vacuumworld/vwaction.py:42: #TODO remove dirt from list of objects in ambient
-../vacuumworld/vwaction.py:53: #TODO add new dirt to list of objects in ambient
-../vacuumworld/test/test2.py:34: #TODO: arg is never used. Is this a bug?
-../vacuumworld/test/test3.py:12: #TODO: check the dead code and the dead variables.
+legacy/vwperception.py:1: #TODO: this import is broken, as pystarworlds does not seem to have any file named Perception
+legacy/observer.py:8: #TODO: this file contains an empty class which is never used.
+legacy/test.py:8: #TODO: What is this about?
+vacuumworld/vwv.py:107: self._rfun() #update the global variable .... TODO: change this
+vacuumworld/vwv.py:331: #TODO: can `bg` be removed?
+vacuumworld/vwv.py:407: #TODO: can `event` be removed?
+vacuumworld/vwv.py:560: #TODO: can we remove `event`?
+vacuumworld/vwv.py:589: #TODO stream line to work with select
+vacuumworld/vwv.py:864: # TODO remove --- new simulate fixes time.sleep issue?
+vacuumworld/vwv.py:866: #TODO, be able to select user mind from gui
+vacuumworld/vwaction.py:42: #TODO remove dirt from list of objects in ambient
+vacuumworld/vwaction.py:53: #TODO add new dirt to list of objects in ambient
+vacuumworld/test/test2.py:34: #TODO: arg is never used. Is this a bug?
+vacuumworld/test/test3.py:12: #TODO: check the dead code and the dead variables.
