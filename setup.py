@@ -19,7 +19,7 @@ setuptools.setup(
       author=author,
       author_email=author_email,
       license=license,
-      packages=[p for p in setuptools.find_packages() if "legacy" not  in p],
+      packages=[p for p in setuptools.find_packages() if "legacy" not  in p and "test" not in p],
       include_package_data=True,
       install_requires=dependencies,
       classifiers=classifiers
