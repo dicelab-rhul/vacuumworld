@@ -662,15 +662,7 @@ def _load(saveloadmenu):
 
             
             
-    
-#resets the grid and enviroment
-def _reset():
-    print('INFO: reset')
-    main_interface._reset_canvas(lines=False)
-    grid.reset(grid.dim)
-    reset_time_step()
-    global env
-    env = None
+
 
 def simulate():
     try: 
@@ -689,8 +681,16 @@ def simulate():
         _error()
         root.after(0, _finish)
     
+#resets the grid and enviroment
+def _reset():
+    print('INFO: reset')
+    main_interface._reset_canvas(lines=False)
+    grid.reset(grid.dim)
+    reset_time_step()
+    global env
+    env = None
+    
 def _play():
-
     print('INFO: play')
     #play_event.set()
     main_interface.pack_buttons('stop', 'pause', 'fast')
@@ -772,8 +772,6 @@ def run(_minds, skip = False, play = False, speed = 0, load = None, scale = 1):
     assert(speed >= 0 and speed <= 1)
     assert scale > 0
 
-   
-  
     global root
     tk.Tk.report_callback_exception = _error
     root = tk.Tk()
@@ -821,11 +819,11 @@ def run(_minds, skip = False, play = False, speed = 0, load = None, scale = 1):
         global env_thread
         global play_event, finish, reset, after_hook
 
-        after_hook = None
+        after_hook = None #prevent button spam
         reset = True
         finish = False
 
-        play_event = Event()
+        play_event = Event() #TODO remove UNUSED
 
         #env_thread = Thread(target=simulate, daemon=True)
         #env_thread.start()
