@@ -29,13 +29,14 @@ This is the template of an agents mind, in this course we are using a simple arc
 the `decide` and `revise` methods are key in this. For more information and examples check the Guide!
 """
 
-__author__ = "Benedict Wilkins"
-__license__ = "GPL"
-__version__ = "4.1.7"
-__maintainer__ = "Benedict Wilkins"
-__email__ = "zavc926@live.rhul.ac.uk"
+from .common import version, license, author, author_email
 
-from . import vw
+__author__ = author
+__license__ = license
+__version__ = version
+__maintainer__ = author
+__email__ = author_email
+
 from . import vwv
 from . import vwc
 from . import vwutils
@@ -76,10 +77,6 @@ def run(white_mind, green_mind=None, orange_mind=None, **kwargs):
     default_observe = {'grid_size':vwutils.print_observer}
     white_mind, green_mind, orange_mind = vwutils.process_minds(white_mind, green_mind, orange_mind, default_observe)
     
-    vwv.run({vwc.colour.white:white_mind, 
-             vwc.colour.green:green_mind, 
-             vwc.colour.orange:orange_mind}, **kwargs)
-
-
-
-
+    vwv.run({vwc.Colour.white:white_mind, 
+             vwc.Colour.green:green_mind, 
+             vwc.Colour.orange:orange_mind}, **kwargs)

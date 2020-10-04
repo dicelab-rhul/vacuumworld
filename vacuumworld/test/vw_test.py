@@ -5,15 +5,15 @@ sys.path.insert(0, myPath + '/../')
 
 
 from ..vw import Grid
-from ..vwc import coord, orientation
+from ..vwc import Coord, Orientation
 
 def test_wall_locations_exist():
     grid = Grid(5)
-    assert coord(-1,-1) in grid.state.keys() or coord(-1, 5) in grid.state.keys() or coord(5,-1) in grid.state.keys() or  coord(5, 5) in grid.state.keys()
+    assert Coord(-1,-1) in grid.state.keys() or Coord(-1, 5) in grid.state.keys() or Coord(5,-1) in grid.state.keys() or  Coord(5, 5) in grid.state.keys()
     
 def test_location_exist(): # every location is properly assigned to a coordinate within the grid
     grid = Grid(5)
-    assert not grid.state[coord(2, 2)]==None 
+    assert not grid.state[Coord(2, 2)]==None 
 
 def test_agent_added_properly(): # whenever agent method is called agent is added properly to the grid
     grid = Grid(5)
@@ -21,59 +21,56 @@ def test_agent_added_properly(): # whenever agent method is called agent is adde
     assert grid.agent_count==1 
    # assert grid.agent_count==2 
    
-def test_agentPlacedProperly(): # whenever agent is placed Is  it placed properly
+def test_agent_placed_properly(): # whenever agent is placed Is  it placed properly
     grid = Grid(5)
     agent1 = grid.agent('green','north')
-    grid.replace_agent((coord(2,1)), agent1)
-    loc = grid.state[coord(2,1)]
+    grid.replace_agent((Coord(2,1)), agent1)
+    loc = grid.state[Coord(2,1)]
     assert loc.agent==agent1
    # assert loc.agent==None  # in case of not properly placed agent
  
-def test_dirtaddedProperly(): # whenever agent method is called agent is added properly to the grid
+def test_dirt_added_properly(): # whenever agent method is called agent is added properly to the grid
     grid = Grid(5)
     grid.dirt('green')
    # grid.dirt('white')     # should not be added
     assert grid.dirt_count==1 
    # assert grid.dirt_count==2      
 
-def test_dirtPlacedProperly(): # whenever agent is placed Is  it placed properly
+def test_dirt_placed_properly(): # whenever agent is placed Is  it placed properly
     grid = Grid(5)
     dirt1 = grid.dirt('green')
-    grid.replace_dirt((coord(2,1)), dirt1)
-    loc = grid.state[coord(2,1)]
+    grid.replace_dirt((Coord(2,1)), dirt1)
+    loc = grid.state[Coord(2,1)]
     assert loc.dirt==dirt1
    # assert loc.agent==None  # in case of not properly placed agent
    
-def test_dirtRemovedProperly():
+def test_dirt_removed_properly():
     grid = Grid(4)
     dirt1 = grid.dirt('orange')
-    grid.replace_dirt((coord(1,1)), dirt1)
-    grid.remove_dirt(coord(1,1))
-    loc = grid.state[coord(1,1)]
+    grid.replace_dirt((Coord(1,1)), dirt1)
+    grid.remove_dirt(Coord(1,1))
+    loc = grid.state[Coord(1,1)]
     assert loc.dirt==None
 
-def test_agentRemovedProperly():
+def test_agent_removed_properly():
     grid = Grid(4)
     agent1 = grid.agent('orange','north')
-    grid.replace_agent((coord(1,1)), agent1)
-    grid.remove_agent(coord(1,1))
-    loc = grid.state[coord(1,1)]
+    grid.replace_agent((Coord(1,1)), agent1)
+    grid.remove_agent(Coord(1,1))
+    loc = grid.state[Coord(1,1)]
     assert loc.agent==None
-def test_agentMoveProperly():
+def test_agent_move_properly():
     grid = Grid(4)
     agent1 = grid.agent('orange','east')
-    grid.replace_agent((coord(0,0)), agent1)
-    grid.move_agent((coord(0,0)),(coord(1,0)))
-    assert grid.state[coord(0,0)].agent==None   # location vacated
-    assert grid.state[coord(1,0)].agent!=None   # location occupied 
+    grid.replace_agent((Coord(0,0)), agent1)
+    grid.move_agent((Coord(0,0)),(Coord(1,0)))
+    assert grid.state[Coord(0,0)].agent==None   # location vacated
+    assert grid.state[Coord(1,0)].agent!=None   # location occupied 
     
-def test_agentTurnProperly():
+def test_agent_turn_properly():
     grid = Grid(4)
     agent1 = grid.agent('orange', 'east')
-    grid.replace_agent((coord(0,0)), agent1)
-    grid.turn_agent((coord(0,0)),'south')
-    assert grid.state[coord(0,0)].agent.orientation == orientation.south   # orientation has changed 
+    grid.replace_agent((Coord(0,0)), agent1)
+    grid.turn_agent((Coord(0,0)),'south')
+    assert grid.state[Coord(0,0)].agent.orientation == Orientation.south   # orientation has changed 
    # assert grid.state[coord(0,0)].agent.orientation=='south'  # orientation is same changed     
-        
-           
-        

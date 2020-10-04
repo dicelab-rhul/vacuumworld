@@ -7,14 +7,13 @@ from . import vwaction
 from . import vwc
 from . import vwutils
 
-import traceback
 
 from collections import namedtuple
 agent_type = namedtuple('agent_type', 'cleaning user')('cleaning', 'user')
 
 class VWBody(Body):
     
-    def __init__(self, _type, ID, mind, orientation, coordinate, colour):
+    def __init__(self, _type, id, mind, orientation, coordinate, colour):
         mind = vwagent.VWMind(mind)
         assert _type in agent_type
         if _type == agent_type.cleaning:
@@ -23,7 +22,7 @@ class VWBody(Body):
             actuators = [vwactuator.UserActuator(), vwactuator.CommunicationActuator()]
 
         sensors = [vwsensor.VisionSensor(), vwsensor.CommunicationSensor()]
-        self._Identifiable__ID = ID #hack...
+        self._Identifiable__ID = id #hack...
         
         super(VWBody, self).__init__(mind, actuators, sensors)
         
@@ -45,7 +44,7 @@ class VWMind(Mind):
         super(VWMind, self).__init__()
         self.surrogate = surrogate
         self.observers = []
-        for observer in observers:
+        for _ in observers:
             self.observers.append()
        
     def cycle(self):
@@ -68,12 +67,12 @@ class VWMind(Mind):
                 return
             
             if type(actions[0]) == str: #validate a single action
-                self.attempt_action(self.validate_action(actions))
+                self.attempt_action(VWMind.validate_action(actions))
                 return 
             elif type(actions[0]) == tuple: #validate multiple actions
                 if len(actions) == 2:
                     if type(actions[1]) == tuple:
-                        actions = [self.validate_action(action) for action in actions]
+                        actions = [VWMind.validate_action(action) for action in actions]
                         names = [action[0] for action in actions]
                         is_speech = [name in VWMind.speech_action_names for name in names]
                         is_physical = [name in VWMind.physical_action_names for name in names]
@@ -98,12 +97,11 @@ class VWMind(Mind):
             raise vwutils.VacuumWorldActionError("No actuator found for action: " + str(action))
         actuators[0].attempt(_a)
         
-    def validate_action(self, action):
+    @staticmethod
+    def validate_action(action):
         if type(action) == tuple:
-            if len(action) > 0 and action[0] in VWMind.action_names:
-                if len(action) == VWMind.action_size[action[0]]:
+            if len(action) > 0 and action[0] in VWMind.action_names and len(action) == VWMind.action_size[action[0]]:
                     return action
         elif callable(action):
             raise vwutils.VacuumWorldActionError("Action should not be a function, did you forget the ()? - e.g. action.move()")
         raise vwutils.VacuumWorldActionError("Invalid action: " + str(action) + " please use vwc.action.")
-        

@@ -10,7 +10,9 @@ import inspect
 import traceback
 
 
-class TraceFrames:
+#TODO: check the dead code and the dead variables.
+
+class TraceFrames():
     
     def __init__(self):
         self.ignore_write = 0
@@ -42,7 +44,6 @@ class TraceFrames:
 
         if event == self._call:
             return self.__trace__
-        return
     
     def __record__(self, frame, event, arg):
         co = frame.f_code
@@ -60,12 +61,11 @@ class TraceFrames:
         elif event == self._return:
             #print('Return %s on line %s' % (func_name, line_no))
             self.returns.append((func_name, line_no, filename))
-        return
     
     def __enter__(self):
         try:
             sys.settrace(self.__trace__)
-        except:
+        except Exception:
             #dont know when this might happen...?
             print("FAILED TO SET TRACE")
             traceback.print_exc()
@@ -80,13 +80,10 @@ class TraceFrames:
         for fun, line, file in self.calls:
             f += "File {0}, line {1} in {2}\n".format(file, str(line), fun)
         
-        
         return f
 
 
-
-
-class Trace:
+class Trace():
     
     def __init__(self):
         self.ignore_write = 0
@@ -118,7 +115,6 @@ class Trace:
 
         if event == self._call:
             return self.__trace__
-        return
     
     def __record__(self, frame, event, arg):
         co = frame.f_code
@@ -136,12 +132,11 @@ class Trace:
         elif event == self._return:
             #print('Return %s on line %s' % (func_name, line_no))
             self.returns.append((func_name, line_no, filename, arg))
-        return
     
     def __enter__(self):
         try:
             sys.settrace(self.__trace__)
-        except:
+        except Exception:
             #dont know when this might happen...?
             print("FAILED TO SET TRACE")
             traceback.print_exc()
@@ -156,12 +151,8 @@ class Trace:
         for fun, line, file in self.calls:
             f += "File {0}, line {1} in {2}\n".format(file, str(line), fun)
         
-        
         return f
-    
-    
-    
-    
+
         
 def c(*args):
     return None
@@ -215,8 +206,3 @@ sys.excepthook = quiet_hook #doesnt ork for ipython...
 '''
 
 cycle()
-  
-    
-    
-
-

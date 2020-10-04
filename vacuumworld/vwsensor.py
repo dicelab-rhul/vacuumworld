@@ -1,11 +1,9 @@
 from pystarworlds.Agent import Sensor
 
-from .vwc import observation, message
+from .vwc import Observation, Message
 
 class VisionSensor(Sensor):
-    subscribe = [observation]
-    pass
+    subscribe = [Observation]
 
 class CommunicationSensor(Sensor):  # ear for getting a communication perception
-    subscribe = [message]
-    pass
+    subscribe = [Message]

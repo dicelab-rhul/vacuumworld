@@ -11,20 +11,22 @@ avaliable on the course moodle page.
 
 """
 
-__author__ = "Benedict Wilkins"
-__license__ = "GPL"
-__version__ = "4.1.7"
-__maintainer__ = "Benedict Wilkins"
-__email__ = "zavc926@live.rhul.ac.uk"
+from ..common import author, author_email, license, version
+
+__author__ = author
+__license__ = license
+__version__ = version
+__maintainer__ = author
+__email__ = author_email
 
 import random as rand
 import typing
 from enum import Enum
-from . import action
+from . import action #This is NOT unused, despite it may look like that is the case. Do NOT remove this line.
 
-__all__ = ('action', 'observation', 'location', 'direction', 'agent', 'dirt', 'coord', 'size', 'random')
+__all__ = ('action', 'Observation', 'Location', 'Direction', 'Agent', 'Dirt', 'Coord', 'size', 'random')
 
-class orientation(Enum):
+class Orientation(Enum):
     '''
         Representation of an agents orientation. An agent can be orientated in 
         one of the cardinal directions (north, east, south, west). This class is useful
@@ -63,7 +65,7 @@ class orientation(Enum):
     def __repr__(self):
         return str(self)
     
-class colour(Enum):
+class Colour(Enum):
     '''
         Representation of colour. Both dirt and agents have a colour (green, orange, white, user).
         
@@ -90,12 +92,8 @@ class colour(Enum):
     def __repr__(self):
         return str(self)
 
-#todo remove these
-_colour_dirt = set(['orange','green'])
-_colour_agent = set(['orange','green','white'])
-_colour_user = set(['user'])
 
-class coord(typing.NamedTuple):
+class Coord(typing.NamedTuple):
     '''
         A coordinate ``(x,y)``. Standard arethmetic operations ``(+ - * / //)`` can be performed on this object.
         
@@ -110,28 +108,28 @@ class coord(typing.NamedTuple):
 
     def __add__(self, other):
         if isinstance(other, int):
-            return coord(self[0] + other, self[1] + other)
-        return coord(self[0] + other[0], self[1] + other[1])
+            return Coord(self[0] + other, self[1] + other)
+        return Coord(self[0] + other[0], self[1] + other[1])
     
     def __sub__(self, other):
         if isinstance(other, int):
-            return coord(self[0] - other, self[1] - other)
-        return coord(self[0] - other[0], self[1] - other[1])
+            return Coord(self[0] - other, self[1] - other)
+        return Coord(self[0] - other[0], self[1] - other[1])
     
     def __mul__(self, other):
         if isinstance(other, int):
-            return coord(self[0] * other, self[1] * other)
-        return coord(self[0] * other[0], self[1] * other[1])
+            return Coord(self[0] * other, self[1] * other)
+        return Coord(self[0] * other[0], self[1] * other[1])
     
     def __truediv__(self, other):
         if isinstance(other, int):
-            return coord(self[0] // other, self[1] // other)
-        return coord(self[0] // other[0], self[1] // other[1])
+            return Coord(self[0] // other, self[1] // other)
+        return Coord(self[0] // other[0], self[1] // other[1])
 
     def __floordiv__(self, other):
         return self / other
 
-class agent(typing.NamedTuple):
+class Agent(typing.NamedTuple):
     '''
         A datastructure representing an agent in an observation.
         
@@ -141,10 +139,10 @@ class agent(typing.NamedTuple):
             * ``orientation (vwc.orientation)``: the orientation of the agent.
     '''
     name : str
-    colour : colour
-    orientation : orientation
+    colour : Colour
+    orientation : Orientation
 
-class dirt(typing.NamedTuple):
+class Dirt(typing.NamedTuple):
     '''
         A datastructure representing a dirt in an observation.
         Attributes:
@@ -152,9 +150,9 @@ class dirt(typing.NamedTuple):
             * ``colour (vwc.colour)``: the colour of the dirt.
     '''
     name : str 
-    colour : colour
+    colour : Colour
     
-class location(typing.NamedTuple):
+class Location(typing.NamedTuple):
     '''
         A datastructure representing an observed location in the vacuumworld grid. 
         
@@ -163,13 +161,13 @@ class location(typing.NamedTuple):
             * ``agent (vwc.agent)``: The agent at this location, ``None`` if there is no agent. 
             * ``dirt (vwc.dirt) ``:The dirt at this location, ``None`` if there is no dirt. 
     '''
-    coordinate : coord
-    agent : agent
-    dirt : dirt
+    coordinate : Coord
+    agent : Agent
+    dirt : Dirt
 
 #perception = namedtuple('perception', 'observation messages')
 
-class message(typing.NamedTuple):
+class Message(typing.NamedTuple):
     '''
         A datastructure representing a message (perception) of the agent. 
         The content of a message is limited to 100 characters and will be greedily trimmed to fit. 
@@ -183,7 +181,7 @@ class message(typing.NamedTuple):
     sender : str
     content : typing.Union[str, list, tuple, float, bool]
 
-class observation(typing.NamedTuple):
+class Observation(typing.NamedTuple):
     '''
         A datastructure representing an observation (perception) of the agent. 
         An observation consists of six locations, the center location always 
@@ -217,17 +215,17 @@ class observation(typing.NamedTuple):
         This agent will turn if there is an agent in-front of it, move until it 
         reachs the edge of the grid and then remains idle.
     '''
-    center : location
-    left : location
-    right : location
-    forward : location
-    forwardleft : location
-    forwardright : location
+    center : Location
+    left : Location
+    right : Location
+    forward : Location
+    forwardleft : Location
+    forwardright : Location
 
     def __iter__(self):
         return (self[i] for i in range(len(self)) if self[i] is not None)
 
-class direction:
+class Direction:
     '''
         An indicator used in the turn action. May also be used to turn orientations.
         
@@ -252,18 +250,20 @@ class direction:
                 self.right_orientation = direction.right(self.orientation)
     '''
 
+    @staticmethod
     def left(_orientation):
         '''
             Turns an orientation left. Indicates a left turn in the turn action.                        
         '''
-        od = (orientation.north, orientation.east, orientation.south, orientation.west)
+        od = (Orientation.north, Orientation.east, Orientation.south, Orientation.west)
         return od[(od.index(_orientation) - 1) % 4]
 
+    @staticmethod
     def right(_orientation):
         '''
             Turns an orientation left. Indicates a left turn in the turn action.                        
         '''
-        od = (orientation.north, orientation.east, orientation.south, orientation.west)
+        od = (Orientation.north, Orientation.east, Orientation.south, Orientation.west)
         return od[(od.index(_orientation) + 1) % 4]
 
 

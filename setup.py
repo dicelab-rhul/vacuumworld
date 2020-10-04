@@ -8,19 +8,18 @@ Created on Sun Jun  2 21:22:31 2019
 
 import setuptools
 
-setuptools.setup(name='vacuumworld',
-      version='4.1.8',
-      description='',
-      url='https://github.com/dicelab-rhul/vacuumworld',
-      author='Benedict Wilkins',
-      author_email='brjw@hotmail.co.uk',
-      license='GNU3',
+from vacuumworld.common import version, author, author_email, classifiers, license, url, name, dependencies, description
+
+setuptools.setup(
+      name=name,
+      version=version,
+      description=description,
+      url=url,
+      author=author,
+      author_email=author_email,
+      license=license,
       packages=setuptools.find_packages(),
       include_package_data=True,
-      install_requires=['pystarworlds>=0.0.3', 'pillow'],
-      classifiers=[
-        "Programming Language :: Python :: 3.7",
-        "Development Status :: 2 - Pre-Alpha",
-        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-        "Operating System :: OS Independent",
-      ])
+      install_requires=dependencies,
+      classifiers=classifiers
+)
