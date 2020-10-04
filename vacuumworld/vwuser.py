@@ -10,31 +10,68 @@ from .vwc import action
 from .vwutils import ignore
 
 
-
-class EasyUser():
+class User():
     def __init__(self):
         self.observation = None
         self.id = None
+
+    def decide(self):
+        raise NotImplementedError("Abstract class.")
+
+    def revise(self, observation, messages):
+        raise NotImplementedError("Abstract class.")
+
+    def is_wall_ahead(self):
+        return not self.observation.forward
+
+    def is_wall_on_the_left(self):
+        return not self.observation.left
+
+    def is_wall_on_the_right(self):
+        return not self.observation.right
+
+    def is_on_dirt(self):
+        return self.observation.center.dirt
+
+    def is_agent_ahead(self):
+        return self.observation.forward.agent
+
+    def is_agent_on_the_left(self):
+        return self.observation.left.agent
+
+    def is_agent_of_the_right(self):
+        return self.observation.right.agent
+
+
+class EasyUser(User):
+    def __init__(self):
+        super().__init__()
         self.move_actions = [action.move(), action.turn(vwc.Direction.left), action.turn(vwc.Direction.right)]
         self.actions = [action.drop(vwc.Colour.green), action.drop(vwc.Colour.orange)]
         self.actions.extend(self.move_actions)
         
+    def _decide_if_wall_ahead(self):
+        if self.is_wall_on_the_left():
+            return action.turn(vwc.Direction.right)
+        elif self.is_wall_on_the_right():
+            return action.turn(vwc.Direction.left)
+        else:
+            return vwc.random(self.move_actions[1:])
+
+    def _decide_if_on_dirt(self):
+        if self.is_wall_on_the_left():
+            return vwc.random(self.move_actions, [0.6, 0.0, 0.4])
+        elif self.is_wall_on_the_right():
+            return vwc.random(self.move_actions, [0.6, 0.4, 0.0])
+        else:
+            return vwc.random(self.move_actions, [0.5, 0.25, 0.25])
+
     def decide(self): 
-        if not self.observation.forward: #there is a wall infront
-            if not self.observation.left:
-                return action.turn(vwc.Direction.right)
-            elif not self.observation.right:
-                return action.turn(vwc.Direction.left)
-            else:
-                return vwc.random(self.move_actions[1:])
-        #if there is already a dirt at this location, move or turn
-        elif self.observation.center.dirt:
-            if not self.observation.left:
-                return vwc.random(self.move_actions, [0.6, 0.0, 0.4])
-            elif not self.observation.right:
-                return vwc.random(self.move_actions, [0.6, 0.4, 0.0])
-            else:
-                return vwc.random(self.move_actions, [0.5, 0.25, 0.25])
+        if self.is_wall_ahead():
+            return self._decide_if_wall_ahead()
+        elif self.is_on_dirt():
+            #if there is already a dirt at this location, move or turn
+            return self._decide_if_on_dirt()
         else:
             #otherwise do a random action (including dropping dirt)
             return vwc.random(self.actions, [0.2, 0.2, 0.45, 0.075, 0.075])
@@ -46,51 +83,47 @@ class EasyUser():
         # A user is not supposed to manage any message.
         ignore(messages)
         
-class MediumUser():
-    def __init__(self):
-        self.observation = None
-        self.id = None
-
+class MediumUser(User):
     def _decide_if_wall_ahead(self):
-        if not self.observation.left: #wall left and forward
+        if self.is_wall_on_the_left(): # wall on the left
             return action.turn(vwc.Direction.right)
-        elif not self.observation.right: #wall right and forward
+        elif self.is_wall_on_the_right(): # wall on the right
             return action.turn(vwc.Direction.left)
-        elif self.observation.left.agent and self.observation.right.agent: #both left and right are full
+        elif self.is_agent_on_the_left() and self.is_agent_of_the_right(): # both left and right are full
             return vwc.random([action.turn(vwc.Direction.left), action.turn(vwc.Direction.right)])
-        elif self.observation.left.agent: #the left location is full
+        elif self.is_agent_on_the_left(): # agent on the left
             return action.turn(vwc.Direction.right)
-        elif self.observation.right.agent: #the right location is full
+        elif self.is_agent_of_the_right(): # agent on the right
             return action.turn(vwc.Direction.left)
-        elif self.observation.center.dirt: #both left and right are free, drop dirt?
+        elif self.is_on_dirt(): # both left and right are free, drop dirt?
             return vwc.random([action.turn(vwc.Direction.left), action.turn(vwc.Direction.right)])
-        else:
+        else: # wall ahead, left and right free, no dirt on center.
             return vwc.random([action.turn(vwc.Direction.left), action.turn(vwc.Direction.right), action.drop(vwc.Colour.green), action.drop(vwc.Colour.orange)])
         
     def _decide_if_agent_ahead(self):
-        if not self.observation.left:
+        if self.is_wall_on_the_left():
             return action.turn(vwc.Direction.right)
-        elif not self.observation.right:
+        elif not self.is_wall_on_the_right():
             return action.turn(vwc.Direction.left)
-        elif self.observation.left.agent and self.observation.right.agent: #both left and right are full
-            return vwc.random([action.drop(vwc.Colour.green), action.drop(vwc.Colour.orange)])
-        elif self.observation.left.agent: #the left location is full
+        elif self.is_agent_on_the_left() and self.is_agent_of_the_right(): # both left and right are full
+            return vwc.random([action.drop(vwc.Colour.green), action.drop(vwc.Colour.orange)]) #TODO: is this logic correct? Compare with the method above.
+        elif self.is_agent_on_the_left(): # agent on the left
             return action.turn(vwc.Direction.right)
-        elif self.observation.right.agent: #the right location is full
+        elif self.is_agent_of_the_right(): # agent on the right
             return action.turn(vwc.Direction.left)
-        elif self.observation.center.dirt: #both left and right are free, drop dirt?
+        elif self.is_on_dirt(): # both left and right are free, drop dirt?
             return vwc.random([action.turn(vwc.Direction.left), action.turn(vwc.Direction.right)])
         else:
             return vwc.random([action.turn(vwc.Direction.left), action.turn(vwc.Direction.right), action.drop(vwc.Colour.green), action.drop(vwc.Colour.orange)])
 
     def _decide_if_wall_on_the_left(self):
-        if self.observation.center.dirt:
+        if self.is_on_dirt():
             return vwc.random([action.move(), action.turn(vwc.Direction.right)], [0.9, 0.1])
         else:
             return vwc.random([action.move(), action.turn(vwc.Direction.right), action.drop(vwc.Colour.green), action.drop(vwc.Colour.orange)], [0.6, 0.25, 0.075, 0.075])
 
     def _decide_if_wall_on_the_right(self):
-        if self.observation.center.dirt:
+        if self.is_on_dirt():
             return vwc.random([action.move(), action.turn(vwc.Direction.left)], [0.9, 0.1])
         else:
             return vwc.random([action.move(), action.turn(vwc.Direction.left), action.drop(vwc.Colour.green), action.drop(vwc.Colour.orange)], [0.6, 0.25, 0.075, 0.075])
@@ -102,17 +135,17 @@ class MediumUser():
         # Agent ahead
         elif self.observation.forward.agent:
             return self._decide_if_agent_ahead()
-        # If there is an agent in some direction, turn to face away from it aslong as there isnt a wall
-        elif self.observation.left and self.observation.left.agent and self.observation.right and self.observation.right.agent:
+        # If there is an agent in some direction, turn to face away from it as long as there isn't a wall
+        elif self.observation.left and self.is_agent_on_the_left() and self.observation.right and self.is_agent_of_the_right():
             return MediumUser.move_or_drop()
-        elif self.observation.left and self.observation.left.agent and self.observation.right:
+        elif self.observation.left and self.is_agent_on_the_left() and self.observation.right:
             return vwc.random([action.turn(vwc.Direction.right), action.move()])
-        elif self.observation.right and self.observation.right.agent and self.observation.left:
+        elif self.observation.right and self.is_agent_of_the_right() and self.observation.left:
             return vwc.random([action.turn(vwc.Direction.left), action.move()])
-        elif not self.observation.left:
-            self._decide_if_wall_on_the_left()
-        elif not self.observation.right:
-            self._decide_if_wall_on_the_right()
+        elif self.is_wall_on_the_left():
+            return self._decide_if_wall_on_the_left()
+        elif self.is_wall_on_the_right():
+            return self._decide_if_wall_on_the_right()
         else:
             return MediumUser.random_all()         
     
