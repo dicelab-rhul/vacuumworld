@@ -29,14 +29,6 @@ This is the template of an agents mind, in this course we are using a simple arc
 the `decide` and `revise` methods are key in this. For more information and examples check the Guide!
 """
 
-from .common import version, license, author, author_email
-
-__author__ = author
-__license__ = license
-__version__ = version
-__maintainer__ = author
-__email__ = author_email
-
 from . import vwv
 from . import vwc
 from . import vwutils

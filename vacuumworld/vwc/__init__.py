@@ -11,14 +11,6 @@ avaliable on the course moodle page.
 
 """
 
-from ..common import author, author_email, license, version
-
-__author__ = author
-__license__ = license
-__version__ = version
-__maintainer__ = author
-__email__ = author_email
-
 import random as rand
 import typing
 from enum import Enum
