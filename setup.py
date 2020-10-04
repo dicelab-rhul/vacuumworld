@@ -8,7 +8,8 @@ Created on Sun Jun  2 21:22:31 2019
 
 import setuptools
 
-from vacuumworld.common import version, author, author_email, classifiers, license, url, name, dependencies, description
+from common import version, author, author_email, classifiers, license, url, name, dependencies, description
+
 
 setuptools.setup(
       name=name,
@@ -18,7 +19,7 @@ setuptools.setup(
       author=author,
       author_email=author_email,
       license=license,
-      packages=setuptools.find_packages(),
+      packages=[p for p in setuptools.find_packages() if "legacy" not  in p],
       include_package_data=True,
       install_requires=dependencies,
       classifiers=classifiers
