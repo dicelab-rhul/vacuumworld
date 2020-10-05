@@ -131,7 +131,10 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-#VSCode settings files
+# VSCode settings files
 .vscode/
 .vscode/*
 .vscode/**
+
+# Test entry point
+vw4_test.py

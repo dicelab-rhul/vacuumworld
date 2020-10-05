@@ -587,7 +587,7 @@ class VWInterface(tk.Frame):
             self.canvas.tag_lower(d)
 
     def drag_on_drop(self, event, drag_manager):
-        #TODO stream line to work with select
+        #TODO: stream line to work with select
 
         inc = GRID_SIZE / self.grid.dim
         x = int(event.x / inc)
@@ -839,7 +839,7 @@ def run(_minds, skip = False, play = False, speed = 0, load = None, scale = 1):
         reset = True
         finish = False
 
-        play_event = Event() #TODO remove UNUSED
+        play_event = Event() #TODO: remove UNUSED
 
         #env_thread = Thread(target=simulate, daemon=True)
         #env_thread.start()
@@ -867,9 +867,9 @@ def run(_minds, skip = False, play = False, speed = 0, load = None, scale = 1):
 
 
 """
-# TODO remove --- new simulate fixes time.sleep issue?
+#TODO: remove --- new simulate fixes time.sleep issue?
 
-#TODO, be able to select user mind from gui
+#TODO: be able to select user mind from gui
 
 def simulate():
     try:
