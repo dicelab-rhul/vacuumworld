@@ -20,8 +20,13 @@ VW_EXTENSION = ".vw"
 RANDOM_FILENAME_LENGTH = 10
 
 def init():
-    if not os.path.isdir(FILES_DIR):
+    if not os.path.exists(FILES_DIR):
         os.mkdir(FILES_DIR)
+    elif not os.path.isdir(FILES_DIR): # name collision
+        raise ValueError("Could not create the `{}` directory.".format(FILES_DIR))
+
+    if not os.path.isdir(FILES_DIR): # the directory was not created
+        raise ValueError("Could not create the `{}` directory.".format(FILES_DIR))
     
 
 def save_dialog(grid, file):
