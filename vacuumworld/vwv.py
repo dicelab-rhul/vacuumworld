@@ -295,7 +295,7 @@ class VWInterface(tk.Frame):
         
         
         #entry box
-        files = saveload.files()
+        files = saveload.get_ordered_list_of_filenames_in_save_directory()
         self.load_menu = AutocompleteEntry(files, 3, self.mid_frame, font=ROOT_FONT)
         self.load_menu.bind('<Button-1>', lambda _: self.deselect())
         self.load_menu.pack(side='top')
@@ -654,7 +654,7 @@ def _save(saveloadmenu):
     result = saveload.save(grid, file)
 
     if result:
-        saveloadmenu.lista = saveload.files()
+        saveloadmenu.lista = saveload.get_ordered_list_of_filenames_in_save_directory()
         print("The current grid was successfully saved.")
     else:
         print("The current grid was not saved.")
@@ -821,8 +821,8 @@ def run(_minds, skip = False, play = False, speed = 0, load = None, scale = 1):
         if play:
             if load is None:
                 raise ValueError("argument \"load\" must be specified if argument play = True")
-            load = saveload.format_file(load)
-            files = saveload.files()
+            load = saveload.add_vw_extension_to_filename_string_if_missing(load)
+            files = saveload.get_ordered_list_of_filenames_in_save_directory()
             if not load in files:
                 raise ValueError("invalid file name: " + str(load) + " valid files include:" + str(files))
             print("INFO: autoplay enabled")

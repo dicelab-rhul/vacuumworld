@@ -16,6 +16,8 @@ from random import choice
 from string import ascii_letters
 from tkinter.filedialog import asksaveasfile, askopenfile
 
+#TODO: this should be a class, rather than a collection of methods and loose variables.
+
 FILES_DIR = os.path.join(os.getcwd(), "files")
 VW_EXTENSION = ".vw"
 VW_FILE_REGEX = "^[a-zA-Z0-9]+{}$".format(VW_EXTENSION)
@@ -94,21 +96,15 @@ def load_dialog(file=""):
     except Exception:
         traceback.print_exc()
         return False
-
-def exists(file):
-    assert file
-
-    file = format_file(file)
-    return file in files()
     
-def format_file(file):
+def add_vw_extension_to_filename_string_if_missing(file):
     assert file
 
     if not file.endswith(VW_EXTENSION):
         file += VW_EXTENSION
     return file
 
-def files():
+def get_ordered_list_of_filenames_in_save_directory():
     try:
         f = [file for file in os.listdir(FILES_DIR) if file.endswith(".vw")]
         f.sort()
