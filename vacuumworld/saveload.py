@@ -11,12 +11,14 @@ import os
 import pickle
 import traceback
 
+from re import match
 from random import choice
 from string import ascii_letters
 from tkinter.filedialog import asksaveasfile, askopenfile
 
 FILES_DIR = os.path.join(os.getcwd(), "files")
 VW_EXTENSION = ".vw"
+VW_FILE_REGEX = "^[a-zA-Z0-9]+{}$".format(VW_EXTENSION)
 RANDOM_FILENAME_LENGTH = 10
 
 def init():
@@ -27,7 +29,29 @@ def init():
 
     if not os.path.isdir(FILES_DIR): # the directory was not created
         raise ValueError("Could not create the `{}` directory.".format(FILES_DIR))
-    
+
+def file_exists(file):
+    assert file
+
+    # Absolute path vs. relative path
+    return os.path.exists(file) or os.path.exists(os.path.join(FILES_DIR, os.path.basename(file)))
+
+def _save(grid, file):
+    assert file
+
+    try:
+         with open(os.path.join(FILES_DIR, os.path.basename(file)), "wb") as f:
+            pickle.dump(grid, f)
+            return True
+    except Exception:
+        traceback.print_exc()
+        return False
+
+def save(grid, file):
+    if file and not file_exists(file) and match(VW_FILE_REGEX, file):
+        return _save(grid, file)
+    else:
+        return save_dialog(grid, file)
 
 def save_dialog(grid, file):
     try:
@@ -44,6 +68,22 @@ def save_dialog(grid, file):
     except Exception:
         traceback.print_exc()
         return False
+
+def _load(file):
+    assert file
+
+    try:
+        with open(os.path.join(FILES_DIR, os.path.basename(file)), "rb") as f:
+            return pickle.load(f)
+    except Exception:
+        traceback.print_exc()
+        return False
+
+def load(file=""):
+    if file and file_exists(file) and match(VW_FILE_REGEX, file):
+        return _load(file)
+    else:
+        return load_dialog(file)
 
 def load_dialog(file=""):
     try:

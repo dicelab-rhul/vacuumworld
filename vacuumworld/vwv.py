@@ -651,7 +651,7 @@ def _difficulty():
 
 def _save(saveloadmenu):
     file = saveloadmenu.var.get()
-    result = saveload.save_dialog(grid, file)
+    result = saveload.save(grid, file)
 
     if result:
         saveloadmenu.lista = saveload.files()
@@ -662,7 +662,7 @@ def _save(saveloadmenu):
 
 def _load(saveloadmenu):
     file = saveloadmenu.var.get()
-    data = saveload.load_dialog(file)
+    data = saveload.load(file)
 
     if data:
         main_interface.grid_scale_slider.set_position(data.dim - grid.GRID_MIN_SIZE)
