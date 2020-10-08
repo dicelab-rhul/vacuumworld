@@ -8,7 +8,7 @@ Created on Wed Aug 14 13:42:09 2019
 
 import os,re,argparse
 
-TODO_FILE = 'TODO.txt'
+TODO_FILE = os.path.join(os.pardir, "TODO.txt")
 TODO_REGEX = re.compile(r'.*#.*TODO.*')
 
 FILES = []

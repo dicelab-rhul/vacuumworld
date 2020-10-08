@@ -6,7 +6,9 @@ vacuumworld/vwv.py:589: #TODO: stream line to work with select
 vacuumworld/vwv.py:841: play_event = Event() #TODO: remove UNUSED
 vacuumworld/vwv.py:869: #TODO: remove --- new simulate fixes time.sleep issue?
 vacuumworld/vwv.py:871: #TODO: be able to select user mind from gui
-vacuumworld/vwuser.py:108: return vwc.random([action.drop(vwc.Colour.green), action.drop(vwc.Colour.orange)]) #TODO: is this logic correct? Compare with the method above.
+vacuumworld/saveload.py:18: #TODO: this should be a class, rather than a collection of methods and loose variables.
+vacuumworld/vwuser.py:110: return vwc.random([action.drop(vwc.Colour.green), action.drop(vwc.Colour.orange)]) #TODO: is this logic correct? Compare with the method above.
+vacuumworld/vwagent.py:127: #TODO: https://pymotw.com/2/sys/tracing.html to get helpful exception information it will be better to trace decide!
 vacuumworld/vwaction.py:42: #TODO: remove dirt from list of objects in ambient
 vacuumworld/vwaction.py:53: #TODO: add new dirt to list of objects in ambient
 vacuumworld/test/test2.py:34: #TODO: arg is never used. Is this a bug?
