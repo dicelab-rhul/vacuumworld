@@ -76,13 +76,13 @@ class VWMind(Mind):
         if len(actions) == 0:
             return ActionFlow.NONE, actions
         # Single action - either physical, or speech
-        elif len(actions) <= VWMind.MAX_ACTIONS_PER_CYCLE and type(actions[0]) == str:
+        elif type(actions[0]) == str:
             return ActionFlow.SINGLE, actions
         # Double action (the check to avoid a double physical action or a double speech is performed elsewhere)
-        elif len(actions) == VWMind.MAX_ACTIONS_PER_CYCLE and type(actions[0]) == tuple and type(actions[1] == tuple):
+        elif len(actions[0]) <= VWMind.MAX_ACTIONS_PER_CYCLE and type(actions[0]) == tuple and type(actions[1] == tuple):
             return ActionFlow.DOUBLE, actions
         # Too many actions
-        elif len(actions) > VWMind.MAX_ACTIONS_PER_CYCLE:
+        elif type(actions[0]) == tuple and len(actions[0]) > VWMind.MAX_ACTIONS_PER_CYCLE:
             raise vwutils.VacuumWorldActionError("Invalid action(s): {}, an agent can perform at most 1 physical action and 1 speech action per cycle (a total of 2 actions)".format(str(actions)))
         # Malformed action(s)
         else:
