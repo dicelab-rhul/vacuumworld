@@ -104,3 +104,46 @@ def ignore(obj):
     with open(devnull, "w") as f:
         f.write(str(obj))
         f.flush()
+
+
+# SOME MEGA HACKY STUFF... not sure if we want to use it 
+
+import inspect
+import sys
+
+class ReturnLines:
+    
+    def __init__(self):
+        self.returns = []
+        self._old_trace = None
+
+    def start(self):
+        self._old_trace = sys.gettrace()
+        sys.settrace(self.trace)
+
+    def stop(self):
+        sys.settrace(self._old_trace)
+
+    def __enter__(self):
+        self.start()
+        return self.returns
+
+    def __exit__(self, *exc):
+        self.stop()
+
+    def trace(self, frame, event, arg):
+        filename = None
+        if frame is not None:
+            filename = inspect.getsourcefile(frame)
+        if event == 'call':
+            if filename == __file__:
+                # skip ourselves
+                return
+            try:
+                # Python 3.7+: only trace exceptions and returns for this call
+                frame.f_trace_lines = False
+            except AttributeError:
+                pass
+            return self.trace
+        elif event == 'return':
+            self.returns.append((filename, frame.f_lineno, arg))

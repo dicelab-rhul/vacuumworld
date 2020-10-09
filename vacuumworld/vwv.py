@@ -770,7 +770,7 @@ def _error(*args, **kwargs):
             agent_error = i < len(tb) - 1 #maybe an error in vwagent.py
             break
     
-    agent_error = agent_error or _type == vwutils.VacuumWorldActionError
+    agent_error = agent_error or _type == VacuumWorldActionError
     i = int(agent_error) * i + int(agent_error)
 
     print("Traceback:\n")

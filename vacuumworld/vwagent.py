@@ -127,10 +127,14 @@ class VWMind(Mind):
         # Perceive
         observation, messages = self._do_perceive()
 
+       
         # Revise
         self.surrogate.revise(*observation, messages)
+        
+        #with vwutils.ReturnLines() as rl:
         # Decide
         actions = self.surrogate.decide()
+        #print(rl.returns)
         
         # Execute
         if actions is None:
