@@ -1,5 +1,3 @@
-import sys
-import traceback
 import types
 
 from pystarworlds.Agent import Mind, Body

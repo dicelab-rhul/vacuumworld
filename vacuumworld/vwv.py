@@ -13,7 +13,6 @@ import signal
 import sys
 import inspect
 
-from threading import Event
 from collections import OrderedDict as odict
 from PIL import Image, ImageTk
 
@@ -891,75 +890,3 @@ def run(_minds, skip : bool = False, play : bool = False , speed : float = 0 , l
     except Exception:
         _error()
         _finish()
-
-    
-
-
-
-
-"""
-#TODO: remove --- new simulate fixes time.sleep issue?
-
-#TODO: be able to select user mind from gui
-
-def simulate():
-    try:
-        def wait():
-            should_sleep = not play_event.is_set()
-            play_event.wait()
-            if should_sleep:
-                with Sleep(TIME_STEP*1000):
-                     pass
-            return True
-        
-        global reset
-        global should_update
-        global user_mind
-        
-        while wait() and not finish:
-            #with TimeRecord(str(TIME_STEP)): #ms:
-            with Sleep(TIME_STEP*1000):
-                if reset:
-                    global env
-                    env = init_environment(grid, minds, user_mind)
-                    grid.cycle = 0
-                    reset = False
-                
-                print("------------ cycle {} ------------ ".format(grid.cycle))
-                
-                env.evolveEnvironment()
-            
-                grid.cycle += 1
-                if not finish:
-                    root.after(0, main_interface._redraw)
-    except:
-        print("INFO: SIMULATION ERROR")
-        _error()
-        root.after(0, _finish)
-        
-t = lambda: int(round(time.time() * 1000))
-
-class Sleep:
-    
-    def __init__(self, wait):
-        self.wait = wait
-       
-    def __enter__(self):
-        self.start = t()
-        self.finish = self.start + self.wait
-    
-    def __exit__(self, type, value, traceback):
-        while t() < self.finish:
-            time.sleep(1./1000.)  
-            
-class TimeRecord:
-    
-    def __init__(self, name):
-        self._name = name
-    
-    def __enter__(self,):
-        self._t = time.time() * 1000
-    
-    def __exit__(self, type, value, traceback):
-        print("INFO: {0} time: {1}".format(self._name, time.time()  * 1000 - self._t))
-"""
