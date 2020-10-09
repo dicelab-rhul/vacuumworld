@@ -18,4 +18,4 @@ class MyMind:
 
 
 
-vacuumworld.run(MyMind(), load="abc.vw", play=True)
+vacuumworld.run(MyMind(), load="abc.vw")

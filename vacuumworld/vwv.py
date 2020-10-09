@@ -9,6 +9,8 @@ Created on Fri May 31 20:12:24 2019
 import tkinter as tk
 import traceback
 import os
+import signal
+import sys
 
 from threading import Event
 from collections import OrderedDict as odict
@@ -696,8 +698,10 @@ def simulate():
     except Exception:
         print("INFO: SIMULATION ERROR")
         _error()
-        root.after(0, _finish)
-    
+        #root.after(0, _finish)
+        _finish()
+
+
 #resets the grid and enviroment
 def _reset():
     print('INFO: reset')
@@ -728,7 +732,6 @@ def _stop():
     print('INFO: stop')
     global reset
     reset = True
-    #play_event.clear()
     reset_time_step()
     main_interface.running = False
     main_interface.pack_buttons('play', 'reset', 'fast', 'difficulty', 'save', 'load')
@@ -736,7 +739,6 @@ def _stop():
 
 def _resume():
     print('INFO: resume')
-    #play_event.set()
     main_interface.pack_buttons('stop', 'pause','fast')
     
     #root.after(int(TIME_STEP*1000), simulate)
@@ -750,25 +752,23 @@ def _resume():
 
 def _pause():
     print('INFO: pause')
-    #play_event.clear()
     reset_time_step()
     main_interface.pack_buttons('stop', 'resume','fast')
     main_interface.running = False
 
 def _back():
     print('INFO: back')
-    play_event.clear()
     main_interface.pack_forget()
     main_menu.pack()
 
 def _error(*_):
-    traceback.print_exc()
+    traceback.print_exc() #TODO maybe we can print nicer exceptions, often we get Exception("...".format(...)) in the message which looks a bit weird
 
 def _finish():
-    global root
+    global root, main_interface
+    print('INFO: EXIT')
+    main_interface.running = False # ?? 
     root.destroy()
-    global finish
-    finish = True
     
 def _start():
     main_menu.pack_forget()
@@ -836,18 +836,11 @@ def run(_minds, skip : bool = False, play : bool = False , speed : float = 0 , l
             main_interface._redraw()
             print("INFO: successfully loaded: ", load)
             
-        global env_thread
-        global play_event, finish, reset, after_hook
+        global reset, after_hook
 
         after_hook = None #prevent button spam
         reset = True
-        finish = False
 
-        play_event = Event() #TODO: remove UNUSED
-
-        #env_thread = Thread(target=simulate, daemon=True)
-        #env_thread.start()
-        
         #set up simulation speed
         global TIME_STEP
         global TIME_STEP_MODIFIER
@@ -859,12 +852,9 @@ def run(_minds, skip : bool = False, play : bool = False , speed : float = 0 , l
         if play:
             _play()
 
-                
-        import signal
-        import sys
-
         def signal_handler(sig, frame):
-            print('You pressed Ctrl+C!')
+            print()
+            _finish()
             #sys.exit(0)
 
         signal.signal(signal.SIGINT, signal_handler)
