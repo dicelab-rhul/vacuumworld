@@ -85,10 +85,10 @@ class VWMind(Mind):
         elif type(actions[0]) == str:
             return ActionFlow.SINGLE, actions
         # Double action (the check to avoid a double physical action or a double speech is performed elsewhere)
-        elif len(actions[0]) <= VWMind.MAX_ACTIONS_PER_CYCLE and type(actions[0]) == tuple and type(actions[1] == tuple):
+        elif len(actions) <= VWMind.MAX_ACTIONS_PER_CYCLE and type(actions[0]) == tuple and type(actions[1]) == tuple:
             return ActionFlow.DOUBLE, actions
         # Too many actions
-        elif type(actions[0]) == tuple and len(actions[0]) > VWMind.MAX_ACTIONS_PER_CYCLE:
+        elif len(actions) > VWMind.MAX_ACTIONS_PER_CYCLE:
             raise vwutils.VacuumWorldActionError("Invalid action(s): {}, an agent can perform at most 1 physical action and 1 speech action per cycle (a total of 2 actions)".format(str(actions)))
         # Malformed action(s)
         else:
@@ -111,10 +111,11 @@ class VWMind(Mind):
                 raise vwutils.VacuumWorldActionError("An agent can perform at most 1 speech action per cycle (vwc.action.speak)")
             
             if all(is_physical):
-                raise vwutils.VacuumWorldActionError("An agent can perform at most 1 physical action per cycle (vwc.action.clean, move, turn, idle, drop)")
+                raise vwutils.VacuumWorldActionError("An agent can perform at most 1 physical action per cycle (vwc.action.clean, move, turn, idle)")
             
             for action in actions:
                 self.attempt_action(action)
+                
         # No action
         elif action_flow_type == ActionFlow.NONE:
             return
@@ -131,17 +132,18 @@ class VWMind(Mind):
         self.surrogate.revise(*observation, messages)
         
         # Decide
-        #with vwutils.ReturnLine() as rl: # DO NOT PUT ANYTHING ELSE IN HERE - THIS IS DODGY DEBUG CODE 
-        actions = self.surrogate.decide()
-           
-        #print(rl.return_line)
-        #print(rl.return_line, rl.line(self.surrogate.__class__))
+        with vwutils.ReturnFrame() as rf: # DO NOT PUT ANYTHING ELSE IN HERE - THIS IS DODGY DEBUG CODE 
+            actions = self.surrogate.decide()
         
         # Execute
         if actions is None:
             return # No action
         else:
-            self._validate_and_execute_actions(actions)
+            try:
+                self._validate_and_execute_actions(actions)
+            except vwutils.VacuumWorldActionError as vwe:
+                tb = types.TracebackType(None, rf.frame, rf.frame.f_lasti, rf.frame.f_lineno)
+                raise vwe.with_traceback(tb)
     
     def attempt_action(self, action):
         _a = vwaction._action_factories[action[0]](*action[1:])

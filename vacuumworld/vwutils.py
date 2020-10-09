@@ -111,10 +111,10 @@ def ignore(obj):
 import inspect
 import sys
 
-class ReturnLine:
+class ReturnFrame:
 
     def __init__(self):
-        self.return_line = None
+        self.frame = None
         self._old_trace = None
 
     def start(self):
@@ -137,12 +137,7 @@ class ReturnLine:
             filename = inspect.getsourcefile(frame)
         if event == 'call':
             if filename == __file__:
-                # skip ourselves 
-                return       
+                return # skip ourselves     
             return self.trace
         elif event == 'return':
-            self.return_line = (filename, frame.f_lineno)
-        
-    def line(self, agent):
-        source, start = inspect.getsourcelines(agent)
-        return source[self.return_line[1] - start]
+            self.frame = frame

@@ -4,7 +4,7 @@ from vacuumworld.vwc import action, Direction
 class MyMind:
 
     def decide(self):
-        return ("garbage")
+        return 1,2,3
 
 
         if self.observation.center.dirt is not None:
@@ -14,7 +14,6 @@ class MyMind:
             return action.move()
         return action.turn(Direction.left)
 
-        
     def revise(self, observation, messages):
         self.observation = observation
         #print(self.observation.forward)
