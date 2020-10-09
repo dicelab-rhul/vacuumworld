@@ -44,4 +44,4 @@ class TestMind():
 
 for i in range(len(TestMind.PATTERNS)):
     print("\n########## Test #{} ##########\n".format(i))
-    vacuumworld.run(TestMind(i), load="twins.vw")
+    vacuumworld.run(TestMind(i), load="twins.vw", play=True)
