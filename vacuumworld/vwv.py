@@ -761,8 +761,21 @@ def _back():
     main_interface.pack_forget()
     main_menu.pack()
 
-def _error(*_):
-    traceback.print_exc() #TODO maybe we can print nicer exceptions, often we get Exception("...".format(...)) in the message which looks a bit weird
+def _error(*args, **kwargs):
+    _type, value, tb = sys.exc_info()
+    tb =  traceback.extract_tb(tb)
+    agent_error = False
+    for i, s in enumerate(tb):
+        if s.filename.endswith("vwagent.py"): #... maybe some issues?
+            agent_error = i < len(tb) - 1 #may be an error in vwagent.py
+            break
+
+    i = int(agent_error) * i + int(agent_error)
+
+    print("Traceback:\n")
+    print(''.join(traceback.format_list(tb[i:])))
+    print("Exception:\n")
+    print('  '  + '  '.join(traceback.format_exception_only(_type, value)))
 
 def _finish():
     global root, main_interface

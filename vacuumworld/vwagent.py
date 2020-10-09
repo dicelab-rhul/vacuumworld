@@ -1,3 +1,7 @@
+import sys
+import traceback
+import types
+
 from pystarworlds.Agent import Mind, Body
 
 from . import vwsensor
@@ -17,6 +21,8 @@ class ActionFlow(Enum):
     NONE = 0
     SINGLE = 1
     DOUBLE = 2
+
+
 
 class VWBody(Body):
     def __init__(self, _type, id, mind, orientation, coordinate, colour):
@@ -117,16 +123,15 @@ class VWMind(Mind):
             raise ValueError("This should not be reachable.")
 
     def cycle(self):
+
         # Perceive
         observation, messages = self._do_perceive()
 
         # Revise
         self.surrogate.revise(*observation, messages)
-    
         # Decide
         actions = self.surrogate.decide()
-        #TODO: https://pymotw.com/2/sys/tracing.html to get helpful exception information it will be better to trace decide!
-
+        
         # Execute
         if actions is None:
             return # No action

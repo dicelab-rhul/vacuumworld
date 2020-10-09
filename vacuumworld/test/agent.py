@@ -15,7 +15,8 @@ class MyMind:
     def revise(self, observation, messages):
         self.observation = observation
         #print(self.observation.forward)
+        #raise ValueError("{0} BAR".format("FOO"))
+        action.foo
 
 
-
-vacuumworld.run(MyMind(), load="abc.vw")
+vacuumworld.run(MyMind(), load="abc.vw", play=True)

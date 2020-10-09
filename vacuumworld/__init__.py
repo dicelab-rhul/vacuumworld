@@ -30,12 +30,16 @@ the `decide` and `revise` methods are key in this. For more information and exam
 """
 
 import signal
+import sys
+import traceback
 
 def ignore_ctrl_z(*_):
     print("\nCTRL+Z is ignored by VacuumWorld, use CTRL+C.")
     signal.SIG_IGN
 
 signal.signal(signal.SIGTSTP, ignore_ctrl_z)
+
+
 
 from . import vwv
 from . import vwc
