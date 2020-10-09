@@ -11,7 +11,6 @@ from . import vwaction
 from . import vwc
 from . import vwutils
 
-from enum import Enum
 
 from collections import namedtuple
 agent_type = namedtuple('agent_type', 'cleaning user')('cleaning', 'user')
@@ -37,7 +36,7 @@ class VWBody(Body):
 
 class VWMind(Mind):
     
-
+    MAX_NUMBER_OF_ACTIONS_PER_CYCLE = 2
     speech_actions   = [vwc.action.speak("")]
     physical_actions = [vwc.action.idle(), vwc.action.move(), vwc.action.clean(), vwc.action.drop(vwc.colour.green), vwc.action.turn(vwc.direction.left)]
     actions = speech_actions + physical_actions
@@ -57,7 +56,8 @@ class VWMind(Mind):
 
         return observation, messages
 
-    def validate_actions(self, actions):
+    @staticmethod
+    def validate_actions(actions):
 
         # valid action formats:
         # (['a', ...],)
@@ -70,13 +70,16 @@ class VWMind(Mind):
             if action is None:
                 return
             elif callable(action):
-                raise vwutils.VacuumWorldActionError("Action should not be a function, did you forget the ()? - e.g. action.move()")
+                raise vwutils.VacuumWorldActionError("Action should not be a function name, did you forget the ()? - e.g. action.move()")
             elif type(action) != list or len(action) < 1:
-                raise vwutils.VacuumWorldActionError("Invalid action: {}, please use vwc.action".format(action))
+                raise vwutils.VacuumWorldActionError("Invalid action format: {}, please use vwc.action".format(action))
             elif not action[0] in action_names:
-                raise vwutils.VacuumWorldActionError("Invalid action: {}, please use vwc.action".format(action))
+                raise vwutils.VacuumWorldActionError("Invalid action name: {}, please use vwc.action".format(action))
             elif not len(action) == action_sizes[action[0]]:
-                raise vwutils.VacuumWorldActionError("Invalid action: {}, please use vwc.action".format(action))
+                raise vwutils.VacuumWorldActionError("Invalid (malformed) action: {}, please use vwc.action".format(action))
+
+        if len(actions) > VWMind.MAX_NUMBER_OF_ACTIONS_PER_CYCLE:
+            raise vwutils.VacuumWorldActionError("Too many actions for this cycle. There is a hard limit of 1 physical action and 1 speech per cycle.")
 
         for action in actions:
             validate_action(action)
@@ -110,7 +113,7 @@ class VWMind(Mind):
         actions = [a for a in actions if a is not None]
 
         try:
-            self.validate_actions(actions)
+            VWMind.validate_actions(actions)
             for action in actions:
                 if action is not None:
                     self.execute(action)
@@ -120,11 +123,14 @@ class VWMind(Mind):
             raise vwe.with_traceback(tb)
 
     def execute(self, action):
-        _a = vwaction._action_factories[action[0]](*action[1:])
-        if action is None: #idle action
-            return
+        assert action is not None
 
+        _a = vwaction._action_factories[action[0]](*action[1:])
         actuators = list(self.body.actuators.subscribed(type(_a)).values())
-        if len(actuators) != 1:
-            raise vwutils.VacuumWorldActionError("No actuator found for action: " + str(action))
+        
+        if len(actuators) < 1:
+            raise vwutils.VacuumWorldActionError("No actuator found for action: {}".format(action))
+        elif len(actuators) > 1:
+            raise vwutils.VacuumWorldActionError("Too many actuators found for action: {}".format(action))
+        
         actuators[0].attempt(_a)
