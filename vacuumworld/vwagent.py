@@ -58,6 +58,7 @@ class VWMind(Mind):
 
     @staticmethod
     def validate_actions(actions):
+        assert type(actions) == list
 
         # valid action formats:
         # (['a', ...],)
@@ -109,6 +110,8 @@ class VWMind(Mind):
 
         if type(actions) == list:
             actions = (actions,)
+        else:
+            raise vwutils.VacuumWorldActionError("Invalid action(s) format: {}, please use vwc.action".format(actions))
 
         actions = [a for a in actions if a is not None]
 
