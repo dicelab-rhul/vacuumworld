@@ -4,8 +4,13 @@ from vacuumworld.vwc import action, Direction
 class MyMind:
 
     def decide(self):
-        return 1,2,3
-
+        #return action.clean, action.speak("")
+        #return action.speak("")
+        #return action.clean()
+        #return 1,2,3
+        #return []
+        #return ['garbage']
+        return ('speak',)
 
         if self.observation.center.dirt is not None:
             return action.clean()

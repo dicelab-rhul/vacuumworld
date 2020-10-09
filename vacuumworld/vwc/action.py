@@ -45,18 +45,18 @@ def move():
         Moves an agent one tile in the direction it is facing.
 
         Returns: 
-            ``('move',)``
+            ``['move',]``
     '''
-    return ('move',)
+    return ['move',]
 
 def turn(direction):
     '''
         Turns an agent in the given direction ``left`` or``right``. 
         
         Returns: 
-            ``('turn', direction)``
+            ``['turn', direction]``
     '''
-    return ('turn', direction)
+    return ['turn', direction]
 
 def clean():
     '''
@@ -69,18 +69,18 @@ def clean():
             * User -> None
         
         Returns:
-            ``('clean',)``
+            ``['clean',]``
     '''
-    return ('clean',)
+    return ['clean',]
 
 def idle():
     '''
         The agent is idle (no action is attempted). This is the equivalent of returning ``None``.
         
         Returns:
-            ``('idle',)``
+            ``['idle',]``
     '''
-    return ('idle',)
+    return ['idle',]
 
 def speak(message, *to):
     '''
@@ -92,9 +92,9 @@ def speak(message, *to):
             ``*to (str, variable, optional)``: The recipients of the messages. If empty, the message will be broadcast to all agents.
         
         Returns:
-            ``('speak', message, to)``
+            ``['speak', message, to]``
     '''
-    return ('speak', message, to)
+    return ['speak', message, to]
 
 def drop(colour):
     '''
@@ -104,6 +104,6 @@ def drop(colour):
             ``colour (vwc.colour)``: The colour of the dirt (``green`` or ``orange``). 
             
         Returns:
-            ``('drop', colour)``
+            ``['drop', colour]``
     '''
-    return ('drop',colour)
+    return ['drop', colour]

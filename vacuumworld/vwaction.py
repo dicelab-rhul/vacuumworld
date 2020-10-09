@@ -170,9 +170,9 @@ class SpeakActionFactory(ActionFactory):
             _size = vwc.size(message)
         return message, _size
 
-_action_factories = {vwc.action.move.__name__:lambda: MoveAction(), 
-                     vwc.action.clean.__name__:lambda: CleanAction(), 
-                     vwc.action.idle.__name__:lambda: None,
-                     vwc.action.turn.__name__:TurnActionFactory(), 
-                     vwc.action.drop.__name__:DropActionFactory(),
-                     vwc.action.speak.__name__:SpeakActionFactory()}
+_action_factories = {vwc.action.move()[0]:lambda: MoveAction(), 
+                     vwc.action.clean()[0]:lambda: CleanAction(), 
+                     vwc.action.idle()[0]:lambda: None,
+                     vwc.action.turn(vwc.direction.left)[0]:TurnActionFactory(), 
+                     vwc.action.drop(vwc.colour.green)[0]:DropActionFactory(),
+                     vwc.action.speak("")[0]:SpeakActionFactory()}
