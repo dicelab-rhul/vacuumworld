@@ -110,7 +110,7 @@ class VWMind(Mind):
 
         if type(actions) == list:
             actions = (actions,)
-        else:
+        elif type(actions) != tuple:
             raise vwutils.VacuumWorldActionError("Invalid action(s) format: {}, please use vwc.action".format(actions))
 
         actions = [a for a in actions if a is not None]
