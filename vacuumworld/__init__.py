@@ -47,14 +47,15 @@ from . import vwutils
 
 __all__ = ('vw', 'vwv', 'vwc')
 
-def run(white_mind, green_mind=None, orange_mind=None, **kwargs):
+def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, **kwargs):
     '''
         This function is used to run a vacuumworld simulation. 
         
         Arguments:
-            * white_mind: the mind of the white agent
-            * green_mind: the mind of the green agent
-            * orange_mind: the mind of the orange agent
+            * default_mind: the default mind for all agents. Can be overridden for specific agents by white_mind, green_mind, and orange_mind.
+            * white_mind: the mind for white agents.
+            * green_mind: the mind for green agents.
+            * orange_mind: the mind for orange agents.
         
         If `green_mind` or `orange_mind` are not specified, `white_mind` will be
         used for these agents.
@@ -79,7 +80,7 @@ def run(white_mind, green_mind=None, orange_mind=None, **kwargs):
     '''
     
     default_observe = {'grid_size':vwutils.print_observer}
-    white_mind, green_mind, orange_mind = vwutils.process_minds(white_mind, green_mind, orange_mind, default_observe)
+    white_mind, green_mind, orange_mind = vwutils.process_minds(default_mind, white_mind, green_mind, orange_mind, default_observe)
     
     try:
         vwv.run({vwc.Colour.white:white_mind, vwc.Colour.green:green_mind, vwc.Colour.orange:orange_mind}, **kwargs)
