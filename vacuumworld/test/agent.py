@@ -19,7 +19,5 @@ class MyMind:
         self.observation = observation
         #print(self.observation.forward)
         #raise ValueError("{0} BAR".format("FOO"))
-        
-
 
 vacuumworld.run(MyMind(), load="abc.vw", play=True)

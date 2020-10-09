@@ -123,18 +123,19 @@ class VWMind(Mind):
             raise ValueError("This should not be reachable.")
 
     def cycle(self):
-
+        #raise ValueError("TEST")
         # Perceive
         observation, messages = self._do_perceive()
 
-       
         # Revise
         self.surrogate.revise(*observation, messages)
         
-        #with vwutils.ReturnLines() as rl:
         # Decide
+        #with vwutils.ReturnLine() as rl: # DO NOT PUT ANYTHING ELSE IN HERE - THIS IS DODGY DEBUG CODE 
         actions = self.surrogate.decide()
-        #print(rl.returns)
+           
+        #print(rl.return_line)
+        #print(rl.return_line, rl.line(self.surrogate.__class__))
         
         # Execute
         if actions is None:

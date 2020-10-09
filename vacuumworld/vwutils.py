@@ -111,10 +111,10 @@ def ignore(obj):
 import inspect
 import sys
 
-class ReturnLines:
-    
+class ReturnLine:
+
     def __init__(self):
-        self.returns = []
+        self.return_line = None
         self._old_trace = None
 
     def start(self):
@@ -126,7 +126,7 @@ class ReturnLines:
 
     def __enter__(self):
         self.start()
-        return self.returns
+        return self
 
     def __exit__(self, *exc):
         self.stop()
@@ -137,13 +137,12 @@ class ReturnLines:
             filename = inspect.getsourcefile(frame)
         if event == 'call':
             if filename == __file__:
-                # skip ourselves
-                return
-            try:
-                # Python 3.7+: only trace exceptions and returns for this call
-                frame.f_trace_lines = False
-            except AttributeError:
-                pass
+                # skip ourselves 
+                return       
             return self.trace
         elif event == 'return':
-            self.returns.append((filename, frame.f_lineno, arg))
+            self.return_line = (filename, frame.f_lineno)
+        
+    def line(self, agent):
+        source, start = inspect.getsourcelines(agent)
+        return source[self.return_line[1] - start]

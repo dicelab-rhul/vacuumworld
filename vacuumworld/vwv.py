@@ -11,6 +11,7 @@ import traceback
 import os
 import signal
 import sys
+import inspect
 
 from threading import Event
 from collections import OrderedDict as odict
@@ -35,6 +36,9 @@ TIME_STEP_BASE = 1. - TIME_STEP_MIN #in seconds
 TIME_STEP = TIME_STEP_BASE
 TIME_STEP_MODIFIER = 1.
 
+GREEN_MIND_FILENAME = None
+ORANGE_MIND_FILENAME = None
+WHITE_MIND_FILENAME = None
 
 WIDTH = 480     #default - depends on layout manager
 HEIGHT = 480    #default - depends on layout manager
@@ -766,12 +770,13 @@ def _error(*args, **kwargs):
     tb =  traceback.extract_tb(tb)
     agent_error = False
     for i, s in enumerate(tb):
-        if s.filename.endswith("vwagent.py"): #... maybe some issues?
-            agent_error = i < len(tb) - 1 #maybe an error in vwagent.py
+        #print(s.filename, WHITE_MIND_FILENAME)
+        if s.filename in (WHITE_MIND_FILENAME, GREEN_MIND_FILENAME, ORANGE_MIND_FILENAME):
+            agent_error = True
             break
     
     agent_error = agent_error or _type == VacuumWorldActionError
-    i = int(agent_error) * i + int(agent_error)
+    i = int(agent_error) * i
 
     print("Traceback:\n")
     print(''.join(traceback.format_list(tb[i:])))
@@ -806,6 +811,11 @@ def run(_minds, skip : bool = False, play : bool = False , speed : float = 0 , l
     skip = skip or play #always skip if play is set
 
 
+    global WHITE_MIND_FILENAME, ORANGE_MIND_FILENAME, GREEN_MIND_FILENAME
+    WHITE_MIND_FILENAME = inspect.getsourcefile(_minds[vwc.Colour.white].__class__)
+    ORANGE_MIND_FILENAME = inspect.getsourcefile(_minds[vwc.Colour.orange].__class__)
+    GREEN_MIND_FILENAME = inspect.getsourcefile(_minds[vwc.Colour.green].__class__)
+
     global root
     tk.Tk.report_callback_exception = _error
     root = tk.Tk()
@@ -820,7 +830,11 @@ def run(_minds, skip : bool = False, play : bool = False , speed : float = 0 , l
         global main_interface
         global grid
         global minds
+        
         minds = _minds
+
+
+
 
         global user_mind
         user_mind = 0
