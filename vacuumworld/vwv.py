@@ -855,13 +855,23 @@ def run(_minds, skip = False, play = False, speed = 0, load = None, scale = 1):
         if play:
             _play()
 
+                
+        import signal
+        import sys
+
+        def signal_handler(sig, frame):
+            print('You pressed Ctrl+C!')
+            #sys.exit(0)
+
+        signal.signal(signal.SIGINT, signal_handler)
+
         root.mainloop()
         
     except Exception:
         _error()
         _finish()
 
-
+    
 
 
 
