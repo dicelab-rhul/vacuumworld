@@ -23,30 +23,38 @@ class VacuumWorldActionError(VacuumWorldInternalError):
 
 def caller_id():
     caller = inspect.currentframe().f_back
+
+    if caller is None:
+        return None
+
     while not isinstance(caller.f_locals.get('self', None), Mind):
-        caller = caller.f_back
+        if caller.f_back is not None:
+            caller = caller.f_back
+        else:
+            return None # TODO: this is a hack to prevent a crash when VW is closed.
     return caller.f_locals['self'].body.ID
 
 def warn_agent(message, *args):
     print("WARNING: " + message.format(caller_id(), *args))
 
-def process_minds(white_mind, green_mind=None, orange_mind=None, observers={}):
-    assert white_mind is not None
+def process_minds(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, observers={}):
+    assert default_mind is not None or white_mind is not None and green_mind is not None and orange_mind is not None
     
-    if green_mind is not None:
-        validate_mind(green_mind, vwc.Colour.green)
-        observe(green_mind, observers)
-    else:
-        green_mind = white_mind
-        
-    if orange_mind is not None:
-        validate_mind(orange_mind, vwc.Colour.orange)
-        observe(orange_mind, observers)
-    else:
-        orange_mind = white_mind
-    
+    if white_mind is None:
+        white_mind = default_mind
+
+    if green_mind is None:
+        green_mind = default_mind
+
+    if orange_mind is None:
+        orange_mind = default_mind
+
     validate_mind(white_mind, vwc.Colour.white)
-    #observe(white_mind, observers) # I think this should be removed, it is quite fragile.
+    validate_mind(green_mind, vwc.Colour.green)
+    validate_mind(orange_mind, vwc.Colour.orange)
+
+    for mind in (white_mind, green_mind, orange_mind):
+        observe(mind, observers)
     
     return white_mind, green_mind, orange_mind
 
@@ -61,7 +69,10 @@ def observe(mind, observers):
             # \ the attribute: {1}, (see coursework question 1)".format(colour, obs)) 
     def sneaky_setattr(self, name, value):
         if name in observers:
-            observers[name](caller_id(), name, value)
+            c_id = caller_id()
+
+            if c_id is not  None:
+                observers[name](c_id, name, value)
         super(type(mind), self).__setattr__(name, value)
     type(mind).__setattr__ = sneaky_setattr
     return mind
