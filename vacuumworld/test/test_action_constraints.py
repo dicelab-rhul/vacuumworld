@@ -40,10 +40,6 @@ class TestMind():
         print(observation)
         print(messages)
 
-vacuumworld.run(TestMind(11), load="twins.vw")
-
-'''
 for i in range(len(TestMind.PATTERNS)):
     print("\n########## Test #{} ##########\n".format(i))
     vacuumworld.run(TestMind(i), load="twins.vw")
-'''
