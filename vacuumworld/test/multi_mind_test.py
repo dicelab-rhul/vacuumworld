@@ -36,7 +36,7 @@ class WhiteMind():
 class GreenMind():
     def __init__(self):
         super().__init__()
-        #self.grid_size = -1
+        self.grid_size = -1
 
     def revise(self, observation, messages):
         print(observation)
@@ -49,7 +49,7 @@ class GreenMind():
 class OrangeMind():
     def __init__(self):
         super().__init__()
-        #self.grid_size = -1
+        self.grid_size = -1
 
     def revise(self, observation, messages):
         print(observation)

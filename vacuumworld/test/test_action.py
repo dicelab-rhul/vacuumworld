@@ -24,7 +24,7 @@ class TestValidation(unittest.TestCase):
 
     def test_valid(self):
         # NO EXCEPTIONS! 
-        # TODO cycle... not sure how to fake this
+        #TODO: cycle... not sure how to fake this
         VWBody(agent_type.cleaning, "A-1", TestAgent(action.clean()),None,None,None)
         VWBody(agent_type.cleaning, "A-1", TestAgent(action.move()),None,None,None)
         VWBody(agent_type.cleaning, "A-1", TestAgent(action.idle()),None,None,None)

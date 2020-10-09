@@ -142,6 +142,7 @@ class ReturnFrame:
     def __exit__(self, *exc):
         self.stop()
 
+#TODO: unused parameter.
     def trace(self, frame, event, arg):
         filename = None
         if frame is not None:
