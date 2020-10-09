@@ -67,7 +67,9 @@ class VWMind(Mind):
         action_sizes = {a[0]:len(a) for a in VWMind.actions}
 
         def validate_action(action):
-            if callable(action):
+            if action is None:
+                return
+            elif callable(action):
                 raise vwutils.VacuumWorldActionError("Action should not be a function, did you forget the ()? - e.g. action.move()")
             elif type(action) != list or len(action) < 1:
                 raise vwutils.VacuumWorldActionError("Invalid action: {}, please use vwc.action".format(action))
@@ -81,12 +83,12 @@ class VWMind(Mind):
         
         if len(actions) > 1:
             speech_action_names = [a[0] for a in VWMind.speech_actions]
-            is_speech = [a[0] in speech_action_names for a in actions]
+            is_speech = [a[0] in speech_action_names for a in actions if a]
             if all(is_speech):
                 raise vwutils.VacuumWorldActionError("An agent can perform at most 1 speech action per cycle (vwc.action.speak)")
             
             physical_action_names = [a[0] for a in VWMind.physical_actions]
-            is_physical =  [a[0] in physical_action_names for a in actions]
+            is_physical =  [a[0] in physical_action_names for a in actions if a]
             if all(is_physical):
                 raise vwutils.VacuumWorldActionError("An agent can perform at most 1 physical action per cycle (vwc.action.clean, move, turn, idle)")
 
@@ -104,6 +106,8 @@ class VWMind(Mind):
 
         if type(actions) == list:
             actions = (actions,)
+
+        actions = [a for a in actions if a is not None]
 
         try:
             self.validate_actions(actions)

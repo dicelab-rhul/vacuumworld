@@ -10,7 +10,8 @@ class MyMind:
         #return 1,2,3
         #return []
         #return ['garbage']
-        return ('speak',)
+        #return ('speak',)
+        return None, action.speak("")
 
         if self.observation.center.dirt is not None:
             return action.clean()
