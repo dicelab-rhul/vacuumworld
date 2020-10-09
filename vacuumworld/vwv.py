@@ -295,7 +295,7 @@ class VWInterface(tk.Frame):
         
         
         #entry box
-        files = saveload.files()
+        files = saveload.get_ordered_list_of_filenames_in_save_directory()
         self.load_menu = AutocompleteEntry(files, 3, self.mid_frame, font=ROOT_FONT)
         self.load_menu.bind('<Button-1>', lambda _: self.deselect())
         self.load_menu.pack(side='top')
@@ -587,7 +587,7 @@ class VWInterface(tk.Frame):
             self.canvas.tag_lower(d)
 
     def drag_on_drop(self, event, drag_manager):
-        #TODO stream line to work with select
+        #TODO: stream line to work with select
 
         inc = GRID_SIZE / self.grid.dim
         x = int(event.x / inc)
@@ -651,10 +651,10 @@ def _difficulty():
 
 def _save(saveloadmenu):
     file = saveloadmenu.var.get()
-    result = saveload.save_dialog(grid, file)
+    result = saveload.save(grid, file)
 
     if result:
-        saveloadmenu.lista = saveload.files()
+        saveloadmenu.lista = saveload.get_ordered_list_of_filenames_in_save_directory()
         print("The current grid was successfully saved.")
     else:
         print("The current grid was not saved.")
@@ -662,7 +662,7 @@ def _save(saveloadmenu):
 
 def _load(saveloadmenu):
     file = saveloadmenu.var.get()
-    data = saveload.load_dialog(file)
+    data = saveload.load(file)
 
     if data:
         main_interface.grid_scale_slider.set_position(data.dim - grid.GRID_MIN_SIZE)
@@ -821,8 +821,8 @@ def run(_minds, skip = False, play = False, speed = 0, load = None, scale = 1):
         if play:
             if load is None:
                 raise ValueError("argument \"load\" must be specified if argument play = True")
-            load = saveload.format_file(load)
-            files = saveload.files()
+            load = saveload.add_vw_extension_to_filename_string_if_missing(load)
+            files = saveload.get_ordered_list_of_filenames_in_save_directory()
             if not load in files:
                 raise ValueError("invalid file name: " + str(load) + " valid files include:" + str(files))
             print("INFO: autoplay enabled")
@@ -839,7 +839,7 @@ def run(_minds, skip = False, play = False, speed = 0, load = None, scale = 1):
         reset = True
         finish = False
 
-        play_event = Event() #TODO remove UNUSED
+        play_event = Event() #TODO: remove UNUSED
 
         #env_thread = Thread(target=simulate, daemon=True)
         #env_thread.start()
@@ -877,9 +877,9 @@ def run(_minds, skip = False, play = False, speed = 0, load = None, scale = 1):
 
 
 """
-# TODO remove --- new simulate fixes time.sleep issue?
+#TODO: remove --- new simulate fixes time.sleep issue?
 
-#TODO, be able to select user mind from gui
+#TODO: be able to select user mind from gui
 
 def simulate():
     try:

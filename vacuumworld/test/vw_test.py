@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys, os
 myPath = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, myPath + '/../')
+sys.path.insert(0, os.path.dirname(myPath))
 
 
 from ..vw import Grid

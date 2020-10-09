@@ -11,14 +11,6 @@ avaliable on the course moodle page.
 
 """
 
-from ..common import author, author_email, license, version
-
-__author__ = author
-__license__ = license
-__version__ = version
-__maintainer__ = author
-__email__ = author_email
-
 import random as rand
 import typing
 from enum import Enum
@@ -64,6 +56,8 @@ class Orientation(Enum):
     
     def __repr__(self):
         return str(self)
+
+orientation = Orientation
     
 class Colour(Enum):
     '''
@@ -92,6 +86,7 @@ class Colour(Enum):
     def __repr__(self):
         return str(self)
 
+colour = Colour
 
 class Coord(typing.NamedTuple):
     '''
@@ -129,6 +124,7 @@ class Coord(typing.NamedTuple):
     def __floordiv__(self, other):
         return self / other
 
+coord = Coord
 class Agent(typing.NamedTuple):
     '''
         A datastructure representing an agent in an observation.
@@ -142,6 +138,8 @@ class Agent(typing.NamedTuple):
     colour : Colour
     orientation : Orientation
 
+agent = Agent
+
 class Dirt(typing.NamedTuple):
     '''
         A datastructure representing a dirt in an observation.
@@ -151,6 +149,8 @@ class Dirt(typing.NamedTuple):
     '''
     name : str 
     colour : Colour
+
+dirt = Dirt
     
 class Location(typing.NamedTuple):
     '''
@@ -164,6 +164,8 @@ class Location(typing.NamedTuple):
     coordinate : Coord
     agent : Agent
     dirt : Dirt
+
+location = Location
 
 #perception = namedtuple('perception', 'observation messages')
 
@@ -180,6 +182,8 @@ class Message(typing.NamedTuple):
     '''
     sender : str
     content : typing.Union[str, list, tuple, float, bool]
+
+message = Message
 
 class Observation(typing.NamedTuple):
     '''
@@ -225,7 +229,8 @@ class Observation(typing.NamedTuple):
     def __iter__(self):
         return (self[i] for i in range(len(self)) if self[i] is not None)
 
-class Direction:
+observation = Observation
+class Direction():
     '''
         An indicator used in the turn action. May also be used to turn orientations.
         
@@ -265,6 +270,8 @@ class Direction:
         '''
         od = (Orientation.north, Orientation.east, Orientation.south, Orientation.west)
         return od[(od.index(_orientation) + 1) % 4]
+
+direction = Direction
 
 
 def size(message):

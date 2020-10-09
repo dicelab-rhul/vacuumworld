@@ -29,13 +29,13 @@ This is the template of an agents mind, in this course we are using a simple arc
 the `decide` and `revise` methods are key in this. For more information and examples check the Guide!
 """
 
-from .common import version, license, author, author_email
+import signal
 
-__author__ = author
-__license__ = license
-__version__ = version
-__maintainer__ = author
-__email__ = author_email
+def ignore_ctrl_z(*_):
+    print("\nCTRL+Z is ignored by VacuumWorld")
+    signal.SIG_IGN
+
+signal.signal(signal.SIGTSTP, ignore_ctrl_z)
 
 from . import vwv
 from . import vwc
@@ -77,6 +77,7 @@ def run(white_mind, green_mind=None, orange_mind=None, **kwargs):
     default_observe = {'grid_size':vwutils.print_observer}
     white_mind, green_mind, orange_mind = vwutils.process_minds(white_mind, green_mind, orange_mind, default_observe)
     
-    vwv.run({vwc.Colour.white:white_mind, 
-             vwc.Colour.green:green_mind, 
-             vwc.Colour.orange:orange_mind}, **kwargs)
+    try:
+        vwv.run({vwc.Colour.white:white_mind, vwc.Colour.green:green_mind, vwc.Colour.orange:orange_mind}, **kwargs)
+    except KeyboardInterrupt:
+        print("\nReceived a keyboard interrupt. Exiting...")

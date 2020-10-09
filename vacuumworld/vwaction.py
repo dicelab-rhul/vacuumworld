@@ -40,7 +40,7 @@ class CleanExecutor(Executor):
         location = env.ambient.grid.state[agent.coordinate]
         if location.dirt and (location.agent.colour == location.dirt.colour or location.agent.colour == vwc.Colour.white):  
             env.ambient.grid.remove_dirt(agent.coordinate)
-            #TODO remove dirt from list of objects in ambient
+            #TODO: remove dirt from list of objects in ambient
 
 class DropExecutor(Executor):
         
@@ -51,7 +51,7 @@ class DropExecutor(Executor):
             env.ambient.grid.place_dirt(agent.coordinate, env.ambient.grid.dirt(action.colour))
             #location = env.ambient.grid.state[agent.coordinate]
            
-            #TODO add new dirt to list of objects in ambient
+            #TODO: add new dirt to list of objects in ambient
         
 class CommunicativeExecutor(Executor):
 
