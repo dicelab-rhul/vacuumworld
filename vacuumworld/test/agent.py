@@ -4,6 +4,9 @@ from vacuumworld.vwc import action, Direction
 class MyMind:
 
     def decide(self):
+        return ("garbage")
+
+
         if self.observation.center.dirt is not None:
             return action.clean()
 
@@ -16,7 +19,7 @@ class MyMind:
         self.observation = observation
         #print(self.observation.forward)
         #raise ValueError("{0} BAR".format("FOO"))
-        action.foo
+        
 
 
 vacuumworld.run(MyMind(), load="abc.vw", play=True)

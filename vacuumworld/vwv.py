@@ -26,7 +26,7 @@ from .vwenvironment import init as init_environment
 from . import vwc
 from . import saveload
 from . import vwuser
-from .vwutils import print_simulation_speed_message
+from .vwutils import print_simulation_speed_message, VacuumWorldActionError
 
 #might need to change this for the real package...
 PATH = os.path.dirname(__file__)
@@ -767,9 +767,10 @@ def _error(*args, **kwargs):
     agent_error = False
     for i, s in enumerate(tb):
         if s.filename.endswith("vwagent.py"): #... maybe some issues?
-            agent_error = i < len(tb) - 1 #may be an error in vwagent.py
+            agent_error = i < len(tb) - 1 #maybe an error in vwagent.py
             break
-
+    
+    agent_error = agent_error or _type == vwutils.VacuumWorldActionError
     i = int(agent_error) * i + int(agent_error)
 
     print("Traceback:\n")
@@ -779,7 +780,6 @@ def _error(*args, **kwargs):
 
 def _finish():
     global root, main_interface
-    print('INFO: EXIT')
     main_interface.running = False # ?? 
     root.destroy()
     
