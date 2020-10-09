@@ -785,9 +785,13 @@ def _scale(scale):
     BUTTON_SIZE = DEFAULT_BUTTON_SIZE * SCALE_MODIFIER
     ROOT_FONT = ('Verdana', int(10 * SCALE_MODIFIER), '')
 
-def run(_minds, skip = False, play = False, speed = 0, load = None, scale = 1):
-    assert(speed >= 0 and speed <= 1)
-    assert scale > 0
+def run(_minds, skip : bool = False, play : bool = False , speed : float = 0 , load : str = None , scale : float = 1):
+    if speed < 0 or speed > 1:
+        raise ValueError("Invalid simulation speed argument {0} must be in the range [0-1]".format(speed))
+    if scale < 0:
+        raise ValueError("Invalid scale argument {0} must be > 0.".format(scale))
+    skip = skip or play #always skip if play is set
+
 
     global root
     tk.Tk.report_callback_exception = _error

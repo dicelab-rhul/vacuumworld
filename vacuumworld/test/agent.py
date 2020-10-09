@@ -14,9 +14,8 @@ class MyMind:
         
     def revise(self, observation, messages):
         self.observation = observation
-
-        print(self.observation.forward)
-
+        #print(self.observation.forward)
 
 
-vacuumworld.run(MyMind(), skip=True)
+
+vacuumworld.run(MyMind(), load="abc.vw", play=True)
