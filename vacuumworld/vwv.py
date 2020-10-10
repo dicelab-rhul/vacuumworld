@@ -27,6 +27,8 @@ from . import vwc
 from . import saveload
 from . import vwuser
 from .vwutils import print_simulation_speed_message, VacuumWorldActionError
+from .vwtooltips import create_tooltip
+
 
 #might need to change this for the real package...
 PATH = os.path.dirname(__file__)
@@ -67,9 +69,8 @@ INITIAL_ENVIRONMENT_DIM = 8
 def get_location_img_files(path):
     return [file for file in os.listdir(path) if file.endswith(".png")]
 
-class VWButton:
-
-    def __init__(self, root, img, fun, text = None):
+class VWButton():
+    def __init__(self, root, img, fun, text=None, tip=None):
         self.img = ImageTk.PhotoImage(img)
         self.fun = fun
         self._button = tk.Button(root, text = text, bd=0, font = ROOT_FONT, fg='white',
@@ -77,6 +78,10 @@ class VWButton:
                                  activeforeground='white', highlightcolor='white', compound = 'center',
                                  command = fun)
         self._button.config(image=self.img)
+        self.tip = tip
+
+        if self.tip:
+            create_tooltip(widget=self._button, text=self.tip)
 
     def pack(self, side):
         self._button.pack(side=side)
@@ -89,11 +94,10 @@ class VWButton:
         self.img.destroy()
 
 class VWDifficultyButton(VWButton):
-
-    def __init__(self, root, img, fun):
+    def __init__(self, root, img, fun, tip):
         self.imgs = [ImageTk.PhotoImage(img)]
         self.imgs.extend([VWDifficultyButton.next_image(img, i * (255/(DIFFICULTY_LEVELS-1))) for i in range(1, DIFFICULTY_LEVELS)])
-        super(VWDifficultyButton, self).__init__(root, img, self.onclick)
+        super(VWDifficultyButton, self).__init__(root, img, self.onclick, tip=tip)
         self.difficulty = 0
         self._rfun = fun
 
@@ -114,7 +118,6 @@ class VWDifficultyButton(VWButton):
 
 
 class VWMainMenu(tk.Frame):
-
     def __init__(self, root, _start, _exit):
         super(VWMainMenu,self).__init__(root)
         self.configure(background='white')
@@ -136,8 +139,8 @@ class VWMainMenu(tk.Frame):
 
         button_image = Image.open(BUTTON_PATH + 'button.png')
         button_image = button_image.resize((int(button_image.width * SCALE_MODIFIER), int(button_image.height * SCALE_MODIFIER)), Image.BICUBIC)
-        self.buttons['start'] = VWButton(self.button_frame, button_image, _start, 'start')
-        self.buttons['exit'] = VWButton(self.button_frame, button_image, _exit, 'exit')
+        self.buttons['start'] = VWButton(self.button_frame, button_image, _start, 'start', tip="Click here to set-up the simulation.")
+        self.buttons['exit'] = VWButton(self.button_frame, button_image, _exit, 'exit', tip="Click here to exit VacuumWorld.")
         
         self.buttons['start'].pack('left')
         self.buttons['exit'].pack('left')
@@ -149,8 +152,7 @@ class VWMainMenu(tk.Frame):
         root.eval('tk::PlaceWindow %s center' % root.winfo_pathname(root.winfo_id()))
 
 
-class CanvasDragManager:
-
+class CanvasDragManager():
     def __init__(self, key, grid, canvas, item, on_start, on_drop):
         self.x = 0
         self.y = 0
@@ -201,7 +203,6 @@ class CanvasDragManager:
 
 
 class VWInterface(tk.Frame):
-
     def __init__(self, parent, grid):
         super(VWInterface, self).__init__(parent)
         self.parent = parent
@@ -269,16 +270,16 @@ class VWInterface(tk.Frame):
         self.slider_frame = tk.Frame(self.left_frame, bg=bg)
         self.control_buttons_frame = tk.Frame(self.left_frame, bg=bg)
         
-        self.buttons['play'] = VWButton(self.control_buttons_frame, play_img , _play)
-        self.buttons['resume'] = VWButton(self.control_buttons_frame, play_img, _resume)
-        self.buttons['pause'] = VWButton(self.control_buttons_frame, VWInterface._scale(Image.open(BUTTON_PATH + buttons['pause']), BUTTON_SIZE), _pause)
-        self.buttons['stop'] = VWButton(self.control_buttons_frame, VWInterface._scale(Image.open(BUTTON_PATH + buttons['stop']), BUTTON_SIZE), _stop)
-        self.buttons['fast'] = VWButton(self.control_buttons_frame, VWInterface._scale(Image.open(BUTTON_PATH + buttons['fast']), BUTTON_SIZE), _fast)
-        self.buttons['reset'] = VWButton(self.control_buttons_frame, VWInterface._scale(Image.open(BUTTON_PATH + buttons['reset']), BUTTON_SIZE), _reset)
+        self.buttons['play'] = VWButton(self.control_buttons_frame, play_img , _play, tip="Click here to start the simulation.")
+        self.buttons['resume'] = VWButton(self.control_buttons_frame, play_img, _resume, tip="Click here to resume the simulation.")
+        self.buttons['pause'] = VWButton(self.control_buttons_frame, VWInterface._scale(Image.open(BUTTON_PATH + buttons['pause']), BUTTON_SIZE), _pause, tip="Click here to pause the simulation.")
+        self.buttons['stop'] = VWButton(self.control_buttons_frame, VWInterface._scale(Image.open(BUTTON_PATH + buttons['stop']), BUTTON_SIZE), _stop, tip="Click here to stop the simulation.")
+        self.buttons['fast'] = VWButton(self.control_buttons_frame, VWInterface._scale(Image.open(BUTTON_PATH + buttons['fast']), BUTTON_SIZE), _fast, tip= "Click here to fast-forward the simulation.")
+        self.buttons['reset'] = VWButton(self.control_buttons_frame, VWInterface._scale(Image.open(BUTTON_PATH + buttons['reset']), BUTTON_SIZE), _reset, tip="Click here to reset the grid.")
 
         
         dif_img = VWInterface._scale(Image.open(BUTTON_PATH + buttons['difficulty']), BUTTON_SIZE)
-        self.buttons['difficulty'] = VWDifficultyButton(self.control_buttons_frame, dif_img, _difficulty)
+        self.buttons['difficulty'] = VWDifficultyButton(self.control_buttons_frame, dif_img, _difficulty, tip="Click here to toggle the user difficulty level.")
         
         self.pack_buttons('play', 'reset', 'fast', 'difficulty', forget=False)
         
@@ -295,8 +296,8 @@ class VWInterface(tk.Frame):
         self.saveload_frame = tk.Frame(self.mid_frame, bg=bg)
     
         #buttons
-        self.buttons['save'] = VWButton(self.saveload_frame, VWInterface._scale(Image.open(BUTTON_PATH + buttons['save']), BUTTON_SIZE), lambda: _save(self.load_menu))
-        self.buttons['load'] = VWButton(self.saveload_frame, VWInterface._scale(Image.open(BUTTON_PATH + buttons['load']), BUTTON_SIZE), lambda: _load(self.load_menu))
+        self.buttons['save'] = VWButton(self.saveload_frame, VWInterface._scale(Image.open(BUTTON_PATH + buttons['save']), BUTTON_SIZE), lambda: _save(self.load_menu), tip="Click here to save the current state.")
+        self.buttons['load'] = VWButton(self.saveload_frame, VWInterface._scale(Image.open(BUTTON_PATH + buttons['load']), BUTTON_SIZE), lambda: _load(self.load_menu), tip="Click here to load a savestate.")
         
         
         #entry box
