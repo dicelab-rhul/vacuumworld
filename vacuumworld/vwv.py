@@ -15,6 +15,7 @@ import inspect
 
 from collections import OrderedDict as odict
 from PIL import Image, ImageTk
+from webbrowser import open_new_tab
 
 
 #from Slider import Slider
@@ -116,6 +117,9 @@ class VWDifficultyButton(VWButton):
         self._button.config(image=self.img)
         self._rfun() #update the global variable .... TODO: change this
 
+class VWGithubButton(VWButton):
+    def __init__(self, root, img, fun, text=None):
+        super().__init__(root, img, fun, text=text, tip="Click here to open the project's GitHub page and Wiki.")
 
 class VWMainMenu(tk.Frame):
     def __init__(self, root, _start, _exit):
@@ -141,8 +145,10 @@ class VWMainMenu(tk.Frame):
         button_image = button_image.resize((int(button_image.width * SCALE_MODIFIER), int(button_image.height * SCALE_MODIFIER)), Image.BICUBIC)
         self.buttons['start'] = VWButton(self.button_frame, button_image, _start, 'start', tip="Click here to set-up the simulation.")
         self.buttons['exit'] = VWButton(self.button_frame, button_image, _exit, 'exit', tip="Click here to exit VacuumWorld.")
+        self.buttons["github"] = VWGithubButton(self.button_frame, button_image, _open_github_page, text="guide")
         
         self.buttons['start'].pack('left')
+        self.buttons["github"].pack("left")
         self.buttons['exit'].pack('left')
         self.button_frame.pack()
 
@@ -276,12 +282,12 @@ class VWInterface(tk.Frame):
         self.buttons['stop'] = VWButton(self.control_buttons_frame, VWInterface._scale(Image.open(BUTTON_PATH + buttons['stop']), BUTTON_SIZE), _stop, tip="Click here to stop the simulation.")
         self.buttons['fast'] = VWButton(self.control_buttons_frame, VWInterface._scale(Image.open(BUTTON_PATH + buttons['fast']), BUTTON_SIZE), _fast, tip= "Click here to fast-forward the simulation.")
         self.buttons['reset'] = VWButton(self.control_buttons_frame, VWInterface._scale(Image.open(BUTTON_PATH + buttons['reset']), BUTTON_SIZE), _reset, tip="Click here to reset the grid.")
-
+        self.buttons["github"] = VWGithubButton(self.control_buttons_frame, VWInterface._scale(Image.open(BUTTON_PATH + buttons["guide"]), BUTTON_SIZE), _open_github_page)
         
         dif_img = VWInterface._scale(Image.open(BUTTON_PATH + buttons['difficulty']), BUTTON_SIZE)
         self.buttons['difficulty'] = VWDifficultyButton(self.control_buttons_frame, dif_img, _difficulty, tip="Click here to toggle the user difficulty level.")
         
-        self.pack_buttons('play', 'reset', 'fast', 'difficulty', forget=False)
+        self.pack_buttons('play', 'reset', 'fast', 'difficulty', "github", forget=False)
         
         #init the slider
         self._init_size_slider(self.slider_frame, bg)
@@ -654,6 +660,8 @@ def _difficulty():
     global user_mind
     user_mind = main_interface.user_mind()
 
+def _open_github_page():
+    open_new_tab(url="https://github.com/dicelab-rhul/vacuumworld")
 
 def _save(saveloadmenu):
     file = saveloadmenu.var.get()
