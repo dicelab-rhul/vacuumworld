@@ -308,7 +308,7 @@ class VWInterface(tk.Frame):
         
         #entry box
         files = saveload.get_ordered_list_of_filenames_in_save_directory()
-        self.load_menu = AutocompleteEntry(files, 3, self.mid_frame, font=ROOT_FONT)
+        self.load_menu = AutocompleteEntry(files, 3, self.mid_frame, font=ROOT_FONT, bg="#cccccc", fg="#000000")
         self.load_menu.bind('<Button-1>', lambda _: self.deselect())
         self.load_menu.pack(side='top')
     
