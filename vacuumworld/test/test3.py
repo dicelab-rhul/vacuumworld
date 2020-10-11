@@ -10,7 +10,9 @@ import inspect
 import traceback
 
 
-#TODO: check the dead code and the dead variables.
+from ..vwutils import ignore
+
+
 
 class TraceFrames():
     
@@ -46,6 +48,8 @@ class TraceFrames():
             return self.__trace__
     
     def __record__(self, frame, event, arg):
+        ignore(arg)
+
         co = frame.f_code
         func_name = co.co_name
         line_no = frame.f_lineno
@@ -71,6 +75,8 @@ class TraceFrames():
             traceback.print_exc()
     
     def __exit__(self, *args):
+        ignore(args)
+
         sys.settrace(None)
         self.frames = self.frames[1:-1]
         self.calls = self.calls[:-1]
@@ -142,6 +148,8 @@ class Trace():
             traceback.print_exc()
     
     def __exit__(self, *args):
+        ignore(args)
+
         sys.settrace(None)
         self.frames = self.frames[1:-1]
         self.calls = self.calls[:-1]
@@ -154,12 +162,13 @@ class Trace():
         return f
 
         
-def c(*args):
+def test_c(*args):
+    ignore(args)
     return None
 
-def b(arg):
+def test_b(arg):
     val = arg * 5
-    return c(val)
+    return test_c(val)
     #print( 'Leaving b()')
 
 def decide():
@@ -167,7 +176,7 @@ def decide():
     test = lambda x: x + 1
     test(1)
     
-    return b(2)
+    return test_b(2)
     #print( 'Leaving a()')
     
 TRACE_INTO = ['b']
@@ -178,7 +187,7 @@ def cycle():
     trace = Trace()
 
     with trace:
-        a = decide()
+        _ = decide()
 
     for frame in trace.frames: #ignore None the __exit__ frame
         print(frame, inspect.getsourcelines(frame))

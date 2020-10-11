@@ -3,60 +3,43 @@
 
 import vacuumworld
 
-from sys import exit
-from vacuumworld.vwc import action, direction
+from vacuumworld.vwc import action, Direction
 
 
 class DefaultMind():
     def __init__(self):
         super().__init__()
         self.grid_size = -1
+        self.stop = False
 
     def revise(self, observation, messages):
-        print(observation)
-        print(messages)
+        self.observation = observation
+        self.messages = messages
+
+        print(self.observation)
+        print(self.messages)
 
     def decide(self):
-        return action.speak("Hello, I cannot predict my colour."), action.turn(direction.left)
+        if not self.stop:
+            return action.speak("Hello, I cannot predict my colour."), action.turn(Direction.left)
 
 
-class WhiteMind():
-    def __init__(self):
-        super().__init__()
-        self.grid_size = -1
-
-    def revise(self, observation, messages):
-        print(observation)
-        print(messages)
-
+class WhiteMind(DefaultMind):
     def decide(self):
-        return action.speak("Hello, I am a white agent"), action.turn(direction.right)
+        if not self.stop:
+            return action.speak("Hello, I am a white agent"), action.turn(Direction.right)
 
 
-class GreenMind():
-    def __init__(self):
-        super().__init__()
-        self.grid_size = -1
-
-    def revise(self, observation, messages):
-        print(observation)
-        print(messages)
-
+class GreenMind(DefaultMind):
     def decide(self):
-        return action.speak("Hello, I am a green agent"), action.turn(direction.right)
+        if not self.stop:
+            return action.speak("Hello, I am a green agent"), action.turn(Direction.right)
 
 
-class OrangeMind():
-    def __init__(self):
-        super().__init__()
-        self.grid_size = -1
-
-    def revise(self, observation, messages):
-        print(observation)
-        print(messages)
-
+class OrangeMind(DefaultMind):
     def decide(self):
-        return action.speak("Hello, I am an orange agent"), action.turn(direction.right)
+        if not self.stop:
+            return action.speak("Hello, I am an orange agent"), action.turn(Direction.right)
 
 state_file_name = "treble.vw"
 
