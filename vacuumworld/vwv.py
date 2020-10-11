@@ -27,9 +27,16 @@ from .vwenvironment import init as init_environment
 from . import vwc
 from . import saveload
 from . import vwuser
-from .vwutils import print_simulation_speed_message, VacuumWorldActionError
+from .vwutils import ignore, print_simulation_speed_message, VacuumWorldActionError
 from .vwtooltips import create_tooltip
 
+
+# Global variables. TODO: change this.
+root = None
+main_menu = None
+main_interface = None
+grid = None
+minds = None
 
 #might need to change this for the real package...
 PATH = os.path.dirname(__file__)
@@ -120,6 +127,8 @@ class VWDifficultyButton(VWButton):
 class VWGithubButton(VWButton):
     def __init__(self, root, img, fun, text=None):
         super().__init__(root, img, fun, text=text, tip="Click here to open the project's GitHub page and Wiki.")
+
+        self.name = "guide"
 
 class VWMainMenu(tk.Frame):
     def __init__(self, root, _start, _exit):
@@ -290,7 +299,7 @@ class VWInterface(tk.Frame):
         self.pack_buttons('play', 'reset', 'fast', 'difficulty', "github", forget=False)
         
         #init the slider
-        self._init_size_slider(self.slider_frame, bg)
+        self._init_size_slider(self.slider_frame)
         
         self.slider_frame.grid(row=0, column=0)#.pack(side='top')
         self.control_buttons_frame.grid(row=1, column=0, sticky=tk.W)#.pack(side='bottom')
@@ -341,11 +350,7 @@ class VWInterface(tk.Frame):
 
         return buttons
     
-    #TODO: can `bg` be removed?
-    def _init_size_slider(self, parent, bg, length=200):
-        #f = tk.Frame(parent, bg=bg)
-        #t = tk.Label(f, text=" size ", bg=bg, font = ROOT_FONT)
-        #t.pack(side='left')
+    def _init_size_slider(self, parent, length=200):
         increments = Grid.GRID_MAX_SIZE - Grid.GRID_MIN_SIZE
         self.grid_scale_slider = Slider(parent, self.on_resize, self.on_resize_slide, None, length * SCALE_MODIFIER, 16 * SCALE_MODIFIER,
                                         slider_width = length * SCALE_MODIFIER / (increments * 3),
@@ -417,9 +422,7 @@ class VWInterface(tk.Frame):
         self.canvas.delete(old)
         del old
 
-    #TODO: can `event` be removed?
-    def rotate_agent(self, event, direction):
-        #print('left', event)
+    def rotate_agent(self, _, direction):
         if self.selected and self.selected.agent:
             print(self.selected)
             self.remove_agent(self.selected.coordinate)
@@ -569,9 +572,8 @@ class VWInterface(tk.Frame):
             
     def on_resize_slide(self, value):
         self.size_text.set(str(value + Grid.GRID_MIN_SIZE))
-    
-    #TODO: can we remove `event`?
-    def on_leave_canvas(self, event):
+
+    def on_leave_canvas(self, _):
         self.coordinate_text.set('(-,-)')
     
     def on_mouse_move(self, event):
@@ -768,15 +770,22 @@ def _pause():
     main_interface.pack_buttons('stop', 'resume','fast')
     main_interface.running = False
 
+#TODO: orphan "private" method.
 def _back():
     print('INFO: back')
     main_interface.pack_forget()
     main_menu.pack()
 
 def _error(*args, **kwargs):
+    ignore(args)
+    ignore(kwargs)
+    
     _type, value, tb = sys.exc_info()
     tb =  traceback.extract_tb(tb)
     agent_error = False
+
+    i = 0 # As a fallback.
+
     for i, s in enumerate(tb):
         #print(s.filename, WHITE_MIND_FILENAME)
         if s.filename in (WHITE_MIND_FILENAME, GREEN_MIND_FILENAME, ORANGE_MIND_FILENAME):
@@ -841,9 +850,6 @@ def run(_minds, skip : bool = False, play : bool = False , speed : float = 0 , l
         
         minds = _minds
 
-
-
-
         global user_mind
         user_mind = 0
 
@@ -888,6 +894,8 @@ def run(_minds, skip : bool = False, play : bool = False , speed : float = 0 , l
             _play()
 
         def signal_handler(sig, frame):
+            ignore(sig)
+            ignore(frame)
             print()
             _finish()
             #sys.exit(0)

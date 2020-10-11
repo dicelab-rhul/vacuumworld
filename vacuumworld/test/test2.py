@@ -7,9 +7,9 @@ author: Benedict Wilkins
 """
 import sys
 import inspect
+from vacuumworld.vwutils import ignore
 
 class Trace:
-    
     def __init__(self):
         self.ignore_write = 0
         self._write = 'write'
@@ -32,8 +32,9 @@ class Trace:
         if event == self._call:
             return self.__trace__
     
-    #TODO: arg is never used. Is this a bug?
     def __print__(self, frame, event, arg):
+        ignore(arg)
+
         co = frame.f_code
         func_name = co.co_name
         line_no = frame.f_lineno
@@ -50,23 +51,26 @@ class Trace:
         sys.settrace(self.__trace__)
     
     def __exit__(self, *args):
+        ignore(self)
+        ignore(args)
+
         sys.settrace(None)
         
         
-def c(*args):
+def test_c(*args):
     print( 'input =', *args)
     #print( 'Leaving c()')
 
-def b(arg):
+def test_b(arg):
     val = arg * 5
-    c(val)
+    test_c(val)
     #print( 'Leaving b()')
 
-def a():
-    b(2)
+def test_a():
+    test_b(2)
     #print( 'Leaving a()')
     
 TRACE_INTO = ['b']
 with Trace():
-   a() 
+   test_a() 
  

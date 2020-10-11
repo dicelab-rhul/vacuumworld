@@ -10,7 +10,6 @@ import re
 from .vwutils import ignore
 
 class AutocompleteEntry(tk.Entry):
-    
     def __init__(self, lista, height, *args, **kwargs):
         tk.Entry.__init__(self, *args, **kwargs)
         self.dropdown_parent = args[0]
@@ -41,24 +40,27 @@ class AutocompleteEntry(tk.Entry):
                 self.lb.destroy()
             self.lb_up = False
         else:
-            words = self.comparison()
-            if words:            
-                if not self.lb_up:
-                    self.lb = tk.Listbox(self.dropdown_parent, font=self.font, height=self.height)
+            self.check_words()
                     
-                    self.lb.bind("<Double-Button-1>", self.selection)
-                    #print(self.winfo_x(), self.winfo_y()+self.winfo_height())
-                    self.lb.place(x=self.winfo_x(), y=self.winfo_y()+self.winfo_height())
-                    #self.lb.place(x=381, y=300)
-                    self.lb_up = True
+    def check_words(self):
+        words = self.comparison()
+        if words:            
+            if not self.lb_up:
+                self.lb = tk.Listbox(self.dropdown_parent, font=self.font, height=self.height)
                 
-                self.lb.delete(0, tk.END)
-                for w in words:
-                    self.lb.insert(tk.END,w)
-            else:
-                if self.lb_up:
-                    self.lb.destroy()
-                    self.lb_up = False
+                self.lb.bind("<Double-Button-1>", self.selection)
+                #print(self.winfo_x(), self.winfo_y()+self.winfo_height())
+                self.lb.place(x=self.winfo_x(), y=self.winfo_y()+self.winfo_height())
+                #self.lb.place(x=381, y=300)
+                self.lb_up = True
+            
+            self.lb.delete(0, tk.END)
+            for w in words:
+                self.lb.insert(tk.END,w)
+        else:
+            if self.lb_up:
+                self.lb.destroy()
+                self.lb_up = False
         
     def selection(self, event):
         ignore(event)
@@ -82,7 +84,6 @@ class AutocompleteEntry(tk.Entry):
                 index = str(int(index)-1)                
                 self.lb.selection_set(first=index)
                 self.lb.activate(index) 
-
 
     def down(self, event):
         ignore(event)
@@ -109,6 +110,7 @@ class AutocompleteEntry(tk.Entry):
         #print("compare")
         pattern = re.compile('.*' + self.var.get() + '.*')
         return [w for w in self.lista if re.match(pattern, w)]
+
 
 if __name__ == '__main__':
     root = tk.Tk()

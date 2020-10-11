@@ -39,9 +39,12 @@ class TestMind():
         return TestMind.PATTERNS[self.pattern_number]
 
     def revise(self, observation, messages):
-        print(observation)
-        print(messages)
+        self.observation = observation
+        self.messages = messages
+
+        print(self.observation)
+        print(self.messages)
 
 for i in range(len(TestMind.PATTERNS)):
     print("\n########## Test #{} ##########\n".format(i))
-    vacuumworld.run(TestMind(i), load="twins.vw", play=True)
+    vacuumworld.run(default_mind=TestMind(i), load="twins.vw", play=True)
