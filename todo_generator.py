@@ -40,7 +40,7 @@ def look_for_todos(path):
         line_number = i + 1
 
         if TODO_PATTERN in lines[i]:
-            to_add.append(prefix + "{}: {}".format(line_number, lines[i].strip()))
+            to_add.append(prefix + "{}: `{}`".format(line_number, lines[i].strip()))
 
     return to_add
 
