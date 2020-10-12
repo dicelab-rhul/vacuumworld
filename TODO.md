@@ -1,3 +1,5 @@
+# List of TODOs
+
 File /home/cloudstrife9999/vw4/vacuumworld/vacuumworld/vwutils.py - line 34: return None # TODO: this is a hack to prevent a crash when VW is closed.
 File /home/cloudstrife9999/vw4/vacuumworld/vacuumworld/vwutils.py - line 145: #TODO: unused parameter.
 File /home/cloudstrife9999/vw4/vacuumworld/vacuumworld/vwv.py - line 34: # Global variables. TODO: change this.

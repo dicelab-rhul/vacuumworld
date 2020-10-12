@@ -5,8 +5,9 @@ import os
 
 INTERESTING_FILES_EXTENSIONS = [".py"]
 EXCLUSION_LIST = [os.path.basename(__file__)]
-TODO_FILE = "TODO.txt"
+TODO_FILE = "TODO.md"
 TODO_PATTERN = "TODO"
+TODO_HEADER = "# List of TODOs"
 
 
 def main():
@@ -19,6 +20,8 @@ def main():
 
     
     with open(TODO_FILE, "w") as f:
+        f.write(TODO_HEADER + "\n\n")
+
         for l in lines:
             f.write(l + "\n")
 
