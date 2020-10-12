@@ -30,7 +30,7 @@ def main():
 
 def look_for_todos(path):
     to_add =  []
-    prefix = "File {} - line ".format(path)
+    prefix = "* File {} - line ".format(path)
     lines = []
 
     with open(path, "r") as f:
