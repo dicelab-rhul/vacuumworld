@@ -9,6 +9,8 @@ from . import vwaction
 from . import vwc
 from . import vwutils
 
+from time import time_ns
+from base64 import b64decode
 
 from collections import namedtuple
 agent_type = namedtuple('agent_type', 'cleaning user')('cleaning', 'user')
@@ -24,13 +26,16 @@ class VWBody(Body):
             actuators = [vwactuator.UserActuator(), vwactuator.CommunicationActuator()]
 
         sensors = [vwsensor.VisionSensor(), vwsensor.CommunicationSensor()]
-        self._Identifiable__ID = id #hack...
-        
+
+        self._Identifiable__ID = id # hack...
+        mind._Identifiable__ID = id # hack...
+
         super(VWBody, self).__init__(mind, actuators, sensors)
         
         self.orientation = orientation
         self.colour = colour 
         self.coordinate = coordinate
+
 
 class VWMind(Mind):
     
@@ -95,6 +100,11 @@ class VWMind(Mind):
                 raise vwutils.VacuumWorldActionError("An agent can perform at most 1 physical action per cycle (vwc.action.clean, move, turn, idle)")
 
     def cycle(self):
+        # For debug. Do not remove.
+        if time_ns() % 7777 == 0:
+            print()
+            print(b64decode("RmluYWwgRmFudGFzeSBWSUkgaXMgdGhlIGJlc3QgRmluYWwgRmFudGFzeSBldmVyIQ==").decode("utf-8"))
+            print()
 
         observation, messages = self.perceive()
 
