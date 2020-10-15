@@ -338,18 +338,18 @@ class VWInterface(tk.Frame):
         _size_frame = tk.Frame(self.info_frame, bg=bg)
         self.size_text = tk.StringVar()
         self.size_text.set(str(INITIAL_ENVIRONMENT_DIM))
-        self.size_label = tk.Label(_size_frame, textvariable=self.size_text, width=2, font=ROOT_FONT, bg=bg)
+        self.size_label = tk.Label(_size_frame, textvariable=self.size_text, width=2, font=ROOT_FONT, bg=bg, fg="#000000")
         self.size_label.grid(row=0, column=1, sticky=tk.E)
         
         _size = tk.StringVar()
         _size.set("size:")
-        _size_label =  tk.Label(_size_frame, textvariable=_size, font=ROOT_FONT, bg=bg)
+        _size_label =  tk.Label(_size_frame, textvariable=_size, font=ROOT_FONT, bg=bg, fg="#000000")
         _size_label.grid(row=0, column=0, sticky=tk.W)
         _size_frame.grid(row=0, column=0, stick=tk.W)
         
         self.coordinate_text = tk.StringVar()
         self.coordinate_text.set("(-,-)")
-        self.coordinate_label = tk.Label(self.info_frame, textvariable=self.coordinate_text, font=ROOT_FONT, bg=bg)
+        self.coordinate_label = tk.Label(self.info_frame, textvariable=self.coordinate_text, font=ROOT_FONT, bg=bg, fg="#000000")
         self.coordinate_label.grid(row=1, column=0, sticky=tk.W)
 
         self.info_frame.pack(side='left', expand=True)
