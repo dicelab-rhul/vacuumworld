@@ -167,7 +167,7 @@ class VWMainMenu(tk.Frame):
         h = root.winfo_reqheight()
         sw = root.winfo_screenwidth()
         sh = root.winfo_screenheight()
-        x = (sw / 2) - w
+        x = (sw / 2) - w - w/4 + w/26
         y = (sh / 2) - h - h/2
         root.x = x
         root.y = y
@@ -822,7 +822,7 @@ def _start():
     h = root.winfo_reqheight()
     sw = root.winfo_screenwidth()
     sh = root.winfo_screenheight()
-    x = (sw / 2) - w/2
+    x = (sw / 2) - w/2 - w/12 + w/50
     y = (sh / 2) - h/2 - h/6
     root.x = x
     root.y = y
