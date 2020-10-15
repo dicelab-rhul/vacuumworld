@@ -748,7 +748,7 @@ def _stop():
     reset = True
     reset_time_step()
     main_interface.running = False
-    main_interface.pack_buttons('play', 'reset', 'fast', 'difficulty', 'save', 'load')
+    main_interface.pack_buttons("play", "reset", "fast", "difficulty", "github", "save", "load")
     main_interface.show_hide_side('normal')
 
 def _resume():
@@ -767,7 +767,7 @@ def _resume():
 def _pause():
     print('INFO: pause')
     reset_time_step()
-    main_interface.pack_buttons('stop', 'resume','fast')
+    main_interface.pack_buttons("stop", "resume", "fast", "github")
     main_interface.running = False
 
 #TODO: orphan "private" method.
