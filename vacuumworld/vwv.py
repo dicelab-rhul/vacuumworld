@@ -900,7 +900,8 @@ def run(_minds, skip : bool = False, play : bool = False , speed : float = 0 , l
             _finish()
             #sys.exit(0)
 
-        signal.signal(signal.SIGINT, signal_handler)
+        if hasattr(signal, "SIGINT"):
+            signal.signal(signal.SIGINT, signal_handler)
 
         root.mainloop()
         

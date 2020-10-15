@@ -3,7 +3,6 @@
 
 
 import signal
-import os
 
 
 """
@@ -41,7 +40,7 @@ def ignore_ctrl_z(*_):
     signal.SIG_IGN
 
 
-if os.name != "nt": #TODO: is this the best way to check for any OS which is incompatible with signal.SIGTSTP?
+if hasattr(signal, "SIGTSTP") and hasattr(signal, "SIGINT"): # To exclude Windows which does not have SIGTSTP
     signal.signal(signal.SIGTSTP, ignore_ctrl_z)
 
 
