@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
+
+import signal
+import os
+
+
 """
 Welcome to Vacuum World! Before you start, we suggest reading the Vacuum World 
 Guide available on the course moodle page. It will give you all the information you need 
@@ -29,13 +35,14 @@ This is the template of an agents mind, in this course we are using a simple arc
 the `decide` and `revise` methods are key in this. For more information and examples check the Guide!
 """
 
-import signal
 
 def ignore_ctrl_z(*_):
     print("\nCTRL+Z is ignored by VacuumWorld, use CTRL+C.")
     signal.SIG_IGN
 
-signal.signal(signal.SIGTSTP, ignore_ctrl_z)
+
+if os.name != "nt": #TODO: is this the best way to check for any OS which is incompatible with signal.SIGTSTP?
+    signal.signal(signal.SIGTSTP, ignore_ctrl_z)
 
 
 
