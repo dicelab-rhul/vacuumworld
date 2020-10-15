@@ -163,8 +163,15 @@ class VWMainMenu(tk.Frame):
 
         self.pack()
 
-        #We need to use eval() because tk::PlaceWindow is not exposed.
-        root.eval('tk::PlaceWindow %s center' % root.winfo_pathname(root.winfo_id()))
+        w = root.winfo_reqwidth()
+        h = root.winfo_reqheight()
+        sw = root.winfo_screenwidth()
+        sh = root.winfo_screenheight()
+        x = (sw / 2) - w
+        y = (sh / 2) - h - h/2
+        root.x = x
+        root.y = y
+        root.geometry("+%d+%d" % (x, y))
 
 
 class CanvasDragManager():
@@ -806,8 +813,20 @@ def _finish():
     root.destroy()
     
 def _start():
+    global root, main_interface, main_menu
+
     main_menu.pack_forget()
     main_interface.pack()
+
+    w = root.winfo_reqwidth()
+    h = root.winfo_reqheight()
+    sw = root.winfo_screenwidth()
+    sh = root.winfo_screenheight()
+    x = (sw / 2) - w/2
+    y = (sh / 2) - h/2 - h/6
+    root.x = x
+    root.y = y
+    root.geometry("+%d+%d" % (x, y))
 
 def _in_bounds(x,y):
     return x < GRID_SIZE and x > 0 and y < GRID_SIZE and y > 0
