@@ -201,21 +201,20 @@ class CanvasDragManager():
             self.y = event.y
 
     def on_drag(self, event):
-
         inc = GRID_SIZE / self.grid.dim
         x = int(event.x / inc) * inc + (inc / 2) + 1
         y = int(event.y / inc) * inc + (inc / 2) + 1
 
-        if x != self.x or y != self.y:
-            if x <= GRID_SIZE:
-                self.canvas.itemconfigure(self.drag, state='normal')
-            else:
-                self.canvas.itemconfigure(self.drag, state='hidden')
-            dx = x - self.x
-            dy = y - self.y
-            self.canvas.move(self.drag, dx, dy)
-            self.x = x
-            self.y = y
+        if event.x < 0 or event.y < 0:
+            self.canvas.itemconfigure(self.drag, state='hidden')
+        elif x <= GRID_SIZE and y <= GRID_SIZE:
+            self.canvas.itemconfigure(self.drag, state='normal')
+        
+        dx = x - self.x
+        dy = y - self.y
+        self.canvas.move(self.drag, dx, dy)
+        self.x = x
+        self.y = y
 
 
     def on_drop(self, event):
