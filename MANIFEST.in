@@ -1,11 +1,16 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Created on Sun Jun  2 21:49:14 2019
 
 @author: ben
 """
 
+# Include the relevant images
 include vacuumworld/res/*.png
 include vacuumworld/res/locations/agent/*.png
 include vacuumworld/res/locations/dirt/*.png
+
+# Include the README
+include *.md
+
+# Include the license file
+include LICENSE

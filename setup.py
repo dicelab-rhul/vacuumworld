@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Created on Sun Jun  2 21:22:31 2019
 
@@ -20,11 +18,15 @@ authors_short : list = ["ben", "nausheen", "cloudstrife9999"]
 author_email: str = "brjw@hotmail.co.uk"
 license: str = "GNU3"
 classifiers: list = [
-        "Programming Language :: Python :: 3.7",
-        "Development Status :: 2 - Pre-Alpha",
-        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-        "Operating System :: OS Independent",
-      ]
+      "Programming Language :: Python :: 3",
+      "Programming Language :: Python :: 3.7",
+      "Programming Language :: Python :: 3.8",
+      "Programming Language :: Python :: 3.9",
+      "Programming Language :: Python :: 3 :: Only",
+      "Development Status :: 5 - Production/Stable",
+      "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+      "Operating System :: OS Independent",
+]
 url: str = "https://github.com/dicelab-rhul/vacuumworld"
 wiki: str = url + "/wiki"
 dependencies: list = ["pystarworlds>=0.0.3", "pillow", "wheel", "ipython"]
