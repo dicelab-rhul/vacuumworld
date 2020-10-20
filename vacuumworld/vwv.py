@@ -134,19 +134,14 @@ class VWMainMenu(tk.Frame):
     def __init__(self, root, _start, _exit):
         super(VWMainMenu,self).__init__(root)
         self.configure(background='white')
-        self.canvas = tk.Canvas(self, width = GRID_SIZE + 1,
-                                height = GRID_SIZE + 1,
-                                bd=0,
-                                highlightthickness=0)
-        #self.canvas.create_rectangle(0,0,481,481,fill="blue") # placeholder for image
+        self.canvas = tk.Canvas(self, width = GRID_SIZE + 1, height = GRID_SIZE + 1, bd=0, highlightthickness=0)
 
 
         self.img_tk = ImageTk.PhotoImage(Image.open(MAIN_MENU_IMAGE_PATH).resize((int(GRID_SIZE), int(GRID_SIZE)), Image.BICUBIC))
         self.image = self.canvas.create_image(GRID_SIZE/2,GRID_SIZE/2,image=self.img_tk)
         
         self.button_frame = tk.Frame(self)
-        
-        #self.canvas.create_window(WIDTH/2, HEIGHT-100, window =  self.button_frame)
+
         self.canvas.pack()
         self.buttons = {}
 
@@ -185,7 +180,6 @@ class CanvasDragManager():
         self.canvas.tag_bind(item, "<ButtonPress-1>", self.on_start)
         self.canvas.tag_bind(item, "<B1-Motion>", self.on_drag)
         self.canvas.tag_bind(item, "<ButtonRelease-1>", self.on_drop)
-        #self.canvas.configure(cursor="hand1")
 
         self.key = key
         self.drag_image = None
@@ -210,12 +204,13 @@ class CanvasDragManager():
         elif x <= GRID_SIZE and y <= GRID_SIZE:
             self.canvas.itemconfigure(self.drag, state='normal')
         
-        dx = x - self.x
-        dy = y - self.y
-        self.canvas.move(self.drag, dx, dy)
-        self.x = x
-        self.y = y
-
+        # To prevent unnecessary re-renderings.
+        if x != self.x or y != self.y:
+            dx = x - self.x
+            dy = y - self.y
+            self.canvas.move(self.drag, dx, dy)
+            self.x = x
+            self.y = y
 
     def on_drop(self, event):
         if _in_bounds(event.x, event.y):
@@ -228,12 +223,7 @@ class VWInterface(tk.Frame):
         super(VWInterface, self).__init__(parent)
         self.parent = parent
         self.configure(background=BACKGROUND_COLOUR_SIDE)
-        self.canvas = tk.Canvas(self, width=GRID_SIZE+LOCATION_SIZE+4,
-                                height=GRID_SIZE + 1,
-                                bd=0,
-                                highlightthickness=0)
-        #self.canvas.create_rectangle(0,0,481,481,fill="blue") # placeholder for grid
-        #self.drag = self.canvas.create_rectangle(230,230,10,10, fill='yellow')
+        self.canvas = tk.Canvas(self, width=GRID_SIZE+LOCATION_SIZE+4, height=GRID_SIZE+1, bd=0,highlightthickness=0)
 
         self._init_buttons()
 
@@ -319,7 +309,6 @@ class VWInterface(tk.Frame):
         #buttons
         self.buttons['save'] = VWButton(self.saveload_frame, VWInterface._scale(Image.open(BUTTON_PATH + buttons['save']), BUTTON_SIZE), lambda: _save(self.load_menu), tip="Click here to save the current state.")
         self.buttons['load'] = VWButton(self.saveload_frame, VWInterface._scale(Image.open(BUTTON_PATH + buttons['load']), BUTTON_SIZE), lambda: _load(self.load_menu), tip="Click here to load a savestate.")
-        
         
         #entry box
         files = saveload.get_ordered_list_of_filenames_in_save_directory()
@@ -733,7 +722,6 @@ def _reset():
     
 def _play():
     print('INFO: play')
-    #play_event.set()
     main_interface.pack_buttons('stop', 'pause', 'fast')
     main_interface.show_hide_side('hidden')
     main_interface.deselect()
@@ -760,8 +748,6 @@ def _stop():
 def _resume():
     print('INFO: resume')
     main_interface.pack_buttons('stop', 'pause','fast')
-    
-    #root.after(int(TIME_STEP*1000), simulate)
     
     global after_hook
     main_interface.running = True
@@ -793,7 +779,6 @@ def _error(*args, **kwargs):
     i = 0 # As a fallback.
 
     for i, s in enumerate(tb):
-        #print(s.filename, WHITE_MIND_FILENAME)
         if s.filename in (WHITE_MIND_FILENAME, GREEN_MIND_FILENAME, ORANGE_MIND_FILENAME):
             agent_error = True
             break
@@ -843,7 +828,7 @@ def run(_minds, skip : bool = False, play : bool = False , speed : float = 0 , l
         raise ValueError("Invalid simulation speed argument {0} must be in the range [0-1]".format(speed))
     if scale < 0:
         raise ValueError("Invalid scale argument {0} must be > 0.".format(scale))
-    skip = skip or play #always skip if play is set
+    skip = skip or play # always skip if play is set
 
 
     global WHITE_MIND_FILENAME, ORANGE_MIND_FILENAME, GREEN_MIND_FILENAME

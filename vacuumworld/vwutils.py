@@ -74,6 +74,7 @@ def observe(mind, observers):
             if c_id is not  None:
                 observers[name](c_id, name, value)
         super(type(mind), self).__setattr__(name, value)
+    #TODO: __setattr__ is not is not torn down correctly after running with an observer. See `Issue #10` on GitHub.
     type(mind).__setattr__ = sneaky_setattr
     return mind
 
@@ -117,7 +118,7 @@ def ignore(obj):
         f.flush()
 
 
-# SOME MEGA HACKY STUFF... not sure if we want to use it 
+# TODO: SOME MEGA HACKY STUFF... not sure if we want to use it 
 
 import inspect
 import sys
@@ -139,11 +140,11 @@ class ReturnFrame:
         self.start()
         return self
 
-    def __exit__(self, *exc):
+    def __exit__(self, *_):
         self.stop()
 
-#TODO: unused parameter.
-    def trace(self, frame, event, arg):
+
+    def trace(self, frame, event, _):
         filename = None
         if frame is not None:
             filename = inspect.getsourcefile(frame)
