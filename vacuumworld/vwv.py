@@ -60,8 +60,13 @@ DEFAULT_LOCATION_SIZE = 60
 DEFAULT_GRID_SIZE = 480
 DEFAULT_BUTTON_SIZE = 50
 
-SCALE_MODIFIER = 1 * (get_monitors()[0].height / 1080) #TODO: make sure that VW is running on the first screen, if there are multiple screens.
-X_SCALE_MODIFIER = 1 * (get_monitors()[0].width/ 1920) #TODO: make sure that VW is running on the first screen, if there are multiple screens.
+Y_SCALE_MODIFIER = get_monitors()[0].height / 1080 #TODO: make sure that VW is running on the first screen, if there are multiple screens.
+X_SCALE_MODIFIER = get_monitors()[0].width / 1920 #TODO: make sure that VW is running on the first screen, if there are multiple screens.
+
+if get_monitors()[0].height <= get_monitors()[0].width:
+    SCALE_MODIFIER = Y_SCALE_MODIFIER
+else:
+    SCALE_MODIFIER = X_SCALE_MODIFIER
 
 GRID_SIZE = DEFAULT_GRID_SIZE * SCALE_MODIFIER
 LOCATION_SIZE = DEFAULT_LOCATION_SIZE * SCALE_MODIFIER
