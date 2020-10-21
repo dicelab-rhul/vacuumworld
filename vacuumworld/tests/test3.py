@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Sun Nov  3 14:19:31 2019
@@ -31,7 +30,6 @@ class TraceFrames():
     def __trace__(self, frame, event, arg):
         func_name = frame.f_code.co_name
         if event == self._line:
-            #print('line', func_name)
             return self.__trace__
 
         if event == self._call and func_name == self._write:
@@ -56,14 +54,12 @@ class TraceFrames():
         filename = co.co_filename
 
         if event == self._call:
-            #print('Call to %s on line %s of %s' % (func_name, line_no, filename))
             if self.frames[-1] != frame:
                 self.frames.append(frame)
             self.calls.append((func_name, line_no, filename))    
             
             return self.__trace__
         elif event == self._return:
-            #print('Return %s on line %s' % (func_name, line_no))
             self.returns.append((func_name, line_no, filename))
     
     def __enter__(self):
@@ -129,14 +125,12 @@ class Trace():
         filename = co.co_filename
 
         if event == self._call:
-            #print('Call to %s on line %s of %s' % (func_name, line_no, filename))
             if self.frames[-1] != frame:
                 self.frames.append(frame)
             self.calls.append((func_name, line_no, filename, arg))    
             
             return self.__trace__
         elif event == self._return:
-            #print('Return %s on line %s' % (func_name, line_no))
             self.returns.append((func_name, line_no, filename, arg))
     
     def __enter__(self):
@@ -169,7 +163,6 @@ def test_c(*args):
 def test_b(arg):
     val = arg * 5
     return test_c(val)
-    #print( 'Leaving b()')
 
 def decide():
 
@@ -177,7 +170,6 @@ def decide():
     test(1)
     
     return test_b(2)
-    #print( 'Leaving a()')
     
 TRACE_INTO = ['b']
 
@@ -198,20 +190,5 @@ def cycle():
     for ret in trace.returns:
         print(ret)
 
-'''
-class ActionError(Exception):
-    # All who inherit me shall not traceback, but be spoken of cleanly
-    pass
-
-def quiet_hook(kind, message, traceback):
-    print("hook")
-    if ActionError in kind.__bases__:
-        print('{0}: {1}'.format(kind.__name__, message))  # Only print Error Type and Message
-    else:
-        pass
-        sys.__excepthook__(kind, message, traceback)  # Print Error Type, Message and Traceback
-
-sys.excepthook = quiet_hook #doesnt ork for ipython...
-'''
 
 cycle()

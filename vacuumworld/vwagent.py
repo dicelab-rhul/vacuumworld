@@ -15,8 +15,8 @@ from base64 import b64decode
 from collections import namedtuple
 agent_type = namedtuple('agent_type', 'cleaning user')('cleaning', 'user')
 
+
 class VWBody(Body):
-    
     def __init__(self, _type, id, mind, orientation, coordinate, colour):
         mind = vwagent.VWMind(mind)
         assert _type in agent_type
@@ -38,7 +38,6 @@ class VWBody(Body):
 
 
 class VWMind(Mind):
-    
     MAX_NUMBER_OF_ACTIONS_PER_CYCLE = 2
     speech_actions   = [vwc.action.speak("")]
     physical_actions = [vwc.action.idle(), vwc.action.move(), vwc.action.clean(), vwc.action.drop(vwc.colour.green), vwc.action.turn(vwc.direction.left)]
@@ -142,6 +141,6 @@ class VWMind(Mind):
         if len(actuators) < 1:
             raise vwutils.VacuumWorldActionError("No actuator found for action: {}".format(action))
         elif len(actuators) > 1:
-            raise vwutils.VacuumWorldActionError("Too many actuators found for action: {}".format(action))
+            raise vwutils.VacuumWorldActionError("Too many actuators (total = {}) found for action: {}".format(len(actuators), action))
         
         actuators[0].attempt(_a)

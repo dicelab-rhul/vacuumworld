@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 CREDIT: http://code.activestate.com/recipes/578253-an-entry-with-autocompletion-for-the-tkinter-gui/
@@ -7,7 +6,7 @@ CREDIT: http://code.activestate.com/recipes/578253-an-entry-with-autocompletion-
 import tkinter as tk
 import re
 
-from .vwutils import ignore
+
 
 class AutocompleteEntry(tk.Entry):
     def __init__(self, lista, height, *args, **kwargs):
@@ -20,7 +19,6 @@ class AutocompleteEntry(tk.Entry):
             self.var = self["textvariable"] = tk.StringVar()
         self.var.trace('w', self.changed)
         self.height = int(height)
-        #self.bind("<Key>", self.changed)
         self.bind("<Right>", self.selection)
         self.bind("<Return>", self.selection)
         self.bind("<Up>", self.up)
@@ -28,13 +26,7 @@ class AutocompleteEntry(tk.Entry):
         self.lb = None
         self.lb_up = False
 
-    def changed(self, *args):
-        ignore(args)
-
-        #print(args)
-        #name, index, mode = args
-        #print("changed", name, index, mode, self.var.get())
-
+    def changed(self, *_):
         if self.var.get() == '':
             if self.lb:
                 self.lb.destroy()
@@ -49,9 +41,7 @@ class AutocompleteEntry(tk.Entry):
                 self.lb = tk.Listbox(self.dropdown_parent, font=self.font, height=self.height)
                 
                 self.lb.bind("<Double-Button-1>", self.selection)
-                #print(self.winfo_x(), self.winfo_y()+self.winfo_height())
                 self.lb.place(x=self.winfo_x(), y=self.winfo_y()+self.winfo_height())
-                #self.lb.place(x=381, y=300)
                 self.lb_up = True
             
             self.lb.delete(0, tk.END)
@@ -62,21 +52,15 @@ class AutocompleteEntry(tk.Entry):
                 self.lb.destroy()
                 self.lb_up = False
         
-    def selection(self, event):
-        ignore(event)
-
-        #print(event)
+    def selection(self, _):
         if self.lb_up:
             self.var.set(self.lb.get(tk.ACTIVE))
             self.lb.destroy()
             self.lb_up = False
             self.icursor(tk.END)
 
-    def up(self, event):
-        ignore(event)
-
+    def up(self, _):
         if self.lb_up and not self.lb.curselection() == ():
-            #print('up', self.lb.curselection())
             index = self.lb.curselection()[0]
             if index >= 0:
                 self.lb.yview_scroll(-1, "units")
@@ -85,11 +69,8 @@ class AutocompleteEntry(tk.Entry):
                 self.lb.selection_set(first=index)
                 self.lb.activate(index) 
 
-    def down(self, event):
-        ignore(event)
-
+    def down(self, _):
         if self.lb_up:
-            #print('down', self.lb.curselection(), len(self.lista))
             if self.lb.curselection() == ():
                 self.lb.selection_set(first=0)
                 self.lb.activate(0) 
@@ -107,7 +88,6 @@ class AutocompleteEntry(tk.Entry):
                 self.lb.activate(index) 
                 
     def comparison(self):
-        #print("compare")
         pattern = re.compile('.*' + self.var.get() + '.*')
         return [w for w in self.lista if re.match(pattern, w)]
 

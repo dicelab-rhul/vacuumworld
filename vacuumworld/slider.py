@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Sat Jun  1 20:05:16 2019
@@ -31,7 +30,7 @@ class Slider(tk.Canvas):
             
 
         self.background_item = self.create_rectangle(0,0, width-1, height-1, fill='white')
-        self.slider_item = self.create_rectangle(self.x, 0, self.x + self.slide_item_dim, height, fill='black') #self.create_image(img, 0, 0)
+        self.slider_item = self.create_rectangle(self.x, 0, self.x + self.slide_item_dim, height, fill='black')
         self.bind("<ButtonPress-1>", self.on_start)
         self.bind("<B1-Motion>", self.on_drag)
         self.bind("<ButtonRelease-1>", self.on_drop)

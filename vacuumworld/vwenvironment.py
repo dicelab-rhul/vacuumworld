@@ -13,9 +13,9 @@ import copy
 def init(grid, minds, user_mind):
     minds[vwc.Colour.user] = vwuser.USERS[user_mind]()
     return GridEnvironment(GridAmbient(grid, minds))
-    
+
+
 class GridAmbient(Ambient):
-    
     def __init__(self, grid, minds):
         self.grid = grid
         self.mind_types = set(type(mind) for mind in minds)
@@ -43,7 +43,6 @@ class GridPhysics(Physics):
     pass
 
 class GridEnvironment(Environment):
-    
     def __init__(self, ambient):
         
         actions = [action.DropAction, action.MoveAction,
@@ -56,20 +55,18 @@ class GridEnvironment(Environment):
         
 
 class Dirt(Identifiable):
-    
     def __init__(self, dirt):        
         super(Dirt, self).__init__()
         self._Identifiable__ID = dirt.name #hack...
         self.dirt = dirt
 
 class ObservationProcess(Process):
-    
     orientation_map = {vwc.Orientation.north:(0,-1),
                        vwc.Orientation.east:(1,0),
                        vwc.Orientation.south:(0,1),
                        vwc.Orientation.west:(-1,0)}
 
-    def __call__(self, env):
+    def __call__(_, env):
         for agent in env.ambient.agents.values():
             env.physics.notify_agent(agent, ObservationProcess.get_perception(env.ambient.grid, agent))
         return []

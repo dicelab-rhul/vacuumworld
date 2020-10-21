@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Created on Fri May 31 20:12:24 2019
 
@@ -18,8 +16,6 @@ from PIL import Image, ImageTk
 from webbrowser import open_new_tab
 
 
-#from Slider import Slider
-#from vw import Environment
 from .slider import Slider
 from .autocomplete import AutocompleteEntry
 from .vw import Grid
@@ -29,6 +25,8 @@ from . import saveload
 from . import vwuser
 from .vwutils import ignore, print_simulation_speed_message, VacuumWorldActionError
 from .vwtooltips import create_tooltip
+from .vwc import Orientation
+
 
 
 # Global variables. TODO: change this.
@@ -352,7 +350,6 @@ class VWInterface(tk.Frame):
                                         increments=increments,
                                         start=(GRID_SIZE/LOCATION_SIZE) - Grid.GRID_MIN_SIZE)
         self.grid_scale_slider.pack(side='top')
-        #f.pack(side='bottom')
         
     def _init_dragables(self):
         #load all images
@@ -366,8 +363,7 @@ class VWInterface(tk.Frame):
 
         ix = GRID_SIZE + LOCATION_SIZE / 2 + 2
         iy = LOCATION_SIZE / 2 + 4
-        
-        #print(self.all_images)
+
         for i, key in enumerate(keys):
             item = self.canvas.create_image(ix, iy + i * LOCATION_SIZE, image=self.all_images_tk[key])
             drag_manager = CanvasDragManager(key, self.grid, self.canvas, item, self.drag_on_start, self.drag_on_drop)
@@ -477,7 +473,6 @@ class VWInterface(tk.Frame):
         for coord, location in grid.state.items():
             if location:
                 if location.agent:
-                    #print("AGENT:", coord, location)
                     tk_img = self.all_images_tk_scaled[(location.agent.colour.value, location.agent.orientation.value)]
                     item = self.canvas.create_image(coord.x * inc + inc/2,
                                                     coord.y * inc + inc/2, image=tk_img)
@@ -486,12 +481,10 @@ class VWInterface(tk.Frame):
                     if coord in self.canvas_dirts: #keep the dirt behind the agent
                         self.canvas.tag_lower(self.canvas_dirts[coord])
                 if location.dirt:
-                    #print("DDDIRT:",  coord, location)
                     tk_img = self.all_images_tk_scaled[(location.dirt.colour.value, 'dirt')]
                     item = self.canvas.create_image(coord.x * inc + inc/2, coord.y * inc + inc/2, image=tk_img)
                     self.canvas_dirts[coord] = item
                     self.canvas.tag_lower(item) #keep dirt behind agents and grid lines
-        #self._lines_to_front()
 
     def _draw_grid(self, env_dim, size):
         x = 0
@@ -539,15 +532,13 @@ class VWInterface(tk.Frame):
 
     @staticmethod
     def _construct_images(img, name):
-        #change this from magic strings... (use vwc orientation)
-        return odict({name + 'north':img,
-                      name + 'west':img.copy().rotate(90),
-                      name + 'south':img.copy().rotate(180),
-                      name + 'east':img.copy().rotate(270)})
+        return odict({name + Orientation.north:img,
+                      name + Orientation.west:img.copy().rotate(90),
+                      name + Orientation.south:img.copy().rotate(180),
+                      name + Orientation.east:img.copy().rotate(270)})
 
     def _scaled_tk(self):
         size = min(LOCATION_SIZE, GRID_SIZE  / self.grid.dim)
-        #print("SIZE: ", size)
         for name, image in self.all_images.items():
             self.all_images_tk_scaled[name] = ImageTk.PhotoImage(VWInterface._scale(image, size))
 
@@ -581,7 +572,7 @@ class VWInterface(tk.Frame):
     def drag_on_start(self, event):
         drag_manager, img_key = self.dragables[event.widget.find_closest(event.x, event.y)[0]]
 
-        drag_manager.drag_image = self.all_images_tk_scaled[img_key]#ImageTk.PhotoImage(self._scale(image, size))
+        drag_manager.drag_image = self.all_images_tk_scaled[img_key]
 
         drag_manager.drag = self.canvas.create_image(event.x, event.y, image=drag_manager.drag_image)
 
@@ -646,6 +637,7 @@ def _fast():
 
     print_simulation_speed_message(time_step=TIME_STEP)
 
+
 def reset_time_step():
     global TIME_STEP, TIME_STEP_BASE, TIME_STEP_MODIFIER
     TIME_STEP_MODIFIER = 1.
@@ -653,12 +645,15 @@ def reset_time_step():
 
     print_simulation_speed_message(time_step=TIME_STEP)
 
+
 def _difficulty():
     global user_mind
     user_mind = main_interface.user_mind()
 
+
 def _open_github_page():
     open_new_tab(url="https://github.com/dicelab-rhul/vacuumworld")
+
 
 def _save(saveloadmenu):
     file = saveloadmenu.var.get()
@@ -682,7 +677,8 @@ def _load(saveloadmenu):
         print("The saved grid was successfully loaded.")
     else:
         print("The state was not loaded.")
-            
+
+
 #resets the grid and enviroment
 def _reset():
     print('INFO: reset')
@@ -691,6 +687,7 @@ def _reset():
     reset_time_step()
     global env
     env = None
+
 
 def simulate():
     try: 
@@ -719,7 +716,8 @@ def _reset():
     reset_time_step()
     global env
     env = None
-    
+
+
 def _play():
     print('INFO: play')
     main_interface.pack_buttons('stop', 'pause', 'fast')
@@ -735,7 +733,8 @@ def _play():
         root.after_cancel(after_hook)
     time = int(TIME_STEP*1000)
     after_hook = root.after(time, simulate)
-    
+
+
 def _stop():
     print('INFO: stop')
     global reset
@@ -744,6 +743,7 @@ def _stop():
     main_interface.running = False
     main_interface.pack_buttons("play", "reset", "fast", "difficulty", "github", "save", "load")
     main_interface.show_hide_side('normal')
+
 
 def _resume():
     print('INFO: resume')
@@ -756,17 +756,13 @@ def _resume():
     time = int(TIME_STEP*1000)
     after_hook = root.after(time, simulate)
 
+
 def _pause():
     print('INFO: pause')
     reset_time_step()
     main_interface.pack_buttons("stop", "resume", "fast", "github")
     main_interface.running = False
 
-#TODO: orphan "private" method.
-def _back():
-    print('INFO: back')
-    main_interface.pack_forget()
-    main_menu.pack()
 
 def _error(*args, **kwargs):
     ignore(args)
@@ -791,11 +787,13 @@ def _error(*args, **kwargs):
     print("Exception:\n")
     print('  '  + '  '.join(traceback.format_exception_only(_type, value)))
 
+
 def _finish():
     global root, main_interface
     main_interface.running = False # ?? 
     root.destroy()
-    
+
+
 def _start():
     global root, main_interface, main_menu
 
@@ -812,8 +810,10 @@ def _start():
     root.y = y
     root.geometry("+%d+%d" % (x, y))
 
+
 def _in_bounds(x,y):
     return x < GRID_SIZE and x > 0 and y < GRID_SIZE and y > 0
+
 
 def _scale(scale):
     global SCALE_MODIFIER, GRID_SIZE, LOCATION_SIZE, BUTTON_SIZE, ROOT_FONT
@@ -822,6 +822,7 @@ def _scale(scale):
     LOCATION_SIZE = DEFAULT_LOCATION_SIZE * SCALE_MODIFIER
     BUTTON_SIZE = DEFAULT_BUTTON_SIZE * SCALE_MODIFIER
     ROOT_FONT = ('Verdana', int(10 * SCALE_MODIFIER), '')
+
 
 def run(_minds, skip : bool = False, play : bool = False , speed : float = 0 , load : str = None , scale : float = 1):
     if speed < 0 or speed > 1:
@@ -901,7 +902,6 @@ def run(_minds, skip : bool = False, play : bool = False , speed : float = 0 , l
             ignore(frame)
             print()
             _finish()
-            #sys.exit(0)
 
         if hasattr(signal, "SIGINT"):
             signal.signal(signal.SIGINT, signal_handler)

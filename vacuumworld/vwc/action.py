@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 '''
 Actions may be attempted by agents at each cycle. An agent can attempt actions by returning them in the ``decide`` method.
