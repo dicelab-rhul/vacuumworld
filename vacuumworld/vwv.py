@@ -14,6 +14,7 @@ import inspect
 from collections import OrderedDict as odict
 from PIL import Image, ImageTk
 from webbrowser import open_new_tab
+from screeninfo import get_monitors
 
 
 from .slider import Slider
@@ -59,7 +60,8 @@ DEFAULT_LOCATION_SIZE = 60
 DEFAULT_GRID_SIZE = 480
 DEFAULT_BUTTON_SIZE = 50
 
-SCALE_MODIFIER = 1
+SCALE_MODIFIER = 1 * (get_monitors()[0].height / 1080) #TODO: make sure that VW is running on the first screen, if there are multiple screens.
+X_SCALE_MODIFIER = 1 * (get_monitors()[0].width/ 1920) #TODO: make sure that VW is running on the first screen, if there are multiple screens.
 
 GRID_SIZE = DEFAULT_GRID_SIZE * SCALE_MODIFIER
 LOCATION_SIZE = DEFAULT_LOCATION_SIZE * SCALE_MODIFIER
@@ -134,7 +136,6 @@ class VWMainMenu(tk.Frame):
         self.configure(background='white')
         self.canvas = tk.Canvas(self, width = GRID_SIZE + 1, height = GRID_SIZE + 1, bd=0, highlightthickness=0)
 
-
         self.img_tk = ImageTk.PhotoImage(Image.open(MAIN_MENU_IMAGE_PATH).resize((int(GRID_SIZE), int(GRID_SIZE)), Image.BICUBIC))
         self.image = self.canvas.create_image(GRID_SIZE/2,GRID_SIZE/2,image=self.img_tk)
         
@@ -156,10 +157,13 @@ class VWMainMenu(tk.Frame):
 
         self.pack()
 
-        w = root.winfo_reqwidth()
-        h = root.winfo_reqheight()
+        w = root.winfo_reqwidth() * X_SCALE_MODIFIER
+        h = root.winfo_reqheight() * SCALE_MODIFIER
         sw = root.winfo_screenwidth()
         sh = root.winfo_screenheight()
+        
+        print(sw, sh, w, h)
+
         x = (sw / 2) - w - w/4 + w/26
         y = (sh / 2) - h - h/2
         root.x = x
@@ -817,14 +821,19 @@ def _in_bounds(x,y):
 
 def _scale(scale):
     global SCALE_MODIFIER, GRID_SIZE, LOCATION_SIZE, BUTTON_SIZE, ROOT_FONT
-    SCALE_MODIFIER = scale
+    
+    if scale:
+        SCALE_MODIFIER = scale
+    
     GRID_SIZE = DEFAULT_GRID_SIZE * SCALE_MODIFIER
+
+
     LOCATION_SIZE = DEFAULT_LOCATION_SIZE * SCALE_MODIFIER
     BUTTON_SIZE = DEFAULT_BUTTON_SIZE * SCALE_MODIFIER
     ROOT_FONT = ('Verdana', int(10 * SCALE_MODIFIER), '')
 
 
-def run(_minds, skip : bool = False, play : bool = False , speed : float = 0 , load : str = None , scale : float = 1):
+def run(_minds, skip : bool = False, play : bool = False , speed : float = 0 , load : str = None , scale : float = 0):
     if speed < 0 or speed > 1:
         raise ValueError("Invalid simulation speed argument {0} must be in the range [0-1]".format(speed))
     if scale < 0:
