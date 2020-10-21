@@ -532,10 +532,10 @@ class VWInterface(tk.Frame):
 
     @staticmethod
     def _construct_images(img, name):
-        return odict({name + Orientation.north:img,
-                      name + Orientation.west:img.copy().rotate(90),
-                      name + Orientation.south:img.copy().rotate(180),
-                      name + Orientation.east:img.copy().rotate(270)})
+        return odict({name + str(Orientation.north):img,
+                      name + str(Orientation.west):img.copy().rotate(90),
+                      name + str(Orientation.south):img.copy().rotate(180),
+                      name + str(Orientation.east):img.copy().rotate(270)})
 
     def _scaled_tk(self):
         size = min(LOCATION_SIZE, GRID_SIZE  / self.grid.dim)
