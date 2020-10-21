@@ -64,8 +64,6 @@ def observe(mind, observers):
     for obs in observers:
         if not obs in set(dir(mind)):
             print("WARNING: agent attribute: {0} not defined.".format(obs))
-            #raise vw.VacuumWorldInternalError("WARNING: {0} agent: must define 
-            # \ the attribute: {1}, (see coursework question 1)".format(colour, obs)) 
     def sneaky_setattr(self, name, value):
         if name in observers:
             c_id = caller_id()
@@ -73,7 +71,6 @@ def observe(mind, observers):
             if c_id is not  None:
                 observers[name](c_id, name, value)
         super(type(mind), self).__setattr__(name, value)
-    #TODO: __setattr__ is not is not torn down correctly after running with an observer. See Issue #10 on GitHub.
     type(mind).__setattr__ = sneaky_setattr
     return mind
 
