@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Sun Jul 28 12:00:27 2019
@@ -15,10 +14,13 @@ class User():
         self.observation = None
         self.id = None
 
-    def decide(self):
+    def decide(_):
         raise NotImplementedError("Abstract class.")
 
-    def revise(self, observation, messages):
+    def revise(_, observation, messages):
+        ignore(observation)
+        ignore(messages)
+
         raise NotImplementedError("Abstract class.")
 
     def is_wall_ahead(self):

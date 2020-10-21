@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Sun Nov  3 14:19:31 2019
@@ -59,16 +58,13 @@ class Trace:
         
 def test_c(*args):
     print( 'input =', *args)
-    #print( 'Leaving c()')
 
 def test_b(arg):
     val = arg * 5
     test_c(val)
-    #print( 'Leaving b()')
 
 def test_a():
     test_b(2)
-    #print( 'Leaving a()')
     
 TRACE_INTO = ['b']
 with Trace():

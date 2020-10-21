@@ -12,9 +12,9 @@ orientation_map = {vwc.Orientation.north:(0,-1),
                    vwc.Orientation.south:(0,1),
                    vwc.Orientation.west:(-1,0)}
 
+
 class MoveExecutor(Executor):
-    
-    def __call__(self, env, action):
+    def __call__(_, env, action):
         agent = env.ambient.agents[action.source]
         
         new_coordinate = agent.coordinate + orientation_map[agent.orientation]
@@ -23,18 +23,18 @@ class MoveExecutor(Executor):
         if new_location and not new_location.agent:
             env.ambient.grid.move_agent(agent.coordinate, new_coordinate)
             agent.coordinate = new_coordinate
-        
-class TurnExecutor(Executor):
-         
-    def __call__(self, env, action):
+
+
+class TurnExecutor(Executor): 
+    def __call__(_, env, action):
         agent = env.ambient.agents[action.source]
         new_orientation = action.direction(agent.orientation)
         env.ambient.grid.turn_agent(agent.coordinate, new_orientation)
         agent.orientation = new_orientation
 
+
 class CleanExecutor(Executor):
-        
-    def __call__(self, env, action):
+    def __call__(_, env, action):
         agent = env.ambient.agents[action.source]
         #precondition
         location = env.ambient.grid.state[agent.coordinate]
@@ -42,37 +42,40 @@ class CleanExecutor(Executor):
             env.ambient.grid.remove_dirt(agent.coordinate)
             #TODO: remove dirt from list of objects in ambient
 
+
 class DropExecutor(Executor):
-        
-    def __call__(self, env, action):
+    def __call__(_, env, action):
         agent = env.ambient.agents[action.source]
         #precondition
         if not env.ambient.grid.state[agent.coordinate].dirt: 
             env.ambient.grid.place_dirt(agent.coordinate, env.ambient.grid.dirt(action.colour))
-            #location = env.ambient.grid.state[agent.coordinate]
            
             #TODO: add new dirt to list of objects in ambient
-        
-class CommunicativeExecutor(Executor):
 
-    def __call__(self, env, action):
+
+class CommunicativeExecutor(Executor):
+    def __call__(_, env, action):
         notify = action.to
         if len(notify) == 0: #send to everyone! do we want this?
             notify = set(env.ambient.agents.keys()) - set([action.source])
         for to in notify:
             env.physics.notify_agent(env.ambient.agents[to], vwc.Message(action.source, action.content))
-            
+
+
 ###################### actions ###################### 
             
 class VWPhysicalAction(Action):
      def __init__(self):
          super(VWPhysicalAction, self).__init__()
-    
+
+
 class MoveAction(VWPhysicalAction):
     executor = MoveExecutor
-             
+
+
 class CleanAction(VWPhysicalAction):
     executor = CleanExecutor
+
 
 class DropAction(VWPhysicalAction):
     executor = DropExecutor
@@ -81,12 +84,14 @@ class DropAction(VWPhysicalAction):
         super(DropAction, self).__init__()
         assert colour in [vwc.Colour.orange, vwc.Colour.green]
         self.colour = colour
-        
+
+
 class TurnAction(VWPhysicalAction):
     executor = TurnExecutor
     def __init__(self, direction):
         super(TurnAction, self).__init__()
         self.direction = direction
+
 
 class CommunicativeAction(Action):
     executor = CommunicativeExecutor
@@ -96,39 +101,38 @@ class CommunicativeAction(Action):
         self.content = content
         self.to = to
 
+
 ###################### create actions from label ###################### 
 
 class ActionFactory():
-    
-    def __init__(self):
+    def __init__(_):
         # Useless
         pass
     
-    def __call__(self):
+    def __call__(_):
         # Useless
         pass
-    
+
+
 class DropActionFactory(ActionFactory):
-    
     def __init__(self):
         super(DropActionFactory, self).__init__()
         
-    def __call__(self, _colour):
+    def __call__(_, _colour):
         return DropAction(_colour)
     
 class TurnActionFactory(ActionFactory):
-    
     def __init__(self):
         super(TurnActionFactory, self).__init__()
         
-    def __call__(self, _direction):
+    def __call__(_, _direction):
         if not _direction in [vwc.Direction.left, vwc.Direction.right]:
             print([vwc.Direction.left, vwc.Direction.right])
             raise VacuumWorldActionError("{0} is not a valid direction for a turn action.\nValid directions are vwc.direction.left or vwc.direction.right".format(str(_direction)))
         return TurnAction(_direction)
-    
+
+
 class SpeakActionFactory(ActionFactory):
-    
     LIMIT = 100
     
     def __init__(self):
@@ -170,6 +174,7 @@ class SpeakActionFactory(ActionFactory):
             _size = vwc.size(message)
         return message, _size
 
+#TODO: why is this never accessed locally?
 _action_factories = {vwc.action.move()[0]:lambda: MoveAction(), 
                      vwc.action.clean()[0]:lambda: CleanAction(), 
                      vwc.action.idle()[0]:lambda: None,

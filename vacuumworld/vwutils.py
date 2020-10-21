@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Wed Sep 25 10:29:55 2019
@@ -74,7 +73,7 @@ def observe(mind, observers):
             if c_id is not  None:
                 observers[name](c_id, name, value)
         super(type(mind), self).__setattr__(name, value)
-    #TODO: __setattr__ is not is not torn down correctly after running with an observer. See `Issue #10` on GitHub.
+    #TODO: __setattr__ is not is not torn down correctly after running with an observer. See Issue #10 on GitHub.
     type(mind).__setattr__ = sneaky_setattr
     return mind
 
