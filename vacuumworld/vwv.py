@@ -591,9 +591,17 @@ class VWInterface(tk.Frame):
 
         #keep the currently selected draggable on the top
         for a in self.canvas_agents.values():
-            self.canvas.tag_lower(a)
+            try:
+                self.canvas.tag_lower(a)
+            except Exception:
+                # If the draggable is not a valid argument for tag_lower, we ignore the error.
+                pass
         for d in self.canvas_dirts.values():
-            self.canvas.tag_lower(d)
+            try:
+                self.canvas.tag_lower(d)
+            except Exception:
+                # If the draggable is not a valid argument for tag_lower, we ignore the error.
+                pass
 
     def drag_on_drop(self, event, drag_manager):
         #TODO: stream line to work with select
