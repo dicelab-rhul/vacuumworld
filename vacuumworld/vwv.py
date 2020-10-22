@@ -79,6 +79,9 @@ BACKGROUND_COLOUR_GRID = 'white'
 DIFFICULTY_LEVELS = len(vwuser.USERS)
 INITIAL_ENVIRONMENT_DIM = 8
 
+ENABLE_TOOLTIPS = True
+
+
 def get_location_img_files(path):
     return [file for file in os.listdir(path) if file.endswith(".png")]
 
@@ -93,7 +96,7 @@ class VWButton():
         self._button.config(image=self.img)
         self.tip = tip
 
-        if self.tip:
+        if self.tip and ENABLE_TOOLTIPS:
             create_tooltip(widget=self._button, text=self.tip)
 
     def pack(self, side):
@@ -835,13 +838,15 @@ def _scale(scale):
     ROOT_FONT = ('Verdana', int(10 * SCALE_MODIFIER), '')
 
 
-def run(_minds, skip : bool = False, play : bool = False , speed : float = 0 , load : str = None , scale : float = 0):
+def run(_minds, skip : bool = False, play : bool = False , speed : float = 0 , load : str = None , scale : float = 0, tooltips: bool = True):
     if speed < 0 or speed > 1:
         raise ValueError("Invalid simulation speed argument {0} must be in the range [0-1]".format(speed))
     if scale < 0:
         raise ValueError("Invalid scale argument {0} must be > 0.".format(scale))
     skip = skip or play # always skip if play is set
 
+    global ENABLE_TOOLTIPS
+    ENABLE_TOOLTIPS &= tooltips
 
     global WHITE_MIND_FILENAME, ORANGE_MIND_FILENAME, GREEN_MIND_FILENAME
     WHITE_MIND_FILENAME = inspect.getsourcefile(_minds[vwc.Colour.white].__class__)
