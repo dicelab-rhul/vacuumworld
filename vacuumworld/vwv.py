@@ -79,6 +79,9 @@ BACKGROUND_COLOUR_GRID = 'white'
 DIFFICULTY_LEVELS = len(vwuser.USERS)
 INITIAL_ENVIRONMENT_DIM = 8
 
+ENABLE_TOOLTIPS = True
+
+
 def get_location_img_files(path):
     return [file for file in os.listdir(path) if file.endswith(".png")]
 
@@ -93,7 +96,7 @@ class VWButton():
         self._button.config(image=self.img)
         self.tip = tip
 
-        if self.tip:
+        if self.tip and ENABLE_TOOLTIPS:
             create_tooltip(widget=self._button, text=self.tip)
 
     def pack(self, side):
@@ -166,9 +169,6 @@ class VWMainMenu(tk.Frame):
         h = root.winfo_reqheight() * SCALE_MODIFIER
         sw = root.winfo_screenwidth()
         sh = root.winfo_screenheight()
-        
-        print(sw, sh, w, h)
-
         x = (sw / 2) - w - w/4 + w/26
         y = (sh / 2) - h - h/2
         root.x = x
@@ -352,7 +352,7 @@ class VWInterface(tk.Frame):
 
         return buttons
     
-    def _init_size_slider(self, parent, length=200):
+    def _init_size_slider(self, parent, length=250):
         increments = Grid.GRID_MAX_SIZE - Grid.GRID_MIN_SIZE
         self.grid_scale_slider = Slider(parent, self.on_resize, self.on_resize_slide, None, length * SCALE_MODIFIER, 16 * SCALE_MODIFIER,
                                         slider_width = length * SCALE_MODIFIER / (increments * 3),
@@ -591,9 +591,17 @@ class VWInterface(tk.Frame):
 
         #keep the currently selected draggable on the top
         for a in self.canvas_agents.values():
-            self.canvas.tag_lower(a)
+            try:
+                self.canvas.tag_lower(a)
+            except Exception:
+                # If the draggable is not a valid argument for tag_lower, we ignore the error.
+                pass
         for d in self.canvas_dirts.values():
-            self.canvas.tag_lower(d)
+            try:
+                self.canvas.tag_lower(d)
+            except Exception:
+                # If the draggable is not a valid argument for tag_lower, we ignore the error.
+                pass
 
     def drag_on_drop(self, event, drag_manager):
         #TODO: stream line to work with select
@@ -838,13 +846,15 @@ def _scale(scale):
     ROOT_FONT = ('Verdana', int(10 * SCALE_MODIFIER), '')
 
 
-def run(_minds, skip : bool = False, play : bool = False , speed : float = 0 , load : str = None , scale : float = 0):
+def run(_minds, skip : bool = False, play : bool = False , speed : float = 0 , load : str = None , scale : float = 0, tooltips: bool = True):
     if speed < 0 or speed > 1:
         raise ValueError("Invalid simulation speed argument {0} must be in the range [0-1]".format(speed))
     if scale < 0:
         raise ValueError("Invalid scale argument {0} must be > 0.".format(scale))
     skip = skip or play # always skip if play is set
 
+    global ENABLE_TOOLTIPS
+    ENABLE_TOOLTIPS &= tooltips
 
     global WHITE_MIND_FILENAME, ORANGE_MIND_FILENAME, GREEN_MIND_FILENAME
     WHITE_MIND_FILENAME = inspect.getsourcefile(_minds[vwc.Colour.white].__class__)
