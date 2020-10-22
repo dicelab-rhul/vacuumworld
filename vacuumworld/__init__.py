@@ -82,8 +82,9 @@ def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, *
             vacuumworld.run(Mind(), skip=True, play=True, load='test.vw')
     '''
     
-    default_observe = {'grid_size':vwutils.print_observer}
-    white_mind, green_mind, orange_mind = vwutils.process_minds(default_mind, white_mind, green_mind, orange_mind, default_observe)
+    
+    #default_observe = {'grid_size':vwutils.print_observer}
+    white_mind, green_mind, orange_mind = vwutils.process_minds(default_mind, white_mind, green_mind, orange_mind)
     
     try:
         vwv.run({vwc.Colour.white:white_mind, vwc.Colour.green:green_mind, vwc.Colour.orange:orange_mind}, **kwargs)
