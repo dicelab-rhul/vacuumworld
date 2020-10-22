@@ -166,9 +166,6 @@ class VWMainMenu(tk.Frame):
         h = root.winfo_reqheight() * SCALE_MODIFIER
         sw = root.winfo_screenwidth()
         sh = root.winfo_screenheight()
-        
-        print(sw, sh, w, h)
-
         x = (sw / 2) - w - w/4 + w/26
         y = (sh / 2) - h - h/2
         root.x = x
@@ -352,7 +349,7 @@ class VWInterface(tk.Frame):
 
         return buttons
     
-    def _init_size_slider(self, parent, length=200):
+    def _init_size_slider(self, parent, length=250):
         increments = Grid.GRID_MAX_SIZE - Grid.GRID_MIN_SIZE
         self.grid_scale_slider = Slider(parent, self.on_resize, self.on_resize_slide, None, length * SCALE_MODIFIER, 16 * SCALE_MODIFIER,
                                         slider_width = length * SCALE_MODIFIER / (increments * 3),
