@@ -166,9 +166,6 @@ class VWMainMenu(tk.Frame):
         h = root.winfo_reqheight() * SCALE_MODIFIER
         sw = root.winfo_screenwidth()
         sh = root.winfo_screenheight()
-        
-        print(sw, sh, w, h)
-
         x = (sw / 2) - w - w/4 + w/26
         y = (sh / 2) - h - h/2
         root.x = x
