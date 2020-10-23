@@ -810,6 +810,7 @@ def _finish():
     global root, main_interface
     main_interface.running = False # ?? 
     root.destroy()
+    sys.exit(-1)
 
 
 def _start():
@@ -847,11 +848,13 @@ def _scale(scale):
     ROOT_FONT = ('Verdana', int(10 * SCALE_MODIFIER), '')
 
 
-def run(_minds, skip : bool = False, play : bool = False , speed : float = 0 , load : str = None , scale : float = 0, tooltips: bool = True):
+def run(_minds, skip: bool=False, play: bool=False, speed: float=0.0, load: str=None, scale: float=0.0, tooltips: bool=True):
     if speed < 0 or speed > 1:
         raise ValueError("Invalid simulation speed argument {0} must be in the range [0-1]".format(speed))
+
     if scale < 0:
         raise ValueError("Invalid scale argument {0} must be > 0.".format(scale))
+
     skip = skip or play # always skip if play is set
 
     global ENABLE_TOOLTIPS
@@ -871,6 +874,10 @@ def run(_minds, skip : bool = False, play : bool = False , speed : float = 0 , l
     
     _scale(scale)
    
+    do_run(_minds, skip, play, speed, load)
+
+
+def do_run(_minds, skip: bool=False, play: bool=False, speed: float=0.0, load: str=None):
     try:
         global main_menu
         global main_interface
@@ -932,7 +939,8 @@ def run(_minds, skip : bool = False, play : bool = False , speed : float = 0 , l
             signal.signal(signal.SIGINT, signal_handler)
 
         root.mainloop()
-        
+    except KeyboardInterrupt:
+        _finish()
     except Exception:
         _error()
         _finish()
