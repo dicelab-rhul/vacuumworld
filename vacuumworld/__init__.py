@@ -1,8 +1,22 @@
 # -*- coding: utf-8 -*-
+from .gui.vwv import run as run_gui
+from .utils.vwutils import process_minds
+
+
+from vacuumworld.core.common.coordinates import Coord, coord
+from vacuumworld.core.common.direction import Direction, direction
+from vacuumworld.core.common.orientation import Orientation, orientation
+from vacuumworld.core.common.colour import Colour, colour
+from vacuumworld.core.common.observation import Observation, observation
+from vacuumworld.core.environment.location_interface import Location, location
+from vacuumworld.core.agent.agent_interface import Agent, agent
+from vacuumworld.core.dirt.dirt_interface import Dirt, dirt
+from vacuumworld.core.action import action
 
 
 import signal
 
+__all__ = ["run", Coord, Direction, Orientation, Colour, Observation, Location, Agent, Dirt, action, coord, direction, orientation, colour, observation, location, agent, dirt]
 
 """
 Welcome to Vacuum World! Before you start, we suggest reading the Vacuum World 
@@ -43,13 +57,6 @@ if hasattr(signal, "SIGTSTP") and hasattr(signal, "SIGINT"): # To exclude Window
     signal.signal(signal.SIGTSTP, ignore_ctrl_z)
 
 
-
-from . import vwv
-from . import vwc
-from . import vwutils
-
-__all__ = ('vw', 'vwv', 'vwc')
-
 def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, **kwargs):
     '''
         This function is used to run a vacuumworld simulation. 
@@ -82,9 +89,9 @@ def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, *
             vacuumworld.run(Mind(), skip=True, play=True, load='test.vw')
     '''
 
-    white_mind, green_mind, orange_mind = vwutils.process_minds(default_mind, white_mind, green_mind, orange_mind)
+    white_mind, green_mind, orange_mind = process_minds(default_mind, white_mind, green_mind, orange_mind)
     
     try:
-        vwv.run({vwc.Colour.white:white_mind, vwc.Colour.green:green_mind, vwc.Colour.orange:orange_mind}, **kwargs)
+        run_gui({Colour.white:white_mind, Colour.green:green_mind, Colour.orange:orange_mind}, **kwargs)
     except KeyboardInterrupt:
         print("\nReceived a keyboard interrupt. Exiting...")

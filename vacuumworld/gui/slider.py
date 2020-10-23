@@ -6,10 +6,11 @@ Created on Sat Jun  1 20:05:16 2019
 """
 import tkinter as tk
 
-from .vwutils import ignore
+from ..utils.vwutils import ignore
+
+
 
 class Slider(tk.Canvas):
-    
     def __init__(self, parent, release_callback, slide_callback, img, width, height, increments = 0, slider_width = 8, start = 0, **kwargs):
         super(Slider, self).__init__(parent, width=width, height=height, bd=0, highlightthickness=0, relief='ridge', bg='white', **kwargs)
         self.release_callback = release_callback

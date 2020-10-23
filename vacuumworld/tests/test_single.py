@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 import vacuumworld
-from vacuumworld.vwc import action, direction
+
+
 
 class Mind:
-    def __init__(self):
+    def __init__(_):
         super().__init__()
 
     def revise(self, observation, messages):
@@ -13,8 +14,10 @@ class Mind:
         print(self.observation)
         print(self.messages)
 
-    def decide(self):
+    def decide(_):
+        # Dummy
         pass 
 
 
-vacuumworld.run(Mind())
+if __name__ == "__main__":
+    vacuumworld.run(Mind())

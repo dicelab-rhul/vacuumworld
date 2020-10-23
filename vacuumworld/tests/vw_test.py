@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
-import sys, os
+import sys
+import os
+
+from vacuumworld.core.common.coordinates import Coord
+from vacuumworld.core.common.orientation import Orientation
+from vacuumworld.core.environment.vw import Grid
+
+
 
 myPath = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(myPath))
-
-from ..vw import Grid
-from ..vwc import Coord, Orientation
-
 
 
 def test_wall_locations_exist():

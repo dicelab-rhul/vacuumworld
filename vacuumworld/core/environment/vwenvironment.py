@@ -1,17 +1,20 @@
-from . import vwaction as action
-from . import vwagent
-from . import vwc
-from . import vwuser
+from ..common.colour import Colour
+from ..common.orientation import Orientation
+from ..common.direction import Direction
+from ..common.observation import Observation
+from ..agent.vwagent import VWBody, agent_type
+from ..user.vwuser import USERS
+from ..dirt.vwdirt import Dirt
+from ..action.vwaction import CommunicativeAction, MoveAction, TurnAction, CleanAction, DropAction
 
 from pystarworlds.Environment import Ambient, Physics, Environment, Process
-from pystarworlds.Identifiable import Identifiable
 
 import copy
 
 
 
 def init(grid, minds, user_mind):
-    minds[vwc.Colour.user] = vwuser.USERS[user_mind]()
+    minds[Colour.user] = USERS[user_mind]()
     return GridEnvironment(GridAmbient(grid, minds))
 
 
@@ -31,40 +34,34 @@ class GridAmbient(Ambient):
     
     @staticmethod
     def get_type(location):
-        return vwagent.agent_type[int(location.agent.colour == vwc.Colour.user)]
+        return agent_type[int(location.agent.colour == Colour.user)]
         
     @staticmethod
     def init_agent(location, _type, minds):
-        return vwagent.VWBody(_type, location.agent.name, copy.deepcopy(minds[location.agent.colour]),
-                              location.agent.orientation, location.coordinate, location.agent.colour)
+        return VWBody(_type, location.agent.name, copy.deepcopy(minds[location.agent.colour]), location.agent.orientation, location.coordinate, location.agent.colour)
         
 
 class GridPhysics(Physics):
     pass
 
+
 class GridEnvironment(Environment):
     def __init__(self, ambient):
         
-        actions = [action.DropAction, action.MoveAction,
-                    action.TurnAction, action.CleanAction, 
-                    action.CommunicativeAction]
+        actions = [DropAction, MoveAction, TurnAction, CleanAction, CommunicativeAction]
         
         physics = GridPhysics(actions)
         
         super(GridEnvironment, self).__init__(physics, ambient, [ObservationProcess()])
-        
 
-class Dirt(Identifiable):
-    def __init__(self, dirt):        
-        super(Dirt, self).__init__()
-        self._Identifiable__ID = dirt.name #hack...
-        self.dirt = dirt
 
 class ObservationProcess(Process):
-    orientation_map = {vwc.Orientation.north:(0,-1),
-                       vwc.Orientation.east:(1,0),
-                       vwc.Orientation.south:(0,1),
-                       vwc.Orientation.west:(-1,0)}
+    orientation_map = {
+        Orientation.north:(0,-1),
+        Orientation.east:(1,0),
+        Orientation.south:(0,1),
+        Orientation.west:(-1,0)
+    }
 
     def __call__(_, env):
         for agent in env.ambient.agents.values():
@@ -76,10 +73,10 @@ class ObservationProcess(Process):
     def get_perception(grid, agent):
         c = agent.coordinate
         f = ObservationProcess.orientation_map[agent.orientation]
-        l = ObservationProcess.orientation_map[vwc.Direction.left(agent.orientation)]
-        r = ObservationProcess.orientation_map[vwc.Direction.right(agent.orientation)]
+        l = ObservationProcess.orientation_map[Direction.left(agent.orientation)]
+        r = ObservationProcess.orientation_map[Direction.right(agent.orientation)]
         #center left right forward forwardleft forwardright
-        obs = vwc.Observation(grid.state[c], 
+        obs = Observation(grid.state[c], 
                         grid.state[c + l],
                         grid.state[c + r], 
                         grid.state[c + f], 

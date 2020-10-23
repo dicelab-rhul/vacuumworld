@@ -1,8 +1,16 @@
-from vacuumworld.vwc import Coord, Agent, Dirt, Direction
-from vacuumworld.vwc import Observation, Colour, Orientation
-from vacuumworld.vwc import Location
+from vacuumworld.core.common.coordinates import Coord
+from vacuumworld.core.common.direction import Direction
+from vacuumworld.core.common.orientation import Orientation
+from vacuumworld.core.common.colour import Colour
+from vacuumworld.core.common.observation import Observation
+from vacuumworld.core.environment.location_interface import Location
+from vacuumworld.core.agent.agent_interface import Agent
+from vacuumworld.core.dirt.dirt_interface import Dirt
+
 
 import traceback
+
+
 
 def test_coord():
     c1, c2 = Coord(1,2), Coord(2,3)

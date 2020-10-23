@@ -5,14 +5,16 @@ Created on Sun Jun  2 23:16:51 2019
 @author: ben
 """
 
+from random import choice, sample
 
-from .vwc import Location, Dirt, Agent, Coord
-from .vwc import Colour as vwcolour
-from .vwc import Orientation as vworientation
-
+from .location_interface import Location
 from .vwenvironment import GridEnvironment, GridAmbient
+from ..common.orientation import Orientation
+from ..common.colour import Colour
+from ..common.coordinates import Coord
+from ..agent.agent_interface import Agent
+from ..dirt.dirt_interface import Dirt
 
-import random
 
 #--------------------------------------------------------
 
@@ -20,7 +22,7 @@ def init(grid, minds):
     return GridEnvironment(GridAmbient(grid, minds))
 
 def minds(mind):
-    return {colour:mind for colour in vwcolour}
+    return {colour:mind for colour in Colour}
 
 def random_grid(size, white, green, orange, user, orange_dirt, green_dirt):
     assert green + white + orange + user <= size * size
@@ -29,16 +31,16 @@ def random_grid(size, white, green, orange, user, orange_dirt, green_dirt):
     grid = Grid(size)
 
     #for agents
-    coords = random.sample([key for key,value in grid.state.items() if value is not None] , k = green + white + orange + user)
-    agents = {vwcolour.white:white, vwcolour.orange:orange, vwcolour.green:green, vwcolour.user:user}
+    coords = sample([key for key,value in grid.state.items() if value is not None] , k = green + white + orange + user)
+    agents = {Colour.white:white, Colour.orange:orange, Colour.green:green, Colour.user:user}
 
     for c, num in agents.items():
         for _ in range(num):
-            grid.place_agent(coords.pop(-1), grid.agent(c, random.choice(vworientation)))
+            grid.place_agent(coords.pop(-1), grid.agent(c, choice(Orientation)))
 
     #for dirts
-    dirts = {vwcolour.orange:orange_dirt,vwcolour.green:green_dirt}
-    coords = random.sample([key for key,value in grid.state.items() if value is not None] , k = orange_dirt + green_dirt)
+    dirts = {Colour.orange:orange_dirt,Colour.green:green_dirt}
+    coords = sample([key for key,value in grid.state.items() if value is not None] , k = orange_dirt + green_dirt)
 
     for c, num in dirts.items():
         for _ in range(num):
@@ -47,7 +49,7 @@ def random_grid(size, white, green, orange, user, orange_dirt, green_dirt):
     return grid
 
 class Grid():
-    DIRECTIONS = {vworientation.north:(0,-1), vworientation.south:(0,1), vworientation.west:(-1,0), vworientation.east:(1,0)}
+    DIRECTIONS = {Orientation.north:(0,-1), Orientation.south:(0,1), Orientation.west:(-1,0), Orientation.east:(1,0)}
     
     ID_PREFIX_DIRT = 'D-'
     ID_PREFIX_AGENT = 'A-'
@@ -108,15 +110,15 @@ class Grid():
     
     @staticmethod
     def _as_colour(colour):
-        if not isinstance(colour, vwcolour):
-            return vwcolour[colour]
+        if not isinstance(colour, Colour):
+            return Colour[colour]
 
         return colour
 
     @staticmethod      
     def _as_orientation(orientation):
-        if not isinstance(orientation, vworientation):
-            return vworientation[orientation]
+        if not isinstance(orientation, Orientation):
+            return Orientation[orientation]
 
         return orientation
     

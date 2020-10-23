@@ -4,13 +4,16 @@ Created on Wed Sep 25 10:29:55 2019
 
 @author: ben
 """
-from pystarworlds.Agent import Mind
-from . import vwc
 
-import inspect
-
-from inspect import signature
+from inspect import signature, currentframe, getsourcefile
 from os import devnull
+from sys import gettrace, settrace
+
+from pystarworlds.Agent import Mind
+
+from ..core.common.colour import Colour
+
+
 
 class VacuumWorldInternalError(Exception):
     pass
@@ -21,7 +24,7 @@ class VacuumWorldActionError(VacuumWorldInternalError):
         super(VacuumWorldActionError, self).__init__("for agent: " + caller_id() + "\n      " + message)
 
 def caller_id():
-    caller = inspect.currentframe().f_back
+    caller = currentframe().f_back
 
     if caller is None:
         return None
@@ -48,9 +51,9 @@ def process_minds(default_mind=None, white_mind=None, green_mind=None, orange_mi
     if orange_mind is None:
         orange_mind = default_mind
 
-    validate_mind(white_mind, vwc.Colour.white)
-    validate_mind(green_mind, vwc.Colour.green)
-    validate_mind(orange_mind, vwc.Colour.orange)
+    validate_mind(white_mind, Colour.white)
+    validate_mind(green_mind, Colour.green)
+    validate_mind(orange_mind, Colour.orange)
 
     for mind in (white_mind, green_mind, orange_mind):
         observe(mind, observers)
@@ -116,9 +119,6 @@ def ignore(obj):
 
 # TODO: SOME MEGA HACKY STUFF... not sure if we want to use it 
 
-import inspect
-import sys
-
 class ReturnFrame:
 
     def __init__(self):
@@ -126,11 +126,11 @@ class ReturnFrame:
         self._old_trace = None
 
     def start(self):
-        self._old_trace = sys.gettrace()
-        sys.settrace(self.trace)
+        self._old_trace = gettrace()
+        settrace(self.trace)
 
     def stop(self):
-        sys.settrace(self._old_trace)
+        settrace(self._old_trace)
 
     def __enter__(self):
         self.start()
@@ -143,7 +143,7 @@ class ReturnFrame:
     def trace(self, frame, event, _):
         filename = None
         if frame is not None:
-            filename = inspect.getsourcefile(frame)
+            filename = getsourcefile(frame)
         if event == 'call':
             if filename == __file__:
                 return # skip ourselves     

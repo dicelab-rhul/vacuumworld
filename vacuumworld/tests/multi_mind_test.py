@@ -3,7 +3,8 @@
 
 import vacuumworld
 
-from vacuumworld.vwc import action, Direction
+from vacuumworld.core.action import action
+from vacuumworld.core.common.direction import Direction
 
 
 class DefaultMind():

@@ -6,7 +6,10 @@ author: Benedict Wilkins
 """
 import sys
 import inspect
-from vacuumworld.vwutils import ignore
+
+from vacuumworld.utils.vwutils import ignore
+
+
 
 class Trace:
     def __init__(self):

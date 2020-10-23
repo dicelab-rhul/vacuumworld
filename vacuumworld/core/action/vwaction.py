@@ -1,16 +1,21 @@
 from pystarworlds.Event import Action, Executor
-from . import vwc
-from .vwutils import VacuumWorldActionError, warn_agent
+
+from ..common.orientation import Orientation
+from ..common.direction import Direction
+from ..common.colour import Colour
+from ..common.message import Message
+from ..action.action import move, turn, clean, drop, speak, idle
+from ...utils.vwutils import VacuumWorldActionError, warn_agent
 
 import copy
 
 
 ###################### action executors ###################### 
 
-orientation_map = {vwc.Orientation.north:(0,-1),
-                   vwc.Orientation.east:(1,0),
-                   vwc.Orientation.south:(0,1),
-                   vwc.Orientation.west:(-1,0)}
+orientation_map = {Orientation.north:(0,-1),
+                   Orientation.east:(1,0),
+                   Orientation.south:(0,1),
+                   Orientation.west:(-1,0)}
 
 
 class MoveExecutor(Executor):
@@ -38,7 +43,7 @@ class CleanExecutor(Executor):
         agent = env.ambient.agents[action.source]
         #precondition
         location = env.ambient.grid.state[agent.coordinate]
-        if location.dirt and (location.agent.colour == location.dirt.colour or location.agent.colour == vwc.Colour.white):  
+        if location.dirt and (location.agent.colour == location.dirt.colour or location.agent.colour == Colour.white):  
             env.ambient.grid.remove_dirt(agent.coordinate)
             #TODO: remove dirt from list of objects in ambient
 
@@ -59,7 +64,7 @@ class CommunicativeExecutor(Executor):
         if len(notify) == 0: #send to everyone! do we want this?
             notify = set(env.ambient.agents.keys()) - set([action.source])
         for to in notify:
-            env.physics.notify_agent(env.ambient.agents[to], vwc.Message(action.source, action.content))
+            env.physics.notify_agent(env.ambient.agents[to], Message(action.source, action.content))
 
 
 ###################### actions ###################### 
@@ -82,7 +87,7 @@ class DropAction(VWPhysicalAction):
     
     def __init__(self, colour):
         super(DropAction, self).__init__()
-        assert colour in [vwc.Colour.orange, vwc.Colour.green]
+        assert colour in [Colour.orange, Colour.green]
         self.colour = colour
 
 
@@ -126,8 +131,7 @@ class TurnActionFactory(ActionFactory):
         super(TurnActionFactory, self).__init__()
         
     def __call__(_, _direction):
-        if not _direction in [vwc.Direction.left, vwc.Direction.right]:
-            print([vwc.Direction.left, vwc.Direction.right])
+        if not _direction in [Direction.left, Direction.right]:
             raise VacuumWorldActionError("{0} is not a valid direction for a turn action.\nValid directions are vwc.direction.left or vwc.direction.right".format(str(_direction)))
         return TurnAction(_direction)
 
@@ -142,7 +146,7 @@ class SpeakActionFactory(ActionFactory):
         self.__validate_message(_message)
         #create a deep copy to avoid possible reference cheating!
         _message = copy.deepcopy(_message) 
-        _size = vwc.size(_message)
+        _size = _message.size()
         if _size > SpeakActionFactory.LIMIT:
             _osize = _size
             _message, _size = self.__chop(_message)
@@ -160,7 +164,7 @@ class SpeakActionFactory(ActionFactory):
                self.__validate_message(e)
                
     def __chop(self, message):
-        _size = vwc.size(message)
+        _size = message.size()
 
         while _size > SpeakActionFactory.LIMIT and type(message) in (list, tuple):
             if len(message) == 1:
@@ -168,16 +172,17 @@ class SpeakActionFactory(ActionFactory):
                 break
             message, _size = self.__chop(message[:-1])
         
-        if vwc.size(message) > SpeakActionFactory.LIMIT:
+        if message.size() > SpeakActionFactory.LIMIT:
             _t = type(message)
             message = _t(str(message)[:SpeakActionFactory.LIMIT])
-            _size = vwc.size(message)
+            _size = message.size()
         return message, _size
 
-#TODO: why is this never accessed locally?
-_action_factories = {vwc.action.move()[0]:lambda: MoveAction(), 
-                     vwc.action.clean()[0]:lambda: CleanAction(), 
-                     vwc.action.idle()[0]:lambda: None,
-                     vwc.action.turn(vwc.direction.left)[0]:TurnActionFactory(), 
-                     vwc.action.drop(vwc.colour.green)[0]:DropActionFactory(),
-                     vwc.action.speak("")[0]:SpeakActionFactory()}
+
+action_factories = {
+    move()[0]:lambda: MoveAction(), 
+    clean()[0]:lambda: CleanAction(), 
+    idle()[0]:lambda: None,
+    turn(Direction.left)[0]: TurnActionFactory(), # TODO: the unused parameter is a dodgy choice.
+    drop(Colour.green)[0]: DropActionFactory(),
+    speak("")[0]: SpeakActionFactory()} # TODO: the unused parameter is a dodgy choice.
