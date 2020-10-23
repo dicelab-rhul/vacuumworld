@@ -1,4 +1,11 @@
-# -*- coding: utf-8 -*-
+from typing import Iterable, Union
+from random import choice, choices
+
+from ..common.direction import Direction
+from ..common.colour import Colour
+
+
+
 '''
 Actions may be attempted by agents at each cycle. An agent can attempt actions by returning them in the ``decide`` method.
 An agent can attempt at most one physical action and one speech action per cycle.
@@ -39,6 +46,7 @@ Example 2
 In this example the agent will spin around anti-clockwise - turning once per cycle, while broadcasting ``'hello'`` to all other agents.
 '''
 
+
 def move():
     '''
         Moves an agent one tile in the direction it is facing.
@@ -48,14 +56,19 @@ def move():
     '''
     return ['move',]
 
-def turn(direction):
+
+def turn(direction: Union[Direction, str]):
     '''
         Turns an agent in the given direction ``left`` or``right``. 
         
         Returns: 
             ``['turn', direction]``
     '''
+
+    assert callable(direction)
+
     return ['turn', direction]
+
 
 def clean():
     '''
@@ -72,6 +85,7 @@ def clean():
     '''
     return ['clean',]
 
+
 def idle():
     '''
         The agent is idle (no action is attempted). This is the equivalent of returning ``None``.
@@ -81,7 +95,8 @@ def idle():
     '''
     return ['idle',]
 
-def speak(message, *to):
+
+def speak(message: Union[str, list, tuple, float, bool], *to):
     '''
         Sends the given ``message`` to recipient agents specified by their ``name`` in ``*to``. If no recipients are specified the message with be broadcast to all agents.
         
@@ -93,9 +108,14 @@ def speak(message, *to):
         Returns:
             ``['speak', message, to]``
     '''
+
+    assert type(message) in [str, list, tuple, float, bool]
+    assert isinstance(to, Iterable)
+
     return ['speak', message, to]
 
-def drop(colour):
+
+def drop(colour: Colour):
     '''
         The agent will drop dirt of the given colour at its current location. Only a user agent can perform this action.
         
@@ -105,4 +125,39 @@ def drop(colour):
         Returns:
             ``['drop', colour]``
     '''
+
+    assert colour in [Colour.green, Colour.orange]
+
     return ['drop', colour]
+
+
+def random(actions, p=None):
+    '''
+        Selects a random action from ``actions`` with given probabilities ``p``. 
+        If ``p`` is ``None`` then the action will be selected uniformly.
+        Otherwise, both arguments should have the same length.
+        
+        Arguments:
+            * ``actions (list)``: a list of actions to choose from.
+            * ``p (list)``:  a list of probabilities, one per action in ``actions`` that sum to 1, or ``None``.
+            
+        Returns:
+           ``(any)``: the selected action.
+           
+        Example
+        ----------
+        ::
+            
+            def decide(self):
+                return random([action.move(), action.turn(direction.left)], [0.8, 0.2])
+        
+        The agent will move with 0.8 probability and turn left with 0.2 probability.
+    '''
+
+    assert actions is not None and isinstance(actions, Iterable)
+
+    if p is None:
+        return choice(actions)
+    else:
+        assert isinstance(p, Iterable) and len(actions) == len(p)
+        return choices(actions, weights=p, k=1)[0]

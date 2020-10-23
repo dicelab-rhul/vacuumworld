@@ -1,6 +1,9 @@
 from pystarworlds.Agent import Sensor
 
-from .vwc import Observation, Message
+from ..common.observation import Observation
+from ..common.message import Message
+
+
 
 class VisionSensor(Sensor):
     subscribe = [Observation]

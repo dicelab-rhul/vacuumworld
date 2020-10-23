@@ -18,16 +18,17 @@ from screeninfo import get_monitors
 
 
 from .slider import Slider
-from .autocomplete import AutocompleteEntry
-from .vw import Grid
-from .vwenvironment import init as init_environment
-from . import vwc
-from . import saveload
-from . import vwuser
-from .vwutils import ignore, print_simulation_speed_message, VacuumWorldActionError
 from .vwtooltips import create_tooltip
-from .vwc import Orientation
-
+from ..core.common.colour import Colour
+from ..core.common.coordinates import Coord
+from ..core.common.direction import Direction
+from ..core.common.orientation import Orientation
+from ..core.user.vwuser import USERS
+from ..core.environment.vw import Grid
+from ..core.environment.vwenvironment import init as init_environment
+from ..utils.vwutils import ignore, print_simulation_speed_message, VacuumWorldActionError
+from ..utils.autocomplete import AutocompleteEntry
+from ..utils import saveload
 
 
 # Global variables. TODO: change this.
@@ -38,7 +39,7 @@ grid = None
 minds = None
 
 #might need to change this for the real package...
-PATH = os.path.dirname(__file__)
+PATH = os.path.dirname(os.path.dirname(__file__))
 TIME_STEP_MIN = 0.04
 TIME_STEP_BASE = 1. - TIME_STEP_MIN #in seconds
 TIME_STEP = TIME_STEP_BASE
@@ -51,10 +52,10 @@ WHITE_MIND_FILENAME = None
 WIDTH = 480     #default - depends on layout manager
 HEIGHT = 480    #default - depends on layout manager
 
-BUTTON_PATH = PATH + "/res/"
-LOCATION_AGENT_IMAGES_PATH = PATH + "/res/locations/agent"
-LOCATION_DIRT_IMAGES_PATH = PATH + "/res/locations/dirt"
-MAIN_MENU_IMAGE_PATH = PATH + "/res/start_menu.png"
+BUTTON_PATH = os.path.join(PATH, "res") #PATH + "/res/"
+LOCATION_AGENT_IMAGES_PATH = os.path.join(PATH, "res", "locations", "agent") #PATH + "/res/locations/agent"
+LOCATION_DIRT_IMAGES_PATH = os.path.join(PATH, "res", "locations", "dirt") #PATH + "/res/locations/dirt"
+MAIN_MENU_IMAGE_PATH = os.path.join(PATH, "res", "start_menu.png") #PATH + "/res/start_menu.png"
 
 DEFAULT_LOCATION_SIZE = 60
 DEFAULT_GRID_SIZE = 480
@@ -76,7 +77,7 @@ ROOT_FONT = ('Verdana', int(10 * SCALE_MODIFIER), '')
 BACKGROUND_COLOUR_SIDE = 'white'
 BACKGROUND_COLOUR_GRID = 'white'
 
-DIFFICULTY_LEVELS = len(vwuser.USERS)
+DIFFICULTY_LEVELS = len(USERS)
 INITIAL_ENVIRONMENT_DIM = 8
 
 ENABLE_TOOLTIPS = True
@@ -152,7 +153,7 @@ class VWMainMenu(tk.Frame):
         self.canvas.pack()
         self.buttons = {}
 
-        button_image = Image.open(BUTTON_PATH + 'button.png')
+        button_image = Image.open(os.path.join(BUTTON_PATH, 'button.png'))
         button_image = button_image.resize((int(button_image.width * SCALE_MODIFIER), int(button_image.height * SCALE_MODIFIER)), Image.BICUBIC)
         self.buttons['start'] = VWButton(self.button_frame, button_image, _start, 'start', tip="Click here to set-up the simulation.")
         self.buttons['exit'] = VWButton(self.button_frame, button_image, _exit, 'exit', tip="Click here to exit VacuumWorld.")
@@ -281,7 +282,7 @@ class VWInterface(tk.Frame):
         self.button_frame = tk.Frame(self, bg=bg)
 
         
-        play_img = VWInterface._scale(Image.open(BUTTON_PATH + buttons['play']), BUTTON_SIZE)
+        play_img = VWInterface._scale(Image.open(os.path.join(BUTTON_PATH, buttons['play'])), BUTTON_SIZE)
 
         #left side contains buttons and slider
         self.left_frame = tk.Frame(self.button_frame, bg=bg)
@@ -290,13 +291,13 @@ class VWInterface(tk.Frame):
         
         self.buttons['play'] = VWButton(self.control_buttons_frame, play_img , _play, tip="Click here to start the simulation.")
         self.buttons['resume'] = VWButton(self.control_buttons_frame, play_img, _resume, tip="Click here to resume the simulation.")
-        self.buttons['pause'] = VWButton(self.control_buttons_frame, VWInterface._scale(Image.open(BUTTON_PATH + buttons['pause']), BUTTON_SIZE), _pause, tip="Click here to pause the simulation.")
-        self.buttons['stop'] = VWButton(self.control_buttons_frame, VWInterface._scale(Image.open(BUTTON_PATH + buttons['stop']), BUTTON_SIZE), _stop, tip="Click here to stop the simulation.")
-        self.buttons['fast'] = VWButton(self.control_buttons_frame, VWInterface._scale(Image.open(BUTTON_PATH + buttons['fast']), BUTTON_SIZE), _fast, tip= "Click here to fast-forward the simulation.")
-        self.buttons['reset'] = VWButton(self.control_buttons_frame, VWInterface._scale(Image.open(BUTTON_PATH + buttons['reset']), BUTTON_SIZE), _reset, tip="Click here to reset the grid.")
-        self.buttons["github"] = VWGithubButton(self.control_buttons_frame, VWInterface._scale(Image.open(BUTTON_PATH + buttons["guide"]), BUTTON_SIZE), _open_github_page)
+        self.buttons['pause'] = VWButton(self.control_buttons_frame, VWInterface._scale(Image.open(os.path.join(BUTTON_PATH, buttons['pause'])), BUTTON_SIZE), _pause, tip="Click here to pause the simulation.")
+        self.buttons['stop'] = VWButton(self.control_buttons_frame, VWInterface._scale(Image.open(os.path.join(BUTTON_PATH, buttons['stop'])), BUTTON_SIZE), _stop, tip="Click here to stop the simulation.")
+        self.buttons['fast'] = VWButton(self.control_buttons_frame, VWInterface._scale(Image.open(os.path.join(BUTTON_PATH, buttons['fast'])), BUTTON_SIZE), _fast, tip= "Click here to fast-forward the simulation.")
+        self.buttons['reset'] = VWButton(self.control_buttons_frame, VWInterface._scale(Image.open(os.path.join(BUTTON_PATH, buttons['reset'])), BUTTON_SIZE), _reset, tip="Click here to reset the grid.")
+        self.buttons["github"] = VWGithubButton(self.control_buttons_frame, VWInterface._scale(Image.open(os.path.join(BUTTON_PATH, buttons["guide"])), BUTTON_SIZE), _open_github_page)
         
-        dif_img = VWInterface._scale(Image.open(BUTTON_PATH + buttons['difficulty']), BUTTON_SIZE)
+        dif_img = VWInterface._scale(Image.open(os.path.join(BUTTON_PATH, buttons['difficulty'])), BUTTON_SIZE)
         self.buttons['difficulty'] = VWDifficultyButton(self.control_buttons_frame, dif_img, _difficulty, tip="Click here to toggle the user difficulty level.")
         
         self.pack_buttons('play', 'reset', 'fast', 'difficulty', "github", forget=False)
@@ -314,8 +315,8 @@ class VWInterface(tk.Frame):
         self.saveload_frame = tk.Frame(self.mid_frame, bg=bg)
     
         #buttons
-        self.buttons['save'] = VWButton(self.saveload_frame, VWInterface._scale(Image.open(BUTTON_PATH + buttons['save']), BUTTON_SIZE), lambda: _save(self.load_menu), tip="Click here to save the current state.")
-        self.buttons['load'] = VWButton(self.saveload_frame, VWInterface._scale(Image.open(BUTTON_PATH + buttons['load']), BUTTON_SIZE), lambda: _load(self.load_menu), tip="Click here to load a savestate.")
+        self.buttons['save'] = VWButton(self.saveload_frame, VWInterface._scale(Image.open(os.path.join(BUTTON_PATH, buttons['save'])), BUTTON_SIZE), lambda: _save(self.load_menu), tip="Click here to save the current state.")
+        self.buttons['load'] = VWButton(self.saveload_frame, VWInterface._scale(Image.open(os.path.join(BUTTON_PATH, buttons['load'])), BUTTON_SIZE), lambda: _load(self.load_menu), tip="Click here to load a savestate.")
         
         #entry box
         files = saveload.get_ordered_list_of_filenames_in_save_directory()
@@ -389,7 +390,7 @@ class VWInterface(tk.Frame):
             self.deselect()
             self.focus()
             inc = GRID_SIZE / self.grid.dim
-            coordinate = vwc.Coord(int(event.x / inc), int(event.y / inc))
+            coordinate = Coord(int(event.x / inc), int(event.y / inc))
             print("SELECT:", self.grid.state[coordinate])
             self.selected = grid.state[coordinate]
             xx = coordinate.x * inc
@@ -401,7 +402,7 @@ class VWInterface(tk.Frame):
         if not self.running and _in_bounds(event.x, event.y):
             print("remove top")
             inc = GRID_SIZE / self.grid.dim
-            coordinate = vwc.Coord(int(event.x / inc), int(event.y / inc))
+            coordinate = Coord(int(event.x / inc), int(event.y / inc))
             location = grid.state[coordinate]
             if location.agent:
                 self.remove_agent(coordinate)
@@ -437,10 +438,10 @@ class VWInterface(tk.Frame):
             self._lines_to_front()
 
     def rotate_agent_left(self, event):
-        self.rotate_agent(event, vwc.Direction.left)
+        self.rotate_agent(event, Direction.left)
 
     def rotate_agent_right(self, event):
-        self.rotate_agent(event, vwc.Direction.right)
+        self.rotate_agent(event, Direction.right)
 
     def pack_buttons(self, *buttons, forget=True):
         if forget:
@@ -609,7 +610,7 @@ class VWInterface(tk.Frame):
         inc = GRID_SIZE / self.grid.dim
         x = int(event.x / inc)
         y = int(event.y / inc)
-        coord = vwc.Coord(x,y)
+        coord = Coord(x,y)
         #update the environment state
         colour, obj = drag_manager.key
         print(colour, obj)
@@ -857,9 +858,9 @@ def run(_minds, skip : bool = False, play : bool = False , speed : float = 0 , l
     ENABLE_TOOLTIPS &= tooltips
 
     global WHITE_MIND_FILENAME, ORANGE_MIND_FILENAME, GREEN_MIND_FILENAME
-    WHITE_MIND_FILENAME = inspect.getsourcefile(_minds[vwc.Colour.white].__class__)
-    ORANGE_MIND_FILENAME = inspect.getsourcefile(_minds[vwc.Colour.orange].__class__)
-    GREEN_MIND_FILENAME = inspect.getsourcefile(_minds[vwc.Colour.green].__class__)
+    WHITE_MIND_FILENAME = inspect.getsourcefile(_minds[Colour.white].__class__)
+    ORANGE_MIND_FILENAME = inspect.getsourcefile(_minds[Colour.orange].__class__)
+    GREEN_MIND_FILENAME = inspect.getsourcefile(_minds[Colour.green].__class__)
 
     global root
     tk.Tk.report_callback_exception = _error

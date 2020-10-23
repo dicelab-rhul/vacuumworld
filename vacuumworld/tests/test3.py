@@ -9,12 +9,11 @@ import inspect
 import traceback
 
 
-from ..vwutils import ignore
+from vacuumworld.utils.vwutils import ignore
 
 
 
 class TraceFrames():
-    
     def __init__(self):
         self.ignore_write = 0
         self.frames = [None]
@@ -86,7 +85,6 @@ class TraceFrames():
 
 
 class Trace():
-    
     def __init__(self):
         self.ignore_write = 0
         self.frames = [None]

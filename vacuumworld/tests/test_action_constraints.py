@@ -3,7 +3,10 @@
 
 import vacuumworld
 
-from vacuumworld.vwc import action, direction
+from vacuumworld.core.action import action
+from vacuumworld.core.common.direction import Direction as direction
+
+
 
 class TestMind():
     PATTERNS = {
