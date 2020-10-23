@@ -11,7 +11,7 @@ import setuptools
 
 name: str = "vacuumworld"
 version: str = "4.1.9"
-description: str = ""
+description: str = "VacuumWorld: an agent platform for cleaning robots."
 author: str = "Benedict Wilkins"
 authors: list = ["Benedict Wilkins", "Nausheen Saba", "Emanuele Uliana"]
 authors_short : list = ["ben", "nausheen", "cloudstrife9999"]
@@ -29,6 +29,7 @@ classifiers: list = [
 ]
 url: str = "https://github.com/dicelab-rhul/vacuumworld"
 wiki: str = url + "/wiki"
+issues: str = url + "/issues"
 dependencies: list = ["pystarworlds>=0.0.3", "pillow", "wheel", "ipython", "screeninfo"]
 
 # End of metadata
@@ -39,7 +40,11 @@ setuptools.setup(
       version=version,
       description=description,
       url=url,
+      wiki=wiki,
+      issues=issues,
       author=author,
+      authors=authors,
+      authors_short=authors_short,
       author_email=author_email,
       license=license,
       packages=[p for p in setuptools.find_packages() if "test" not in p],
