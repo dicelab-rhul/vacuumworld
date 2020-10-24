@@ -885,6 +885,7 @@ def run(_minds, skip: bool=False, play: bool=False, speed: float=0.0, load: str=
 
 def do_run(_minds, skip: bool=False, play: bool=False, speed: float=0.0, load: str=None):
     try:
+        global root
         global main_menu
         global main_interface
         global grid
@@ -922,6 +923,9 @@ def do_run(_minds, skip: bool=False, play: bool=False, speed: float=0.0, load: s
             if data:
                 grid.replace_all(data)
                 main_interface._redraw()
+
+                #TODO: recenter the window on every resolution.
+
                 print("INFO: successfully loaded {}".format(load))
             else:
                 print("ERROR: failed to load {}".format(load))
