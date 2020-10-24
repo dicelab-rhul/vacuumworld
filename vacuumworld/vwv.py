@@ -901,9 +901,14 @@ def run(_minds, skip : bool = False, play : bool = False , speed : float = 0 , l
             print("INFO: autoplay enabled")
             
         if load is not None:
-            grid.replace_all(saveload.load(load))
-            main_interface._redraw()
-            print("INFO: successfully loaded: ", load)
+            data: Grid = saveload.load(load)
+
+            if data:
+                grid.replace_all(data)
+                main_interface._redraw()
+                print("INFO: successfully loaded {}".format(load))
+            else:
+                print("ERROR: failed to load {}".format(load))
             
         global reset, after_hook
 

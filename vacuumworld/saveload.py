@@ -78,7 +78,7 @@ def _load(file):
             return pickle.load(f)
     except Exception:
         traceback.print_exc()
-        return False
+        return None
 
 def load(file=""):
     if file and file_exists(file) and match(VW_FILE_REGEX, file):
@@ -91,10 +91,10 @@ def load_dialog(file=""):
         with askopenfile(mode="rb", initialdir=FILES_DIR, initialfile=file) as f:
             return pickle.load(f)
     except AttributeError:
-        return False
+        return None
     except Exception:
         traceback.print_exc()
-        return False
+        return None
     
 def add_vw_extension_to_filename_string_if_missing(file):
     assert file
@@ -105,7 +105,7 @@ def add_vw_extension_to_filename_string_if_missing(file):
 
 def get_ordered_list_of_filenames_in_save_directory():
     try:
-        f = [file for file in os.listdir(FILES_DIR) if file.endswith(".vw")]
+        f = [file for file in os.listdir(FILES_DIR) if file.endswith(VW_EXTENSION)]
         f.sort()
         return f
     except Exception:
