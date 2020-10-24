@@ -12,10 +12,10 @@ import sys
 import inspect
 
 from collections import OrderedDict as odict
+from vacuumworld.utils.saveload import SaveStateManager
 from PIL import Image, ImageTk
 from webbrowser import open_new_tab
 from screeninfo import get_monitors
-
 
 from .slider import Slider
 from .vwtooltips import create_tooltip
@@ -28,7 +28,8 @@ from ..core.environment.vw import Grid
 from ..core.environment.vwenvironment import init as init_environment
 from ..utils.vwutils import ignore, print_simulation_speed_message, VacuumWorldActionError
 from ..utils.autocomplete import AutocompleteEntry
-from ..utils import saveload
+from ..utils.saveload import SaveStateManager
+
 
 
 # Global variables. TODO: change this.
@@ -37,6 +38,7 @@ main_menu = None
 main_interface = None
 grid = None
 minds = None
+save_state_manager: SaveStateManager = None
 
 #might need to change this for the real package...
 PATH = os.path.dirname(os.path.dirname(__file__))
@@ -319,7 +321,7 @@ class VWInterface(tk.Frame):
         self.buttons['load'] = VWButton(self.saveload_frame, VWInterface._scale(Image.open(os.path.join(BUTTON_PATH, buttons['load'])), BUTTON_SIZE), lambda: _load(self.load_menu), tip="Click here to load a savestate.")
         
         #entry box
-        files = saveload.get_ordered_list_of_filenames_in_save_directory()
+        files = save_state_manager.get_ordered_list_of_filenames_in_save_directory()
         self.load_menu = AutocompleteEntry(files, 3, self.mid_frame, font=ROOT_FONT, bg="#cccccc", fg="#000000")
         self.load_menu.bind('<Button-1>', lambda _: self.deselect())
         self.load_menu.pack(side='top')
@@ -675,10 +677,12 @@ def _open_github_page():
 
 def _save(saveloadmenu):
     file = saveloadmenu.var.get()
-    result = saveload.save(grid, file)
+
+    global save_state_manager
+    result = save_state_manager.save_state(grid, file)
 
     if result:
-        saveloadmenu.lista = saveload.get_ordered_list_of_filenames_in_save_directory()
+        saveloadmenu.lista = save_state_manager.get_ordered_list_of_filenames_in_save_directory()
         print("The current grid was successfully saved.")
     else:
         print("The current grid was not saved.")
@@ -686,7 +690,9 @@ def _save(saveloadmenu):
 
 def _load(saveloadmenu):
     file = saveloadmenu.var.get()
-    data = saveload.load(file)
+
+    global save_state_manager
+    data = save_state_manager.load_state(file)
 
     if data:
         main_interface.grid_scale_slider.set_position(data.dim - grid.GRID_MIN_SIZE)
@@ -879,6 +885,7 @@ def run(_minds, skip: bool=False, play: bool=False, speed: float=0.0, load: str=
 
 def do_run(_minds, skip: bool=False, play: bool=False, speed: float=0.0, load: str=None):
     try:
+        global root
         global main_menu
         global main_interface
         global grid
@@ -890,7 +897,9 @@ def do_run(_minds, skip: bool=False, play: bool=False, speed: float=0.0, load: s
         user_mind = 0
 
         grid = Grid(INITIAL_ENVIRONMENT_DIM)
-        saveload.init()
+        
+        global save_state_manager
+        save_state_manager = SaveStateManager()
         
         if not skip:    
             main_menu = VWMainMenu(root, _start, _finish)
@@ -902,16 +911,24 @@ def do_run(_minds, skip: bool=False, play: bool=False, speed: float=0.0, load: s
         if play:
             if load is None:
                 raise ValueError("argument \"load\" must be specified if argument play = True")
-            load = saveload.add_vw_extension_to_filename_string_if_missing(load)
-            files = saveload.get_ordered_list_of_filenames_in_save_directory()
+            load = save_state_manager.add_vw_extension_to_filename_string_if_missing(load)
+            files = save_state_manager.get_ordered_list_of_filenames_in_save_directory()
             if not load in files:
                 raise ValueError("invalid file name: " + str(load) + " valid files include:" + str(files))
             print("INFO: autoplay enabled")
             
         if load is not None:
-            grid.replace_all(saveload.load(load))
-            main_interface._redraw()
-            print("INFO: successfully loaded: ", load)
+            data: Grid = save_state_manager.load_state(load)
+
+            if data:
+                grid.replace_all(data)
+                main_interface._redraw()
+
+                #TODO: recenter the window on every resolution.
+
+                print("INFO: successfully loaded {}".format(load))
+            else:
+                print("ERROR: failed to load {}".format(load))
             
         global reset, after_hook
 
