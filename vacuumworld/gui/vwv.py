@@ -920,7 +920,7 @@ def do_run(_minds, skip: bool=False, play: bool=False, speed: float=0.0, load: s
             data: Grid = save_state_manager.load_state(load)
 
             if data:
-                grid.replace_all(save_state_manager.load_state(load))
+                grid.replace_all(data)
                 main_interface._redraw()
                 print("INFO: successfully loaded {}".format(load))
             else:
