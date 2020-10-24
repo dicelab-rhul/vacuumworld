@@ -846,7 +846,7 @@ def _scale(scale):
     ROOT_FONT = ('Verdana', int(10 * SCALE_MODIFIER), '')
 
 
-def run(_minds, skip : bool = False, play : bool = False , speed : float = 0 , load : str = None , scale : float = 0, tooltips: bool = True):
+def run(_minds, skip: bool=False, play: bool=False, speed: float=0.0, load: str=None, scale: float=0.0, tooltips: bool=True):
     if speed < 0 or speed > 1:
         raise ValueError("Invalid simulation speed argument {0} must be in the range [0-1]".format(speed))
     if scale < 0:
@@ -869,7 +869,11 @@ def run(_minds, skip : bool = False, play : bool = False , speed : float = 0 , l
     root.configure(background='white')
     
     _scale(scale)
+
+    do_run(_minds, skip, play, speed, load)
    
+
+def do_run(_minds, skip: bool=False, play: bool=False, speed: float=0.0, load: str=None):
     try:
         global main_menu
         global main_interface
