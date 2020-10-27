@@ -6,6 +6,7 @@
     "skip": false,
     "play": false,
     "file_to_load": "",
+    "default_monitor_number": 0,
     "scale": -1,
     "x_scale": -1,
     "y_scale": -1,

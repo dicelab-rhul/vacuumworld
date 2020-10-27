@@ -40,7 +40,7 @@ class VWSimulationWindow(Frame):
 
 
         self.configure(background=self.__config["bg_colour"])
-        self.canvas = Canvas(self, width=self.__config["grid_size"]+self.__config["location_size"]+4, height=self.__config["grid_size"]+1, bd=0,highlightthickness=0)
+        self.canvas: Canvas = Canvas(self, width=self.__config["grid_size"]+self.__config["location_size"]+4, height=self.__config["grid_size"]+1, bd=0,highlightthickness=0)
 
         self._init_buttons()
 
@@ -168,10 +168,10 @@ class VWSimulationWindow(Frame):
     
     def _init_size_slider(self, parent, length=250):
         increments = Grid.GRID_MAX_SIZE - Grid.GRID_MIN_SIZE
-        self.grid_scale_slider = Slider(parent, self.__config, self.on_resize, self.on_resize_slide, None, length * self.__config["scale"],
+        self.grid_scale_slider = Slider(parent, self.__config, self.on_resize, self.on_resize_slide, length * self.__config["scale"],
                                         16 * self.__config["scale"], slider_width = length * self.__config["scale"] / (increments * 3),
                                         increments=increments,
-                                        start=(self.__config["grid_size"]/self.__config["location_size"]) - Grid.GRID_MIN_SIZE)
+                                        start=self.__config["grid_size"]/self.__config["location_size"] - Grid.GRID_MIN_SIZE)
         self.grid_scale_slider.pack(side="top")
         
     def _init_dragables(self):
@@ -439,7 +439,7 @@ class VWSimulationWindow(Frame):
         y = int(event.y / inc)
         coord = Coord(x,y)
         #update the environment state
-        colour, obj = drag_manager.key
+        colour, obj = drag_manager.get_key()
         print(colour, obj)
         if obj == "dirt":
             dirt1 =  self.__grid.dirt(colour)
@@ -457,6 +457,7 @@ class VWSimulationWindow(Frame):
         print("INFO: drop", self.__grid.state[coord])
         
         self.select(event)
+        self._redraw()
 
     def show_hide_side(self, state):
         for item in self.dragables.keys():

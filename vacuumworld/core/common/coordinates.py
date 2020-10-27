@@ -15,8 +15,6 @@ class Coord(NamedTuple):
     x : int
     y : int
 
-    # TODO: add assertions or checks on the nature of `other`
-
     def __add__(self, other):
         if isinstance(other, int):
             return Coord(self[0] + other, self[1] + other)

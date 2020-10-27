@@ -21,7 +21,7 @@ import os
 
 
 
-__all__ = ["run", Coord, Direction, Orientation, Colour, Observation, Location, Agent, Dirt, action, coord, direction, orientation, colour, observation, location, agent, dirt]
+__all__: list = ["run", Coord, Direction, Orientation, Colour, Observation, Location, Agent, Dirt, action, coord, direction, orientation, colour, observation, location, agent, dirt]
 
 
 def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, **kwargs):
@@ -37,21 +37,19 @@ def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, *
         vwgui.init_gui_conf(minds={Colour.white:white_mind, Colour.green:green_mind, Colour.orange:orange_mind}, **kwargs)
         vwgui.start()
         vwgui.join()
-
-   
-    except KeyboardInterrupt: # CTRL+C or a direct SIGINT.
-        print("Stopping the system due to a keyboard interrupt or SIGINT.")
-        vwgui.finish()
-        exit(0)
+    except KeyboardInterrupt:
+        print("Received a SIGINT (possibly via CTRL+C). Stopping...")
+        vwgui.kill()
+        vwgui.join()
 
 
 def load_config() -> dict:
     with open("config.json") as f: #TODO: magic string.
         config: dict = load(fp=f)
 
-    #TODO: check the monitor number.
-    config["screen_width"] = get_monitors()[0].width
-    config["screen_height"] = get_monitors()[0].height
+    #TODO: check the monitor number, rather than using the default one.
+    config["screen_width"] = get_monitors()[config["default_monitor_number"]].width
+    config["screen_height"] = get_monitors()[config["default_monitor_number"]].height
     config["x_scale"] = float(config["screen_width"] / config["base_screen_width"])
     config["y_scale"] = float(config["screen_height"] / config["base_screen_height"])
 
