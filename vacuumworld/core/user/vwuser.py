@@ -178,3 +178,4 @@ class MediumUser(User):
 
 #the users that can be used in vacuumworld
 USERS = [EasyUser, MediumUser]
+DIFFICULTY_LEVELS: int = len(USERS)

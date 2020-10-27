@@ -104,7 +104,7 @@ class VWMind(Mind):
         try:
             VWMind.validate_actions(actions)
             for action in actions:
-                if action is not None:
+                if action is not None and action != idle():
                     self.execute(action)
             
         except VacuumWorldActionError as vwe:

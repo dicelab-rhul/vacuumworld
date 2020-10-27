@@ -13,6 +13,8 @@ from pystarworlds.Agent import Mind
 
 from ..core.common.colour import Colour
 
+import os
+
 
 
 class VacuumWorldInternalError(Exception):
@@ -22,6 +24,11 @@ class VacuumWorldActionError(VacuumWorldInternalError):
     
     def __init__(self, message):
         super(VacuumWorldActionError, self).__init__("for agent: " + caller_id() + "\n      " + message)
+
+
+def get_location_img_files(path):
+    return [file for file in os.listdir(path) if file.endswith(".png")]
+
 
 def caller_id():
     caller = currentframe().f_back
@@ -36,8 +43,10 @@ def caller_id():
             return None # TODO: this is a hack to prevent a crash when VW is closed.
     return caller.f_locals['self'].body.ID
 
+
 def warn_agent(message, *args):
     print("WARNING: " + message.format(caller_id(), *args))
+
 
 def process_minds(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, observers={}):
     assert default_mind is not None or white_mind is not None and green_mind is not None and orange_mind is not None
@@ -60,8 +69,10 @@ def process_minds(default_mind=None, white_mind=None, green_mind=None, orange_mi
     
     return white_mind, green_mind, orange_mind
 
+
 def raise_static_modification_error(agent, name, _):
     raise VacuumWorldInternalError("Agent: {0} tried to modify the static field: {1} this is cheating!".format(agent, name))
+
 
 def observe(mind, observers):
     for obs in observers:
@@ -77,8 +88,10 @@ def observe(mind, observers):
     type(mind).__setattr__ = sneaky_setattr
     return mind
 
+
 def print_observer(agent, name, value):
     print("Agent {0} updated {1}: {2}".format(agent, name, value))
+
 
 def validate_mind(mind, colour):
     
@@ -105,8 +118,10 @@ def validate_mind(mind, colour):
         else:
             raise VacuumWorldInternalError("{0} agent: must define method: {1}".format(colour, fun))
 
+
 def print_simulation_speed_message(time_step):
     print("INFO: simulation speed set to {:1.4f} s/cycle".format(time_step))
+
 
 def ignore(obj):
     if not obj:
