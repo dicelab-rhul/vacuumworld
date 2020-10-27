@@ -29,6 +29,10 @@ class VWGUI(Thread):
         self.__grid: Grid = None # Programmatic representation of the VW grid (not a GUI element)
         self.__save_state_manager: SaveStateManager = SaveStateManager()
         self.__already_centered: bool = False
+        self.__forceful_stop: bool = False
+
+    def kill(self) -> None:
+        self.__forceful_stop = True
 
     def init_gui_conf(self, minds: dict, skip: bool=False, play: bool=False, speed: float=0.0, load: str=None, scale: float=0.0, tooltips: bool=True) -> None:
         try:
@@ -82,7 +86,7 @@ class VWGUI(Thread):
 
         self.__root = Tk()
         self.__root.title("VacuumWorld v{}".format(self.__config["version_number"]))
-        self.__root.protocol("WM_DELETE_WINDOW", self.__finish)
+        self.__root.protocol("WM_DELETE_WINDOW", self.kill)
         self.__root.configure(background=self.__config["bg_colour"])
 
         if self.__config["file_to_load"]:
@@ -92,7 +96,16 @@ class VWGUI(Thread):
 
         self.__show_appropriate_window()
         self.__root.after(1000, lambda:{})
-        self.__root.mainloop()
+
+        self.__loop()
+
+    def __loop(self) -> None:
+        while True:
+            if self.__forceful_stop:
+                break
+            else:
+                self.__root.update_idletasks()
+                self.__root.update()
 
     def __show_appropriate_window(self) -> None:
         if not self.__config["skip"]:
@@ -175,8 +188,6 @@ class VWGUI(Thread):
 
         if self.__root is not None:
             self.__root.destroy()
-
-        exit(0)
 
     def __guide(self) -> None:
         open_new_tab(url=self.__config["project_repo_url"])

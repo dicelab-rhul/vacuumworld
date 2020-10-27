@@ -168,10 +168,10 @@ class VWSimulationWindow(Frame):
     
     def _init_size_slider(self, parent, length=250):
         increments = Grid.GRID_MAX_SIZE - Grid.GRID_MIN_SIZE
-        self.grid_scale_slider = Slider(parent, self.__config, self.on_resize, self.on_resize_slide, None, length * self.__config["scale"],
+        self.grid_scale_slider = Slider(parent, self.__config, self.on_resize, self.on_resize_slide, length * self.__config["scale"],
                                         16 * self.__config["scale"], slider_width = length * self.__config["scale"] / (increments * 3),
                                         increments=increments,
-                                        start=(self.__config["grid_size"]/self.__config["location_size"]) - Grid.GRID_MIN_SIZE)
+                                        start=self.__config["grid_size"]/self.__config["location_size"] - Grid.GRID_MIN_SIZE)
         self.grid_scale_slider.pack(side="top")
         
     def _init_dragables(self):
