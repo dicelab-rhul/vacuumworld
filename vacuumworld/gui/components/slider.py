@@ -4,15 +4,15 @@ Created on Sat Jun  1 20:05:16 2019
 
 @author: ben
 """
-import tkinter as tk
+from tkinter import Canvas
 
-from ..utils.vwutils import ignore
+from ...utils.vwutils import ignore
 
 
 
-class Slider(tk.Canvas):
-    def __init__(self, parent, release_callback, slide_callback, img, width, height, increments = 0, slider_width = 8, start = 0, **kwargs):
-        super(Slider, self).__init__(parent, width=width, height=height, bd=0, highlightthickness=0, relief='ridge', bg='white', **kwargs)
+class Slider(Canvas):
+    def __init__(self, parent, config: dict, release_callback, slide_callback, img, width, height, increments = 0, slider_width = 8, start = 0, **kwargs):
+        super(Slider, self).__init__(parent, width=width, height=height, bd=0, highlightthickness=0, relief="ridge", bg=config["bg_colour"], **kwargs)
         self.release_callback = release_callback
         self.slide_callback = slide_callback
         
@@ -30,8 +30,8 @@ class Slider(tk.Canvas):
             self.inc = start
             
 
-        self.background_item = self.create_rectangle(0,0, width-1, height-1, fill='white')
-        self.slider_item = self.create_rectangle(self.x, 0, self.x + self.slide_item_dim, height, fill='black')
+        self.background_item = self.create_rectangle(0,0, width-1, height-1, fill=config["bg_colour"])
+        self.slider_item = self.create_rectangle(self.x, 0, self.x + self.slide_item_dim, height, fill=config["fg_colour"])
         self.bind("<ButtonPress-1>", self.on_start)
         self.bind("<B1-Motion>", self.on_drag)
         self.bind("<ButtonRelease-1>", self.on_drop)

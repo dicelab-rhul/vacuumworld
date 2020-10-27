@@ -12,13 +12,12 @@ import sys
 import inspect
 
 from collections import OrderedDict as odict
-from vacuumworld.utils.saveload import SaveStateManager
 from PIL import Image, ImageTk
 from webbrowser import open_new_tab
 from screeninfo import get_monitors
 
-from .slider import Slider
-from .vwtooltips import create_tooltip
+from .components.slider import Slider
+from .components.buttons.vwtooltips import create_tooltip
 from ..core.common.colour import Colour
 from ..core.common.coordinates import Coord
 from ..core.common.direction import Direction
