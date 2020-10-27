@@ -42,6 +42,7 @@ def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, *
     except KeyboardInterrupt: # CTRL+C or a direct SIGINT.
         print("Stopping the system due to a keyboard interrupt or SIGINT.")
         vwgui.finish()
+        exit(0)
 
 
 def load_config() -> dict:
