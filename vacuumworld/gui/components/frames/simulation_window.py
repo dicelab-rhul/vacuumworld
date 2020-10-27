@@ -40,7 +40,7 @@ class VWSimulationWindow(Frame):
 
 
         self.configure(background=self.__config["bg_colour"])
-        self.canvas = Canvas(self, width=self.__config["grid_size"]+self.__config["location_size"]+4, height=self.__config["grid_size"]+1, bd=0,highlightthickness=0)
+        self.canvas: Canvas = Canvas(self, width=self.__config["grid_size"]+self.__config["location_size"]+4, height=self.__config["grid_size"]+1, bd=0,highlightthickness=0)
 
         self._init_buttons()
 
@@ -439,7 +439,7 @@ class VWSimulationWindow(Frame):
         y = int(event.y / inc)
         coord = Coord(x,y)
         #update the environment state
-        colour, obj = drag_manager.key
+        colour, obj = drag_manager.get_key()
         print(colour, obj)
         if obj == "dirt":
             dirt1 =  self.__grid.dirt(colour)
@@ -457,6 +457,7 @@ class VWSimulationWindow(Frame):
         print("INFO: drop", self.__grid.state[coord])
         
         self.select(event)
+        self._redraw()
 
     def show_hide_side(self, state):
         for item in self.dragables.keys():

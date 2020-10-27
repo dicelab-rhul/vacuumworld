@@ -29,9 +29,9 @@ class CanvasDragManager():
         x = int(event.x / inc) * inc + (inc / 2) + 1
         y = int(event.y / inc) * inc + (inc / 2) + 1
 
-        if event.x < 0 or event.y < 0:
+        if event.x < 0 or event.y < 0 or not self.in_bounds(x, y):
             self.canvas.itemconfigure(self.drag, state="hidden")
-        elif x <= self.__config["grid_size"] and y <= self.__config["grid_size"]:
+        elif x <= self.__config["grid_size"] and y <= self.__config["grid_size"] and self.in_bounds(x, y):
             self.canvas.itemconfigure(self.drag, state="normal")
         
         # To prevent unnecessary re-renderings.
@@ -50,3 +50,12 @@ class CanvasDragManager():
 
     def in_bounds(self, x, y) -> bool:
         return x < self.__config["grid_size"] and x > 0 and y < self.__config["grid_size"] and y > 0
+
+    def get_key(self) -> tuple:
+        return self.key
+
+    def get_drag(self):
+        return self.drag
+
+    def set_drag(self, drag) -> None:
+        self.drag = drag
