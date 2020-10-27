@@ -2,6 +2,7 @@ from tkinter import Tk
 from sys import exit, exc_info
 from inspect import getsourcefile
 from webbrowser import open_new_tab
+from threading import Thread
 
 from .components.frames.initial_window import VWInitialWindow
 from .components.frames.simulation_window import VWSimulationWindow
@@ -15,8 +16,10 @@ import traceback
 
 
 
-class VWGUI():
+class VWGUI(Thread):
     def __init__(self, config: dict) -> None:
+        super(VWGUI, self).__init__()
+
         self.__config: dict = config
         self.__minds: dict = {}
         self.__user_mind: int = config["default_user_mind_level"]
@@ -27,16 +30,14 @@ class VWGUI():
         self.__save_state_manager: SaveStateManager = SaveStateManager()
         self.__already_centered: bool = False
 
-    def run(self, minds: dict, skip: bool=False, play: bool=False, speed: float=0.0, load: str=None, scale: float=0.0, tooltips: bool=True) -> None:
+    def init_gui_conf(self, minds: dict, skip: bool=False, play: bool=False, speed: float=0.0, load: str=None, scale: float=0.0, tooltips: bool=True) -> None:
         try:
+            assert minds is not None
+
             self.__minds = minds
             VWGUI.__validate_arguments(play=play, file_to_load=load, speed=speed, scale=scale)
             self.__override_default_config(skip=skip, play=play, speed=speed, file_to_load=load, scale=scale, tooltips=tooltips)
             self.__scale_config_parameters()
-            self.__do_run()
-        except KeyboardInterrupt: # CTRL+C or a direct SIGINT.
-            print("Stopping the system due to a keyboard interrupt or SIGINT.")
-            self.__finish()
         except Exception as e:
             self.__clean_exit(exc=e)
 
@@ -76,7 +77,7 @@ class VWGUI():
         self.__config["root_font"][1] = int(self.__config["root_font"][1] * self.__config["scale"])
         self.__config["time_step"] = self.__config["time_step"] * self.__config["time_step_modifier"] + self.__config["time_step_min"]
 
-    def __do_run(self) -> None:
+    def run(self) -> None:
         Tk.report_callback_exception = self.__clean_exit
 
         self.__root = Tk()
@@ -90,6 +91,7 @@ class VWGUI():
             self.__create_new_grid()
 
         self.__show_appropriate_window()
+        self.__root.after(1000, lambda:{})
         self.__root.mainloop()
 
     def __show_appropriate_window(self) -> None:
@@ -160,6 +162,9 @@ class VWGUI():
         if  self.__root is not None:
             self.__root.destroy()
             exit(-1)
+
+    def finish(self) -> None:
+        self.__finish()
 
     def __finish(self) -> None:
         if self.__simulation_window is not None:

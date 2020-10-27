@@ -14,7 +14,6 @@ from vacuumworld.core.dirt.dirt_interface import Dirt, dirt
 from vacuumworld.core.action import action
 
 from signal import signal, SIGTSTP, SIG_IGN
-from sys import exit
 from json import load
 from screeninfo import get_monitors
 
@@ -32,15 +31,17 @@ def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, *
     white_mind, green_mind, orange_mind = process_minds(default_mind, white_mind, green_mind, orange_mind)
 
     config: dict = load_config()
+    vwgui: VWGUI = VWGUI(config=config)
 
     try:
-        #run_gui({Colour.white:white_mind, Colour.green:green_mind, Colour.orange:orange_mind}, **kwargs)
-        vwgui: VWGUI = VWGUI(config=config)
-        vwgui.run({Colour.white:white_mind, Colour.green:green_mind, Colour.orange:orange_mind}, **kwargs)
+        vwgui.init_gui_conf(minds={Colour.white:white_mind, Colour.green:green_mind, Colour.orange:orange_mind}, **kwargs)
+        vwgui.start()
+        vwgui.join()
+
    
-    except KeyboardInterrupt:
-        print("\nReceived a keyboard interrupt. Exiting...")
-        exit(-1)
+    except KeyboardInterrupt: # CTRL+C or a direct SIGINT.
+        print("Stopping the system due to a keyboard interrupt or SIGINT.")
+        vwgui.finish()
 
 
 def load_config() -> dict:
