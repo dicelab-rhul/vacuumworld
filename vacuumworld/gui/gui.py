@@ -34,8 +34,9 @@ class VWGUI():
             self.__override_default_config(skip=skip, play=play, speed=speed, file_to_load=load, scale=scale, tooltips=tooltips)
             self.__scale_config_parameters()
             self.__do_run()
-        except KeyboardInterrupt as sig: # CTRL+C or a direct SIGINT.
-            self.__clean_exit(reason=sig)
+        except KeyboardInterrupt: # CTRL+C or a direct SIGINT.
+            print("Stopping the system due to a keyboard interrupt or SIGINT.")
+            self.__finish()
         except Exception as e:
             self.__clean_exit(exc=e)
 
@@ -101,7 +102,7 @@ class VWGUI():
         try:
             loaded_grid: Grid = self.__load_file(file=self.__config["file_to_load"])
             self.__create_new_grid(dim=loaded_grid.dim)
-            self.__grid.replace_all()
+            self.__grid.replace_all(grid=loaded_grid)
         except Exception:
             print("Something went wrong. Could not load any grid from {}".format(self.__config["file_to_load"]))
 
@@ -132,7 +133,6 @@ class VWGUI():
 
         if self.__config["play"]:
             self.__simulation_window.play()
-
 
     def __clean_exit(self, *args, **kwargs) -> None:
         ignore(args)
