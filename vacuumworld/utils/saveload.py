@@ -16,6 +16,7 @@ from re import match
 from random import choice
 from string import ascii_letters
 from tkinter.filedialog import asksaveasfile, askopenfile
+from typing import List
 
 
 
@@ -111,7 +112,7 @@ class SaveStateManager():
             file += self.__vw_extension
         return file
 
-    def get_ordered_list_of_filenames_in_save_directory(self) -> list:
+    def get_ordered_list_of_filenames_in_save_directory(self) -> List[str]:
         try:
             f = [file for file in os.listdir(self.__files_dir) if file.endswith(self.__vw_extension)]
             f.sort()
