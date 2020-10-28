@@ -1,5 +1,5 @@
 from tkinter import Tk, Frame, Canvas, Image as Img
-from typing import Callable
+from typing import Callable, Dict
 from PIL import ImageTk, Image
 
 from ..buttons.vwbutton import VWButton
@@ -23,9 +23,9 @@ class VWInitialWindow(Frame):
         self.__button_frame: Frame = Frame(self)
 
         self.__canvas.pack()
-        self.__buttons: dict = {}
+        self.__buttons: Dict[str, VWButton] = {}
 
-        button_image: Image = Image.open(os.path.join(self.__config["button_images_path"], "button.png"))
+        button_image: Img = Image.open(os.path.join(self.__config["button_images_path"], "button.png"))
         button_image = button_image.resize((int(button_image.width), int(button_image.height)), Image.BICUBIC)
 
 
@@ -40,6 +40,5 @@ class VWInitialWindow(Frame):
 
         # Note: pack() needs to be called by the caller.
     
-    #TODO: is this useful?
     def get_image(self) -> Img:
         return self.__image

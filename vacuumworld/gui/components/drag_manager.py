@@ -1,11 +1,11 @@
 from tkinter import Canvas, Event, Image
-from typing import Callable
+from typing import Callable, Tuple
 
 from ...core.environment.vw import Grid
 
 
 class CanvasDragManager():
-    def __init__(self, config: dict, key: tuple, grid: Grid, canvas: Canvas, item: Image, on_start_callback: Callable, on_drop_callback: Callable) -> None:
+    def __init__(self, config: dict, key: Tuple[str, str], grid: Grid, canvas: Canvas, item: Image, on_start_callback: Callable, on_drop_callback: Callable) -> None:
         self.__config: dict = config
         self.__x: int = 0
         self.__y: int = 0
@@ -56,7 +56,7 @@ class CanvasDragManager():
     def in_bounds(self, x: int, y: int) -> bool:
         return x < self.__config["grid_size"] and x > 0 and y < self.__config["grid_size"] and y > 0
 
-    def get_key(self) -> tuple:
+    def get_key(self) -> Tuple[str, str]:
         return self.__key
 
     def get_drag(self) -> Image:

@@ -36,7 +36,7 @@ class VWGUI(Thread):
 
     def init_gui_conf(self, minds: dict, skip: bool=False, play: bool=False, speed: float=0.0, load: str=None, scale: float=0.0, tooltips: bool=True) -> None:
         try:
-            assert minds is not None
+            assert minds
 
             self.__minds = minds
             VWGUI.__validate_arguments(play=play, file_to_load=load, speed=speed, scale=scale)
@@ -48,13 +48,13 @@ class VWGUI(Thread):
     @staticmethod
     def __validate_arguments(play: bool, speed: float, file_to_load: str, scale: str) -> None:
         if play and not file_to_load:
-            raise ValueError("Argument \"load\" must be specified if argument \"play\" = True") # TODO: magic strings.
+            raise ValueError("Argument \"load\" must be specified if argument \"play\" = True")
 
         if speed < 0 or speed >= 1:
-            raise ValueError("Argument \"speed\" must be >=0 and < 1.") # TODO: magic string and magic numbers.
+            raise ValueError("Argument \"speed\" must be >=0 and < 1.")
 
-        if scale < 0: #TODO: define and check for a sane upper bound.
-            raise ValueError("Argument \"scale\" must be > 0.") # TODO: magic string and magic numbers.
+        if scale < 0 or scale >= 2.5:
+            raise ValueError("Argument \"scale\" must be > 0 and <= 2.5.")
 
     def __override_default_config(self, skip: bool=False, play: bool=False, speed: float=0.0, file_to_load: str=None, scale: float=1.0, tooltips: bool=True) -> None:
         self.__config["white_mind_filename"] = getsourcefile(self.__minds[Colour.white].__class__)
@@ -95,8 +95,6 @@ class VWGUI(Thread):
             self.__create_new_grid()
 
         self.__show_appropriate_window()
-        self.__root.after(1000, lambda:{})
-
         self.__loop()
 
     def __loop(self) -> None:
@@ -128,12 +126,12 @@ class VWGUI(Thread):
         self.__grid = Grid(dim=dim)
 
     def __show_initial_window(self) -> None:
-        self.__initial_window = VWInitialWindow(root=self.__root, config=self.__config, _start=self.__start, _exit=self.__finish, _guide=self.__guide)
+        self.__initial_window: VWInitialWindow = VWInitialWindow(root=self.__root, config=self.__config, _start=self.__start, _exit=self.__finish, _guide=self.__guide)
         self.__initial_window.pack()
         self.__center_and_adapt_to_resolution()
 
     def __show_simulation_window(self) -> None:
-        self.__simulation_window = VWSimulationWindow(
+        self.__simulation_window: VWSimulationWindow = VWSimulationWindow(
             root=self.__root, config=self.__config, minds=self.__minds, user_mind=self.__user_mind, grid=self.__grid,
             _guide=self.__guide, _save=self.__save, _load=self.__load, _finish=self.__finish, _error=self.__clean_exit)
 
@@ -143,7 +141,7 @@ class VWGUI(Thread):
         self.__root.deiconify()
 
         if self.__config["skip"] or self.__config["file_to_load"]:
-            self.__simulation_window._redraw()
+            self.__simulation_window.redraw()
             self.__center_and_adapt_to_resolution()
 
         if self.__config["play"]:
@@ -227,12 +225,12 @@ class VWGUI(Thread):
 
     def __center_and_adapt_to_resolution(self) -> None:
         if not self.__already_centered:
-            w = self.__root.winfo_reqwidth() * self.__config["x_scale"]
-            h = self.__root.winfo_reqheight() * self.__config["y_scale"]
-            sw = self.__root.winfo_screenwidth()
-            sh = self.__root.winfo_screenheight()
-            x = (sw / 2) - w - w/4 + w/26
-            y = (sh / 2) - h - h/2
+            w: int = self.__root.winfo_reqwidth() * self.__config["x_scale"]
+            h: int = self.__root.winfo_reqheight() * self.__config["y_scale"]
+            sw: int = self.__root.winfo_screenwidth()
+            sh: int = self.__root.winfo_screenheight()
+            x: int = (sw / 2) - w - w/4 + w/26
+            y: int = (sh / 2) - h - h/2
             self.__root.x = x
             self.__root.y = y
             self.__root.geometry("+%d+%d" % (x, y))
