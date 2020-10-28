@@ -1,4 +1,4 @@
-from typing import Iterable, Union
+from typing import Iterable, List, Union
 from random import choice, choices
 
 from ..common.direction import Direction
@@ -47,17 +47,17 @@ In this example the agent will spin around anti-clockwise - turning once per cyc
 '''
 
 
-def move():
+def move() -> List[str]:
     '''
         Moves an agent one tile in the direction it is facing.
 
         Returns: 
             ``['move',]``
     '''
-    return ['move',]
+    return ["move",]
 
 
-def turn(direction: Union[Direction, str]):
+def turn(direction: Union[Direction, str]) -> List[Union[str, Direction]]:
     '''
         Turns an agent in the given direction ``left`` or``right``. 
         
@@ -67,10 +67,10 @@ def turn(direction: Union[Direction, str]):
 
     assert callable(direction)
 
-    return ['turn', direction]
+    return ["turn", direction]
 
 
-def clean():
+def clean() -> List[str]:
     '''
         Cleans any compatible dirt at an agents current location. 
         
@@ -83,20 +83,20 @@ def clean():
         Returns:
             ``['clean',]``
     '''
-    return ['clean',]
+    return ["clean",]
 
 
-def idle():
+def idle() -> List[str]:
     '''
         The agent is idle (no action is attempted). This is the equivalent of returning ``None``.
         
         Returns:
             ``['idle',]``
     '''
-    return ['idle',]
+    return ["idle",]
 
 
-def speak(message: Union[str, list, tuple, float, bool], *to):
+def speak(message: Union[str, list, tuple, float, bool], *to) -> List[Union[str, list, tuple, int, float, bool, Iterable]]:
     '''
         Sends the given ``message`` to recipient agents specified by their ``name`` in ``*to``. If no recipients are specified the message with be broadcast to all agents.
         
@@ -112,10 +112,10 @@ def speak(message: Union[str, list, tuple, float, bool], *to):
     assert type(message) in [str, list, tuple, float, bool]
     assert isinstance(to, Iterable)
 
-    return ['speak', message, to]
+    return ["speak", message, to]
 
 
-def drop(colour: Colour):
+def drop(colour: Colour) -> List[Union[str, Colour]]:
     '''
         The agent will drop dirt of the given colour at its current location. Only a user agent can perform this action.
         
@@ -128,10 +128,10 @@ def drop(colour: Colour):
 
     assert colour in [Colour.green, Colour.orange]
 
-    return ['drop', colour]
+    return ["drop", colour]
 
 
-def random(actions, p=None):
+def random(actions: List[list], p=None) -> list: # An action is represented as a list
     '''
         Selects a random action from ``actions`` with given probabilities ``p``. 
         If ``p`` is ``None`` then the action will be selected uniformly.
