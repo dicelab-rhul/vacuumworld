@@ -1,61 +1,72 @@
+from tkinter import Canvas, Event, Image
+from typing import Callable
+
+from ...core.environment.vw import Grid
+
+
 class CanvasDragManager():
-    def __init__(self, config, key, grid, canvas, item, on_start, on_drop):
+    def __init__(self, config: dict, key: tuple, grid: Grid, canvas: Canvas, item: Image, on_start_callback: Callable, on_drop_callback: Callable) -> None:
         self.__config: dict = config
-        self.x = 0
-        self.y = 0
-        self.canvas = canvas
+        self.__x: int = 0
+        self.__y: int = 0
+        self.__canvas: Canvas = canvas
 
-        self._on_start = on_start
-        self._on_drop = on_drop
-        self.canvas.tag_bind(item, "<ButtonPress-1>", self.on_start)
-        self.canvas.tag_bind(item, "<B1-Motion>", self.on_drag)
-        self.canvas.tag_bind(item, "<ButtonRelease-1>", self.on_drop)
+        self.__on_start_callback: Callable = on_start_callback
+        self.__on_drop_callback: Callable = on_drop_callback
+        self.__canvas.tag_bind(item, "<ButtonPress-1>", self.on_start)
+        self.__canvas.tag_bind(item, "<B1-Motion>", self.on_drag)
+        self.__canvas.tag_bind(item, "<ButtonRelease-1>", self.on_drop)
 
-        self.key = key
-        self.drag_image = None
-        self.drag = None
-        self.dragging = False
-        self.grid = grid
+        self.__key: tuple = key
+        self.__drag_image: Image
+        self.__drag: Image
+        self.__dragging: bool = False
+        self.__grid: Grid = grid
 
-    def on_start(self, event):
-        if not self.dragging:
-            self._on_start(event)
-            self.dragging = True
-            self.x = event.x
-            self.y = event.y
+    def on_start(self, event: Event) -> None:
+        if not self.__dragging:
+            self.__on_start_callback(event)
+            self.__dragging = True
+            self.__x = event.x
+            self.__y = event.y
 
-    def on_drag(self, event):
-        inc = self.__config["grid_size"] / self.grid.dim
-        x = int(event.x / inc) * inc + (inc / 2) + 1
-        y = int(event.y / inc) * inc + (inc / 2) + 1
+    def on_drag(self, event: Event) -> None:
+        inc: int = self.__config["grid_size"] / self.__grid.dim
+        x: int = int(event.x / inc) * inc + (inc / 2) + 1
+        y: int = int(event.y / inc) * inc + (inc / 2) + 1
 
         if event.x < 0 or event.y < 0 or not self.in_bounds(x, y):
-            self.canvas.itemconfigure(self.drag, state="hidden")
+            self.__canvas.itemconfigure(self.__drag, state="hidden")
         elif x <= self.__config["grid_size"] and y <= self.__config["grid_size"] and self.in_bounds(x, y):
-            self.canvas.itemconfigure(self.drag, state="normal")
+            self.__canvas.itemconfigure(self.__drag, state="normal")
         
         # To prevent unnecessary re-renderings.
-        if x != self.x or y != self.y:
-            dx = x - self.x
-            dy = y - self.y
-            self.canvas.move(self.drag, dx, dy)
-            self.x = x
-            self.y = y
+        if x != self.__x or y != self.__y:
+            dx: int = x - self.__x
+            dy: int = y - self.__y
+            self.__canvas.move(self.__drag, dx, dy)
+            self.__x = x
+            self.__y = y
 
-    def on_drop(self, event):
+    def on_drop(self, event: Event) -> None:
         if self.in_bounds(event.x, event.y):
-            self._on_drop(event, self)
-        self.dragging = False
+            self.__on_drop_callback(event, self)
+        self.__dragging = False
 
-
-    def in_bounds(self, x, y) -> bool:
+    def in_bounds(self, x: int, y: int) -> bool:
         return x < self.__config["grid_size"] and x > 0 and y < self.__config["grid_size"] and y > 0
 
     def get_key(self) -> tuple:
-        return self.key
+        return self.__key
 
-    def get_drag(self):
-        return self.drag
+    def get_drag(self) -> Image:
+        return self.__drag
 
-    def set_drag(self, drag) -> None:
-        self.drag = drag
+    def set_drag(self, drag: Image) -> None:
+        self.__drag = drag
+
+    def get_drag_image(self) -> Image:
+        return self.__drag_image
+
+    def set_drag_image(self, drag_image: Image) -> None:
+        self.__drag_image = drag_image

@@ -51,6 +51,13 @@
     "fg_colour": "#000000",
     "autocomplete_entry_bg_colour": "#CCCCCC",
     "buttons_fg_colour": "#FFFFFF",
+    "tooltips_bg_colour": "#FFFFE0",
+    "tooltips_fg_colour": "#000000",
+    "tooltips_font": [
+        "tahoma",
+        "8",
+        "normal"
+    ],
     "project_repo_url": "https://github.com/dicelab-rhul/vacuumworld",
     "initial_environment_dim": 8,
     "version_number": "4.1.9"

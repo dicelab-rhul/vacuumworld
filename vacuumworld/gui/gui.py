@@ -1,14 +1,15 @@
 from tkinter import Tk
 from sys import exit, exc_info
 from inspect import getsourcefile
+from traceback import StackSummary
 from webbrowser import open_new_tab
 from threading import Thread
 
+from .components.autocomplete import AutocompleteEntry
 from .components.frames.initial_window import VWInitialWindow
 from .components.frames.simulation_window import VWSimulationWindow
 from ..core.environment.vw import Grid
 from ..core.common.colour import Colour
-from ..utils.autocomplete import AutocompleteEntry
 from ..utils.saveload import SaveStateManager
 from ..utils.vwutils import ignore, VacuumWorldActionError
 
@@ -23,7 +24,6 @@ class VWGUI(Thread):
         self.__config: dict = config
         self.__minds: dict = {}
         self.__user_mind: int = config["default_user_mind_level"]
-        self.__root: Tk
         self.__initial_window: VWInitialWindow = None
         self.__simulation_window: VWSimulationWindow = None
         self.__grid: Grid = None # Programmatic representation of the VW grid (not a GUI element)
@@ -84,7 +84,7 @@ class VWGUI(Thread):
     def run(self) -> None:
         Tk.report_callback_exception = self.__clean_exit
 
-        self.__root = Tk()
+        self.__root: Tk = Tk()
         self.__root.title("VacuumWorld v{}".format(self.__config["version_number"]))
         self.__root.protocol("WM_DELETE_WINDOW", self.kill)
         self.__root.configure(background=self.__config["bg_colour"])
@@ -121,7 +121,7 @@ class VWGUI(Thread):
         except Exception:
             print("Something went wrong. Could not load any grid from {}".format(self.__config["file_to_load"]))
 
-    def __create_new_grid(self, dim=-1) -> None:
+    def __create_new_grid(self, dim: int=-1) -> None:
         if dim == -1:
             dim = self.__config["initial_environment_dim"]
 
@@ -154,17 +154,17 @@ class VWGUI(Thread):
         ignore(kwargs)
         
         _type, value, tb = exc_info()
-        tb =  traceback.extract_tb(tb)
-        agent_error = False
+        tb: StackSummary =  traceback.extract_tb(tb)
+        agent_error: bool = False
 
-        i = 0 # As a fallback.
+        i: int = 0 # As a fallback.
 
         for i, s in enumerate(tb):
             if s.filename in (self.__config["white_mind_filaname"], self.__config["orange_mind_filaname"], self.__config["green_mind_filaname"]):
                 agent_error = True
                 break
         
-        agent_error = agent_error or _type == VacuumWorldActionError
+        agent_error |= _type == VacuumWorldActionError
         i = int(agent_error) * i
 
         print("Traceback:\n")
