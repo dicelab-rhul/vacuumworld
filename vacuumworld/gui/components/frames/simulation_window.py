@@ -1,20 +1,20 @@
-from tkinter import Tk, Frame, Canvas, Label, StringVar, W, E, X
-from typing import Callable
+from tkinter import Tk, Frame, Canvas, Label, StringVar, W, E, X, Image as Img
+from typing import Callable, Dict, List, Tuple
 from vacuumworld.utils.saveload import SaveStateManager
 from PIL import ImageTk, Image
 from collections import OrderedDict
 
+from ..autocomplete import AutocompleteEntry
 from ..buttons.vwbutton import VWButton
 from ..buttons.vwdifficultybutton import VWDifficultyButton
 from ..slider import Slider
 from ..drag_manager import CanvasDragManager
 from ....core.environment.vw import Grid
-from ....core.environment.vwenvironment import init as init_environment
+from ....core.environment.vwenvironment import GridEnvironment, init as init_environment
 from ....core.common.coordinates import Coord
 from ....core.common.direction import Direction
 from ....core.common.orientation import Orientation
 from ....utils.vwutils import get_location_img_files, print_simulation_speed_message
-from ....utils.autocomplete import AutocompleteEntry
 
 import os
 
@@ -46,17 +46,17 @@ class VWSimulationWindow(Frame):
 
         self.canvas.configure(background=self.__config["bg_colour"])
 
-        self.canvas_dirts = {}
-        self.canvas_agents = {}
+        self.canvas_dirts: dict = {}
+        self.canvas_agents: dict = {}
 
-        self.all_images = {} #stores all PIL images
-        self.all_images_tk = {} #stores all tk images
-        self.all_images_tk_scaled = {} #stores all tk images scale to fit grid
-        self.grid_lines = [] #stores line objects
+        self.all_images: dict = {} #stores all PIL images
+        self.all_images_tk: dict = {} #stores all tk images
+        self.all_images_tk_scaled: dict = {} #stores all tk images scale to fit grid
+        self.grid_lines: list = [] #stores line objects
 
-        self.env = None
+        self.env: GridEnvironment = None
         self.reset: bool = False
-        self.current_user_mind = user_mind
+        self.current_user_mind: int = user_mind
         self.agent_minds: list = minds
 
         self._init_images()
@@ -79,7 +79,7 @@ class VWSimulationWindow(Frame):
         
         
         self.currently_selected = None
-        self.running = False
+        self.running: bool = False
         self.rectangle_selected = None
         self.selected = None
 
@@ -104,11 +104,11 @@ class VWSimulationWindow(Frame):
         
         self.buttons["play"] = VWButton(self.control_buttons_frame, self.__config, play_img , self._play, tip_text="Click here to start the simulation.")
         self.buttons["resume"] = VWButton(self.control_buttons_frame, self.__config, play_img, self._resume, tip_text="Click here to resume the simulation.")
-        self.buttons["pause"] = VWButton(self.control_buttons_frame, self.__config, VWSimulationWindow._scale(Image.open(os.path.join(self.__config["button_images_path"], buttons["pause"])), self.__config["button_size"]), self._pause, tooltip=self.__config["tooltips"], tip_text="Click here to pause the simulation.")
-        self.buttons["stop"] = VWButton(self.control_buttons_frame, self.__config, VWSimulationWindow._scale(Image.open(os.path.join(self.__config["button_images_path"], buttons["stop"])), self.__config["button_size"]), self._stop, tooltip=self.__config["tooltips"], tip_text="Click here to stop the simulation.")
-        self.buttons["fast"] = VWButton(self.control_buttons_frame, self.__config, VWSimulationWindow._scale(Image.open(os.path.join(self.__config["button_images_path"], buttons["fast"])), self.__config["button_size"]), self._fast, tooltip=self.__config["tooltips"], tip_text= "Click here to fast-forward the simulation.")
-        self.buttons["reset"] = VWButton(self.control_buttons_frame, self.__config, VWSimulationWindow._scale(Image.open(os.path.join(self.__config["button_images_path"], buttons["reset"])), self.__config["button_size"]), self._reset, tooltip=self.__config["tooltips"], tip_text="Click here to reset the grid.")
-        self.buttons["guide"] = VWButton(self.control_buttons_frame, self.__config, VWSimulationWindow._scale(Image.open(os.path.join(self.__config["button_images_path"], buttons["guide"])), self.__config["button_size"]), self.__guide, tooltip=self.__config["tooltips"], tip_text="Click here to open the project's GitHub page.")
+        self.buttons["pause"] = VWButton(self.control_buttons_frame, self.__config, VWSimulationWindow._scale(Image.open(os.path.join(self.__config["button_images_path"], buttons["pause"])), self.__config["button_size"]), self._pause, tip_text="Click here to pause the simulation.")
+        self.buttons["stop"] = VWButton(self.control_buttons_frame, self.__config, VWSimulationWindow._scale(Image.open(os.path.join(self.__config["button_images_path"], buttons["stop"])), self.__config["button_size"]), self._stop, tip_text="Click here to stop the simulation.")
+        self.buttons["fast"] = VWButton(self.control_buttons_frame, self.__config, VWSimulationWindow._scale(Image.open(os.path.join(self.__config["button_images_path"], buttons["fast"])), self.__config["button_size"]), self._fast, tip_text= "Click here to fast-forward the simulation.")
+        self.buttons["reset"] = VWButton(self.control_buttons_frame, self.__config, VWSimulationWindow._scale(Image.open(os.path.join(self.__config["button_images_path"], buttons["reset"])), self.__config["button_size"]), self._reset, tip_text="Click here to reset the grid.")
+        self.buttons["guide"] = VWButton(self.control_buttons_frame, self.__config, VWSimulationWindow._scale(Image.open(os.path.join(self.__config["button_images_path"], buttons["guide"])), self.__config["button_size"]), self.__guide, tip_text="Click here to open the project's GitHub page.")
         
         dif_img = VWSimulationWindow._scale(Image.open(os.path.join(self.__config["button_images_path"], buttons["difficulty"])), self.__config["button_size"])
         self.buttons["difficulty"] = VWDifficultyButton(self.control_buttons_frame, self.__config, dif_img, self._difficulty, tip_text="Click here to toggle the user difficulty level.")
@@ -128,12 +128,12 @@ class VWSimulationWindow(Frame):
         self.saveload_frame = Frame(self.mid_frame, bg=bg)
     
         #buttons
-        self.buttons["save"] = VWButton(self.saveload_frame, self.__config, VWSimulationWindow._scale(Image.open(os.path.join(self.__config["button_images_path"], buttons["save"])), self.__config["button_size"]), lambda: self.__save(self.load_menu), tooltip=self.__config["tooltips"], tip_text="Click here to save the current state.")
-        self.buttons["load"] = VWButton(self.saveload_frame, self.__config, VWSimulationWindow._scale(Image.open(os.path.join(self.__config["button_images_path"], buttons["load"])), self.__config["button_size"]), lambda: self.__load_and_redraw(self.load_menu), tooltip=self.__config["tooltips"], tip_text="Click here to load a savestate.")
+        self.buttons["save"] = VWButton(self.saveload_frame, self.__config, VWSimulationWindow._scale(Image.open(os.path.join(self.__config["button_images_path"], buttons["save"])), self.__config["button_size"]), lambda: self.__save(self.load_menu), tip_text="Click here to save the current state.")
+        self.buttons["load"] = VWButton(self.saveload_frame, self.__config, VWSimulationWindow._scale(Image.open(os.path.join(self.__config["button_images_path"], buttons["load"])), self.__config["button_size"]), lambda: self.__load_and_redraw(self.load_menu), tip_text="Click here to load a savestate.")
         
         #entry box
         files = self.__save_state_manager.get_ordered_list_of_filenames_in_save_directory()
-        self.load_menu = AutocompleteEntry(files, 3, self.mid_frame, font=self.__config["root_font"], bg=self.__config["autocomplete_entry_bg_colour"], fg=self.__config["fg_colour"])
+        self.load_menu: AutocompleteEntry = AutocompleteEntry(files, 3, self.mid_frame, font=self.__config["root_font"], bg=self.__config["autocomplete_entry_bg_colour"], fg=self.__config["fg_colour"])
         self.load_menu.bind("<Button-1>", lambda _: self.deselect())
         self.load_menu.pack(side="top")
     
@@ -166,30 +166,26 @@ class VWSimulationWindow(Frame):
 
         return buttons
     
-    def _init_size_slider(self, parent, length=250):
-        increments = Grid.GRID_MAX_SIZE - Grid.GRID_MIN_SIZE
-        self.grid_scale_slider = Slider(parent, self.__config, self.on_resize, self.on_resize_slide, length * self.__config["scale"],
+    def _init_size_slider(self, parent, length=250) -> None:
+        increments: int = Grid.GRID_MAX_SIZE - Grid.GRID_MIN_SIZE
+        self.grid_scale_slider: Slider = Slider(parent, self.__config, self.on_resize, self.on_resize_slide, length * self.__config["scale"],
                                         16 * self.__config["scale"], slider_width = length * self.__config["scale"] / (increments * 3),
                                         increments=increments,
                                         start=self.__config["grid_size"]/self.__config["location_size"] - Grid.GRID_MIN_SIZE)
         self.grid_scale_slider.pack(side="top")
         
-    def _init_dragables(self):
+    def _init_dragables(self) -> None:
         #load all images
-        keys = [("white", "north"), 
-                ("orange", "north"), 
-                ("green", "north"), 
-                ("user", "north"), 
-                ("orange", "dirt"), 
-                ("green", "dirt")]
-        self.dragables = {}
+        keys: List[tuple] = [("white", "north"), ("orange", "north"), ("green", "north"), ("user", "north"), ("orange", "dirt"), ("green", "dirt")]
+
+        self.dragables: Dict[Img, Tuple[CanvasDragManager, tuple]] = {}
 
         ix = self.__config["grid_size"] + self.__config["location_size"] / 2 + 2
         iy = self.__config["location_size"] / 2 + 4
 
         for i, key in enumerate(keys):
-            item = self.canvas.create_image(ix, iy + i * self.__config["location_size"], image=self.all_images_tk[key])
-            self.__drag_manager = CanvasDragManager(self.__config, key, self.__grid, self.canvas, item, self.drag_on_start, self.drag_on_drop)
+            item: Img = self.canvas.create_image(ix, iy + i * self.__config["location_size"], image=self.all_images_tk[key])
+            self.__drag_manager = CanvasDragManager(self.__config, key, self.__grid, self.canvas, item, self.__drag_on_start, self.__drag_on_drop)
             self.dragables[item] = (self.__drag_manager, key)
 
     def deselect(self):
@@ -406,15 +402,14 @@ class VWSimulationWindow(Frame):
         else:
             self.coordinate_text.set(self.__empty_location_coordinates_text)
 
-    def drag_on_start(self, event):
+    def __drag_on_start(self, event):
         drag_manager, img_key = self.dragables[event.widget.find_closest(event.x, event.y)[0]]
 
-        drag_manager.drag_image = self.all_images_tk_scaled[img_key]
+        drag_manager.set_drag_image(self.all_images_tk_scaled[img_key])
+        drag_manager.set_drag(self.canvas.create_image(event.x, event.y, image=drag_manager.get_drag_image()))
 
-        drag_manager.drag = self.canvas.create_image(event.x, event.y, image=drag_manager.drag_image)
-
-        self.canvas.itemconfigure(drag_manager.drag, state="hidden")
-        self.canvas.tag_lower(drag_manager.drag)
+        self.canvas.itemconfigure(drag_manager.get_drag(), state="hidden")
+        self.canvas.tag_lower(drag_manager.get_drag())
         self.selected = None
 
         #keep the currently selected draggable on the top
@@ -431,7 +426,7 @@ class VWSimulationWindow(Frame):
                 # If the draggable is not a valid argument for tag_lower, we ignore the error.
                 pass
 
-    def drag_on_drop(self, event, drag_manager):
+    def __drag_on_drop(self, event, drag_manager):
         #TODO: stream line to work with select
 
         inc = self.__config["grid_size"] / self.__grid.dim
@@ -440,20 +435,20 @@ class VWSimulationWindow(Frame):
         coord = Coord(x,y)
         #update the environment state
         colour, obj = drag_manager.get_key()
-        print(colour, obj)
+
         if obj == "dirt":
             dirt1 =  self.__grid.dirt(colour)
             self.__grid.replace_dirt(coord, dirt1)
             if coord in self.canvas_dirts:
                 self.canvas.delete(self.canvas_dirts[coord])
-            self.canvas_dirts[coord] = drag_manager.drag
+            self.canvas_dirts[coord] = drag_manager.get_drag()
             self.canvas.tag_lower(self.canvas_dirts[coord])
         else:
             agent1 =  self.__grid.agent(colour, obj)
             self.__grid.replace_agent(coord, agent1)
             if coord in self.canvas_agents:
                 self.canvas.delete(self.canvas_agents[coord])
-            self.canvas_agents[coord] = drag_manager.drag
+            self.canvas_agents[coord] = drag_manager.get_drag()
         print("INFO: drop", self.__grid.state[coord])
         
         self.select(event)

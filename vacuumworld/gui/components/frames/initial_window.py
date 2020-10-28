@@ -1,4 +1,4 @@
-from tkinter import Tk, Frame, Canvas
+from tkinter import Tk, Frame, Canvas, Image as Img
 from typing import Callable
 from PIL import ImageTk, Image
 
@@ -18,7 +18,7 @@ class VWInitialWindow(Frame):
         self.__canvas: Canvas = Canvas(self, width = self.__config["grid_size"] + 1, height = self.__config["grid_size"] + 1, bd=0, highlightthickness=0)
 
         self.__img_tk: ImageTk.PhotoImage = ImageTk.PhotoImage(Image.open(self.__config["main_menu_image_path"]).resize((int(self.__config["grid_size"]), int(self.__config["grid_size"])), Image.BICUBIC))
-        self.__image: Image = self.__canvas.create_image(self.__config["grid_size"]/2,self.__config["grid_size"]/2,image=self.__img_tk)
+        self.__image: Img = self.__canvas.create_image(self.__config["grid_size"]/2,self.__config["grid_size"]/2,image=self.__img_tk)
         
         self.__button_frame: Frame = Frame(self)
 
@@ -29,9 +29,9 @@ class VWInitialWindow(Frame):
         button_image = button_image.resize((int(button_image.width), int(button_image.height)), Image.BICUBIC)
 
 
-        self.__buttons["start"] = VWButton(self.__button_frame, self.__config, button_image, _start, text="Start", tooltip=self.__config["tooltips"], tip_text="Click here to set-up the simulation.")
-        self.__buttons["exit"] = VWButton(self.__button_frame, self.__config, button_image, _exit, text="Exit", tooltip=self.__config["tooltips"], tip_text="Click here to exit VacuumWorld.")
-        self.__buttons["guide"] = VWButton(self.__button_frame, self.__config, button_image, _guide, text="Guide", tooltip=self.__config["tooltips"], tip_text="Click here to open the project's GitHub page.")
+        self.__buttons["start"] = VWButton(self.__button_frame, self.__config, button_image, _start, text="Start", tip_text="Click here to set-up the simulation.")
+        self.__buttons["exit"] = VWButton(self.__button_frame, self.__config, button_image, _exit, text="Exit", tip_text="Click here to exit VacuumWorld.")
+        self.__buttons["guide"] = VWButton(self.__button_frame, self.__config, button_image, _guide, text="Guide", tip_text="Click here to open the project's GitHub page.")
         
         self.__buttons["start"].pack("left")
         self.__buttons["guide"].pack("left")
@@ -41,5 +41,5 @@ class VWInitialWindow(Frame):
         # Note: pack() needs to be called by the caller.
     
     #TODO: is this useful?
-    def get_image(self) -> Image:
+    def get_image(self) -> Img:
         return self.__image
