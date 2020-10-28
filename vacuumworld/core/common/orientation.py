@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Type
 
 
 
@@ -35,10 +36,10 @@ class Orientation(Enum):
     south = "south"
     west = "west"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.value
     
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str(self)
 
-orientation = Orientation
+orientation: Type = Orientation

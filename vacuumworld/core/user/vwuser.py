@@ -4,6 +4,8 @@ Created on Sun Jul 28 12:00:27 2019
 
 @author: ben
 """
+from typing import Iterable, Type, List
+from vacuumworld.core.common.observation import Observation
 from ..action.action import random, move, drop, turn
 from ..common.colour import Colour
 from ..common.direction import Direction
@@ -11,49 +13,50 @@ from ...utils.vwutils import ignore
 
 
 class User():
-    def __init__(self):
-        self.observation = None
-        self.id = None
+    def __init__(self) -> None:
+        self.observation: Observation = None
+        self.id: str = None
 
-    def decide(_):
+    def decide(_) -> list:
         raise NotImplementedError("Abstract class.")
 
-    def revise(_, observation, messages):
-        ignore(observation)
+    def revise(self, observation: Observation, messages: Iterable):
+        self.id: str = observation.center.agent.name
+        self.observation: Observation = observation
+
+        # A user is not supposed to manage any message.
         ignore(messages)
 
-        raise NotImplementedError("Abstract class.")
-
-    def is_wall_ahead(self):
+    def is_wall_ahead(self) -> bool:
         return not self.observation.forward
 
-    def is_wall_on_the_left(self):
+    def is_wall_on_the_left(self) -> bool:
         return not self.observation.left
 
-    def is_wall_on_the_right(self):
+    def is_wall_on_the_right(self) -> bool:
         return not self.observation.right
 
-    def is_on_dirt(self):
+    def is_on_dirt(self) -> bool:
         return self.observation.center.dirt
 
-    def is_agent_ahead(self):
+    def is_agent_ahead(self) -> bool:
         return self.observation.forward and self.observation.forward.agent
 
-    def is_agent_on_the_left(self):
+    def is_agent_on_the_left(self) -> bool:
         return self.observation.left and self.observation.left.agent
 
-    def is_agent_of_the_right(self):
+    def is_agent_of_the_right(self) -> bool:
         return self.observation.right and self.observation.right.agent
 
 
 class EasyUser(User):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
-        self.move_actions = [move(), turn(Direction.left), turn(Direction.right)]
-        self.actions = [drop(Colour.green), drop(Colour.orange)]
+        self.move_actions: List[list] = [move(), turn(Direction.left), turn(Direction.right)]
+        self.actions: List[list] = [drop(Colour.green), drop(Colour.orange)]
         self.actions.extend(self.move_actions)
         
-    def _decide_if_wall_ahead(self):
+    def _decide_if_wall_ahead(self) -> list:
         if self.is_wall_on_the_left():
             return turn(Direction.right)
         elif self.is_wall_on_the_right():
@@ -61,7 +64,7 @@ class EasyUser(User):
         else:
             return random(self.move_actions[1:])
 
-    def _decide_if_on_dirt(self):
+    def _decide_if_on_dirt(self) -> list:
         if self.is_wall_on_the_left():
             return random(self.move_actions, [0.6, 0.0, 0.4])
         elif self.is_wall_on_the_right():
@@ -69,7 +72,7 @@ class EasyUser(User):
         else:
             return random(self.move_actions, [0.5, 0.25, 0.25])
 
-    def decide(self): 
+    def decide(self) -> list: 
         if self.is_wall_ahead():
             return self._decide_if_wall_ahead()
         elif self.is_on_dirt():
@@ -78,17 +81,11 @@ class EasyUser(User):
         else:
             #otherwise do a random action (including dropping dirt)
             return random(self.actions, [0.2, 0.2, 0.45, 0.075, 0.075])
-            
-    def revise(self, observation, messages):
-        self.id = observation.center.agent.name
-        self.observation = observation
 
-        # A user is not supposed to manage any message.
-        ignore(messages)
         
 class MediumUser(User):
     # Always wall ahead
-    def _decide_if_wall_ahead(self):
+    def _decide_if_wall_ahead(self) -> list:
         if self.is_wall_on_the_left(): # wall on the left
             return turn(Direction.right)
         elif self.is_wall_on_the_right(): # wall on the right
@@ -105,7 +102,7 @@ class MediumUser(User):
             return random([turn(Direction.left), turn(Direction.right), drop(Colour.green), drop(Colour.orange)])
         
     # Always agent ahead
-    def _decide_if_agent_ahead(self):
+    def _decide_if_agent_ahead(self) -> list:
         if self.is_wall_on_the_left():
             return turn(Direction.right)
         elif not self.is_wall_on_the_right():
@@ -122,20 +119,20 @@ class MediumUser(User):
             return random([turn(Direction.left), turn(Direction.right), drop(Colour.green), drop(Colour.orange)])
 
     # Always wall on the left
-    def _decide_if_wall_on_the_left(self):
+    def _decide_if_wall_on_the_left(self) -> list:
         if self.is_on_dirt():
             return random([move(), turn(Direction.right)], [0.9, 0.1])
         else:
             return random([move(), turn(Direction.right), drop(Colour.green), drop(Colour.orange)], [0.6, 0.25, 0.075, 0.075])
 
     # Always wall on the right
-    def _decide_if_wall_on_the_right(self):
+    def _decide_if_wall_on_the_right(self) -> list:
         if self.is_on_dirt():
             return random([move(), turn(Direction.left)], [0.9, 0.1])
         else:
             return random([move(), turn(Direction.left), drop(Colour.green), drop(Colour.orange)], [0.6, 0.25, 0.075, 0.075])
 
-    def decide(self): 
+    def decide(self) -> list: 
         # Wall ahead
         if self.is_wall_ahead():
             return self._decide_if_wall_ahead()
@@ -162,20 +159,14 @@ class MediumUser(User):
             return MediumUser.random_all()         
     
     @staticmethod
-    def move_or_drop():
+    def move_or_drop() -> list:
         return random([move(), drop(Colour.green), drop(Colour.orange)], [0.8, 0.1, 0.1])   
      
     @staticmethod
-    def random_all():
+    def random_all() -> list:
         return random([move(), drop(Colour.green), drop(Colour.orange), turn(Direction.left), turn(Direction.right)], [0.6, 0.15, 0.15, 0.05, 0.05]) 
-            
-    def revise(self, observation, messages):
-        self.id = observation.center.agent.name
-        self.observation = observation
 
-        # A user is not supposed to manage any message.
-        ignore(messages)
 
 #the users that can be used in vacuumworld
-USERS = [EasyUser, MediumUser]
+USERS: List[Type] = [EasyUser, MediumUser]
 DIFFICULTY_LEVELS: int = len(USERS)

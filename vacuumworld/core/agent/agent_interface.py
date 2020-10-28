@@ -1,4 +1,4 @@
-from typing import NamedTuple
+from typing import NamedTuple, Type
 
 from ..common.colour import Colour
 from ..common.orientation import Orientation
@@ -18,4 +18,4 @@ class Agent(NamedTuple):
     colour : Colour
     orientation : Orientation
 
-agent = Agent
+agent: Type = Agent

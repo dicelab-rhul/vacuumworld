@@ -1,4 +1,4 @@
-from typing import NamedTuple
+from typing import Iterable, NamedTuple, Type
 
 from ..environment.location_interface import Location
 
@@ -45,7 +45,7 @@ class Observation(NamedTuple):
     forwardleft : Location
     forwardright : Location
 
-    def __iter__(self):
+    def __iter__(self) -> Iterable:
         return (self[i] for i in range(len(self)) if self[i] is not None)
 
-observation = Observation
+observation: Type = Observation

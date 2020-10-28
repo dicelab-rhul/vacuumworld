@@ -1,3 +1,4 @@
+from typing import Type
 from .orientation import Orientation
 
 
@@ -28,7 +29,7 @@ class Direction():
     '''
 
     @staticmethod
-    def left(_orientation):
+    def left(_orientation: Orientation) -> Orientation:
         '''
             Turns an orientation left. Indicates a left turn in the turn action.                        
         '''
@@ -36,11 +37,11 @@ class Direction():
         return od[(od.index(_orientation) - 1) % 4]
 
     @staticmethod
-    def right(_orientation):
+    def right(_orientation: Orientation) -> Orientation:
         '''
             Turns an orientation left. Indicates a left turn in the turn action.                        
         '''
         od = (Orientation.north, Orientation.east, Orientation.south, Orientation.west)
         return od[(od.index(_orientation) + 1) % 4]
 
-direction = Direction
+direction: Type = Direction

@@ -1,4 +1,4 @@
-from typing import NamedTuple
+from typing import NamedTuple, Type
 
 from ..common.coordinates import Coord
 from ..agent.agent_interface import Agent
@@ -19,4 +19,4 @@ class Location(NamedTuple):
     agent : Agent
     dirt : Dirt
 
-location = Location
+location: Type = Location

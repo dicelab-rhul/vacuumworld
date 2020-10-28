@@ -114,7 +114,7 @@ class SaveStateManager():
 
     def get_ordered_list_of_filenames_in_save_directory(self) -> List[str]:
         try:
-            f = [file for file in os.listdir(self.__files_dir) if file.endswith(self.__vw_extension)]
+            f: List[str] = [file for file in os.listdir(self.__files_dir) if file.endswith(self.__vw_extension)]
             f.sort()
             return f
         except Exception:

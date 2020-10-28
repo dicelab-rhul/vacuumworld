@@ -1,4 +1,4 @@
-from typing import Iterable, NamedTuple, Union
+from typing import Iterable, NamedTuple, Type, Union
 
 
 
@@ -53,4 +53,4 @@ class Message(NamedTuple):
 
         return Message._size(self.content)
 
-message = Message
+message: Type = Message

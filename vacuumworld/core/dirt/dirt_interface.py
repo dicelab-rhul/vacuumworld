@@ -1,4 +1,4 @@
-from typing import NamedTuple
+from typing import NamedTuple, Type
 
 from ..common.colour import Colour
 
@@ -14,4 +14,4 @@ class Dirt(NamedTuple):
     name : str 
     colour : Colour
 
-dirt = Dirt
+dirt: Type = Dirt

@@ -1,3 +1,6 @@
+from typing import Dict, Iterable, Tuple
+from vacuumworld.core.environment.location_interface import Location
+from vacuumworld.core.common.coordinates import Coord
 from pystarworlds.Event import Action, Executor
 
 from ..common.orientation import Orientation
@@ -12,26 +15,26 @@ import copy
 
 ###################### action executors ###################### 
 
-orientation_map = {Orientation.north:(0,-1),
+orientation_map: Dict[Orientation, Tuple[int, int]] = {Orientation.north:(0,-1),
                    Orientation.east:(1,0),
                    Orientation.south:(0,1),
                    Orientation.west:(-1,0)}
 
 
 class MoveExecutor(Executor):
-    def __call__(_, env, action):
+    def __call__(_, env, action) -> None:
         agent = env.ambient.agents[action.source]
         
-        new_coordinate = agent.coordinate + orientation_map[agent.orientation]
-        new_location = env.ambient.grid.state[new_coordinate]
+        new_coordinate: Coord = agent.coordinate + orientation_map[agent.orientation]
+        new_location: Location = env.ambient.grid.state[new_coordinate]
         #precondition
         if new_location and not new_location.agent:
             env.ambient.grid.move_agent(agent.coordinate, new_coordinate)
             agent.coordinate = new_coordinate
 
 
-class TurnExecutor(Executor): 
-    def __call__(_, env, action):
+class TurnExecutor(Executor):
+    def __call__(_, env, action) -> None:
         agent = env.ambient.agents[action.source]
         new_orientation = action.direction(agent.orientation)
         env.ambient.grid.turn_agent(agent.coordinate, new_orientation)
@@ -39,7 +42,7 @@ class TurnExecutor(Executor):
 
 
 class CleanExecutor(Executor):
-    def __call__(_, env, action):
+    def __call__(_, env, action) -> None:
         agent = env.ambient.agents[action.source]
         #precondition
         location = env.ambient.grid.state[agent.coordinate]
@@ -49,7 +52,7 @@ class CleanExecutor(Executor):
 
 
 class DropExecutor(Executor):
-    def __call__(_, env, action):
+    def __call__(_, env, action) -> None:
         agent = env.ambient.agents[action.source]
         #precondition
         if not env.ambient.grid.state[agent.coordinate].dirt: 
@@ -59,8 +62,8 @@ class DropExecutor(Executor):
 
 
 class CommunicativeExecutor(Executor):
-    def __call__(_, env, action):
-        notify = action.to
+    def __call__(_, env, action) -> None:
+        notify: Iterable = action.to
         if len(notify) == 0: #send to everyone! do we want this?
             notify = set(env.ambient.agents.keys()) - set([action.source])
         for to in notify:
@@ -70,7 +73,7 @@ class CommunicativeExecutor(Executor):
 ###################### actions ###################### 
             
 class VWPhysicalAction(Action):
-     def __init__(self):
+     def __init__(self) -> None:
          super(VWPhysicalAction, self).__init__()
 
 
@@ -179,7 +182,7 @@ class SpeakActionFactory(ActionFactory):
         return message, _size
 
 
-action_factories = {
+action_factories: Dict[str, Action] = {
     move()[0]:lambda: MoveAction(), 
     clean()[0]:lambda: CleanAction(), 
     idle()[0]:lambda: None,

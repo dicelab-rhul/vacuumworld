@@ -1,17 +1,22 @@
 #!/usr/bin/env python3
 
+
+
+from typing import List
+
 import os
 
 
-INTERESTING_FILES_EXTENSIONS = [".py"]
-EXCLUSION_LIST = [os.path.basename(__file__)]
-TODO_FILE = "TODO.md"
-TODO_PATTERN = "TODO"
-TODO_HEADER = "# List of TODOs"
+
+INTERESTING_FILES_EXTENSIONS: List[str] = [".py"]
+EXCLUSION_LIST: List[str] = [os.path.basename(__file__)]
+TODO_FILE: str = "TODO.md"
+TODO_PATTERN: str = "TODO"
+TODO_HEADER: str = "# List of TODOs"
 
 
-def main():
-    lines = []
+def main() -> None:
+    lines: List[str] = []
 
     for dir, _, files in os.walk(os.getcwd()):
         for f in filter(lambda candidate: any(filter(lambda ext: candidate.endswith(ext), INTERESTING_FILES_EXTENSIONS)), files):
@@ -28,10 +33,10 @@ def main():
         f.flush()
 
 
-def look_for_todos(path):
-    to_add =  []
-    prefix = "* File {} - line ".format(path)
-    lines = []
+def look_for_todos(path: str) -> List[str]:
+    to_add: List[str] = []
+    prefix: str = "* File {} - line ".format(path)
+    lines: List[str] = []
 
     with open(path, "r") as f:
         lines = f.readlines()
