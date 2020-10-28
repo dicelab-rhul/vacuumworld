@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 
 
-import vacuumworld
+from typing import Any, Dict, Iterable, Union
+from vacuumworld.core.common.observation import Observation
 
 from vacuumworld.core.action import action
 from vacuumworld.core.common.direction import Direction as direction
 
+import vacuumworld
+
 
 
 class TestMind():
-    PATTERNS = {
+    PATTERNS: Dict[int, Any] = {
             0: None, # no action
             1: action.move(), # single physical action without parameters.
             2: action.turn(direction.left), # single physical action with a single parameter.
@@ -33,17 +36,17 @@ class TestMind():
             20: (action.speak("foo"), ["garbage"], action.move()), # MUST ERROR OUT
         }
 
-    def __init__(self, pattern_number):
+    def __init__(self, pattern_number: int) -> None:
         super().__init__()
-        self.grid_size = -1
-        self.pattern_number = pattern_number
+        self.grid_size: int = -1
+        self.pattern_number: int = pattern_number
 
-    def decide(self):
+    def decide(self) -> Union[list, tuple]:
         return TestMind.PATTERNS[self.pattern_number]
 
-    def revise(self, observation, messages):
-        self.observation = observation
-        self.messages = messages
+    def revise(self, observation: Observation, messages: Iterable) -> None:
+        self.observation: Observation = observation
+        self.messages: Iterable = messages
 
         print(self.observation)
         print(self.messages)

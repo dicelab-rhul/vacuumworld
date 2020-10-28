@@ -12,8 +12,10 @@ import traceback
 
 
 
-def test_coord():
-    c1, c2 = Coord(1,2), Coord(2,3)
+def test_coord() -> None:
+    c1: Coord = Coord(1,2)
+    c2: Coord = Coord(2,3)
+
     assert c1[0] == 1
     assert c1[1] == 2
 
@@ -29,25 +31,30 @@ def test_coord():
     assert c2 // 2 == Coord(1,1)
     assert c1 * 2 == Coord(2,4)
 
-def test_agent():
-    a1 = Agent('a1', Colour.orange, Orientation.north)
+
+def test_agent() -> None:
+    a1: Agent = Agent('a1', Colour.orange, Orientation.north)
     a1.name
     a1.colour
     a1.orientation
 
-def test_dirt():
-    d1 = Dirt('d1', Colour.white)
+
+def test_dirt() -> None:
+    d1: Dirt = Dirt('d1', Colour.white)
     d1.name
     d1.colour
 
-def test_location():
+
+def test_location() -> None:
     assert Location(Coord(0,0), Agent(None,None,None), Dirt(1,1)) is not None
-    
-def test_observation():
-    o1 = Observation(None,1,None,3,4,5) #type checks? NamedTuple is a pain...
+
+
+def test_observation() -> None:
+    o1: Observation = Observation(None,1,None,3,4,5) #type checks? NamedTuple is a pain...
     assert [i for i in o1] == [1,3,4,5]
 
-def test_direction():
+
+def test_direction() -> None:
     assert Direction.left(Orientation.north) == Orientation.west
     assert Direction.left(Orientation.west) == Orientation.south
     assert Direction.left(Orientation.south) == Orientation.east
@@ -59,7 +66,7 @@ def test_direction():
     assert Direction.right(Orientation.east) == Orientation.south
 
    
-def test(t):
+def test(t)  -> None:
     try:
         t()
         print("TEST PASSED: ", t.__name__)

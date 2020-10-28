@@ -1,3 +1,4 @@
+from typing import List, Type
 from pystarworlds.Agent import Actuator
 
 from ..action.vwaction import MoveAction, TurnAction, CleanAction, DropAction, CommunicativeAction
@@ -5,10 +6,10 @@ from ..action.vwaction import MoveAction, TurnAction, CleanAction, DropAction, C
 
 
 class CleaningAgentActuator(Actuator):
-    subscribe = [MoveAction, TurnAction, CleanAction]
+    subscribe: List[Type] = [MoveAction, TurnAction, CleanAction]
 
 class UserActuator(Actuator):
-    subscribe = [MoveAction, TurnAction, DropAction]
+    subscribe: List[Type] = [MoveAction, TurnAction, DropAction]
     
 class CommunicationActuator(Actuator):
-    subscribe = [CommunicativeAction]
+    subscribe: List[Type] = [CommunicativeAction]

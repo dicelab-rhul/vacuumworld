@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 
+from typing import Iterable, Union
+from vacuumworld.core.common.observation import Observation
 import vacuumworld
 
 from vacuumworld.core.action import action
@@ -8,41 +10,41 @@ from vacuumworld.core.common.direction import Direction
 
 
 class DefaultMind():
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
-        self.grid_size = -1
-        self.stop = False
+        self.grid_size: int = -1
+        self.stop: bool = False
 
-    def revise(self, observation, messages):
-        self.observation = observation
-        self.messages = messages
+    def revise(self, observation: Observation, messages: Iterable) -> None:
+        self.observation: Observation = observation
+        self.messages: Iterable = messages
 
         print(self.observation)
         print(self.messages)
 
-    def decide(self):
+    def decide(self) -> Union[list, tuple]:
         if not self.stop:
             return action.speak("Hello, I cannot predict my colour."), action.turn(Direction.left)
 
 
 class WhiteMind(DefaultMind):
-    def decide(self):
+    def decide(self) -> Union[list, tuple]:
         if not self.stop:
             return action.speak("Hello, I am a white agent"), action.turn(Direction.right)
 
 
 class GreenMind(DefaultMind):
-    def decide(self):
+    def decide(self) -> Union[list, tuple]:
         if not self.stop:
             return action.speak("Hello, I am a green agent"), action.turn(Direction.right)
 
 
 class OrangeMind(DefaultMind):
-    def decide(self):
+    def decide(self) -> Union[list, tuple]:
         if not self.stop:
             return action.speak("Hello, I am an orange agent"), action.turn(Direction.right)
 
-state_file_name = "treble.vw"
+state_file_name: str = "full.vw"
 
 # Non-named parameter --> default_mind=DefaultMind().
 vacuumworld.run(DefaultMind(), load=state_file_name, play=True)

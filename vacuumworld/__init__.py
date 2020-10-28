@@ -24,7 +24,7 @@ import os
 __all__: list = ["run", Coord, Direction, Orientation, Colour, Observation, Location, Agent, Dirt, action, coord, direction, orientation, colour, observation, location, agent, dirt]
 
 
-def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, **kwargs):
+def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, **kwargs) -> None:
     if hasattr(signal, "SIGTSTP"): # To exclude Windows and every OS without SIGTSTP.
         signal(SIGTSTP, SIG_IGN)
 
