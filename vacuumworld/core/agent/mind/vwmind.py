@@ -54,16 +54,16 @@ class VWMind(Mind):
             if action is None:
                 return
             elif callable(action):
-                raise VacuumWorldActionError("Action should not be a function name, did you forget the ()? - e.g. action.move()")
+                raise VacuumWorldActionError("The action should not be a function name, did you forget the () - e.g. `move` in place of `move()` ?")
             elif type(action) != list or len(action) < 1:
-                raise VacuumWorldActionError("Invalid action format: {}, please use vwc.action".format(action))
+                raise VacuumWorldActionError("Invalid action format: {}, please check the Wiki.".format(action))
             elif not action[0] in action_names:
-                raise VacuumWorldActionError("Invalid action name: {}, please use vwc.action".format(action))
+                raise VacuumWorldActionError("Invalid action name: {}, please check the Wiki.".format(action))
             elif not len(action) == action_sizes[action[0]]:
-                raise VacuumWorldActionError("Invalid (malformed) action: {}, please use vwc.action".format(action))
+                raise VacuumWorldActionError("Invalid (malformed) action: {}, please check the Wiki.".format(action))
 
         if len(actions) > VWMind.MAX_NUMBER_OF_ACTIONS_PER_CYCLE:
-            raise VacuumWorldActionError("Too many actions for this cycle. There is a hard limit of 1 physical action and 1 speech per cycle.")
+            raise VacuumWorldActionError("Too many actions for this cycle. There is a hard limit of 1 physical action (i.e., turn, move, clean, idle) and 1 communicative action (i.e., speak) per cycle.")
 
         for action in actions:
             validate_action(action)
@@ -72,12 +72,12 @@ class VWMind(Mind):
             speech_action_names: list = [a[0] for a in VWMind.speech_actions]
             is_speech: List[bool] = [a[0] in speech_action_names for a in actions if a]
             if all(is_speech):
-                raise VacuumWorldActionError("An agent can perform at most 1 speech action per cycle (vwc.action.speak)")
+                raise VacuumWorldActionError("An agent can perform at most 1 communicative action (i.e., speak) per cycle.")
             
             physical_action_names = [a[0] for a in VWMind.physical_actions]
             is_physical: List[bool] = [a[0] in physical_action_names for a in actions if a]
             if all(is_physical):
-                raise VacuumWorldActionError("An agent can perform at most 1 physical action per cycle (vwc.action.clean, move, turn, idle)")
+                raise VacuumWorldActionError("An agent can perform at most 1 physical action (i.e., turn, move, clean, idle) per cycle.")
 
     def cycle(self) -> None:
         # For debug. Do not remove.
@@ -99,7 +99,7 @@ class VWMind(Mind):
         if type(actions) == list:
             actions = (actions,)
         elif type(actions) != tuple:
-            raise VacuumWorldActionError("Invalid action(s) format: {}, please use vwc.action".format(actions))
+            raise VacuumWorldActionError("Invalid action(s) format: {}, please check the Wiki.".format(actions))
 
         actions: list = [a for a in actions if a is not None]
 

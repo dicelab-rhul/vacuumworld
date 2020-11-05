@@ -14,10 +14,10 @@ class Message(NamedTuple):
             * ``content (str, list, tuple, int, float, bool)``: The content of the message.
     '''
     sender : str
-    content : Union[str, list, tuple, float, bool]
+    content : Union[str, list, tuple, int, float, bool]
 
     @staticmethod
-    def _size(content: Union[str, list, tuple, float, bool]) -> int:
+    def _size(content: Union[str, list, tuple, int, float, bool]) -> int:
         if content is None:
             return 0
         

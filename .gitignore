@@ -138,6 +138,9 @@ dmypy.json
 
 # Test entry point
 vw4_test.py
+cw1.py
+cw2.py
+cw3.py
 
 # VW save states
 files/
