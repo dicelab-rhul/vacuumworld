@@ -1,5 +1,6 @@
 from tkinter import Event, Tk, Frame, Canvas, Label, StringVar, W, E, X, Image as Img
 from typing import Callable, Dict, List, Tuple
+
 from vacuumworld.core.environment.location_interface import Location
 from vacuumworld.core.agent.agent_interface import Agent
 from vacuumworld.core.dirt.dirt_interface import Dirt
@@ -364,7 +365,7 @@ class VWSimulationWindow(Frame):
         self.__scaled_tk()
 
     @staticmethod
-    def __construct_images(img: Img, name: str) -> OrderedDict[str, Img]:
+    def __construct_images(img: Img, name: str) -> Dict[str, Img]:
         return OrderedDict({name + str(Orientation.north):img,
                       name + str(Orientation.west):img.copy().rotate(90),
                       name + str(Orientation.south):img.copy().rotate(180),
