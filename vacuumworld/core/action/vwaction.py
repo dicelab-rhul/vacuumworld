@@ -3,6 +3,7 @@ from vacuumworld.core.environment.location_interface import Location
 from vacuumworld.core.common.coordinates import Coord
 from pystarworlds.Event import Action, Executor
 
+from ..dirt.dirt_interface import Dirt
 from ..common.orientation import Orientation
 from ..common.direction import Direction
 from ..common.colour import Colour
@@ -47,18 +48,19 @@ class CleanExecutor(Executor):
         #precondition
         location = env.ambient.grid.state[agent.coordinate]
         if location.dirt and (location.agent.colour == location.dirt.colour or location.agent.colour == Colour.white):  
+            dirt_id: str = location.dirt.name
             env.ambient.grid.remove_dirt(agent.coordinate)
-            #TODO: remove dirt from list of objects in ambient
+            env.ambient.remove_dirt_from_list_of_dirts(dirt_id=dirt_id)
 
 
 class DropExecutor(Executor):
     def __call__(_, env, action) -> None:
         agent = env.ambient.agents[action.source]
         #precondition
-        if not env.ambient.grid.state[agent.coordinate].dirt: 
-            env.ambient.grid.place_dirt(agent.coordinate, env.ambient.grid.dirt(action.colour))
-           
-            #TODO: add new dirt to list of objects in ambient
+        if not env.ambient.grid.state[agent.coordinate].dirt:
+            dirt_interface: Dirt = env.ambient.grid.dirt(action.colour)
+            env.ambient.grid.place_dirt(agent.coordinate, dirt_interface)
+            env.ambient.add_dirt_to_list_of_dirts(dirt=dirt_interface)
 
 
 class CommunicativeExecutor(Executor):

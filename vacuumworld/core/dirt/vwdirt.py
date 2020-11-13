@@ -10,3 +10,6 @@ class Dirt(Identifiable):
         super(Dirt, self).__init__()
         self._Identifiable__ID: str = dirt.name #hack...
         self.dirt: Drt = dirt
+
+    def get_id(self) -> str:
+        return self._Identifiable__ID

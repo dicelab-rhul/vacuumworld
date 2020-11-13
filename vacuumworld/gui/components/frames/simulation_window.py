@@ -24,7 +24,7 @@ import os
 
 
 
-#TODO: check and remove the unnecessary stuff.
+# TODO: check and remove the unnecessary stuff.
 class VWSimulationWindow(Frame):
     def __init__(self, root: Tk, config: dict, minds: list, user_mind: int, grid: Grid, _guide: Callable, _save: Callable, _load: Callable, _finish: Callable, _error: Callable) -> None:
         super(VWSimulationWindow, self).__init__(root)
@@ -430,7 +430,7 @@ class VWSimulationWindow(Frame):
                 pass
 
     def __drag_on_drop(self, event: Event, drag_manager: CanvasDragManager) -> None:
-        #TODO: stream line to work with select
+        # TODO: stream line to work with select
 
         inc: int = self.__config["grid_size"] / self.__grid.dim
         x: int = int(event.x / inc)

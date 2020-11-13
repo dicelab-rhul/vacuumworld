@@ -47,7 +47,7 @@ def caller_id() -> Optional[str]:
         if caller.f_back is not None:
             caller = caller.f_back
         else:
-            return None # TODO: this is a hack to prevent a crash when VW is closed.
+            return None
     return caller.f_locals['self'].body.ID
 
 
@@ -141,8 +141,7 @@ def ignore(obj: Any) -> None:
         f.flush()
 
 
-# TODO: SOME MEGA HACKY STUFF... not sure if we want to use it 
-
+# For debug.
 class ReturnFrame():
     def __init__(self) -> None:
         self.frame = None
