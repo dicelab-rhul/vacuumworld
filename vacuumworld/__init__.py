@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#from vacuumworld.gui.vwv import run as run_gui
 from vacuumworld.gui.gui import VWGUI
 from vacuumworld.utils.vwutils import process_minds
 
@@ -23,6 +21,9 @@ import os
 
 __all__: list = ["run", Coord, Direction, Orientation, Colour, Observation, Location, Agent, Dirt, action, coord, direction, orientation, colour, observation, location, agent, dirt]
 
+CONFIG_FILE_PATH: str = "config.json"
+
+
 
 def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, **kwargs) -> None:
     if hasattr(signal, "SIGTSTP"): # To exclude Windows and every OS without SIGTSTP.
@@ -44,10 +45,10 @@ def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, *
 
 
 def load_config() -> dict:
-    with open("config.json") as f: #TODO: magic string.
+    with open(CONFIG_FILE_PATH, "r") as f:
         config: dict = load(fp=f)
-
-    #TODO: check the monitor number, rather than using the default one.
+    
+    # TODO: check the monitor number, rather than using the default one.
     config["screen_width"] = get_monitors()[config["default_monitor_number"]].width
     config["screen_height"] = get_monitors()[config["default_monitor_number"]].height
     config["x_scale"] = float(config["screen_width"] / config["base_screen_width"])

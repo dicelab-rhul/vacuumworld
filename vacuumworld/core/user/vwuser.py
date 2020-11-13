@@ -108,7 +108,7 @@ class MediumUser(User):
         elif not self.is_wall_on_the_right():
             return turn(Direction.left)
         elif self.is_agent_on_the_left() and self.is_agent_of_the_right(): # both left and right are full
-            return random([drop(Colour.green), drop(Colour.orange)]) #TODO: is this logic correct? Compare with the method above.
+            return random([drop(Colour.green), drop(Colour.orange)]) # dropping a dirt in front of the agent, if possible
         elif self.is_agent_on_the_left(): # agent on the left
             return turn(Direction.right)
         elif self.is_agent_of_the_right(): # agent on the right
