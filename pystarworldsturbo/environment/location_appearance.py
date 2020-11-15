@@ -1,0 +1,2 @@
+class LocationAppearance():
+    pass
