@@ -1,16 +1,15 @@
-from pystarworldsturbo.elements.actor_appearance import ActorAppearance
 from .event import Event
 
 
 
 class Action(Event):
-    def __init__(self, actor_appearance: ActorAppearance=None) -> None:
+    def __init__(self) -> None:
         super(Action, self).__init__()
 
-        self.__actor_appearance: ActorAppearance = actor_appearance
+        self.__actor_id: str = None
 
-    def get_actor_appearance(self) -> ActorAppearance:
-        return self.__actor_appearance
+    def get_actor_id(self) -> str:
+        return self.__actor_id
 
-    def set_actor_appearance(self, actor_appearance: ActorAppearance) -> None:
-        self.__actor_appearance = actor_appearance
+    def set_actor_id(self, actor_id: str) -> None:
+        self.__actor_id = actor_id

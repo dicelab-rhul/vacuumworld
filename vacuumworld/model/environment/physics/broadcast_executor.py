@@ -7,7 +7,7 @@ from ...actions.broadcast_action import VWBroadcastAction
 
 
 
-class SpeakExecutor(ActionExecutor):
+class BroadcastExecutor(ActionExecutor):
     @staticmethod
     def is_possible(*_) -> bool:
         return True

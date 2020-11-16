@@ -1,26 +1,39 @@
-from typing import List
+from typing import List, Tuple, Dict
+from inspect import getfile
 
 from pystarworldsturbo.common.action import Action
 from pystarworldsturbo.environment.environment import Environment
+from pystarworldsturbo.environment.physics.action_executor import ActionExecutor
 
+from .physics.vwexecutor_factory import VWExecutorFactory
 from .vwambient import VWAmbient
-from ..actor.vwagent import VWCleaningAgent
+from .vwlocation import VWLocation
+from ..actor.vwactor import VWActor
+from ..actor.vwactor_appearance import VWActorAppearance
 from ..dirt.dirt import Dirt
 from ..dirt.dirt_appearance import VWDirtAppearance
 from ...common.coordinates import Coord
 from ...common.direction import Direction
 from ...common.colour import Colour
 from ...common.observation import Observation
+from ...common.orientation import Orientation
 from ...model.actions.vwactions import VWPhysicalAction, VWCommunicativeAction
 from ...utils.exceptions import VWActionAttemptException, VWMalformedActionException
 
 
 
 class VWEnvironment(Environment):
-    def __init__(self, ambient: VWAmbient, initial_actors: List[VWCleaningAgent]=[], initial_dirts: List[Dirt]=[]) -> None:
+    def __init__(self, ambient: VWAmbient, initial_actors: List[VWActor]=[], initial_dirts: List[Dirt]=[]) -> None:
         super(VWEnvironment, self).__init__(ambient=ambient, initial_actors=initial_actors, initial_passive_bodies=initial_dirts)
 
+    def get_actors(self) -> Dict[str, VWActor]:
+        return super(VWEnvironment, self).get_actors()
+
+    def get_actor(self, actor_id: str) -> VWActor:
+        return super(VWEnvironment, self).get_actor(actor_id=actor_id)
+
     # TODO: extract the magic number to the config file.
+    @staticmethod
     def validate_actions(*actions: Action) -> None:
         if len(actions) > 2:
             raise VWActionAttemptException("Too many actions were attempted. There is a hard limit of 1 physical action, and 1 communicative action per agent per cycle.")
@@ -32,6 +45,10 @@ class VWEnvironment(Environment):
         for action in actions:
             if not isinstance(action, VWPhysicalAction) and not isinstance(action, VWCommunicativeAction):
                 raise VWMalformedActionException("Unrecognised action: {}.".format(type(action)))
+
+    @staticmethod
+    def get_executor_for(action: Action) -> ActionExecutor:
+        VWExecutorFactory.get_executor_for(action=action)
 
     def run(self) -> None:
         while True:
@@ -73,6 +90,73 @@ class VWEnvironment(Environment):
     def get_actor_position(self, actor_id) -> Coord:
         assert actor_id in self.get_actors()
 
+        return self.__get_actor_position_and_location(actor_id=actor_id)[0]
+ 
+    def get_actor_location(self, actor_id) -> VWLocation:
+        assert actor_id in self.get_actors()
+
+        return self.__get_actor_position_and_location(actor_id=actor_id)[1]
+
+    def __get_actor_position_and_location(self, actor_id) -> Tuple[Coord, VWLocation]:
+        assert actor_id in self.get_actors()
+
         for c, l in self.get_ambient().get_grid().items():
             if l.has_actor() and l.get_actor_appearance().get_id() == actor_id:
-                return c
+                return c, l
+
+        raise ValueError("There is an inconsistency within the grid.")
+
+    def get_actor_orientation(self, actor_id: str) -> Orientation:
+        assert actor_id in self.get_actors()
+
+        return self.get_actor_location().get_actor_appearance().get_orientation()
+
+    def get_actor_previous_orientation(self, actor_id: str) -> Orientation:
+        assert actor_id in self.get_actors()
+
+        return self.get_actor_location().get_actor_appearance().get_previous_orientation()
+
+    def get_actor_colour(self, actor_id: str) -> Colour:
+        assert actor_id in self.get_actors()
+
+        return self.get_actor_location().get_actor_appearance().get_colour()
+
+    def __get_actor_surrogate_mind_file(self, actor_id: str) -> str:
+        assert actor_id in self.get_actors()
+
+        return getfile(self.get_actor(actor_id=actor_id).get_mind().get_surrogate().__class__)
+
+    # Note that the actor IDs, progressive IDs, and the user difficulty level are not stored.
+    # Therefore, on load the actors will have fresh IDs and progressive IDs, and the user will be in easy mode.
+    def to_json(self) -> dict:
+        state: dict = {
+            "locations": []
+        }
+
+        for c, l in self.get_ambient().get_grid().items():
+            location: dict = {
+                "coords": {
+                    "x": c.x,
+                    "y": c.y
+                }
+            }
+
+            if l.has_actor():
+                actor_appearance: VWActorAppearance = l.get_actor_appearance()
+
+                actor: dict = {
+                    "colour": str(actor_appearance.get_colour()),
+                    "orientation": str(actor_appearance.get_orientation()),
+                    "surrogate_mind_file": self.__get_actor_surrogate_mind_file(actor_id=actor_appearance.get_id())
+                }
+
+                location["actor"] = actor
+
+            if l.has_dirt():
+                location["dirt"] = {
+                    "colour": str(l.get_dirt_appearance().get_colour())
+                }
+
+            state["locations"].append(location)
+
+        return state

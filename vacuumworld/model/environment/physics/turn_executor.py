@@ -17,7 +17,7 @@ class TurnExecutor(ActionExecutor):
     @staticmethod
     def attempt(env: VWEnvironment, action: VWTurnAction) -> ActionResult:
         try:
-            actor_id: str = action.get_actor_appearance().get_id()
+            actor_id: str = action.get_actor_id()
             actor_position: Coord = env.get_actor_position(actor_id=actor_id)
             
             env.turn_actor(coord=actor_position, direction=action.get_turning_direction())
@@ -28,9 +28,8 @@ class TurnExecutor(ActionExecutor):
 
     @staticmethod
     def succeeded(env: VWEnvironment, action: VWTurnAction) -> bool:
-        actor_id: str = action.get_actor_appearance().get_id()
-        actor_position: Coord = env.get_actor_position(actor_id=actor_id)
-        old_actor_orientation: Orientation = env.get_ambient().get_grid()[actor_position].get_actor_appearance().get_previous_orientation()
-        new_actor_orientation: Orientation = env.get_ambient().get_grid()[actor_position].get_actor_appearance().get_orientation()
+        actor_id: str = action.get_actor_id()
+        old_actor_orientation: Orientation = env.get_actor_previous_orientation(actor_id=actor_id)
+        new_actor_orientation: Orientation = env.get_actor_orientation(actor_id=actor_id)
 
         return new_actor_orientation == old_actor_orientation.get(direction=action.get_turning_direction())

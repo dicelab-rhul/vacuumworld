@@ -36,18 +36,24 @@ class Actor(Body):
     def get_actuators(self) -> List[Actuator]:
         return self.__actuators
 
-    def get_actuator_for(self, event_type: Type) -> Sensor:
+    def get_actuator_for(self, event_type: Type) -> Actuator:
         for actuator in self.__actuators:
             if actuator.is_subscribed_to(event_type=event_type):
                 return actuator
 
         return None
 
+    def cycle(_) -> None:
+        # Abstract.
+        pass
+
     def get_outstanding_actions(self) -> List[Action]:
         actions: List[Action] = []
 
-        for actuator in self.__actuators:
-            if actuator.has_pending_actions():
-                actions.append(actuator.source())
+        # Any actor must execute at least one action per cycle.
+        while not actions:
+            for actuator in self.__actuators:
+                if actuator.has_pending_actions():
+                    actions.append(actuator.source())
 
         return actions

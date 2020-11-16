@@ -3,35 +3,30 @@ from typing import Iterable, Type, Union, List
 from pystarworldsturbo.common.action import Action
 from pystarworldsturbo.common.message import Message
 
-from ..actor.vwactor_appearance import VWActorAppearance
 from ...utils.exceptions import VWMalformedActionException
 
 
 
 
 class VWAction(Action):
-    def __init__(self, actor_appearance: VWActorAppearance) -> None:
-        super(VWAction, self).__init__(actor_appearance=actor_appearance)
-
-    def get_actor_appearance(self) -> VWActorAppearance:
-        return super(VWAction, self).get_actor_appearance()
-
+    def __init__(self) -> None:
+        super(VWAction, self).__init__()
 
 class VWPhysicalAction(VWAction):
-    def __init__(self, actor_appearance: VWActorAppearance) -> None:
-        super(VWPhysicalAction, self).__init__(actor_appearance=actor_appearance)
+    def __init__(self) -> None:
+        super(VWPhysicalAction, self).__init__()
 
 
 class VWCommunicativeAction(VWAction):
     ALLOWED_MESSAGE_TYPES: List[Type] = [int, float, str, list, tuple, dict]
 
-    def __init__(self, message: Union[int, float, str, list, tuple, dict], recipients: Iterable, actor_appearance: VWActorAppearance) -> None:
-        super(VWCommunicativeAction, self).__init__(actor_appearance=actor_appearance)
+    def __init__(self, message: Union[int, float, str, list, tuple, dict], recipients: Iterable, sender_id: str) -> None:
+        super(VWCommunicativeAction, self).__init__()
 
         VWCommunicativeAction.__validate_message(message=message)
         VWCommunicativeAction.__validate_recipients(recipients=recipients)
 
-        self.__message: Message = Message(content=message, recipient_ids=recipients, sender_id=actor_appearance.get_id())
+        self.__message: Message = Message(content=message, recipient_ids=recipients, sender_id=sender_id)
 
     @staticmethod
     def __validate_message(message: Union[int, float, str, list, tuple, dict]) -> None:

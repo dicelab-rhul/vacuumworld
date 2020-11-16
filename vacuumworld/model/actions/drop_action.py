@@ -1,13 +1,12 @@
 from .vwactions import VWPhysicalAction
-from ..actor.vwactor_appearance import VWActorAppearance
 from ...common.colour import Colour
 from ...utils.exceptions import VWMalformedActionException
 
 
 
 class VWDropAction(VWPhysicalAction):
-    def __init__(self, dirt_colour: Colour, actor_appearance: VWActorAppearance) -> None:
-        super(VWDropAction, self).__init__(actor_appearance=actor_appearance)
+    def __init__(self, dirt_colour: Colour) -> None:
+        super(VWDropAction, self).__init__()
 
         if not dirt_colour:
             raise VWMalformedActionException("No dirt colour was specified.")

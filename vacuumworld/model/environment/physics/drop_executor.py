@@ -13,22 +13,21 @@ from ....common.colour import Colour
 class DropExecutor(ActionExecutor):
     @staticmethod
     def is_possible(env: VWEnvironment, action: VWDropAction) -> bool:
-        actor_id: str = action.get_actor_appearance().get_id()
-        actor_position: Coord = env.get_actor_position(actor_id=actor_id)
-        actor_colour: Colour = action.get_actor_appearance().get_colour()
-        dirt_location: VWLocation = env.get_ambient().get_grid()[actor_position]
+        actor_id: str = action.get_actor_id()
+        actor_colour: Colour = env.get_actor_colour(actor_id=actor_id)
+        actor_location: VWLocation = env.get_actor_location(actor_id=actor_id)
 
-        return not dirt_location.has_dirt() and actor_colour == Colour.user
+        return not actor_location.has_dirt() and actor_colour == Colour.user
 
     @staticmethod
     def attempt(env: VWEnvironment, action: VWDropAction) -> ActionResult:
         try:
-            actor_id: str = action.get_actor_appearance().get_id()
+            actor_id: str = action.get_actor_id()
             actor_position: Coord = env.get_actor_position(actor_id=actor_id)
-            actor_colour: Colour = action.get_actor_appearance().get_colour()
-            dirt_location: VWLocation = env.get_ambient().get_grid()[actor_position]
+            actor_colour: Colour = env.get_actor_colour(actor_id=actor_id)
+            actor_location: VWLocation = env.get_actor_location(actor_id=actor_id)
 
-            assert not dirt_location.has_dirt() and actor_colour == Colour.user
+            assert not actor_location.has_dirt() and actor_colour == Colour.user
 
             env.drop_dirt(coord=actor_position, dirt_colour=action.get_dirt_colour())
 
@@ -38,7 +37,7 @@ class DropExecutor(ActionExecutor):
 
     @staticmethod
     def succeeded(env: VWEnvironment, action: VWDropAction) -> bool:
-        actor_id: str = action.get_actor_appearance().get_id()
-        actor_position: Coord = env.get_actor_position(actor_id=actor_id)
+        actor_id: str = action.get_actor_id()
+        actor_location: VWLocation = env.get_actor_location(actor_id=actor_id)
 
-        return env.get_ambient().get_grid()[actor_position].has_dirt() and env.get_ambient().get_grid()[actor_position].get_dirt_appearance().get_colour() == action.get_dirt_colour()
+        return actor_location.has_dirt() and actor_location.get_dirt_appearance().get_colour() == action.get_dirt_colour()

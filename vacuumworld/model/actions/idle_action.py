@@ -1,8 +1,7 @@
 from .vwactions import VWPhysicalAction
-from ..actor.vwactor_appearance import VWActorAppearance
 
 
 
 class VWIdleAction(VWPhysicalAction):
-    def __init__(self, actor_appearance: VWActorAppearance) -> None:
-        super(VWIdleAction, self).__init__(actor_appearance=actor_appearance)
+    def __init__(self) -> None:
+        super(VWIdleAction, self).__init__()

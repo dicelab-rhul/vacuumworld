@@ -11,7 +11,7 @@ from ....common.coordinates import Coord
 class MoveExecutor(ActionExecutor):
     @staticmethod
     def is_possible(env: VWEnvironment, action: VWMoveAction) -> bool:
-        actor_id: str = action.get_actor_appearance().get_id()
+        actor_id: str = action.get_actor_id()
         actor_position: Coord = env.get_actor_position(actor_id=actor_id)
         forward_position: Coord = actor_position.forward()
 
@@ -21,7 +21,7 @@ class MoveExecutor(ActionExecutor):
     @staticmethod
     def attempt(env: VWEnvironment, action: VWMoveAction) -> ActionResult:
         try:
-            actor_id: str = action.get_actor_appearance().get_id()
+            actor_id: str = action.get_actor_id()
             actor_position: Coord = env.get_actor_position(actor_id=actor_id)
             forward_position: Coord = actor_position.forward()
 
@@ -35,9 +35,12 @@ class MoveExecutor(ActionExecutor):
 
     @staticmethod
     def succeeded(env: VWEnvironment, action: VWMoveAction) -> bool:
-        actor_id: str = action.get_actor_appearance().get_id()
-        actor_position_before_move: Coord = env.get_actor_position(actor_id=actor_id)
-        actor_position_after_move: Coord = actor_position_before_move.forward()
+        # This only checks that the agent has not vanished and has not been duplicated.
+        # The check for the move success is implicit at this point if not exception has been raised by attempt()
+
+        actor_id: str = action.get_actor_id()
+        actor_position_after_move: Coord = env.get_actor_position(actor_id=actor_id)
+        actor_position_before_move: Coord = actor_position_after_move.backward()
 
         if not env.get_ambient().get_grid()[actor_position_after_move].has_actor():
             return False

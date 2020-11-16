@@ -1,7 +1,6 @@
 from typing import Dict, List
 
 from .ambient import Ambient
-from .physics.executor_factory import ExecutorFactory
 from .physics.action_executor import ActionExecutor
 from ..elements.actor import Actor
 from ..elements.body import Body
@@ -90,20 +89,27 @@ class Environment():
             self.__execute_actor_actions(actor=actor)
 
     def __execute_actor_actions(self, actor: Actor) -> None:
+        actor.cycle()
         actions: List[Action] = actor.get_outstanding_actions()
-        self.validate_actions(actions=actions)
+        Environment.validate_actions(actions=actions)
 
         for action in actions:
             self.execute_action(action=action)
 
+    @staticmethod
     def validate_actions(*_: Action) -> None:
         # Abstract.
         pass
 
     def execute_action(self, action: Action) -> None:
-        action_executor: ActionExecutor = ExecutorFactory.get_executor_for(action=action)
+        action_executor: ActionExecutor = Environment.get_executor_for(action=action)
 
         if not action_executor:
             raise ValueError("No executor found for action of type {}.".format(type(action)))
         else:
             action_executor.execute(env=self, action=action)
+
+    @staticmethod
+    def get_executor_for(_: Action) -> ActionExecutor:
+        # Abstract.
+        pass
