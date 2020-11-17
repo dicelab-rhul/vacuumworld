@@ -5,6 +5,7 @@ from pystarworldsturbo.common.action import Action
 from pystarworldsturbo.common.action_result import ActionResult
 from pystarworldsturbo.environment.environment import Environment
 from pystarworldsturbo.environment.physics.action_executor import ActionExecutor
+from pystarworldsturbo.utils.utils import ignore
 
 from .physics.vwexecutor_factory import VWExecutorFactory
 from .vwambient import VWAmbient
@@ -22,8 +23,6 @@ from ...common.observation import Observation
 from ...common.orientation import Orientation
 from ...model.actions.vwactions import VWPhysicalAction, VWCommunicativeAction
 from ...utils.exceptions import VWActionAttemptException, VWMalformedActionException
-from ...utils.vwutils import ignore
-
 
 
 

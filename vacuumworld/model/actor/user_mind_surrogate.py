@@ -3,6 +3,7 @@ from random import random
 from itertools import accumulate
 
 from pystarworldsturbo.common.message import BccMessage
+from pystarworldsturbo.utils.utils import ignore
 
 from .actor_mind_surrogate import ActorMindSurrogate
 from .user_difficulty import UserDifficulty
@@ -14,7 +15,6 @@ from ..actions.idle_action import VWIdleAction
 from ...common.observation import Observation
 from ...common.colour import Colour
 from ...common.direction import Direction
-from ...utils.vwutils import ignore
 
 
 

@@ -1,7 +1,7 @@
 from tkinter import Canvas, Frame, Event, Image
 from typing import Callable
 
-from ...utils.vwutils import ignore
+from pystarworldsturbo.utils.utils import ignore
 
 
 

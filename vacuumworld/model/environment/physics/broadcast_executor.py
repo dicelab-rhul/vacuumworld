@@ -4,9 +4,9 @@ from typing import TYPE_CHECKING
 from pystarworldsturbo.environment.physics.action_executor import ActionExecutor
 from pystarworldsturbo.common.action_result import ActionResult
 from pystarworldsturbo.common.action_outcome import ActionOutcome
+from pystarworldsturbo.utils.utils import ignore
 
 from ...actions.broadcast_action import VWBroadcastAction
-from ....utils.vwutils import ignore
 
 if TYPE_CHECKING:
     from ..vwenvironment import VWEnvironment
