@@ -19,7 +19,7 @@ from ...utils.vwutils import ignore
 
 
 class UserMindSurrogate(ActorMindSurrogate):
-    def __init__(self, difficulty_level: UserDifficulty) -> None:
+    def __init__(self, difficulty_level: UserDifficulty=UserDifficulty.easy) -> None:
         assert type(difficulty_level) == UserDifficulty
 
         self.__difficulty_level: UserDifficulty = difficulty_level

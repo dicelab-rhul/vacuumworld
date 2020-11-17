@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Jun  1 20:05:16 2019
-
-@author: ben
-"""
 from tkinter import Canvas, Frame, Event, Image
 from typing import Callable
 

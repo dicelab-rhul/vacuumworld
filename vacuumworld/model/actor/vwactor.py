@@ -1,5 +1,4 @@
 from typing import List, Tuple, Iterable
-from vacuumworld.model.actions.speak_action import VWSpeakAction
 
 from pystarworldsturbo.common.message import BccMessage
 from pystarworldsturbo.elements.sensor import Sensor
@@ -9,6 +8,7 @@ from pystarworldsturbo.elements.actor import Actor
 from .vwactormind import VWMind
 from .vwsensors import VWListeningSensor, VWObservationSensor
 from ..actions.vwactions import VWAction, VWPhysicalAction, VWCommunicativeAction
+from ..actions.speak_action import VWSpeakAction
 from ...common.observation import Observation
 from ...utils.exceptions import VWActionAttemptException
 

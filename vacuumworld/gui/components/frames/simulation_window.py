@@ -128,7 +128,7 @@ class VWSimulationWindow(Frame):
         saveload_frame: Frame = Frame(self.__mid_frame, bg=bg)
     
         #buttons
-        self.__buttons["save"] = VWButton(saveload_frame, self.__config, VWSimulationWindow.__scale(Image.open(os.path.join(self.__config["button_images_path"], buttons["save"])), self.__config["button_size"]), lambda: self.__save(self.load_menu), tip_text="Click here to save the current state.")
+        self.__buttons["save"] = VWButton(saveload_frame, self.__config, VWSimulationWindow.__scale(Image.open(os.path.join(self.__config["button_images_path"], buttons["save"])), self.__config["button_size"]), lambda: self.__save(self.__env, self.load_menu), tip_text="Click here to save the current state.")
         self.__buttons["load"] = VWButton(saveload_frame, self.__config, VWSimulationWindow.__scale(Image.open(os.path.join(self.__config["button_images_path"], buttons["load"])), self.__config["button_size"]), lambda: self.__load_and_redraw(self.load_menu), tip_text="Click here to load a savestate.")
         
         #entry box

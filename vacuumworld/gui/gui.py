@@ -3,10 +3,10 @@ from __future__ import annotations
 from tkinter import Tk
 from sys import exit, exc_info
 from inspect import getsourcefile
-from traceback import StackSummary, print_exc
+from traceback import StackSummary
 from webbrowser import open_new_tab
-from threading import Thread
 from typing import Dict
+from threading import Thread
 
 from .components.autocomplete import AutocompleteEntry
 from .components.frames.initial_window import VWInitialWindow
@@ -31,7 +31,7 @@ class VWGUI(Thread):
         self.__minds: Dict[Colour, ActorMindSurrogate] = {}
         self.__initial_window: VWInitialWindow = None
         self.__simulation_window: VWSimulationWindow = None
-        self.__env: VWEnvironment # Programmatic representation of the VW environment (not a GUI element)
+        self.__env: VWEnvironment # TODO: this never gets updated. What gets updated is the  copy passed to the simulation window.
         self.__save_state_manager: SaveStateManager = SaveStateManager()
         self.__already_centered: bool = False
         self.__forceful_stop: bool = False
@@ -126,7 +126,6 @@ class VWGUI(Thread):
 
             self.__env = VWEnvironment.from_json(data=data)
         except Exception:
-            print_exc()
             print("Something went wrong. Could not load any grid from {}".format(self.__config["file_to_load"]))
 
     def __show_initial_window(self) -> None:
@@ -200,9 +199,9 @@ class VWGUI(Thread):
 
         self.__show_simulation_window()
 
-    def __save(self, saveloadmenu: AutocompleteEntry) -> None:
+    def __save(self, env: VWEnvironment, saveloadmenu: AutocompleteEntry) -> None:
         file: str = saveloadmenu.var.get()
-        result: bool = self.__save_state_manager.save_state(env=self.__env, file=file)
+        result: bool = self.__save_state_manager.save_state(env=env, file=file)
 
         if result:
             saveloadmenu.lista = self.__save_state_manager.get_ordered_list_of_filenames_in_save_directory()

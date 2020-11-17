@@ -1,14 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Jun  4 16:39:05 2019
-
-@author: ben
-@author: cloudstrife9999
-"""
-
-import os
-import traceback
-
 from json import load, dump
 from re import match
 from random import choice
@@ -17,6 +6,8 @@ from tkinter.filedialog import asksaveasfile, askopenfile
 from typing import List
 
 from ..model.environment.vwenvironment import VWEnvironment
+
+import os
 
 
 
@@ -59,10 +50,9 @@ class SaveStateManager():
 
         try:
             with open(os.path.join(self.__files_dir, os.path.basename(file)), "wb") as f:
-                dump(obj=state, fp=f)
+                dump(obj=state, fp=f, indent=4)
                 return True
         except Exception:
-            traceback.print_exc()
             return False
 
     def __save_dialog(self, state: dict, file: str) -> bool:
@@ -73,12 +63,11 @@ class SaveStateManager():
                 file += self.__vw_extension
 
             with asksaveasfile(mode="w", initialdir=self.__files_dir, initialfile=file, defaultextension=self.__vw_extension) as f:
-                dump(obj=state, fp=f)
+                dump(obj=state, fp=f, indent=4)
                 return True
         except AttributeError:
             return False
         except Exception:
-            traceback.print_exc()
             return False
 
     def load_state(self, file: str="") -> dict:
@@ -94,7 +83,6 @@ class SaveStateManager():
             with open(os.path.join(self.__files_dir, os.path.basename(file)), "rb") as f:
                 return load(fp=f)
         except Exception:
-            traceback.print_exc()
             return {}
 
     def __load_dialog(self, file: str="") -> dict:
@@ -104,7 +92,6 @@ class SaveStateManager():
         except AttributeError:
             return {}
         except Exception:
-            traceback.print_exc()
             return {}
     
     def add_vw_extension_to_filename_string_if_missing(self, file: str) -> str:
@@ -120,5 +107,4 @@ class SaveStateManager():
             f.sort()
             return f
         except Exception:
-            traceback.print_exc()
             return []

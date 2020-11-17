@@ -12,8 +12,6 @@ import os
 
 
 
-# __all__: list = ["run", Coord, Direction, Orientation, Colour, Observation, Location, Actor, DirtInterface, action, coord, direction, orientation, colour, observation, location, actor, dirt]
-
 CONFIG_FILE_PATH: str = "config.json"
 
 
@@ -34,6 +32,7 @@ def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, *
         vwgui.init_gui_conf(minds={Colour.white: white_mind, Colour.green: green_mind, Colour.orange: orange_mind, Colour.user: user_mind}, **kwargs)
         vwgui.start()
         vwgui.join()
+        #vwgui.run()
     except KeyboardInterrupt:
         print("Received a SIGINT (possibly via CTRL+C). Stopping...")
         vwgui.kill()

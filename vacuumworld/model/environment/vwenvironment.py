@@ -26,6 +26,7 @@ from ...utils.vwutils import ignore
 
 
 
+
 class VWEnvironment(Environment):
     MIN_NUMBER_OF_LOCATIONS_IN_LINE: int = 3
     MAX_NUMBER_OF_LOCATIONS_IN_LINE: int = 13
@@ -189,35 +190,38 @@ class VWEnvironment(Environment):
 
     @staticmethod
     def from_json(data: dict) -> "VWEnvironment":
-        grid: Dict[Coord, VWLocation] = {}
-        actors: List[VWActorAppearance] = []
-        dirts: List[Dirt] = []
+        try:
+            grid: Dict[Coord, VWLocation] = {}
+            actors: List[VWActorAppearance] = []
+            dirts: List[Dirt] = []
 
-        if not data:
+            if not data:
+                return VWEnvironment.generate_empty_env()
+
+            for location_data in data["locations"]:
+                coord: Coord = Coord(x=location_data["coords"]["x"], y=location_data["coords"]["y"])
+                actor: VWActor = None
+                actor_appearance: VWActorAppearance = None
+                dirt: Dirt = None
+                dirt_appearance: VWDirtAppearance = None
+
+                if "actor" in location_data and location_data["actor"]["colour"] != str(Colour.user):
+                    actor, actor_appearance = VWCleaningAgentsFactory.create_cleaning_agent_from_json_data(data=location_data["actor"])
+                    actors.append(actor)
+                elif "actor" in location_data and location_data["actor"]["colour"] == str(Colour.user):
+                    actor, actor_appearance = VWUsersFactory.create_user_from_json_data(data=location_data["actor"])
+                    actors.append(actor)
+
+                if "dirt" in location_data:
+                    dirt = Dirt(colour=Colour(location_data["dirt"]["colour"]))
+                    dirt_appearance = VWDirtAppearance(dirt_id=dirt.get_id(), progressive_id=dirt.get_progressive_id(), colour=dirt.get_colour())
+                    dirts.append(dirt)
+
+                grid[coord] = VWLocation(actor_appearance=actor_appearance, dirt_appearance=dirt_appearance)
+
+            return VWEnvironment(ambient=VWAmbient(grid=grid), initial_actors=actors, initial_dirts=dirts)
+        except Exception:
             return VWEnvironment.generate_empty_env()
-
-        for location_data in data["locations"]:
-            coord: Coord = Coord(x=location_data["coords"]["x"], y=location_data["coords"]["y"])
-            actor: VWActor = None
-            actor_appearance: VWActorAppearance = None
-            dirt: Dirt = None
-            dirt_appearance: VWDirtAppearance = None
-
-            if "actor" in location_data and location_data["actor"]["colour"] != str(Colour.user):
-                actor, actor_appearance = VWCleaningAgentsFactory.create_cleaning_agent_from_json_data(data=location_data["actor"])
-                actors.append(actor)
-            elif "actor" in location_data and location_data["actor"]["colour"] == str(Colour.user):
-                actor, actor_appearance = VWUsersFactory.create_user_from_json_data(data=location_data["actor"])
-                actors.append(actor)
-
-            if "dirt" in location_data:
-                dirt = Dirt(colour=location_data["dirt"]["colour"])
-                dirt_appearance = VWDirtAppearance(dirt_id=dirt.get_id(), progressive_id=dirt.get_progressive_id(), colour=dirt.get_colour())
-                dirts.append(dirt)
-
-            grid[coord] = VWLocation(actor_appearance=actor_appearance, dirt_appearance=dirt_appearance)
-
-        return VWEnvironment(ambient=VWAmbient(grid=grid), initial_actors=actors, initial_dirts=dirts)
 
     # TODO: read the magic number from the config file.
     @staticmethod
