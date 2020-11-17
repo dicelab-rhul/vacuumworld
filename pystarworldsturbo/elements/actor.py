@@ -1,11 +1,11 @@
-from pystarworldsturbo.common.action import Action
+from typing import Iterable, List, Type, Union
+
 from .body import  Body
 from .sensor import Sensor
 from .actuator import Actuator
 from .mind import Mind
 from ..common.message import BccMessage
-
-from typing import List, Type
+from ..common.action import Action
 
 
 
@@ -52,8 +52,22 @@ class Actor(Body):
 
         # Any actor must execute at least one action per cycle.
         while not actions:
-            for actuator in self.__actuators:
-                if actuator.has_pending_actions():
-                    actions.append(actuator.source())
+            actions += self.__get_outstanding_actions()
+
+        return actions
+
+    def __get_outstanding_actions(self) -> List[Action]:
+        actions: List[Action] = []
+
+        for actuator in self.__actuators:
+            if actuator.has_pending_actions():
+                _actions: Union[Action, Iterable[Action]] = actuator.source()
+
+                if type(_actions) == Action:
+                    actions.append(_actions)
+
+                else:
+                    for a in _actions:
+                        actions.append(a)
 
         return actions

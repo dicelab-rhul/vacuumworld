@@ -1,4 +1,4 @@
-from typing import List, Type
+from typing import List, Type, Union, Iterable
 from queue import Queue
 
 from ..common.action import Action
@@ -32,14 +32,14 @@ class Actuator():
         return event_type in self.__subscribed_events
 
     def sink(self, action: Action) -> None:
-        assert self.is_subscribed_to(event_type=action)
+        assert self.is_subscribed_to(event_type=type(action))
 
         self.__action_buffer.put(action)
 
     def has_pending_actions(self) -> bool:
         return not self.__action_buffer.empty()
 
-    def source(self) -> Action:
+    def source(self) -> Union[Action, Iterable[Action]]:
         if not self.__action_buffer.empty():
             return self.__action_buffer.get()
         else:

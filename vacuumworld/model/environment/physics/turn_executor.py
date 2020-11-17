@@ -1,21 +1,28 @@
+from __future__ import annotations
+
 from pystarworldsturbo.environment.physics.action_executor import ActionExecutor
 from pystarworldsturbo.common.action_result import ActionResult
 from pystarworldsturbo.common.action_outcome import ActionOutcome
 
-from ..vwenvironment import VWEnvironment
+#from ..vwenvironment import VWEnvironment
 from ...actions.turn_action import VWTurnAction
 from ....common.coordinates import Coord
 from ....common.orientation import Orientation
+from ....utils.vwutils import ignore
 
 
 
 class TurnExecutor(ActionExecutor):
-    @staticmethod
-    def is_possible(*_) -> bool:
+    def is_possible(self, env: VWEnvironment, action: VWTurnAction) -> bool:
+        ignore(self)
+        ignore(env)
+        ignore(action)
+
         return True
 
-    @staticmethod
-    def attempt(env: VWEnvironment, action: VWTurnAction) -> ActionResult:
+    def attempt(self, env: VWEnvironment, action: VWTurnAction) -> ActionResult:
+        ignore(self)
+        
         try:
             actor_id: str = action.get_actor_id()
             actor_position: Coord = env.get_actor_position(actor_id=actor_id)
@@ -26,8 +33,9 @@ class TurnExecutor(ActionExecutor):
         except Exception:
             return ActionResult(ActionOutcome.failure)
 
-    @staticmethod
-    def succeeded(env: VWEnvironment, action: VWTurnAction) -> bool:
+    def succeeded(self, env: VWEnvironment, action: VWTurnAction) -> bool:
+        ignore(self)
+        
         actor_id: str = action.get_actor_id()
         old_actor_orientation: Orientation = env.get_actor_previous_orientation(actor_id=actor_id)
         new_actor_orientation: Orientation = env.get_actor_orientation(actor_id=actor_id)

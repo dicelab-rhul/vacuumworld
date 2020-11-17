@@ -21,7 +21,6 @@ from ...actions.broadcast_action import VWBroadcastAction
 
 
 
-
 class VWExecutorFactory(ExecutorFactory):
     @staticmethod
     def get_executor_for(action: VWAction) -> ActionExecutor:
@@ -30,16 +29,18 @@ class VWExecutorFactory(ExecutorFactory):
         action_type: Type = type(action)
 
         if action_type == VWMoveAction:
-            return MoveExecutor
+            return MoveExecutor()
         elif action_type == VWTurnAction:
-            return TurnExecutor
+            return TurnExecutor()
         elif action_type == VWCleanAction:
-            return CleanExecutor
+            return CleanExecutor()
         elif action_type == VWDropAction:
-            return DropExecutor
+            return DropExecutor()
         elif action_type == VWIdleAction:
-            return IdleExecutor
+            return IdleExecutor()
         elif action_type == VWSpeakAction:
-            return SpeakExecutor
+            return SpeakExecutor()
         elif action_type == VWBroadcastAction:
-            return BroadcastExecutor
+            return BroadcastExecutor()
+        else:
+            return None

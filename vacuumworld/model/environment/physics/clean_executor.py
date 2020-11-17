@@ -1,18 +1,23 @@
+from __future__ import annotations
+
 from pystarworldsturbo.environment.physics.action_executor import ActionExecutor
 from pystarworldsturbo.common.action_result import ActionResult
 from pystarworldsturbo.common.action_outcome import ActionOutcome
 
-from ..vwenvironment import VWEnvironment
+#from ..vwenvironment import VWEnvironment
 from ..vwlocation import VWLocation
 from ...actions.clean_action import VWCleanAction
 from ....common.coordinates import Coord
 from ....common.colour import Colour
 
+from ....utils.vwutils import ignore
+
 
 
 class CleanExecutor(ActionExecutor):
-    @staticmethod
-    def is_possible(env: VWEnvironment, action: VWCleanAction) -> bool:
+    def is_possible(self, env: VWEnvironment, action: VWCleanAction) -> bool:
+        ignore(self)
+        
         actor_id: str = action.get_actor_id()
         actor_colour: Colour = env.get_actor_colour(actor_id=actor_id)
         actor_location: VWLocation = env.get_actor_location(actor_id=actor_id)
@@ -26,8 +31,9 @@ class CleanExecutor(ActionExecutor):
         else:
             return actor_location.get_dirt_appearance().get_colour() == actor_colour
 
-    @staticmethod
-    def attempt(env: VWEnvironment, action: VWCleanAction) -> ActionResult:
+    def attempt(self, env: VWEnvironment, action: VWCleanAction) -> ActionResult:
+        ignore(self)
+        
         try:
             actor_id: str = action.get_actor_id()
             actor_position: Coord = env.get_actor_position(actor_id=actor_id)
@@ -43,8 +49,9 @@ class CleanExecutor(ActionExecutor):
         except Exception:
             return ActionResult(ActionOutcome.failure)
 
-    @staticmethod
-    def succeeded(env: VWEnvironment, action: VWCleanAction) -> bool:
+    def succeeded(self, env: VWEnvironment, action: VWCleanAction) -> bool:
+        ignore(self)
+        
         actor_id: str = action.get_actor_id()
         actor_location: VWLocation = env.get_actor_location(actor_id=actor_id)
 

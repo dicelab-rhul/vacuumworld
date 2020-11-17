@@ -1,19 +1,29 @@
+from __future__ import annotations
+
 from pystarworldsturbo.environment.physics.action_executor import ActionExecutor
 from pystarworldsturbo.common.action_result import ActionResult
 from pystarworldsturbo.common.action_outcome import ActionOutcome
 
-from ..vwenvironment import VWEnvironment
+#from ..vwenvironment import VWEnvironment
 from ...actions.speak_action import VWSpeakAction
+
+from ....utils.vwutils import ignore
 
 
 
 class SpeakExecutor(ActionExecutor):
-    @staticmethod
-    def is_possible(*_) -> bool:
+    def is_possible(self, env: VWEnvironment, action: VWSpeakAction) -> bool:
+        ignore(self)
+        ignore(env)
+        ignore(action)
+        
         return True
 
-    @staticmethod
-    def attempt(env: VWEnvironment, action: VWSpeakAction) -> ActionResult:
+    def attempt(self, env: VWEnvironment, action: VWSpeakAction) -> ActionResult:
+        ignore(self)
+        ignore(env)
+        ignore(action)
+
         try:
             env.send_message_to_actors(message=action.get_message())
 
@@ -21,6 +31,9 @@ class SpeakExecutor(ActionExecutor):
         except Exception:
             return ActionResult(ActionOutcome.failure)
 
-    @staticmethod
-    def succeeded(*_) -> bool:
+    def succeeded(self, env: VWEnvironment, action: VWSpeakAction) -> bool:
+        ignore(self)
+        ignore(env)
+        ignore(action)
+        
         return True

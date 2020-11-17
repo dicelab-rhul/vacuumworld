@@ -1,4 +1,4 @@
-from typing import List, Type
+from typing import Iterable, List, Type, Union
 from queue import Queue
 
 from ..common.perception import Perception
@@ -39,7 +39,7 @@ class Sensor():
     def has_perception(self) -> bool:
         return not self.__perception_buffer.empty()
 
-    def source(self) -> Perception:
+    def source(self) -> Union[Perception, Iterable[Perception]]:
         if not self.__perception_buffer.empty():
             return self.__perception_buffer.get()
         else:

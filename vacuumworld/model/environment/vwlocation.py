@@ -50,3 +50,6 @@ class VWLocation(LocationAppearance):
             return VWLocation(actor_appearance=None, dirt_appearance=self.__dirt_appearance.deep_copy())
         else:
             return VWLocation(actor_appearance=self.__actor_appearance.deep_copy(), dirt_appearance=self.__dirt_appearance.deep_copy())
+
+    def __str__(self) -> str:
+        return "(actor: {}, dirt: {})".format(str(self.__actor_appearance), str(self.__dirt_appearance))

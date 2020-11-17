@@ -1,6 +1,7 @@
-from typing import Dict, Iterable
+from typing import Dict, Iterable, List
 
 from pystarworldsturbo.common.perception import Perception
+from pystarworldsturbo.common.action_result import ActionResult
 
 from .position_names import PositionNames
 from ..model.environment.vwlocation import VWLocation
@@ -8,7 +9,7 @@ from ..model.environment.vwlocation import VWLocation
 
 
 class Observation(Perception):
-    def __init__(self, locations_dict: Dict[PositionNames, VWLocation]={}) -> None:
+    def __init__(self, action_result: ActionResult, locations_dict: Dict[PositionNames, VWLocation]={}) -> None:
         super(Observation, self).__init__()
 
         assert locations_dict is not None
@@ -16,7 +17,11 @@ class Observation(Perception):
         for position_name in locations_dict:
             assert position_name in PositionNames
 
-        self.__locations: Dict[PositionNames, VWLocation]
+        self.__locations: Dict[PositionNames, VWLocation] = locations_dict
+        self.__action_result: ActionResult = action_result
+
+    def get_latest_action_result(self) -> ActionResult:
+        return self.__action_result
 
     def get_center(self) -> VWLocation:
         if PositionNames.center in self.__locations:
@@ -56,3 +61,9 @@ class Observation(Perception):
 
     def __iter__(self) -> Iterable:
         return self.__locations.values()
+
+    def __str__(self) -> str:
+        return "Action outcome: {}. Perceived locations: {}".format(self.__action_result.get_outcome(), self.__format_perceived_locations())
+
+    def __format_perceived_locations(self) -> List[str]:
+        return ["{}: {}".format(str(pos), str(loc)) for pos, loc in self.__locations.items()]

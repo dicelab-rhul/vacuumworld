@@ -31,6 +31,9 @@ class Coord(NamedTuple):
     def __floordiv__(self, other: Union[int, float]) -> "Coord":
         return self / other
 
+    def __str__(self) -> str:
+        return "({}, {})".format(self.x, self.y)
+
     def forward(self, orientation: Orientation) -> "Coord":
         assert orientation in [Orientation.north, Orientation.south, Orientation.west, Orientation.east]
 

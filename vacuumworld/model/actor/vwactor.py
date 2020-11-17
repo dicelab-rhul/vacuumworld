@@ -51,9 +51,9 @@ class VWActor(Actor):
 
         self.get_mind().revise(observation=observation, messages=messages)
 
-        candidate_actions: Tuple[VWAction] = self.get_mind().decide()
+        self.get_mind().decide()
 
-        actions_to_attempt: Tuple[VWAction] = self.get_mind().execute(actions=candidate_actions)
+        actions_to_attempt: Tuple[VWAction] = self.get_mind().execute()
 
         self.__attempt_actions(actions=actions_to_attempt)
 

@@ -29,3 +29,6 @@ class VWActorAppearance(ActorAppearance):
 
     def deep_copy(self) -> "VWActorAppearance":
         return VWActorAppearance(actor_id=self.get_id(), progressive_id=self.get_progressive_id(), colour=self.__colour, orientation=self.__orientation)
+
+    def __str__(self) -> str:
+        return "actor(ID: {}, progressive ID: {}, colour: {}, orientation: {})".format(self.get_id(), self.get_progressive_id(), self.__colour, self.__orientation)

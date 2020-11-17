@@ -32,3 +32,6 @@ class BccMessage(Message):
         assert type(recipient_id) == str
 
         super(BccMessage, self).__init__(content=content, sender_id=sender_id, recipient_ids=[recipient_id])
+
+    def __str__(self) -> str:
+        return "message:(from: {}, content: {})".format(self.get_sender_id(), self.get_content())

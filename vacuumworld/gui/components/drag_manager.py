@@ -1,11 +1,10 @@
 from tkinter import Canvas, Event, Image
 from typing import Callable, Tuple
 
-from ...core.environment.grid import Grid
 
 
 class CanvasDragManager():
-    def __init__(self, config: dict, key: Tuple[str, str], grid: Grid, canvas: Canvas, item: Image, on_start_callback: Callable, on_drop_callback: Callable) -> None:
+    def __init__(self, config: dict, key: Tuple[str, str], grid_dim: int, canvas: Canvas, item: Image, on_start_callback: Callable, on_drop_callback: Callable) -> None:
         self.__config: dict = config
         self.__x: int = 0
         self.__y: int = 0
@@ -21,7 +20,7 @@ class CanvasDragManager():
         self.__drag_image: Image
         self.__drag: Image
         self.__dragging: bool = False
-        self.__grid: Grid = grid
+        self.__grid_dim: int = grid_dim
 
     def on_start(self, event: Event) -> None:
         if not self.__dragging:
@@ -31,7 +30,7 @@ class CanvasDragManager():
             self.__y = event.y
 
     def on_drag(self, event: Event) -> None:
-        inc: int = self.__config["grid_size"] / self.__grid.dim
+        inc: int = self.__config["grid_size"] / self.__grid_dim
         x: int = int(event.x / inc) * inc + (inc / 2) + 1
         y: int = int(event.y / inc) * inc + (inc / 2) + 1
 

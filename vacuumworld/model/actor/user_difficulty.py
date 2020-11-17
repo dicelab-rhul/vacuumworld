@@ -3,8 +3,8 @@ from enum import Enum
 
 
 class UserDifficulty(Enum):
-    easy: 0
-    hard: 1
+    easy = 0
+    hard = 1
 
     def __str__(self) -> str:
         return str(self.value)

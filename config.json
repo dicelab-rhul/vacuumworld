@@ -2,6 +2,8 @@
     "white_mind_filename": "",
     "orange_mind_filename": "",
     "green_mind_filename": "",
+    "user_mind_filename": "",
+    "user_mind_levels": [0, 1],
     "default_user_mind_level": 0,
     "skip": false,
     "play": false,

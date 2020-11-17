@@ -47,11 +47,13 @@ class VWMind(Mind):
 
         actions: Union[VWAction, Tuple[VWAction]] = self.__surrogate.decide()
 
-        assert type(actions) in [VWAction, tuple]
-
         if type(actions) == tuple:
+            for action in actions:
+                assert isinstance(action, VWAction)
+
             self.__next_actions = actions
         else:
+            assert isinstance(actions, VWAction)
             self.__next_actions = (actions,)
 
     def execute(self) -> Tuple[VWAction]:

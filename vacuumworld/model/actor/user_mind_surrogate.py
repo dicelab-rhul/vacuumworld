@@ -10,6 +10,7 @@ from ..actions.vwactions import VWPhysicalAction
 from ..actions.move_action import VWMoveAction
 from ..actions.turn_action import VWTurnAction
 from ..actions.drop_action import VWDropAction
+from ..actions.idle_action import VWIdleAction
 from ...common.observation import Observation
 from ...common.colour import Colour
 from ...common.direction import Direction
@@ -26,6 +27,9 @@ class UserMindSurrogate(ActorMindSurrogate):
 
     def get_difficulty_level(self) -> int:
         return self.__difficulty_level
+
+    def set_difficulty_level(self, difficulty_level: UserDifficulty) -> None:
+        self.__difficulty_level = difficulty_level
 
     def __is_wall_ahead(self) -> bool:
         return not self.__observation.get_forward()
@@ -51,10 +55,14 @@ class UserMindSurrogate(ActorMindSurrogate):
     def revise(self, observation: Observation, messages: Iterable[BccMessage]) -> None:
         self.__observation: Observation = observation
 
+        # print("Observation: {}".format(self.__observation))
+
         ignore(messages)
 
     def decide(self) -> VWPhysicalAction:
-        if self.__difficulty_level == UserDifficulty.easy:
+        if not self.__observation:
+            return VWIdleAction()
+        elif self.__difficulty_level == UserDifficulty.easy:
             return self.__be_kind()
         elif self.__difficulty_level == UserDifficulty.hard:
             return self.__be_inconsiderate()

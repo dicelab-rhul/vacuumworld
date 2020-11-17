@@ -8,6 +8,7 @@ from ..elements.sensor import Sensor
 from ..common.message import Message, BccMessage
 from ..common.action import Action
 from ..common.perception import Perception
+from ..common.action_result import ActionResult
 
 
 
@@ -64,6 +65,10 @@ class Environment():
 
         del self.__passive_bodies[passive_body_id]
 
+    def generate_perception_for_actor(self, actor_id: str, action_result: ActionResult) -> Perception:
+        # Abstract.
+        pass
+
     def send_message_to_actors(self, message: Message) -> None:
         if message.get_recipients_ids() == []:
             message.override_recipients(recipient_ids=[recipient_id for recipient_id in self.__actors if recipient_id != message.get_sender_id()])
@@ -85,31 +90,33 @@ class Environment():
             actor_sensor.sink(perception=perception)
 
     def execute_cycle_actions(self) -> None:
-        for actor in self.__actors:
+        for actor in self.__actors.values():
             self.__execute_actor_actions(actor=actor)
 
     def __execute_actor_actions(self, actor: Actor) -> None:
         actor.cycle()
         actions: List[Action] = actor.get_outstanding_actions()
-        Environment.validate_actions(actions=actions)
+        self.validate_actions(actions=actions)
 
         for action in actions:
             self.execute_action(action=action)
 
-    @staticmethod
-    def validate_actions(*_: Action) -> None:
+    def validate_actions(self, actions: List[Action]) -> None:
         # Abstract.
         pass
 
     def execute_action(self, action: Action) -> None:
-        action_executor: ActionExecutor = Environment.get_executor_for(action=action)
+        action_executor: ActionExecutor = self.get_executor_for(action=action)
 
         if not action_executor:
             raise ValueError("No executor found for action of type {}.".format(type(action)))
         else:
-            action_executor.execute(env=self, action=action)
+            result: ActionResult = action_executor.execute(env=self, action=action)
+            perception: Perception = self.generate_perception_for_actor(actor_id=action.get_actor_id(), action_result=result)
+            
+            self.send_perception_to_actor(perception=perception, actor_id=action.get_actor_id())
 
-    @staticmethod
-    def get_executor_for(_: Action) -> ActionExecutor:
+
+    def get_executor_for(self, action: Action) -> ActionExecutor:
         # Abstract.
         pass

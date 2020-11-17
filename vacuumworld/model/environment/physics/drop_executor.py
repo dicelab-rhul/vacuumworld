@@ -1,26 +1,32 @@
+from __future__ import annotations
+
 from pystarworldsturbo.environment.physics.action_executor import ActionExecutor
 from pystarworldsturbo.common.action_result import ActionResult
 from pystarworldsturbo.common.action_outcome import ActionOutcome
 
 from ..vwlocation import VWLocation
-from ..vwenvironment import VWEnvironment
+#from ..vwenvironment import VWEnvironment
 from ...actions.drop_action import VWDropAction
 from ....common.coordinates import Coord
 from ....common.colour import Colour
 
+from ....utils.vwutils import ignore
+
 
 
 class DropExecutor(ActionExecutor):
-    @staticmethod
-    def is_possible(env: VWEnvironment, action: VWDropAction) -> bool:
+    def is_possible(self, env: VWEnvironment, action: VWDropAction) -> bool:
+        ignore(self)
+
         actor_id: str = action.get_actor_id()
         actor_colour: Colour = env.get_actor_colour(actor_id=actor_id)
         actor_location: VWLocation = env.get_actor_location(actor_id=actor_id)
 
         return not actor_location.has_dirt() and actor_colour == Colour.user
 
-    @staticmethod
-    def attempt(env: VWEnvironment, action: VWDropAction) -> ActionResult:
+    def attempt(self, env: VWEnvironment, action: VWDropAction) -> ActionResult:
+        ignore(self)
+        
         try:
             actor_id: str = action.get_actor_id()
             actor_position: Coord = env.get_actor_position(actor_id=actor_id)
@@ -35,8 +41,9 @@ class DropExecutor(ActionExecutor):
         except Exception:
             return ActionResult(ActionOutcome.failure)
 
-    @staticmethod
-    def succeeded(env: VWEnvironment, action: VWDropAction) -> bool:
+    def succeeded(self, env: VWEnvironment, action: VWDropAction) -> bool:
+        ignore(self)
+        
         actor_id: str = action.get_actor_id()
         actor_location: VWLocation = env.get_actor_location(actor_id=actor_id)
 
