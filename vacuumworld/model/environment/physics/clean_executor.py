@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import TYPE_CHECKING
 
 from pystarworldsturbo.environment.physics.action_executor import ActionExecutor
 from pystarworldsturbo.common.action_result import ActionResult
@@ -11,6 +12,9 @@ from ....common.coordinates import Coord
 from ....common.colour import Colour
 
 from ....utils.vwutils import ignore
+
+if TYPE_CHECKING:
+    from ..vwenvironment import VWEnvironment
 
 
 

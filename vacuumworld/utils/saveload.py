@@ -14,7 +14,7 @@ import os
 class SaveStateManager():
     def __init__(self) -> None:
         self.__files_dir: str = os.path.join(os.getcwd(), "files")
-        self.__vw_extension: str = ".vw"
+        self.__vw_extension: str = ".json"
         self.__vw_file_regex: str = "^[a-zA-Z0-9]+{}$".format(self.__vw_extension)
         self.__random_file_name_length: int = 10
 
