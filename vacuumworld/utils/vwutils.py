@@ -1,16 +1,15 @@
-import os
-
-from inspect import signature, currentframe, getsourcefile
+from inspect import signature, getsourcefile
 from os import devnull
 from sys import gettrace, settrace
-from types import FrameType
 from typing import Any, List, Optional, Callable, Tuple, Dict, Set
 from importlib import import_module
 
 from .exceptions import VWLoadException, VWInternalError
 from ..model.actor.actor_mind_surrogate import ActorMindSurrogate
-from ..model.actor.vwactormind import VWMind
 from ..common.colour import Colour
+
+import sys
+import os
 
 
 
@@ -25,7 +24,15 @@ def ignore(obj: Any) -> None:
 
 def load_surrogate_mind_from_file(surrogate_mind_file: str, surrogate_mind_class_name: str) -> ActorMindSurrogate:
     try:
-        return getattr(import_module(name=surrogate_mind_file), surrogate_mind_class_name)()
+        assert surrogate_mind_file.endswith(".py")
+
+        parent_dir: str = os.path.dirname(surrogate_mind_file)
+        module_name: str =os.path.basename(surrogate_mind_file)[:-3]
+
+        if parent_dir not in sys.path:
+            sys.path.append(parent_dir)
+
+        return getattr(import_module(name=module_name), surrogate_mind_class_name)()
     except Exception:
         raise VWLoadException("Could not load {} from {}.".format(surrogate_mind_file, surrogate_mind_class_name))
 

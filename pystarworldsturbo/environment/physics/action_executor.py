@@ -8,7 +8,7 @@ from ...common.action import Action
 
 
 class ActionExecutor():
-    def execute(self, env: "Environment", action: Action) -> ActionResult:
+    def execute(self, env: Environment, action: Action) -> ActionResult:
         assert isinstance(action, Action)
 
         # Checking the pre-conditions.
@@ -26,14 +26,14 @@ class ActionExecutor():
 
             return result
 
-    def is_possible(self, env: "Environment", action: Action) -> bool:
+    def is_possible(self, env: Environment, action: Action) -> bool:
         # Abstract.
         pass
 
-    def attempt(self, env: "Environment", action: Action) -> ActionResult:
+    def attempt(self, env: Environment, action: Action) -> ActionResult:
         # Abstract.
         pass
 
-    def succeeded(self, env: "Environment", action: Action) -> bool:
+    def succeeded(self, env: Environment, action: Action) -> bool:
         # Abstract.
         pass

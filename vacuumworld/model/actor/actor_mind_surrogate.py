@@ -9,17 +9,11 @@ from ...common.observation import Observation
 
 
 class ActorMindSurrogate():
-
     def revise(self, observation: Observation, messages: Iterable[BccMessage]) -> None:
         # Abstract.
-        
-        print(self)
-        print(observation)
-        print(messages)
+        pass
 
     def decide(self) -> Union[VWAction, Tuple[VWAction]]:
         # Abstract.
-        
-        print(self)
 
         return VWIdleAction()

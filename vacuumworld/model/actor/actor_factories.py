@@ -30,7 +30,7 @@ class VWCleaningAgentsFactory():
 
         agent_mind_surrogate: ActorMindSurrogate = load_surrogate_mind_from_file(surrogate_mind_file=data["surrogate_mind_file"], surrogate_mind_class_name=data["surrogate_mind_class_name"])
 
-        assert type(agent_mind_surrogate) == ActorMindSurrogate and not isinstance(agent_mind_surrogate, UserMindSurrogate)
+        assert isinstance(agent_mind_surrogate, ActorMindSurrogate) and not isinstance(agent_mind_surrogate, UserMindSurrogate)
 
         colour: Colour = Colour(data["colour"])
         orientation: Orientation = Orientation(data["orientation"])
@@ -50,10 +50,6 @@ class VWUsersFactory():
     def create_user_from_json_data(data: dict) -> Tuple[VWUser, VWActorAppearance]:
         assert type(data) == dict and "colour" in data and "orientation" in data and "surrogate_mind_file" in data
 
-        agent_mind_surrogate: UserMindSurrogate = load_surrogate_mind_from_file(surrogate_mind_file=data["surrogate_mind_file"], surrogate_mind_class_name=data["surrogate_mind_class_name"])
-
-        assert type(agent_mind_surrogate) == UserMindSurrogate
-
         colour: Colour = Colour(data["colour"])
 
         assert colour == Colour.user
@@ -61,7 +57,7 @@ class VWUsersFactory():
         orientation: Orientation = Orientation(data["orientation"])
 
         # We set the user difficulty to easy by default.
-        return VWUsersFactory.create_user(difficulty_level=UserDifficulty.easy, orientation=orientation, mind_surrogate=agent_mind_surrogate)
+        return VWUsersFactory.create_user(difficulty_level=UserDifficulty.easy, orientation=orientation)
 
 
 class VWActorsFactory():
