@@ -1,5 +1,4 @@
 from inspect import signature, getsourcefile
-from os import devnull
 from sys import gettrace, settrace
 from typing import Any, List, Optional, Callable, Tuple, Dict, Set
 from importlib import import_module
@@ -13,21 +12,12 @@ import os
 
 
 
-def ignore(obj: Any) -> None:
-    if not obj:
-        return
-
-    with open(devnull, "w") as f:
-        f.write(str(obj))
-        f.flush()
-
-
 def load_surrogate_mind_from_file(surrogate_mind_file: str, surrogate_mind_class_name: str) -> ActorMindSurrogate:
     try:
         assert surrogate_mind_file.endswith(".py")
 
         parent_dir: str = os.path.dirname(surrogate_mind_file)
-        module_name: str =os.path.basename(surrogate_mind_file)[:-3]
+        module_name: str = os.path.basename(surrogate_mind_file)[:-3]
 
         if parent_dir not in sys.path:
             sys.path.append(parent_dir)

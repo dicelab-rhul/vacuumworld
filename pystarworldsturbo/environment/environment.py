@@ -9,6 +9,7 @@ from ..common.message import Message, BccMessage
 from ..common.action import Action
 from ..common.perception import Perception
 from ..common.action_result import ActionResult
+from ..utils.utils import ignore
 
 
 
@@ -67,7 +68,11 @@ class Environment():
 
     def generate_perception_for_actor(self, actor_id: str, action_result: ActionResult) -> Perception:
         # Abstract.
-        pass
+        ignore(self)
+        ignore(actor_id)
+        ignore(action_result)
+
+        return None
 
     def send_message_to_actors(self, message: Message) -> None:
         if message.get_recipients_ids() == []:
@@ -103,7 +108,9 @@ class Environment():
 
     def validate_actions(self, actions: List[Action]) -> None:
         # Abstract.
-        pass
+        
+        ignore(self)
+        ignore(actions)
 
     def execute_action(self, action: Action) -> None:
         action_executor: ActionExecutor = self.get_executor_for(action=action)
@@ -119,4 +126,7 @@ class Environment():
 
     def get_executor_for(self, action: Action) -> ActionExecutor:
         # Abstract.
-        pass
+        ignore(self)
+        ignore(action)
+
+        return None

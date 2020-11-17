@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 from ...common.action_outcome import ActionOutcome
 from ...common.action_result import ActionResult
 from ...common.action import Action
+from ...utils.utils import ignore
 
 if TYPE_CHECKING:
     from ...environment.environment import Environment
@@ -31,12 +32,21 @@ class ActionExecutor():
 
     def is_possible(self, env: Environment, action: Action) -> bool:
         # Abstract.
-        pass
+        ignore(self)
+        ignore(env)
+        ignore(action)
+
 
     def attempt(self, env: Environment, action: Action) -> ActionResult:
         # Abstract.
-        pass
+        ignore(self)
+        ignore(env)
+        ignore(action)
+
+        return ActionResult(ActionOutcome.impossible)
 
     def succeeded(self, env: Environment, action: Action) -> bool:
         # Abstract.
-        pass
+        ignore(env)
+        ignore(self)
+        ignore(action)

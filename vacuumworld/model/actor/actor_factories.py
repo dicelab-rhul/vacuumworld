@@ -7,7 +7,6 @@ from .vwagent import VWCleaningAgent
 from .vwuser import VWUser
 from .user_difficulty import UserDifficulty
 from .vwactor_appearance import VWActorAppearance
-
 from ...common.colour import Colour
 from ...common.orientation import Orientation
 from ...utils.vwutils import load_surrogate_mind_from_file
