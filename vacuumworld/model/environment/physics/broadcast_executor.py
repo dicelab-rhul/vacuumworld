@@ -1,17 +1,20 @@
 from __future__ import annotations
+from typing import TYPE_CHECKING
 
 from pystarworldsturbo.environment.physics.action_executor import ActionExecutor
 from pystarworldsturbo.common.action_result import ActionResult
 from pystarworldsturbo.common.action_outcome import ActionOutcome
 
-#from ..vwenvironment import VWEnvironment
 from ...actions.broadcast_action import VWBroadcastAction
 from ....utils.vwutils import ignore
+
+if TYPE_CHECKING:
+    from ..vwenvironment import VWEnvironment
 
 
 
 class BroadcastExecutor(ActionExecutor):
-    def is_possible(self, env: VWenvironment, action: VWBroadcastAction) -> bool:
+    def is_possible(self, env: VWEnvironment, action: VWBroadcastAction) -> bool:
         ignore(self)
         ignore(env)
         ignore(action)
@@ -28,9 +31,9 @@ class BroadcastExecutor(ActionExecutor):
         except Exception:
             return ActionResult(ActionOutcome.failure)
 
-    def succeeded(self, env: VWenvironment, action: VWBroadcastAction) -> bool:
-        ignore(self)
+    def succeeded(self, env: VWEnvironment, action: VWBroadcastAction) -> bool:
         ignore(env)
+        ignore(self)
         ignore(action)
         
         return True

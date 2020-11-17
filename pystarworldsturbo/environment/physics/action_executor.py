@@ -1,9 +1,12 @@
 from __future__ import annotations
+from typing import TYPE_CHECKING
 
 from ...common.action_outcome import ActionOutcome
 from ...common.action_result import ActionResult
 from ...common.action import Action
-#from ...environment.environment import Environment
+
+if TYPE_CHECKING:
+    from ...environment.environment import Environment
 
 
 
