@@ -1,17 +1,23 @@
+from __future__ import annotations
+
 from tkinter import Tk
 from sys import exit, exc_info
 from inspect import getsourcefile
-from traceback import StackSummary
+from traceback import StackSummary, print_exc
 from webbrowser import open_new_tab
 from threading import Thread
+from typing import Dict
 
 from .components.autocomplete import AutocompleteEntry
 from .components.frames.initial_window import VWInitialWindow
 from .components.frames.simulation_window import VWSimulationWindow
-from ..core.environment.vw import Grid
-from ..core.common.colour import Colour
+
+from ..common.colour import Colour
+from ..model.actor.actor_mind_surrogate import ActorMindSurrogate
+from ..model.environment.vwenvironment import VWEnvironment
 from ..utils.saveload import SaveStateManager
-from ..utils.vwutils import ignore, VacuumWorldActionError
+from ..utils.vwutils import ignore
+from ..utils.exceptions import VWActionAttemptException, VWMalformedActionException
 
 import traceback
 
@@ -22,11 +28,10 @@ class VWGUI(Thread):
         super(VWGUI, self).__init__()
 
         self.__config: dict = config
-        self.__minds: dict = {}
-        self.__user_mind: int = config["default_user_mind_level"]
+        self.__minds: Dict[Colour, ActorMindSurrogate] = {}
         self.__initial_window: VWInitialWindow = None
         self.__simulation_window: VWSimulationWindow = None
-        self.__grid: Grid = None # Programmatic representation of the VW grid (not a GUI element)
+        self.__env: VWEnvironment # Programmatic representation of the VW environment (not a GUI element)
         self.__save_state_manager: SaveStateManager = SaveStateManager()
         self.__already_centered: bool = False
         self.__forceful_stop: bool = False
@@ -34,12 +39,14 @@ class VWGUI(Thread):
     def kill(self) -> None:
         self.__forceful_stop = True
 
-    def init_gui_conf(self, minds: dict, skip: bool=False, play: bool=False, speed: float=0.0, load: str=None, scale: float=0.0, tooltips: bool=True) -> None:
+    def init_gui_conf(self, minds: Dict[Colour, ActorMindSurrogate], skip: bool=False, play: bool=False, speed: float=0.0, load: str=None, scale: float=0.0, tooltips: bool=True) -> None:
         try:
             assert minds
 
-            self.__minds = minds
+            self.__minds: Dict[Colour, ActorMindSurrogate] = minds
+            
             VWGUI.__validate_arguments(play=play, file_to_load=load, speed=speed, scale=scale)
+
             self.__override_default_config(skip=skip, play=play, speed=speed, file_to_load=load, scale=scale, tooltips=tooltips)
             self.__scale_config_parameters()
         except Exception as e:
@@ -60,6 +67,7 @@ class VWGUI(Thread):
         self.__config["white_mind_filename"] = getsourcefile(self.__minds[Colour.white].__class__)
         self.__config["orange_mind_filename"] = getsourcefile(self.__minds[Colour.orange].__class__)
         self.__config["green_mind_filename"] = getsourcefile(self.__minds[Colour.green].__class__)
+        self.__config["user_mind_filename"] = getsourcefile(self.__minds[Colour.user].__class__)
         self.__config["skip"] |= skip
         self.__config["play"] |= play
         self.__config["time_step_modifier"] = 1 - speed
@@ -89,10 +97,8 @@ class VWGUI(Thread):
         self.__root.protocol("WM_DELETE_WINDOW", self.kill)
         self.__root.configure(background=self.__config["bg_colour"])
 
-        if self.__config["file_to_load"]:
-            self.__load_grid()
-        else:
-            self.__create_new_grid()
+        # A fresh one will be created if there is nothing to load
+        self.__load_env()
 
         self.__show_appropriate_window()
         self.__loop()
@@ -111,19 +117,17 @@ class VWGUI(Thread):
         else:
             self.__show_simulation_window()
 
-    def __load_grid(self) -> None:
+    def __load_env(self) -> None:
         try:
-            loaded_grid: Grid = self.__load_file(file=self.__config["file_to_load"])
-            self.__create_new_grid(dim=loaded_grid.dim)
-            self.__grid.replace_all(grid=loaded_grid)
+            data: dict = {}
+
+            if self.__config["file_to_load"]:
+                data= self.__load_grid_data_from_file(file=self.__config["file_to_load"])
+
+            self.__env = VWEnvironment.from_json(data=data)
         except Exception:
+            print_exc()
             print("Something went wrong. Could not load any grid from {}".format(self.__config["file_to_load"]))
-
-    def __create_new_grid(self, dim: int=-1) -> None:
-        if dim == -1:
-            dim = self.__config["initial_environment_dim"]
-
-        self.__grid = Grid(dim=dim)
 
     def __show_initial_window(self) -> None:
         self.__initial_window: VWInitialWindow = VWInitialWindow(root=self.__root, config=self.__config, _start=self.__start, _exit=self.__finish, _guide=self.__guide)
@@ -131,9 +135,7 @@ class VWGUI(Thread):
         self.__center_and_adapt_to_resolution()
 
     def __show_simulation_window(self) -> None:
-        self.__simulation_window: VWSimulationWindow = VWSimulationWindow(
-            root=self.__root, config=self.__config, minds=self.__minds, user_mind=self.__user_mind, grid=self.__grid,
-            _guide=self.__guide, _save=self.__save, _load=self.__load, _finish=self.__finish, _error=self.__clean_exit)
+        self.__simulation_window: VWSimulationWindow = VWSimulationWindow(root=self.__root, config=self.__config, minds=self.__minds, env=self.__env, _guide=self.__guide, _save=self.__save, _load=self.__load, _finish=self.__finish, _error=self.__clean_exit)
 
         self.__simulation_window.pack()
         self.__center_and_adapt_to_resolution()
@@ -162,7 +164,7 @@ class VWGUI(Thread):
                 agent_error = True
                 break
         
-        agent_error |= _type == VacuumWorldActionError
+        agent_error |= _type in [VWMalformedActionException, VWActionAttemptException]
         i = int(agent_error) * i
 
         print("Traceback:\n")
@@ -200,7 +202,7 @@ class VWGUI(Thread):
 
     def __save(self, saveloadmenu: AutocompleteEntry) -> None:
         file: str = saveloadmenu.var.get()
-        result: bool = self.__save_state_manager.save_state(grid=self.__grid, file=file)
+        result: bool = self.__save_state_manager.save_state(env=self.__env, file=file)
 
         if result:
             saveloadmenu.lista = self.__save_state_manager.get_ordered_list_of_filenames_in_save_directory()
@@ -208,20 +210,22 @@ class VWGUI(Thread):
         else:
             print("The current grid was not saved.")
 
-    def __load(self, saveloadmenu: AutocompleteEntry) -> Grid:
+    def __load(self, saveloadmenu: AutocompleteEntry) -> VWEnvironment:
         file: str = saveloadmenu.var.get()
         
-        return self.__load_file(file=file)
+        data: dict = self.__save_state_manager.load_state(file=file)
 
-    def __load_file(self, file: str) -> Grid:
-        data: Grid = self.__save_state_manager.load_state(file=file)
+        return VWEnvironment.from_json(data=data)
+
+    def __load_grid_data_from_file(self, file: str) -> dict:
+        data: dict = self.__save_state_manager.load_state(file=file)
 
         if data:
             print("The saved grid was successfully loaded.")
             return data
         else:
             print("The state was not loaded.")
-            return self.__create_new_grid()
+            return {}
 
     def __center_and_adapt_to_resolution(self) -> None:
         if not self.__already_centered:

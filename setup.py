@@ -30,7 +30,7 @@ classifiers: list = [
 url: str = "https://github.com/dicelab-rhul/vacuumworld"
 wiki: str = url + "/wiki"
 issues: str = url + "/issues"
-dependencies: list = ["pystarworlds>=0.0.3", "pillow", "wheel", "ipython", "screeninfo"]
+dependencies: list = ["pillow", "wheel", "ipython", "screeninfo"]
 
 # End of metadata
 

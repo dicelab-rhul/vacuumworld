@@ -1,15 +1,8 @@
-from vacuumworld.gui.gui import VWGUI
-from vacuumworld.utils.vwutils import process_minds
-
-from vacuumworld.core.common.coordinates import Coord, coord
-from vacuumworld.core.common.direction import Direction, direction
-from vacuumworld.core.common.orientation import Orientation, orientation
-from vacuumworld.core.common.colour import Colour, colour
-from vacuumworld.core.common.observation import Observation, observation
-from vacuumworld.core.environment.location_interface import Location, location
-from vacuumworld.core.agent.agent_interface import Agent, agent
-from vacuumworld.core.dirt.dirt_interface import Dirt, dirt
-from vacuumworld.core.action import action
+from .model.actor.user_mind_surrogate import UserMindSurrogate
+from .model.actor.user_difficulty import UserDifficulty
+from .common.colour import Colour
+from .gui.gui import VWGUI
+from .utils.vwutils import process_minds
 
 from signal import signal, SIGTSTP, SIG_IGN
 from json import load
@@ -19,7 +12,7 @@ import os
 
 
 
-__all__: list = ["run", Coord, Direction, Orientation, Colour, Observation, Location, Agent, Dirt, action, coord, direction, orientation, colour, observation, location, agent, dirt]
+# __all__: list = ["run", Coord, Direction, Orientation, Colour, Observation, Location, Actor, DirtInterface, action, coord, direction, orientation, colour, observation, location, actor, dirt]
 
 CONFIG_FILE_PATH: str = "config.json"
 
@@ -32,10 +25,13 @@ def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, *
     white_mind, green_mind, orange_mind = process_minds(default_mind, white_mind, green_mind, orange_mind)
 
     config: dict = load_config()
+
+    user_mind: UserMindSurrogate = UserMindSurrogate(difficulty_level=UserDifficulty(config["default_user_mind_level"]))
+
     vwgui: VWGUI = VWGUI(config=config)
 
     try:
-        vwgui.init_gui_conf(minds={Colour.white:white_mind, Colour.green:green_mind, Colour.orange:orange_mind}, **kwargs)
+        vwgui.init_gui_conf(minds={Colour.white: white_mind, Colour.green: green_mind, Colour.orange: orange_mind, Colour.user: user_mind}, **kwargs)
         vwgui.start()
         vwgui.join()
     except KeyboardInterrupt:
