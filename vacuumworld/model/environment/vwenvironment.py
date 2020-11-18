@@ -171,10 +171,12 @@ class VWEnvironment(Environment):
 
                 actor: dict = {
                     "colour": str(actor_appearance.get_colour()),
-                    "orientation": str(actor_appearance.get_orientation()),
-                    "surrogate_mind_file": self.__get_actor_surrogate_mind_file(actor_id=actor_appearance.get_id()),
-                    "surrogate_mind_class_name": self.get_actor(actor_id=actor_appearance.get_id()).get_mind().get_surrogate().__class__.__name__
+                    "orientation": str(actor_appearance.get_orientation())
                 }
+
+                if l.has_cleaning_agent():
+                    actor["surrogate_mind_file"] = self.__get_actor_surrogate_mind_file(actor_id=actor_appearance.get_id())
+                    actor["surrogate_mind_class_name"] = self.get_actor(actor_id=actor_appearance.get_id()).get_mind().get_surrogate().__class__.__name__
 
                 location["actor"] = actor
 

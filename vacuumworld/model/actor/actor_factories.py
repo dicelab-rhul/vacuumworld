@@ -46,8 +46,8 @@ class VWUsersFactory():
         return user, user_appearance
 
     @staticmethod
-    def create_user_from_json_data(data: dict) -> Tuple[VWUser, VWActorAppearance]:
-        assert type(data) == dict and "colour" in data and "orientation" in data and "surrogate_mind_file" in data
+    def create_user_from_json_data(data: dict, difficulty_level: UserDifficulty=UserDifficulty.easy) -> Tuple[VWUser, VWActorAppearance]:
+        assert type(data) == dict and "colour" in data and "orientation" in data
 
         colour: Colour = Colour(data["colour"])
 
@@ -56,12 +56,20 @@ class VWUsersFactory():
         orientation: Orientation = Orientation(data["orientation"])
 
         # We set the user difficulty to easy by default.
-        return VWUsersFactory.create_user(difficulty_level=UserDifficulty.easy, orientation=orientation)
+        return VWUsersFactory.create_user(difficulty_level=difficulty_level, orientation=orientation)
+
+    @staticmethod
+    def create_easy_user_from_json_data(data: dict) -> Tuple[VWUser, VWActorAppearance]:
+        return VWUsersFactory.create_user_from_json_data(data=data, difficulty_level=UserDifficulty.easy)
+
+    @staticmethod
+    def create_hard_user_from_json_data(data: dict) -> Tuple[VWUser, VWActorAppearance]:
+        return VWUsersFactory.create_user_from_json_data(data=data, difficulty_level=UserDifficulty.hard)
 
 
 class VWActorsFactory():
     @staticmethod
-    def create_actor(colour: Colour, orientation: Orientation, mind_surrogate: ActorMindSurrogate) -> Union[Tuple[VWCleaningAgent, VWActorAppearance], Tuple[VWUser, VWActorAppearance]]:
+    def create_actor(colour: Colour, orientation: Orientation, mind_surrogate: Union[ActorMindSurrogate, UserMindSurrogate]) -> Union[Tuple[VWCleaningAgent, VWActorAppearance], Tuple[VWUser, VWActorAppearance]]:
         assert type(colour) == Colour
 
         if colour == Colour.user:
@@ -71,4 +79,6 @@ class VWActorsFactory():
             
             return VWUsersFactory.create_user(difficulty_level=difficulty_level, orientation=orientation)
         else:
+            assert type(mind_surrogate) != UserMindSurrogate
+
             return VWCleaningAgentsFactory.create_cleaning_agent(colour=colour, orientation=orientation, mind_surrogate=mind_surrogate)
