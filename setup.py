@@ -1,9 +1,3 @@
-"""
-Created on Sun Jun  2 21:22:31 2019
-
-@author: ben
-"""
-
 import setuptools
 
 
@@ -13,8 +7,8 @@ name: str = "vacuumworld"
 version: str = "4.1.9"
 description: str = "VacuumWorld: an agent platform for cleaning robots."
 author: str = "Benedict Wilkins"
-authors: list = ["Benedict Wilkins", "Nausheen Saba", "Emanuele Uliana"]
-authors_short : list = ["ben", "nausheen", "cloudstrife9999"]
+authors: list = ["Benedict Wilkins", "Nausheen Saba", "Emanuele Uliana", "Joel Clarke"]
+authors_short : list = ["ben", "nausheen", "cloudstrife9999", "joel"]
 author_email: str = "brjw@hotmail.co.uk"
 license: str = "GNU3"
 classifiers: list = [
