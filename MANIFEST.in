@@ -1,9 +1,3 @@
-"""
-Created on Sun Jun  2 21:49:14 2019
-
-@author: ben
-"""
-
 # Include the relevant images
 include vacuumworld/res/*.png
 include vacuumworld/res/locations/agent/*.png
