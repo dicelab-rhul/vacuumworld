@@ -1,6 +1,8 @@
-from vacuumworld.model.dirt.dirt_appearance import VWDirtAppearance
-from vacuumworld.model.actor.vwactor_appearance import VWActorAppearance
 from pystarworldsturbo.environment.location_appearance import LocationAppearance
+
+from ...common.colour import Colour
+from ..dirt.dirt_appearance import VWDirtAppearance
+from ..actor.vwactor_appearance import VWActorAppearance
 
 
 
@@ -24,6 +26,12 @@ class VWLocation(LocationAppearance):
 
     def has_actor(self) -> bool:
         return self.__actor_appearance is not None
+
+    def has_cleaning_agent(self) -> bool:
+        return self.__actor_appearance is not None and self.__actor_appearance.get_colour() in [Colour.white, Colour.green, Colour.orange]
+
+    def has_user(self) -> bool:
+        return self.__actor_appearance is not None and self.__actor_appearance.get_colour() == Colour.user
 
     def get_dirt_appearance(self) -> VWDirtAppearance:
         return self.__dirt_appearance
