@@ -6,9 +6,7 @@ import setuptools
 name: str = "vacuumworld"
 version: str = "4.1.9"
 description: str = "VacuumWorld: an agent platform for cleaning robots."
-author: str = "Benedict Wilkins"
-authors: list = ["Benedict Wilkins", "Nausheen Saba", "Emanuele Uliana", "Joel Clarke"]
-authors_short : list = ["ben", "nausheen", "cloudstrife9999", "joel"]
+author: list = ["Benedict Wilkins", "Nausheen Saba", "Emanuele Uliana", "Joel Clarke"]
 author_email: str = "brjw@hotmail.co.uk"
 license: str = "GNU3"
 classifiers: list = [
@@ -37,8 +35,6 @@ setuptools.setup(
       wiki=wiki,
       issues=issues,
       author=author,
-      authors=authors,
-      authors_short=authors_short,
       author_email=author_email,
       license=license,
       packages=[p for p in setuptools.find_packages() if "test" not in p],
