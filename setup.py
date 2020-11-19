@@ -1,6 +1,7 @@
 from setuptools import setup, find_packages
 
 
+
 # All the metadata that are expected to be reused should go here.
 
 name: str = "vacuumworld"
