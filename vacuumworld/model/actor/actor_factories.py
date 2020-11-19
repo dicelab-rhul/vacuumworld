@@ -9,7 +9,6 @@ from .user_difficulty import UserDifficulty
 from .vwactor_appearance import VWActorAppearance
 from ...common.colour import Colour
 from ...common.orientation import Orientation
-from ...utils.vwutils import load_surrogate_mind_from_file
 
 
 
@@ -27,7 +26,7 @@ class VWCleaningAgentsFactory():
     def create_cleaning_agent_from_json_data(data: dict) -> Tuple[VWCleaningAgent, VWActorAppearance]:
         assert type(data) == dict and "colour" in data and "orientation" in data and "surrogate_mind_file" in data
 
-        agent_mind_surrogate: ActorMindSurrogate = load_surrogate_mind_from_file(surrogate_mind_file=data["surrogate_mind_file"], surrogate_mind_class_name=data["surrogate_mind_class_name"])
+        agent_mind_surrogate: ActorMindSurrogate = ActorMindSurrogate.load_from_file(surrogate_mind_file=data["surrogate_mind_file"], surrogate_mind_class_name=data["surrogate_mind_class_name"])
 
         assert isinstance(agent_mind_surrogate, ActorMindSurrogate) and not isinstance(agent_mind_surrogate, UserMindSurrogate)
 

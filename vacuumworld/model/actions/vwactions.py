@@ -3,8 +3,7 @@ from typing import Iterable, Type, Union, List
 from pystarworldsturbo.common.action import Action
 from pystarworldsturbo.common.message import Message
 
-from ...utils.exceptions import VWMalformedActionException
-
+from ...common.exceptions import VWMalformedActionException
 
 
 

@@ -10,7 +10,7 @@ from .vwsensors import VWListeningSensor, VWObservationSensor
 from ..actions.vwactions import VWAction, VWPhysicalAction, VWCommunicativeAction
 from ..actions.speak_action import VWSpeakAction
 from ...common.observation import Observation
-from ...utils.exceptions import VWActionAttemptException
+from ...common.exceptions import VWActionAttemptException
 
 
 

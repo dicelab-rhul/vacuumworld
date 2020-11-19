@@ -1,6 +1,6 @@
 from .vwactions import VWPhysicalAction
 from ...common.direction import Direction
-from ...utils.exceptions import VWMalformedActionException
+from ...common.exceptions import VWMalformedActionException
 
 
 
