@@ -37,6 +37,8 @@ def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, *
         print("Received a SIGINT (possibly via CTRL+C). Stopping...")
         vwgui.kill()
         vwgui.join()
+    except Exception:
+        print("here")
 
 
 def __load_config() -> dict:
@@ -55,7 +57,7 @@ def __load_config() -> dict:
         config["scale"] = config["x_scale"]
 
     top_directory_path: str = os.path.join(os.getcwd(), config["top_directory_name"])
-    config["button_images_path"] = os.path.join(top_directory_path, config["res_directory_name"])
+    config["button_data_path"] = os.path.join(top_directory_path, config["res_directory_name"])
     config["location_agent_images_path"] = os.path.join(top_directory_path, config["res_directory_name"], config["locations_directory_name"], config["agent_images_directory_name"])
     config["location_dirt_images_path"] = os.path.join(top_directory_path, config["res_directory_name"], config["locations_directory_name"], config["dirt_images_directory_name"])
     config["main_menu_image_path"] = os.path.join(top_directory_path, config["res_directory_name"], "start_menu.png")

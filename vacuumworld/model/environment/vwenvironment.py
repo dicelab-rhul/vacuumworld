@@ -27,10 +27,6 @@ from ...model.actions.vwactions import VWPhysicalAction, VWCommunicativeAction
 
 
 class VWEnvironment(Environment):
-    # TODO: move these to the config file.
-    MIN_NUMBER_OF_LOCATIONS_IN_LINE: int = 3
-    MAX_NUMBER_OF_LOCATIONS_IN_LINE: int = 13
-
     def __init__(self, config: dict, ambient: VWAmbient, initial_actors: List[VWActor]=[], initial_dirts: List[Dirt]=[]) -> None:
         super(VWEnvironment, self).__init__(ambient=ambient, initial_actors=initial_actors, initial_passive_bodies=initial_dirts)
 
@@ -232,7 +228,7 @@ class VWEnvironment(Environment):
         line_dim: int = config["initial_environment_dim"]
 
         if forced_line_dim != -1:
-            assert forced_line_dim >= VWEnvironment.MIN_NUMBER_OF_LOCATIONS_IN_LINE and forced_line_dim <= VWEnvironment.MAX_NUMBER_OF_LOCATIONS_IN_LINE
+            assert forced_line_dim >= config["min_environment_dim"] and forced_line_dim <= config["max_environment_dim"]
             line_dim = forced_line_dim
 
         grid: Dict[Coord, VWLocation] = {Coord(x, y): VWLocation(actor_appearance=None, dirt_appearance=None) for x in range(line_dim) for y in range(line_dim)}

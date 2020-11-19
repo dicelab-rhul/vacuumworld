@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 from tkinter import Tk
-from sys import exit, exc_info
 from inspect import getsourcefile
-from traceback import StackSummary
 from webbrowser import open_new_tab
 from typing import Dict
 from threading import Thread
+from json import load
 
 from pystarworldsturbo.utils.utils import ignore
 
@@ -16,11 +15,10 @@ from .components.frames.simulation_window import VWSimulationWindow
 from .saveload import SaveStateManager
 
 from ..common.colour import Colour
-from ..common.exceptions import VWActionAttemptException, VWMalformedActionException
 from ..model.actor.actor_mind_surrogate import ActorMindSurrogate
 from ..model.environment.vwenvironment import VWEnvironment
 
-import traceback
+import os
 
 
 
@@ -30,6 +28,7 @@ class VWGUI(Thread):
 
         self.__root: Tk = None
         self.__config: dict = config
+        self.__button_data: dict = None
         self.__minds: Dict[Colour, ActorMindSurrogate] = {}
         self.__initial_window: VWInitialWindow = None
         self.__simulation_window: VWSimulationWindow = None
@@ -50,6 +49,7 @@ class VWGUI(Thread):
 
             self.__override_default_config(skip=skip, play=play, speed=speed, file_to_load=load, scale=scale, tooltips=tooltips)
             self.__scale_config_parameters()
+            self.__button_data = self.__load_button_data()
         except Exception as e:
             self.__clean_exit(exc=e)
 
@@ -91,18 +91,21 @@ class VWGUI(Thread):
         self.__config["time_step"] = self.__config["time_step"] * self.__config["time_step_modifier"] + self.__config["time_step_min"]
 
     def run(self) -> None:
-        Tk.report_callback_exception = self.__clean_exit
+        #Tk.report_callback_exception = self.__clean_exit
 
-        self.__root: Tk = Tk()
-        self.__root.title("VacuumWorld v{}".format(self.__config["version_number"]))
-        self.__root.protocol("WM_DELETE_WINDOW", self.kill)
-        self.__root.configure(background=self.__config["bg_colour"])
+        try:
+            self.__root: Tk = Tk()
+            self.__root.title("VacuumWorld v{}".format(self.__config["version_number"]))
+            self.__root.protocol("WM_DELETE_WINDOW", self.kill)
+            self.__root.configure(background=self.__config["bg_colour"])
 
-        # A fresh one will be created if there is nothing to load
-        env: VWEnvironment = self.__load_env()
+            # A fresh one will be created if there is nothing to load
+            env: VWEnvironment = self.__load_env()
 
-        self.__show_appropriate_window(env=env)
-        self.__loop()
+            self.__show_appropriate_window(env=env)
+            self.__loop()
+        except Exception:
+            self.__clean_exit()
 
     def __loop(self) -> None:
         while True:
@@ -132,12 +135,12 @@ class VWGUI(Thread):
             return VWEnvironment.generate_empty_env(config=self.__config)
 
     def __show_initial_window(self, env: VWEnvironment) -> None:
-        self.__initial_window: VWInitialWindow = VWInitialWindow(root=self.__root, config=self.__config, env=env, _start=self.__start, _exit=self.__finish, _guide=self.__guide)
+        self.__initial_window: VWInitialWindow = VWInitialWindow(parent=self.__root, config=self.__config, buttons=self.__button_data, env=env, _start=self.__start, _exit=self.__finish, _guide=self.__guide)
         self.__initial_window.pack()
         self.__center_and_adapt_to_resolution()
 
     def __show_simulation_window(self, env: VWEnvironment) -> None:
-        self.__simulation_window: VWSimulationWindow = VWSimulationWindow(root=self.__root, config=self.__config, minds=self.__minds, env=env, _guide=self.__guide, _save=self.__save, _load=self.__load, _finish=self.__finish, _error=self.__clean_exit)
+        self.__simulation_window: VWSimulationWindow = VWSimulationWindow(parent=self.__root, config=self.__config, buttons=self.__button_data, minds=self.__minds, env=env, _guide=self.__guide, _save=self.__save, _load=self.__load, _finish=self.__finish, _error=self.__clean_exit)
 
         self.__simulation_window.pack()
         self.__center_and_adapt_to_resolution()
@@ -154,43 +157,14 @@ class VWGUI(Thread):
     def __clean_exit(self, *args, **kwargs) -> None:
         ignore(args)
         ignore(kwargs)
-        
-        _type, value, tb = exc_info()
-        tb: StackSummary =  traceback.extract_tb(tb)
-        agent_error: bool = False
 
-        i: int = 0 # As a fallback.
-
-        for i, s in enumerate(tb):
-            if s.filename in (self.__config["white_mind_filename"], self.__config["orange_mind_filename"], self.__config["green_mind_filename"]):
-                agent_error = True
-                break
-        
-        agent_error |= _type in [VWMalformedActionException, VWActionAttemptException]
-        i = int(agent_error) * i
-
-        print("Traceback:\n")
-        print("".join(traceback.format_list(tb[i:])))
-        print("Exception:\n")
-        print("  "  + "  ".join(traceback.format_exception_only(_type, value)))
-
-        if  self.__root is not None:
-            self.__root.destroy()
-        
-        exit(-1)
+        self.__finish()
 
     def finish(self) -> None:
         self.__finish()
 
     def __finish(self) -> None:
-        if self.__simulation_window is not None:
-            self.__simulation_window.destroy()
-        
-        if self.__initial_window is not None:
-            self.__initial_window.destroy()
-
-        if self.__root is not None:
-            self.__root.destroy()
+        self.kill()
 
     def __guide(self) -> None:
         open_new_tab(url=self.__config["project_repo_url"])
@@ -242,3 +216,7 @@ class VWGUI(Thread):
             self.__root.y = y
             self.__root.geometry("+%d+%d" % (x, y))
             self.__already_centered = True
+
+    def __load_button_data(self) -> dict:
+        with open(os.path.join(self.__config["button_data_path"], self.__config["button_data_file"]), "r") as f:
+            return load(fp=f)
