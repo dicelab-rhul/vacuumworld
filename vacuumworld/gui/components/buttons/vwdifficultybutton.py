@@ -7,10 +7,10 @@ from .vwbutton import VWButton
 
 
 class VWDifficultyButton(VWButton):
-    def __init__(self, root: Frame, config: dict, img: Img, fun: Callable, tip_text: str) -> None:
+    def __init__(self, parent: Frame, config: dict, img: Img, fun: Callable, tip_text: str) -> None:
         self.__imgs: List[ImageTk.PhotoImage] = [ImageTk.PhotoImage(img)]
         self.__imgs.extend([VWDifficultyButton.next_image(img, i * (255/(len(config["user_mind_levels"])-1))) for i in range(1, len(config["user_mind_levels"]))])
-        super(VWDifficultyButton, self).__init__(root=root, config=config, img=img, fun=self.onclick, tip_text=tip_text)
+        super(VWDifficultyButton, self).__init__(parent=parent, config=config, img=img, fun=self.onclick, tip_text=tip_text)
         self.__difficulty: int = config["default_user_mind_level"]
         self.set_img(self.__imgs[self.__difficulty])
         self.get_button().config(image=self.get_img())

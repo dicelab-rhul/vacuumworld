@@ -1,0 +1,67 @@
+{
+    "start": {
+        "text": "Start",
+        "image_file": "button.png",
+        "tip_text": "Click here to set-up the simulation."
+    },
+    "guide": {
+        "text": "Guide",
+        "image_file": "button.png",
+        "tip_text": "Click here to open the project's GitHub page."
+    },
+    "exit": {
+        "text": "Exit",
+        "image_file": "button.png",
+        "tip_text": "Click here to exit VacuumWorld."
+    },
+    "play": {
+        "text": null,
+        "image_file": "play.png",
+        "tip_text": "Click here to start the simulation."
+    },
+    "resume": {
+        "text": null,
+        "image_file": "play.png",
+        "tip_text": "Click here to resume the simulation."
+    },
+    "pause": {
+        "text": null,
+        "image_file": "pause.png",
+        "tip_text": "Click here to pause the simulation."
+    },
+    "stop": {
+        "text": null,
+        "image_file": "stop.png",
+        "tip_text": "Click here to stop the simulation."
+    },
+    "fast": {
+        "text": null,
+        "image_file": "fast.png",
+        "tip_text": "Click here to fast-forward the simulation."
+    },
+    "reset": {
+        "text": null,
+        "image_file": "reset.png",
+        "tip_text": "Click here to reset the grid."
+    },
+    "guide_bis": {
+        "text": null,
+        "image_file": "guide.png",
+        "tip_text": "Click here to open the project's GitHub page."
+    },
+    "difficulty": {
+        "text": null,
+        "image_file": "difficulty.png",
+        "tip_text": "Click here to toggle the user difficulty level."
+    },
+    "save": {
+        "text": null,
+        "image_file": "save.png",
+        "tip_text": "Click here to save the current state."
+    },
+    "load": {
+        "text": null,
+        "image_file": "load.png",
+        "tip_text": "Click here to load a savestate."
+    }
+}

@@ -10,10 +10,15 @@ import os
 
 
 class VWInitialWindow(Frame):
-    def __init__(self, root: Tk, config: dict, env: VWEnvironment, _start: Callable, _exit: Callable, _guide: Callable) -> None:
-        super(VWInitialWindow,self).__init__(root)
+    def __init__(self, parent: Tk, config: dict, buttons: dict, env: VWEnvironment, _start: Callable, _exit: Callable, _guide: Callable) -> None:
+        super(VWInitialWindow,self).__init__(parent)
         
         self.__config: dict = config
+        self.__button_data: dict = buttons
+
+        self.__button_data["start"]["action"] = lambda: _start(env)
+        self.__button_data["guide"]["action"] = _guide
+        self.__button_data["exit"]["action"] = _exit
         
         self.configure(background=self.__config["bg_colour"])
         self.__canvas: Canvas = Canvas(self, width = self.__config["grid_size"] + 1, height = self.__config["grid_size"] + 1, bd=0, highlightthickness=0)
@@ -26,20 +31,22 @@ class VWInitialWindow(Frame):
         self.__canvas.pack()
         self.__buttons: Dict[str, VWButton] = {}
 
-        button_image: Img = Image.open(os.path.join(self.__config["button_images_path"], "button.png"))
-        button_image = button_image.resize((int(button_image.width), int(button_image.height)), Image.BICUBIC)
+        for button_name in ("start", "guide", "exit"):
+            self.__buttons[button_name] = self.__build_button(button_name=button_name, parent=self.__button_frame)
+            self.__buttons[button_name].pack("left")
 
-
-        self.__buttons["start"] = VWButton(self.__button_frame, self.__config, button_image, lambda: _start(env), text="Start", tip_text="Click here to set-up the simulation.")
-        self.__buttons["exit"] = VWButton(self.__button_frame, self.__config, button_image, _exit, text="Exit", tip_text="Click here to exit VacuumWorld.")
-        self.__buttons["guide"] = VWButton(self.__button_frame, self.__config, button_image, _guide, text="Guide", tip_text="Click here to open the project's GitHub page.")
-        
-        self.__buttons["start"].pack("left")
-        self.__buttons["guide"].pack("left")
-        self.__buttons["exit"].pack("left")
         self.__button_frame.pack()
 
         # Note: pack() needs to be called by the caller.
     
     def get_image(self) -> Img:
         return self.__image
+
+    def __build_button(self, button_name: str, parent: Frame) -> VWButton:
+        action: Callable = self.__button_data[button_name]["action"]
+        text: str = self.__button_data[button_name]["text"]
+        image: Img = Image.open(os.path.join(self.__config["button_data_path"], self.__button_data[button_name]["image_file"]))
+        image = image.resize((int(image.width), int(image.height)), Image.BICUBIC)
+        tip_text: str = self.__button_data[button_name]["tip_text"]
+
+        return VWButton(parent=parent, config=self.__config, img=image, fun=action, text=text, tip_text=tip_text)

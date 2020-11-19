@@ -7,10 +7,10 @@ from .vwtooltips import create_tooltip
 
 
 class VWButton():
-    def __init__(self, root: Frame, config: dict, img: Image, fun, text: str=None, tip_text: str="") -> None:
+    def __init__(self, parent: Frame, config: dict, img: Image, fun, text: str=None, tip_text: str="") -> None:
         self.__img: ImageTk.PhotoImage = ImageTk.PhotoImage(img)
         self.__fun: Callable = fun
-        self.__button: Button = Button(root, text = text, bd=0, font = config["root_font"], fg=config["buttons_fg_colour"],
+        self.__button: Button = Button(parent, text = text, bd=0, font = config["root_font"], fg=config["buttons_fg_colour"],
                                  highlightthickness = 0, bg=config["bg_colour"], activebackground=config["bg_colour"],
                                  activeforeground=config["bg_colour"], highlightcolor=config["bg_colour"], compound = "center",
                                  command = self.__fun)
