@@ -28,11 +28,11 @@ class VWGUI(Thread):
     def __init__(self, config: dict) -> None:
         super(VWGUI, self).__init__()
 
+        self.__root: Tk = None
         self.__config: dict = config
         self.__minds: Dict[Colour, ActorMindSurrogate] = {}
         self.__initial_window: VWInitialWindow = None
         self.__simulation_window: VWSimulationWindow = None
-        self.__env: VWEnvironment # TODO: this never gets updated. What gets updated is the  copy passed to the simulation window.
         self.__save_state_manager: SaveStateManager = SaveStateManager()
         self.__already_centered: bool = False
         self.__forceful_stop: bool = False
@@ -99,9 +99,9 @@ class VWGUI(Thread):
         self.__root.configure(background=self.__config["bg_colour"])
 
         # A fresh one will be created if there is nothing to load
-        self.__load_env()
+        env: VWEnvironment = self.__load_env()
 
-        self.__show_appropriate_window()
+        self.__show_appropriate_window(env=env)
         self.__loop()
 
     def __loop(self) -> None:
@@ -112,30 +112,32 @@ class VWGUI(Thread):
                 self.__root.update_idletasks()
                 self.__root.update()
 
-    def __show_appropriate_window(self) -> None:
+    def __show_appropriate_window(self, env: VWEnvironment) -> None:
         if not self.__config["skip"]:
-            self.__show_initial_window()
+            self.__show_initial_window(env=env)
         else:
-            self.__show_simulation_window()
+            self.__show_simulation_window(env=env)
 
-    def __load_env(self) -> None:
+    def __load_env(self) -> VWEnvironment:
         try:
             data: dict = {}
 
             if self.__config["file_to_load"]:
-                data= self.__load_grid_data_from_file(file=self.__config["file_to_load"])
+                data = self.__load_grid_data_from_file(file=self.__config["file_to_load"])
 
-            self.__env = VWEnvironment.from_json(data=data)
+            return VWEnvironment.from_json(data=data, config=self.__config)
         except Exception:
             print("Something went wrong. Could not load any grid from {}".format(self.__config["file_to_load"]))
 
-    def __show_initial_window(self) -> None:
-        self.__initial_window: VWInitialWindow = VWInitialWindow(root=self.__root, config=self.__config, _start=self.__start, _exit=self.__finish, _guide=self.__guide)
+            return VWEnvironment.generate_empty_env(config=self.__config)
+
+    def __show_initial_window(self, env: VWEnvironment) -> None:
+        self.__initial_window: VWInitialWindow = VWInitialWindow(root=self.__root, config=self.__config, env=env, _start=self.__start, _exit=self.__finish, _guide=self.__guide)
         self.__initial_window.pack()
         self.__center_and_adapt_to_resolution()
 
-    def __show_simulation_window(self) -> None:
-        self.__simulation_window: VWSimulationWindow = VWSimulationWindow(root=self.__root, config=self.__config, minds=self.__minds, env=self.__env, _guide=self.__guide, _save=self.__save, _load=self.__load, _finish=self.__finish, _error=self.__clean_exit)
+    def __show_simulation_window(self, env: VWEnvironment) -> None:
+        self.__simulation_window: VWSimulationWindow = VWSimulationWindow(root=self.__root, config=self.__config, minds=self.__minds, env=env, _guide=self.__guide, _save=self.__save, _load=self.__load, _finish=self.__finish, _error=self.__clean_exit)
 
         self.__simulation_window.pack()
         self.__center_and_adapt_to_resolution()
@@ -160,7 +162,7 @@ class VWGUI(Thread):
         i: int = 0 # As a fallback.
 
         for i, s in enumerate(tb):
-            if s.filename in (self.__config["white_mind_filaname"], self.__config["orange_mind_filaname"], self.__config["green_mind_filaname"]):
+            if s.filename in (self.__config["white_mind_filename"], self.__config["orange_mind_filename"], self.__config["green_mind_filename"]):
                 agent_error = True
                 break
         
@@ -174,7 +176,8 @@ class VWGUI(Thread):
 
         if  self.__root is not None:
             self.__root.destroy()
-            exit(-1)
+        
+        exit(-1)
 
     def finish(self) -> None:
         self.__finish()
@@ -192,13 +195,13 @@ class VWGUI(Thread):
     def __guide(self) -> None:
         open_new_tab(url=self.__config["project_repo_url"])
 
-    def __start(self):
+    def __start(self, env: VWEnvironment):
         if self.__initial_window:
             self.__initial_window.forget()
             self.__initial_window.destroy()
             self.__root.withdraw()
 
-        self.__show_simulation_window()
+        self.__show_simulation_window(env=env)
 
     def __save(self, env: VWEnvironment, saveloadmenu: AutocompleteEntry) -> None:
         file: str = saveloadmenu.var.get()
@@ -215,10 +218,10 @@ class VWGUI(Thread):
         
         data: dict = self.__save_state_manager.load_state(file=file)
 
-        return VWEnvironment.from_json(data=data)
+        return VWEnvironment.from_json(data=data, config=self.__config)
 
     def __load_grid_data_from_file(self, file: str) -> dict:
-        data: dict = self.__save_state_manager.load_state(file=file)
+        data: dict = self.__save_state_manager.load_state(file=file, no_gui=True)
 
         if data:
             print("The saved grid was successfully loaded.")
