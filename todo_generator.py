@@ -25,7 +25,10 @@ def main() -> None:
 
     
     with open(TODO_FILE, "w") as f:
-        f.write(TODO_HEADER + "\n\n")
+        f.write(TODO_HEADER + "\n")
+
+        if len(lines) > 0:
+            f.write("\n")
 
         for l in lines:
             f.write(l + "\n")

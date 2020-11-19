@@ -21,8 +21,8 @@ from ...common.direction import Direction
 from ...common.colour import Colour
 from ...common.observation import Observation
 from ...common.orientation import Orientation
+from ...common.exceptions import VWActionAttemptException, VWMalformedActionException
 from ...model.actions.vwactions import VWPhysicalAction, VWCommunicativeAction
-from ...utils.exceptions import VWActionAttemptException, VWMalformedActionException
 
 
 

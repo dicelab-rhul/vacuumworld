@@ -1,6 +1,6 @@
 from .vwactions import VWPhysicalAction
 from ...common.colour import Colour
-from ...utils.exceptions import VWMalformedActionException
+from ...common.exceptions import VWMalformedActionException
 
 
 

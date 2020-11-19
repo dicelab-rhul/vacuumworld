@@ -8,6 +8,7 @@ from ..buttons.vwbutton import VWButton
 from ..buttons.vwdifficultybutton import VWDifficultyButton
 from ..slider import Slider
 from ..drag_manager import CanvasDragManager
+from ...saveload import SaveStateManager
 
 from ....common.coordinates import Coord
 from ....common.orientation import Orientation
@@ -20,8 +21,7 @@ from ....model.actor.actor_factories import VWActorsFactory
 from ....model.actor.user_difficulty import UserDifficulty
 from ....model.environment.vwenvironment import VWEnvironment
 from ....model.environment.vwlocation import VWLocation
-from ....utils.saveload import SaveStateManager
-from ....utils.vwutils import get_location_img_files, print_simulation_speed_message
+
 
 import os
 
@@ -91,7 +91,7 @@ class VWSimulationWindow(Frame):
         self.__buttons: Dict[str, VWButton] = {}
 
         bg: str = self.__config["bg_colour"]
-        buttons: Dict[str, str] = {b.split(".")[0]:b for b in get_location_img_files(self.__config["button_images_path"])}
+        buttons: Dict[str, str] = {b.split(".")[0]:b for b in VWSimulationWindow.__get_location_img_files(self.__config["button_images_path"])}
 
         self.__button_frame: Frame = Frame(self, bg=bg)
 
@@ -111,7 +111,7 @@ class VWSimulationWindow(Frame):
         self.__buttons["guide"] = VWButton(control_buttons_frame, self.__config, VWSimulationWindow.__scale(Image.open(os.path.join(self.__config["button_images_path"], buttons["guide"])), self.__config["button_size"]), self.__guide, tip_text="Click here to open the project's GitHub page.")
         
         dif_img: Img = VWSimulationWindow.__scale(Image.open(os.path.join(self.__config["button_images_path"], buttons["difficulty"])), self.__config["button_size"])
-        self.__buttons["difficulty"] = VWDifficultyButton(control_buttons_frame, self.__config, dif_img, self._difficulty, tip_text="Click here to toggle the user difficulty level.")
+        self.__buttons["difficulty"] = VWDifficultyButton(control_buttons_frame, self.__config, dif_img, self.__difficulty, tip_text="Click here to toggle the user difficulty level.")
         
         self.__pack_buttons("play", "reset", "fast", "difficulty", "guide", forget=False)
         
@@ -353,7 +353,7 @@ class VWSimulationWindow(Frame):
 
     def __init_images(self) -> None:
         # agents
-        files: List[str] = get_location_img_files(self.__config["location_agent_images_path"])
+        files: List[str] = VWSimulationWindow.__get_location_img_files(self.__config["location_agent_images_path"])
         image_names: List[str] = [file.split(".")[0] for file in files]
 
         for img_name in image_names:
@@ -368,7 +368,7 @@ class VWSimulationWindow(Frame):
                 self.__all_images_tk[img_key] = tk_img
 
         # dirts
-        files: List[str] = get_location_img_files(self.__config["location_dirt_images_path"])
+        files: List[str] = VWSimulationWindow.__get_location_img_files(self.__config["location_dirt_images_path"])
         images_names: List[str] = [file.split(".")[0] for file in files]
 
         for name in images_names:
@@ -597,15 +597,15 @@ class VWSimulationWindow(Frame):
         self.__config["time_step_modifier"] /= 2.
         self.__config["time_step"] = self.__config["time_step_base"] * self.__config["time_step_modifier"] + self.__config["time_step_min"]
 
-        print_simulation_speed_message(time_step=self.__config["time_step"])
+        VWSimulationWindow.__print_simulation_speed_message(time_step=self.__config["time_step"])
 
     def __reset_time_step(self) -> None:
         self.__config["time_step_modifier"] = 1.
         self.__config["time_step"] = self.__config["time_step_base"] * self.__config["time_step_modifier"] + self.__config["time_step_min"]
 
-        print_simulation_speed_message(time_step=self.__config["time_step"])
+        VWSimulationWindow.__print_simulation_speed_message(time_step=self.__config["time_step"])
 
-    def _difficulty(self) -> None:
+    def __difficulty(self) -> None:
         for actor_id, actor in self.__env.get_actors().items():
             difficulty_level: UserDifficulty = UserDifficulty(self.__get_selected_user_difficulty_level())
 
@@ -613,3 +613,11 @@ class VWSimulationWindow(Frame):
                 assert type(actor.get_mind().get_surrogate()) == UserMindSurrogate
 
                 actor.get_mind().get_surrogate().set_difficulty_level(difficulty_level=difficulty_level)
+
+    @staticmethod
+    def __print_simulation_speed_message(time_step: float) -> None:
+        print("INFO: simulation speed set to {:1.4f} s/cycle".format(time_step))
+
+    @staticmethod
+    def __get_location_img_files(path: str) -> List[str]:
+        return [file for file in os.listdir(path) if file.endswith(".png")]

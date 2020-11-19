@@ -13,12 +13,12 @@ from pystarworldsturbo.utils.utils import ignore
 from .components.autocomplete import AutocompleteEntry
 from .components.frames.initial_window import VWInitialWindow
 from .components.frames.simulation_window import VWSimulationWindow
+from .saveload import SaveStateManager
 
 from ..common.colour import Colour
+from ..common.exceptions import VWActionAttemptException, VWMalformedActionException
 from ..model.actor.actor_mind_surrogate import ActorMindSurrogate
 from ..model.environment.vwenvironment import VWEnvironment
-from ..utils.saveload import SaveStateManager
-from ..utils.exceptions import VWActionAttemptException, VWMalformedActionException
 
 import traceback
 
