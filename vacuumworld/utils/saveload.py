@@ -70,9 +70,11 @@ class SaveStateManager():
         except Exception:
             return False
 
-    def load_state(self, file: str="") -> dict:
+    def load_state(self, file: str="", no_gui: bool=False) -> dict:
         if file and self.__file_exists(file) and match(self.__vw_file_regex, file):
             return self.__quick_load(file)
+        elif no_gui:
+            return {}
         else:
             return self.__load_dialog(file)
 

@@ -27,14 +27,16 @@ from ...utils.exceptions import VWActionAttemptException, VWMalformedActionExcep
 
 
 class VWEnvironment(Environment):
+    # TODO: move these to the config file.
     MIN_NUMBER_OF_LOCATIONS_IN_LINE: int = 3
     MAX_NUMBER_OF_LOCATIONS_IN_LINE: int = 13
 
-    def __init__(self, ambient: VWAmbient, initial_actors: List[VWActor]=[], initial_dirts: List[Dirt]=[]) -> None:
+    def __init__(self, config: dict, ambient: VWAmbient, initial_actors: List[VWActor]=[], initial_dirts: List[Dirt]=[]) -> None:
         super(VWEnvironment, self).__init__(ambient=ambient, initial_actors=initial_actors, initial_passive_bodies=initial_dirts)
 
         self.__cycle: int = 0
         self.__surrogate_minds_metadata: Dict[str, str] = {}
+        self.__config: dict = config
 
     def get_surrogate_minds_metadata(self) -> Dict[str, str]:
         return self.__surrogate_minds_metadata()
@@ -53,15 +55,16 @@ class VWEnvironment(Environment):
 
         return self.get_actor(actor_id=user_id)
 
-    # TODO: extract the magic number to the config file.
     def validate_actions(self, actions: List[Action]) -> None:
         ignore(self)
 
-        if len(actions) > 2:
+        n: int = self.__config["max_number_of_actions_per_agent_per_cycle"]
+
+        if len(actions) > n:
             raise VWActionAttemptException("Too many actions were attempted. There is a hard limit of 1 physical action, and 1 communicative action per agent per cycle.")
-        elif len(actions) == 2 and isinstance(actions[0], VWPhysicalAction) and isinstance(actions[1], VWPhysicalAction):
+        elif len(actions) == n and isinstance(actions[0], VWPhysicalAction) and isinstance(actions[1], VWPhysicalAction):
             raise VWActionAttemptException("Too many physical actions were attempted. There is a hard limit of 1 physical action, and 1 communicative action per agent per cycle.")
-        elif len(actions) == 2 and isinstance(actions[0], VWCommunicativeAction) and isinstance(actions[1], VWCommunicativeAction):
+        elif len(actions) == n and isinstance(actions[0], VWCommunicativeAction) and isinstance(actions[1], VWCommunicativeAction):
             raise VWActionAttemptException("Too many communicative actions were attempted. There is a hard limit of 1 physical action, and 1 communicative action per agent per cycle.")
         
         for action in actions:
@@ -190,14 +193,14 @@ class VWEnvironment(Environment):
         return state
 
     @staticmethod
-    def from_json(data: dict) -> "VWEnvironment":
+    def from_json(data: dict, config: dict) -> "VWEnvironment":
         try:
             grid: Dict[Coord, VWLocation] = {}
             actors: List[VWActorAppearance] = []
             dirts: List[Dirt] = []
 
             if not data:
-                return VWEnvironment.generate_empty_env()
+                return VWEnvironment.generate_empty_env(config=config)
 
             for location_data in data["locations"]:
                 coord: Coord = Coord(x=location_data["coords"]["x"], y=location_data["coords"]["y"])
@@ -220,13 +223,18 @@ class VWEnvironment(Environment):
 
                 grid[coord] = VWLocation(actor_appearance=actor_appearance, dirt_appearance=dirt_appearance)
 
-            return VWEnvironment(ambient=VWAmbient(grid=grid), initial_actors=actors, initial_dirts=dirts)
+            return VWEnvironment(config=config, ambient=VWAmbient(grid=grid), initial_actors=actors, initial_dirts=dirts)
         except Exception:
-            return VWEnvironment.generate_empty_env()
+            return VWEnvironment.generate_empty_env(config=config)
 
-    # TODO: read the magic number from the config file.
     @staticmethod
-    def generate_empty_env(line_dim: int=8) -> "VWEnvironment":
+    def generate_empty_env(config: dict, forced_line_dim: int=-1) -> "VWEnvironment":
+        line_dim: int = config["initial_environment_dim"]
+
+        if forced_line_dim != -1:
+            assert forced_line_dim >= VWEnvironment.MIN_NUMBER_OF_LOCATIONS_IN_LINE and forced_line_dim <= VWEnvironment.MAX_NUMBER_OF_LOCATIONS_IN_LINE
+            line_dim = forced_line_dim
+
         grid: Dict[Coord, VWLocation] = {Coord(x, y): VWLocation(actor_appearance=None, dirt_appearance=None) for x in range(line_dim) for y in range(line_dim)}
 
-        return VWEnvironment(ambient=VWAmbient(grid=grid), initial_actors=[], initial_dirts=[])
+        return VWEnvironment(config=config, ambient=VWAmbient(grid=grid), initial_actors=[], initial_dirts=[])

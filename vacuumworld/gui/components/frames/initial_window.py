@@ -3,13 +3,14 @@ from typing import Callable, Dict
 from PIL import ImageTk, Image
 
 from ..buttons.vwbutton import VWButton
+from ....model.environment.vwenvironment import VWEnvironment
 
 import os
 
 
 
 class VWInitialWindow(Frame):
-    def __init__(self, root: Tk, config: dict, _start: Callable, _exit: Callable, _guide: Callable) -> None:
+    def __init__(self, root: Tk, config: dict, env: VWEnvironment, _start: Callable, _exit: Callable, _guide: Callable) -> None:
         super(VWInitialWindow,self).__init__(root)
         
         self.__config: dict = config
@@ -29,7 +30,7 @@ class VWInitialWindow(Frame):
         button_image = button_image.resize((int(button_image.width), int(button_image.height)), Image.BICUBIC)
 
 
-        self.__buttons["start"] = VWButton(self.__button_frame, self.__config, button_image, _start, text="Start", tip_text="Click here to set-up the simulation.")
+        self.__buttons["start"] = VWButton(self.__button_frame, self.__config, button_image, lambda: _start(env), text="Start", tip_text="Click here to set-up the simulation.")
         self.__buttons["exit"] = VWButton(self.__button_frame, self.__config, button_image, _exit, text="Exit", tip_text="Click here to exit VacuumWorld.")
         self.__buttons["guide"] = VWButton(self.__button_frame, self.__config, button_image, _guide, text="Guide", tip_text="Click here to open the project's GitHub page.")
         

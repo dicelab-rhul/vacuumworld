@@ -42,8 +42,8 @@ def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, *
 def load_config() -> dict:
     with open(CONFIG_FILE_PATH, "r") as f:
         config: dict = load(fp=f)
-    
-    # TODO: check the monitor number, rather than using the default one.
+
+    # Assuming the first monitor is the one where VW is running.
     config["screen_width"] = get_monitors()[config["default_monitor_number"]].width
     config["screen_height"] = get_monitors()[config["default_monitor_number"]].height
     config["x_scale"] = float(config["screen_width"] / config["base_screen_width"])

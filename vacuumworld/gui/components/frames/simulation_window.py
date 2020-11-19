@@ -403,7 +403,7 @@ class VWSimulationWindow(Frame):
         value += VWEnvironment.MIN_NUMBER_OF_LOCATIONS_IN_LINE
 
         if value != self.__env.get_ambient().get_grid_dim():
-            self.__env = VWEnvironment.generate_empty_env(line_dim=value)
+            self.__env = VWEnvironment.generate_empty_env(config=self.__config, forced_line_dim=value)
             self.__reset_canvas()
             self.__scaled_tk()
             self.__draw_grid()
@@ -446,9 +446,7 @@ class VWSimulationWindow(Frame):
                 # If the draggable is not a valid argument for tag_lower, we ignore the error.
                 pass
 
-    # TODO: this method is too long.
     def __drag_on_drop(self, event: Event, drag_manager: CanvasDragManager) -> None:
-        # TODO: stream line to work with select
         inc: int = self.__config["grid_size"] / self.__env.get_ambient().get_grid_dim()
         x: int = int(event.x / inc)
         y: int = int(event.y / inc)
@@ -458,41 +456,50 @@ class VWSimulationWindow(Frame):
         col, obj = drag_manager.get_key()
         colour: Colour = Colour(col)
 
-        if obj == "dirt":
-            if self.__env.get_ambient().is_dirt_at(coord=coord):
-                self.__env.remove_dirt(coord=coord)
-
-            self.__env.drop_dirt(coord=coord, dirt_colour=colour)
-
-            if coord in self.__canvas_dirts:
-                self.__canvas.delete(self.__canvas_dirts[coord])
-
-            self.__canvas_dirts[coord] = drag_manager.get_drag()
-            self.__canvas.tag_lower(self.__canvas_dirts[coord])
-        else:
-            assert obj == "north"
-            
-            actor, actor_appearance = VWActorsFactory.create_actor(colour=colour, orientation=Orientation.north, mind_surrogate=self.__agent_minds[colour])
-
-            if self.__env.get_ambient().is_actor_at(coord=coord):
-                actor_id: str = self.__env.get_ambient().get_location_interface(coord=coord).get_actor_appearance().get_id()
-                # Removes the actor appearance from the grid.
-                self.__env.get_ambient().get_location_interface(coord=coord).remove_actor()
-                # Removes the actor from the list of actors.
-                self.__env.remove_actor(actor_id=actor_id)
-
-            self.__env.add_actor(actor=actor)
-            self.__env.get_ambient().get_location_interface(coord=coord).add_actor(actor_appearance=actor_appearance)
-
-            if coord in self.__canvas_agents:
-                self.__canvas.delete(self.__canvas_agents[coord])
-
-            self.__canvas_agents[coord] = drag_manager.get_drag()
+        self.__drop_element(obj=obj, coord=coord, colour=colour, drag_manager=drag_manager)
 
         print("INFO: dropped something at {}.".format(coord))
         
         self.__select(event)
         self.redraw()
+
+    def __drop_element(self, obj: str, coord: Coord, colour: Colour, drag_manager: CanvasDragManager) -> None:
+        if obj == "dirt":
+            self.__drop_dirt(coord=coord, colour=colour, drag_manager=drag_manager)
+        elif obj == "north":
+            self.__drop_actor_facing_north(coord=coord, colour=colour, drag_manager=drag_manager)
+        else:
+            raise ValueError("Unknown obj: {}.".format(obj))
+
+    def __drop_dirt(self, coord: Coord, colour: Colour, drag_manager:  CanvasDragManager) -> None:
+        if self.__env.get_ambient().is_dirt_at(coord=coord):
+            self.__env.remove_dirt(coord=coord)
+
+        self.__env.drop_dirt(coord=coord, dirt_colour=colour)
+
+        if coord in self.__canvas_dirts:
+            self.__canvas.delete(self.__canvas_dirts[coord])
+
+        self.__canvas_dirts[coord] = drag_manager.get_drag()
+        self.__canvas.tag_lower(self.__canvas_dirts[coord])
+
+    def __drop_actor_facing_north(self, coord: Coord, colour: Colour, drag_manager: CanvasDragManager) -> None:
+        actor, actor_appearance = VWActorsFactory.create_actor(colour=colour, orientation=Orientation.north, mind_surrogate=self.__agent_minds[colour])
+
+        if self.__env.get_ambient().is_actor_at(coord=coord):
+            actor_id: str = self.__env.get_ambient().get_location_interface(coord=coord).get_actor_appearance().get_id()
+            # Removes the actor appearance from the grid.
+            self.__env.get_ambient().get_location_interface(coord=coord).remove_actor()
+            # Removes the actor from the list of actors.
+            self.__env.remove_actor(actor_id=actor_id)
+
+        self.__env.add_actor(actor=actor)
+        self.__env.get_ambient().get_location_interface(coord=coord).add_actor(actor_appearance=actor_appearance)
+
+        if coord in self.__canvas_agents:
+            self.__canvas.delete(self.__canvas_agents[coord])
+
+        self.__canvas_agents[coord] = drag_manager.get_drag()
 
     def __show_hide_side(self, state: str) -> None:
         for item in self.__dragables.keys():
@@ -518,7 +525,7 @@ class VWSimulationWindow(Frame):
 
         grid_dim: int = self.__env.get_ambient().get_grid_dim()
         
-        self.__env = VWEnvironment.generate_empty_env(line_dim=grid_dim)
+        self.__env = VWEnvironment.generate_empty_env(config=self.__config, forced_line_dim=grid_dim)
 
         self.__reset_time_step()
 
