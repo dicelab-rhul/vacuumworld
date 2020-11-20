@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import List, Tuple, Dict
 from inspect import getfile
 
@@ -189,7 +190,7 @@ class VWEnvironment(Environment):
         return state
 
     @staticmethod
-    def from_json(data: dict, config: dict) -> "VWEnvironment":
+    def from_json(data: dict, config: dict) -> VWEnvironment:
         try:
             grid: Dict[Coord, VWLocation] = {}
             actors: List[VWActorAppearance] = []
@@ -224,7 +225,7 @@ class VWEnvironment(Environment):
             return VWEnvironment.generate_empty_env(config=config)
 
     @staticmethod
-    def generate_empty_env(config: dict, forced_line_dim: int=-1) -> "VWEnvironment":
+    def generate_empty_env(config: dict, forced_line_dim: int=-1) -> VWEnvironment:
         line_dim: int = config["initial_environment_dim"]
 
         if forced_line_dim != -1:

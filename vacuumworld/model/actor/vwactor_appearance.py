@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pystarworldsturbo.elements.actor_appearance import ActorAppearance
 
 from ...common.colour import Colour
@@ -41,7 +43,7 @@ class VWActorAppearance(ActorAppearance):
         self.__previous_orientation = self.__orientation
         self.__orientation = self.__orientation.get(direction=direction)
 
-    def deep_copy(self) -> "VWActorAppearance":
+    def deep_copy(self) -> VWActorAppearance:
         return VWActorAppearance(actor_id=self.get_id(), progressive_id=self.get_progressive_id(), colour=self.__colour, orientation=self.__orientation)
 
     def __str__(self) -> str:

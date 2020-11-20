@@ -318,7 +318,7 @@ class VWSimulationWindow(Frame):
         if select:
             self.__deselect()
 
-    def __lines_to_front(self):
+    def __lines_to_front(self) -> None:
         for line in self.__grid_lines:
             self.__canvas.tag_raise(line)
         if self.__rectangle_selected:

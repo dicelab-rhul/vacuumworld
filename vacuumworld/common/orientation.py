@@ -1,3 +1,4 @@
+from __future__ import annotations
 from enum import Enum
 
 from .direction import Direction
@@ -16,7 +17,7 @@ class Orientation(Enum):
     def __repr__(self) -> str:
         return str(self)
 
-    def get_left(self) -> "Orientation":
+    def get_left(self) -> Orientation:
         if self == Orientation.north:
             return Orientation.west
         elif self == Orientation.south:
@@ -26,7 +27,7 @@ class Orientation(Enum):
         else:
             return Orientation.north
 
-    def get_right(self) -> "Orientation":
+    def get_right(self) -> Orientation:
         if self == Orientation.north:
             return Orientation.east
         elif self == Orientation.south:
@@ -36,8 +37,11 @@ class Orientation(Enum):
         else:
             return Orientation.south
 
-    def get(self, direction: Direction) -> "Orientation":
+    def get(self, direction: Direction) -> Orientation:
         if direction == Direction.left:
             return self.get_left()
         else:
             return self.get_right()
+
+    left: Orientation = get_left
+    right: Orientation = get_right

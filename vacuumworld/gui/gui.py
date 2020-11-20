@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from tkinter import Tk
 from inspect import getsourcefile
 from webbrowser import open_new_tab
