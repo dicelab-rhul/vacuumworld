@@ -25,3 +25,9 @@ class VWDirtAppearance(Identifiable):
 
     def __str__(self) -> str:
         return "dirt(colour: {})".format(self.__colour)
+
+    def __eq__(self, o: object) -> bool:
+        if not o or type(o) != VWDirtAppearance:
+            return False
+
+        return self.__colour == o.get_colour() and self.get_id() == o.get_id() and self.get_progressive_id() == o.get_progressive_id()
