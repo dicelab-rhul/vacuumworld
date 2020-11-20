@@ -217,7 +217,7 @@ class VWEnvironment(Environment):
                     dirt_appearance = VWDirtAppearance(dirt_id=dirt.get_id(), progressive_id=dirt.get_progressive_id(), colour=dirt.get_colour())
                     dirts.append(dirt)
 
-                grid[coord] = VWLocation(actor_appearance=actor_appearance, dirt_appearance=dirt_appearance)
+                grid[coord] = VWLocation(coord=coord, actor_appearance=actor_appearance, dirt_appearance=dirt_appearance)
 
             return VWEnvironment(config=config, ambient=VWAmbient(grid=grid), initial_actors=actors, initial_dirts=dirts)
         except Exception:
@@ -231,6 +231,6 @@ class VWEnvironment(Environment):
             assert forced_line_dim >= config["min_environment_dim"] and forced_line_dim <= config["max_environment_dim"]
             line_dim = forced_line_dim
 
-        grid: Dict[Coord, VWLocation] = {Coord(x, y): VWLocation(actor_appearance=None, dirt_appearance=None) for x in range(line_dim) for y in range(line_dim)}
+        grid: Dict[Coord, VWLocation] = {Coord(x, y): VWLocation(coord=Coord(x, y), actor_appearance=None, dirt_appearance=None) for x in range(line_dim) for y in range(line_dim)}
 
         return VWEnvironment(config=config, ambient=VWAmbient(grid=grid), initial_actors=[], initial_dirts=[])

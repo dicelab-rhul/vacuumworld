@@ -20,6 +20,15 @@ class Observation(Perception):
         self.__locations: Dict[PositionNames, VWLocation] = locations_dict
         self.__action_result: ActionResult = action_result
 
+        self.__create_quick_api()
+
+    def __create_quick_api(self) -> None:
+        self.center: VWLocation = self.get_center()
+        self.left: VWLocation = self.get_left()
+        self.right: VWLocation = self.get_right()
+        self.forwardleft: VWLocation = self.get_forwardleft()
+        self.forwardright: VWLocation = self.get_forwardright()
+
     def get_latest_action_result(self) -> ActionResult:
         return self.__action_result
 

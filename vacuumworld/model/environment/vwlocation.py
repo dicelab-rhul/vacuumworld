@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 from pystarworldsturbo.environment.location_appearance import LocationAppearance
 
+from ...common.coordinates import Coord
 from ...common.colour import Colour
 from ..dirt.dirt_appearance import VWDirtAppearance
 from ..actor.vwactor_appearance import VWActorAppearance
@@ -7,9 +10,30 @@ from ..actor.vwactor_appearance import VWActorAppearance
 
 
 class VWLocation(LocationAppearance):
-    def __init__(self, actor_appearance: VWActorAppearance, dirt_appearance: VWDirtAppearance) -> None:
+    def __init__(self, coord: Coord, actor_appearance: VWActorAppearance, dirt_appearance: VWDirtAppearance) -> None:
+        self.__coord: Coord = coord
         self.__actor_appearance: VWActorAppearance = actor_appearance
         self.__dirt_appearance: VWDirtAppearance = dirt_appearance
+
+        self.__create_quick_api()
+
+    def __create_quick_api(self) -> None:
+        self.coordinate: Coord = self.__coord
+        self.actor: VWActorAppearance = self.__actor_appearance
+        self.dirt: VWDirtAppearance = self.__dirt_appearance
+
+        if self.has_cleaning_agent():
+            self.agent: VWActorAppearance = self.__actor_appearance
+            self.user: VWActorAppearance = None
+        elif self.has_user():
+            self.agent: VWActorAppearance = None
+            self.user: VWActorAppearance = self.__actor_appearance
+        else:
+            self.agent: VWActorAppearance = None
+            self.user: VWActorAppearance = None
+
+    def get_coord(self) -> Coord:
+        return self.__coord
 
     def get_actor_appearance(self) -> VWActorAppearance:
         return self.__actor_appearance
@@ -49,15 +73,15 @@ class VWLocation(LocationAppearance):
     def has_dirt(self) -> bool:
         return self.__dirt_appearance is not None
 
-    def deep_copy(self) -> "VWLocation":
+    def deep_copy(self) -> VWLocation:
         if not self.__actor_appearance and not self.__dirt_appearance:
-            return VWLocation()
+            return VWLocation(coord=self.__coord)
         elif self.__actor_appearance and not self.__dirt_appearance:
-            return VWLocation(actor_appearance=self.__actor_appearance.deep_copy(), dirt_appearance=None)
+            return VWLocation(coord=self.__coord, actor_appearance=self.__actor_appearance.deep_copy(), dirt_appearance=None)
         elif not  self.__actor_appearance and self.__dirt_appearance:
-            return VWLocation(actor_appearance=None, dirt_appearance=self.__dirt_appearance.deep_copy())
+            return VWLocation(coord=self.__coord, actor_appearance=None, dirt_appearance=self.__dirt_appearance.deep_copy())
         else:
-            return VWLocation(actor_appearance=self.__actor_appearance.deep_copy(), dirt_appearance=self.__dirt_appearance.deep_copy())
+            return VWLocation(coord=self.__coord, actor_appearance=self.__actor_appearance.deep_copy(), dirt_appearance=self.__dirt_appearance.deep_copy())
 
     def __str__(self) -> str:
         return "(actor: {}, dirt: {})".format(str(self.__actor_appearance), str(self.__dirt_appearance))
