@@ -24,6 +24,7 @@ class Observation(Perception):
 
     def __create_quick_api(self) -> None:
         self.center: VWLocation = self.get_center()
+        self.forward: VWLocation = self.get_forward()
         self.left: VWLocation = self.get_left()
         self.right: VWLocation = self.get_right()
         self.forwardleft: VWLocation = self.get_forwardleft()
