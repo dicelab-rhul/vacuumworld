@@ -48,3 +48,12 @@ class VWActorAppearance(ActorAppearance):
 
     def __str__(self) -> str:
         return "actor(ID: {}, progressive ID: {}, colour: {}, orientation: {})".format(self.get_id(), self.get_progressive_id(), self.__colour, self.__orientation)
+
+    def __eq__(self, o: object) -> bool:
+        if not o or type(o) != VWActorAppearance:
+            return False
+
+        if self.get_id() != o.get_id() or self.get_progressive_id() != o.get_progressive_id():
+            return False
+
+        return self.__colour == o.get_colour() and self.__orientation == o.get_orientation() and self.__previous_orientation == o.get_previous_orientation()

@@ -42,7 +42,7 @@ def test_observation() -> None:
     perceived_locations: Dict[PositionNames, VWLocation] = {
         PositionNames.center: center.deep_copy(),
         PositionNames.left: left.deep_copy(),
-        PositionNames.right: right.deep_copy,
+        PositionNames.right: right.deep_copy(),
         PositionNames.forward: forward.deep_copy(),
         PositionNames.forwardleft: forwardleft.deep_copy(),
         PositionNames.forwardright: forwardright.deep_copy()
