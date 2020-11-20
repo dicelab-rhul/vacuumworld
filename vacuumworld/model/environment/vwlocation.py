@@ -75,7 +75,7 @@ class VWLocation(LocationAppearance):
 
     def deep_copy(self) -> VWLocation:
         if not self.__actor_appearance and not self.__dirt_appearance:
-            return VWLocation(coord=self.__coord)
+            return VWLocation(coord=self.__coord, actor_appearance=None, dirt_appearance=None)
         elif self.__actor_appearance and not self.__dirt_appearance:
             return VWLocation(coord=self.__coord, actor_appearance=self.__actor_appearance.deep_copy(), dirt_appearance=None)
         elif not  self.__actor_appearance and self.__dirt_appearance:
@@ -85,3 +85,9 @@ class VWLocation(LocationAppearance):
 
     def __str__(self) -> str:
         return "(actor: {}, dirt: {})".format(str(self.__actor_appearance), str(self.__dirt_appearance))
+
+    def __eq__(self, o: object) -> bool:
+        if not o or type(o) != VWLocation:
+            return False
+        else:
+            return self.__coord == o.get_coord() and self.__actor_appearance == o.get_actor_appearance() and self.__dirt_appearance == o.get_dirt_appearance()
