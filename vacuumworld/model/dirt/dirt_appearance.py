@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pystarworldsturbo.common.identifiable import Identifiable
 
 from ...common.colour import Colour
@@ -18,7 +20,7 @@ class VWDirtAppearance(Identifiable):
     def get_colour(self) -> Colour:
         return self.__colour
 
-    def deep_copy(self) -> "VWDirtAppearance":
+    def deep_copy(self) -> VWDirtAppearance:
         return VWDirtAppearance(dirt_id=self.get_id(), progressive_id=self.get_progressive_id(), colour=self.__colour)
 
     def __str__(self) -> str:

@@ -55,8 +55,6 @@ class UserMindSurrogate(ActorMindSurrogate):
     def revise(self, observation: Observation, messages: Iterable[BccMessage]) -> None:
         self.__observation: Observation = observation
 
-        # print("Observation: {}".format(self.__observation))
-
         ignore(messages)
 
     def decide(self) -> VWPhysicalAction:
@@ -73,10 +71,10 @@ class UserMindSurrogate(ActorMindSurrogate):
         if self.__is_wall_ahead():
             return self.__decide_if_wall_ahead_and_kind()
         elif self.__is_on_dirt():
-            #if there is already a dirt at this location, move or turn
+            # If there is already a dirt at this location, move or turn
             return self.__decide_if_on_dirt_and_kind()
         else:
-            #otherwise do a random action (including dropping dirt)
+            # Otherwise, do a random action (including dropping dirt)
             return UserMindSurrogate.__act_randomly(weights=[0.2, 0.2, 0.45, 0.075, 0.075])
 
     def __decide_if_wall_ahead_and_kind(self) -> VWPhysicalAction:
