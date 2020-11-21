@@ -12,6 +12,8 @@ class VWActorAppearance(ActorAppearance):
     def __init__(self, actor_id: str, progressive_id: str, colour: Colour, orientation: Orientation) -> None:
         super(VWActorAppearance, self).__init__(actor_id=actor_id, progressive_id=progressive_id)
 
+        assert colour is not None and orientation is not None
+
         self.__colour: Colour = colour
         self.__orientation: Orientation = orientation
         self.__previous_orientation: Orientation = self.__orientation
@@ -57,3 +59,12 @@ class VWActorAppearance(ActorAppearance):
             return False
 
         return self.__colour == o.get_colour() and self.__orientation == o.get_orientation() and self.__previous_orientation == o.get_previous_orientation()
+
+    def __hash__(self) -> int:
+        prime: int = 31
+        result: int = 1
+        result = prime * result + self.__colour.__hash__()
+        result = prime * result + self.__orientation.__hash__()
+        result = prime * result + self.__previous_orientation.__hash__()
+
+        return result
