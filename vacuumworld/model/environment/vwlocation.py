@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import cast
 
 from pystarworldsturbo.environment.location_appearance import LocationAppearance
 
@@ -11,6 +12,8 @@ from ..actor.vwactor_appearance import VWActorAppearance
 
 class VWLocation(LocationAppearance):
     def __init__(self, coord: Coord, actor_appearance: VWActorAppearance, dirt_appearance: VWDirtAppearance) -> None:
+        assert coord is not None
+        
         self.__coord: Coord = coord
         self.__actor_appearance: VWActorAppearance = actor_appearance
         self.__dirt_appearance: VWDirtAppearance = dirt_appearance
@@ -90,4 +93,24 @@ class VWLocation(LocationAppearance):
         if not o or type(o) != VWLocation:
             return False
         else:
+            o = cast(typ=VWLocation, val=o)
+
             return self.__coord == o.get_coord() and self.__actor_appearance == o.get_actor_appearance() and self.__dirt_appearance == o.get_dirt_appearance()
+
+    def __hash__(self) -> int:
+        prime: int = 31
+        result: int = 1
+
+        result = prime * result + self.__coord.__hash__()
+
+        if self.__actor_appearance:
+            result = prime * result + self.__actor_appearance.__hash__()
+        else:
+            result = prime * result + 0
+
+        if self.__dirt_appearance:
+            result = prime * result + self.__dirt_appearance.__hash__()
+        else:
+            result = prime * result + 0
+
+        return result
