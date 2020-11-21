@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import cast
 
 from pystarworldsturbo.environment.location_appearance import LocationAppearance
 
@@ -92,6 +93,8 @@ class VWLocation(LocationAppearance):
         if not o or type(o) != VWLocation:
             return False
         else:
+            o = cast(typ=VWLocation, val=o)
+
             return self.__coord == o.get_coord() and self.__actor_appearance == o.get_actor_appearance() and self.__dirt_appearance == o.get_dirt_appearance()
 
     def __hash__(self) -> int:

@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import NamedTuple, List, Union, Tuple
+from typing import NamedTuple, List, Union, Tuple, cast
 
 from .orientation import Orientation
 
@@ -113,8 +113,10 @@ class Coord(NamedTuple):
     def __eq__(self, o: object) -> bool:
         if not o or type(o) != Coord:
             return False
+        else:
+            o = cast(typ=Coord, val=o)
 
-        return self.x == o.x and self.y == o.y
+            return self.x == o.x and self.y == o.y
 
     def __hash__(self) -> int:
         prime: int = 31

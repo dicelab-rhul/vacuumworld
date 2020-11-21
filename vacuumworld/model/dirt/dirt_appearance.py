@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import cast
 
 from pystarworldsturbo.common.identifiable import Identifiable
 
@@ -32,6 +33,8 @@ class VWDirtAppearance(Identifiable):
         if not o or type(o) != VWDirtAppearance:
             return False
         else:
+            o = cast(typ=VWDirtAppearance, val=o)
+
             return self.__colour == o.get_colour() and self.get_id() == o.get_id() and self.get_progressive_id() == o.get_progressive_id()
 
     def __hash__(self) -> int:

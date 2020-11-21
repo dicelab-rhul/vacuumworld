@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import cast
 
 from pystarworldsturbo.elements.actor_appearance import ActorAppearance
 
@@ -54,6 +55,8 @@ class VWActorAppearance(ActorAppearance):
     def __eq__(self, o: object) -> bool:
         if not o or type(o) != VWActorAppearance:
             return False
+
+        o = cast(typ=VWActorAppearance, val=o)
 
         if self.get_id() != o.get_id() or self.get_progressive_id() != o.get_progressive_id():
             return False
