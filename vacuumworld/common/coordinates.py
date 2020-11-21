@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import NamedTuple, List, Union, Tuple, cast
+from typing import Dict, NamedTuple, List, Union, Tuple, cast
 
 from .orientation import Orientation
 
@@ -10,27 +10,61 @@ class Coord(NamedTuple):
     y : int
 
     def __add__(self, other: Union[int, List[int], Tuple[int, int]]) -> Coord:
+        assert other is not None
+
         if isinstance(other, int):
             return Coord(self[0] + other, self[1] + other)
-        return Coord(self[0] + other[0], self[1] + other[1])
+        else:
+            assert type(other) in [list, tuple] and len(other) == 2
+            assert isinstance(other[0], int) and isinstance(other[1], int)
+
+            return Coord(self[0] + other[0], self[1] + other[1])
     
     def __sub__(self, other: Union[int, List[int], Tuple[int, int]]) -> Coord:
+        assert other is not None
+
         if isinstance(other, int):
             return Coord(self[0] - other, self[1] - other)
-        return Coord(self[0] - other[0], self[1] - other[1])
+        else:
+            assert type(other) in [list, tuple] and len(other) == 2
+            assert isinstance(other[0], int) and isinstance(other[1], int)
+
+            return Coord(self[0] - other[0], self[1] - other[1])
     
     def __mul__(self, other: Union[int, List[int], Tuple[int, int]]) -> Coord:
+        assert other is not None
+
         if isinstance(other, int):
             return Coord(self[0] * other, self[1] * other)
-        return Coord(self[0] * other[0], self[1] * other[1])
+        else:
+            assert type(other) in [list, tuple] and len(other) == 2
+            assert isinstance(other[0], int) and isinstance(other[1], int)
+
+            return Coord(self[0] * other[0], self[1] * other[1])
     
-    def __truediv__(self, other: Union[int, List[int], Tuple[int, int]]) -> Coord:
+    # Integer division
+    def __floordiv__(self, other: Union[int, List[int], Tuple[int, int]]) -> Coord:
+        assert other is not None
+
         if isinstance(other, int):
             return Coord(self[0] // other, self[1] // other)
-        return Coord(self[0] // other[0], self[1] // other[1])
+        else:
+            assert type(other) in [list, tuple] and len(other) == 2
+            assert isinstance(other[0], int) and isinstance(other[1], int)
 
-    def __floordiv__(self, other: Union[int, float]) -> Coord:
-        return self / other
+            return Coord(self[0] // other[0], self[1] // other[1])
+
+    # We force `/` to work like `//`
+    def __truediv__(self, other: Union[int, List[int], Tuple[int, int]]) -> Coord:
+        assert other is not None
+
+        if isinstance(other, int):
+            return self // other
+        else:
+            assert type(other) in [list, tuple] and len(other) == 2
+            assert isinstance(other[0], int) and isinstance(other[1], int)
+
+            return self // (int(other[0]), int(other[1]))
 
     def __str__(self) -> str:
         return "({}, {})".format(self.x, self.y)
@@ -109,6 +143,12 @@ class Coord(NamedTuple):
 
     def clone(self) -> Coord:
         return Coord(x=self.x, y=self.y)
+
+    def to_json(self) -> Dict[str, int]:
+        return {
+            "x": self.x,
+            "y": self.y
+        }
 
     def __eq__(self, o: object) -> bool:
         if not o or type(o) != Coord:

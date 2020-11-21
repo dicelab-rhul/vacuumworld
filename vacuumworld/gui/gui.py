@@ -89,8 +89,6 @@ class VWGUI(Thread):
         self.__config["time_step"] = self.__config["time_step"] * self.__config["time_step_modifier"] + self.__config["time_step_min"]
 
     def run(self) -> None:
-        #Tk.report_callback_exception = self.__clean_exit
-
         try:
             self.__root: Tk = Tk()
             self.__root.title("VacuumWorld v{}".format(self.__config["version_number"]))

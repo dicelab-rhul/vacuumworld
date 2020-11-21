@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import cast
+from typing import cast, Dict
 
 from pystarworldsturbo.environment.location_appearance import LocationAppearance
 
@@ -85,6 +85,19 @@ class VWLocation(LocationAppearance):
             return VWLocation(coord=self.__coord, actor_appearance=None, dirt_appearance=self.__dirt_appearance.deep_copy())
         else:
             return VWLocation(coord=self.__coord, actor_appearance=self.__actor_appearance.deep_copy(), dirt_appearance=self.__dirt_appearance.deep_copy())
+
+    def to_json(self) -> Dict[str, Dict[str, str | int]]:
+        location: Dict[str, Dict[str, str | int]] = {
+            "coords": self.__coord.to_json()
+        }
+
+        if self.has_actor():
+            location["actor"] = self.__actor_appearance.to_json()
+
+        if self.has_dirt():
+            location["dirt"] = self.__dirt_appearance.to_json()
+
+        return location
 
     def __str__(self) -> str:
         return "(actor: {}, dirt: {})".format(str(self.__actor_appearance), str(self.__dirt_appearance))
