@@ -129,7 +129,7 @@ class VWEnvironment(Environment):
             if l.has_actor() and l.get_actor_appearance().get_id() == actor_id:
                 return c, l
 
-        raise ValueError("There is an inconsistency within the grid.")
+        raise ValueError("Actor {} not found: there is an inconsistency between the grid and the list of actors.".format(actor_id))
 
     def get_actor_orientation(self, actor_id: str) -> Orientation:
         assert actor_id in self.get_actors()
@@ -153,44 +153,26 @@ class VWEnvironment(Environment):
 
     # Note that the actor IDs, progressive IDs, and the user difficulty level are not stored.
     # Therefore, on load the actors will have fresh IDs and progressive IDs, and the user will be in easy mode.
-    def to_json(self) -> dict:
-        state: dict = {
+    def to_json(self) -> Dict[str, List[Dict[str, Dict[str, str | int]]]]:
+        state: Dict[str, List[Dict[str, Dict[str, str | int]]]] = {
             "locations": []
         }
 
-        for c, l in self.get_ambient().get_grid().items():
-            location: dict = {
-                "coords": {
-                    "x": c.x,
-                    "y": c.y
-                }
-            }
+        for l in self.get_ambient().get_grid().values():
+            location: dict = l.to_json()
+            
+            if l.has_cleaning_agent():
+                actor_id: str = l.get_actor_appearance().get_id()
 
-            if l.has_actor():
-                actor_appearance: VWActorAppearance = l.get_actor_appearance()
-
-                actor: dict = {
-                    "colour": str(actor_appearance.get_colour()),
-                    "orientation": str(actor_appearance.get_orientation())
-                }
-
-                if l.has_cleaning_agent():
-                    actor["surrogate_mind_file"] = self.__get_actor_surrogate_mind_file(actor_id=actor_appearance.get_id())
-                    actor["surrogate_mind_class_name"] = self.get_actor(actor_id=actor_appearance.get_id()).get_mind().get_surrogate().__class__.__name__
-
-                location["actor"] = actor
-
-            if l.has_dirt():
-                location["dirt"] = {
-                    "colour": str(l.get_dirt_appearance().get_colour())
-                }
+                location["actor"]["surrogate_mind_file"] = self.__get_actor_surrogate_mind_file(actor_id=actor_id)
+                location["actor"]["surrogate_mind_class_name"] = self.get_actor(actor_id=actor_id).get_mind().get_surrogate().__class__.__name__
 
             state["locations"].append(location)
 
         return state
 
     @staticmethod
-    def from_json(data: dict, config: dict) -> VWEnvironment:
+    def from_json(data: Dict[str, List[Dict[str, Dict[str, str | int]]]], config: dict) -> VWEnvironment:
         try:
             grid: Dict[Coord, VWLocation] = {}
             actors: List[VWActorAppearance] = []
@@ -221,17 +203,24 @@ class VWEnvironment(Environment):
                 grid[coord] = VWLocation(coord=coord, actor_appearance=actor_appearance, dirt_appearance=dirt_appearance)
 
             return VWEnvironment(config=config, ambient=VWAmbient(grid=grid), initial_actors=actors, initial_dirts=dirts)
+        except AssertionError as e:
+            raise e
         except Exception:
             return VWEnvironment.generate_empty_env(config=config)
 
     @staticmethod
     def generate_empty_env(config: dict, forced_line_dim: int=-1) -> VWEnvironment:
-        line_dim: int = config["initial_environment_dim"]
+        try:
+            line_dim: int = config["initial_environment_dim"]
 
-        if forced_line_dim != -1:
-            assert forced_line_dim >= config["min_environment_dim"] and forced_line_dim <= config["max_environment_dim"]
-            line_dim = forced_line_dim
+            if forced_line_dim != -1:
+                assert forced_line_dim >= config["min_environment_dim"] and forced_line_dim <= config["max_environment_dim"]
+                line_dim = forced_line_dim
 
-        grid: Dict[Coord, VWLocation] = {Coord(x, y): VWLocation(coord=Coord(x, y), actor_appearance=None, dirt_appearance=None) for x in range(line_dim) for y in range(line_dim)}
+            grid: Dict[Coord, VWLocation] = {Coord(x, y): VWLocation(coord=Coord(x, y), actor_appearance=None, dirt_appearance=None) for x in range(line_dim) for y in range(line_dim)}
 
-        return VWEnvironment(config=config, ambient=VWAmbient(grid=grid), initial_actors=[], initial_dirts=[])
+            return VWEnvironment(config=config, ambient=VWAmbient(grid=grid), initial_actors=[], initial_dirts=[])
+        except AssertionError as e:
+            raise e
+        except Exception:
+            raise IOError("Could not construct the environment from the given config.")

@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import cast
+from typing import Dict, cast
 
 from pystarworldsturbo.elements.actor_appearance import ActorAppearance
 
@@ -48,6 +48,14 @@ class VWActorAppearance(ActorAppearance):
 
     def deep_copy(self) -> VWActorAppearance:
         return VWActorAppearance(actor_id=self.get_id(), progressive_id=self.get_progressive_id(), colour=self.__colour, orientation=self.__orientation)
+
+    # Note that the actor IDs, progressive IDs, and the user difficulty level are not stored.
+    # Therefore, on load the actors will have fresh IDs and progressive IDs, and the user will be in easy mode.
+    def to_json(self) -> Dict[str, str]:
+        return {
+            "colour": str(self.__colour),
+            "orientation": str(self.__orientation)
+        }
 
     def __str__(self) -> str:
         return "actor(ID: {}, progressive ID: {}, colour: {}, orientation: {})".format(self.get_id(), self.get_progressive_id(), self.__colour, self.__orientation)
