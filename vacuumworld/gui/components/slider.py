@@ -8,14 +8,15 @@ from pystarworldsturbo.utils.utils import ignore
 class Slider(Canvas):
     def __init__(self, parent: Frame, config: dict, release_callback: Callable, slide_callback: Callable, width: float, height: float, increments:float=0, slider_width:float=8, start:float=0, **kwargs) -> None:
         super(Slider, self).__init__(parent, width=width, height=height, bd=0, highlightthickness=0, relief="ridge", bg=config["bg_colour"], **kwargs)
+
         self.__release_callback: Callable = release_callback
         self.__slide_callback: Callable = slide_callback
         
         self.__increments: float = increments
         self.__slide_item_dim: float = slider_width
         
-        self.__x: float = start #real position of the slider
-        self.__inc: int = 0   #incremental position of the slider [0-increments]
+        self.__x: float = start # Real position of the slider.
+        self.__inc: int = 0   # Incremental position of the slider [0-increments].
 
         if start > width:
             start = width - self.__slide_item_dim/2

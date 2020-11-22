@@ -9,6 +9,7 @@ from .vwactormind import VWMind
 from .vwsensors import VWListeningSensor, VWObservationSensor
 from ..actions.vwactions import VWAction, VWPhysicalAction, VWCommunicativeAction
 from ..actions.speak_action import VWSpeakAction
+from ..actions.broadcast_action import VWBroadcastAction
 from ...common.observation import Observation
 from ...common.exceptions import VWActionAttemptException
 
@@ -32,7 +33,11 @@ class VWActor(Actor):
         pass
 
     def get_communicative_actuator(self) -> Actuator:
-        return super(VWActor, self).get_actuator_for(event_type=VWSpeakAction) # Works for VWBroadcastAction as well.
+        candidate: Actuator = super(VWActor, self).get_actuator_for(event_type=VWSpeakAction)
+
+        assert candidate.is_subscribed_to(event_type=VWBroadcastAction)
+
+        return candidate
 
     def perceive(self) -> Tuple[Observation, Iterable[BccMessage]]:
         observation: Observation = None

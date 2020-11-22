@@ -31,8 +31,6 @@ class CanvasDragManager():
             self.__y = event.y
 
     def on_drag(self, event: Event) -> None:
-        #print(self.__grid_dim)
-
         inc: int = self.__config["grid_size"] / self.__grid_dim
         x: int = int(event.x / inc) * inc + (inc / 2) + 1
         y: int = int(event.y / inc) * inc + (inc / 2) + 1
