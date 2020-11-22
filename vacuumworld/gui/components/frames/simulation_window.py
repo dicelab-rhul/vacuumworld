@@ -28,7 +28,7 @@ import os
 
 
 class VWSimulationWindow(Frame):
-    def __init__(self, parent: Tk, config: dict, buttons: dict, minds: Dict[Colour, ActorMindSurrogate], env: VWEnvironment, _guide: Callable, _save: Callable, _load: Callable, _finish: Callable, _error: Callable) -> None:
+    def __init__(self, parent: Tk, config: dict, buttons: dict, minds: Dict[Colour, ActorMindSurrogate], env: VWEnvironment, _guide: Callable, _save: Callable, _load: Callable, _error: Callable) -> None:
         super(VWSimulationWindow, self).__init__(parent)
 
         self.__parent: Tk = parent
@@ -39,7 +39,6 @@ class VWSimulationWindow(Frame):
         self.__guide: Callable = _guide
         self.__save: Callable = _save
         self.__load: Callable = _load
-        self.__finish: Callable = _finish
         self.__error: Callable = _error
         self.__after_hook: Callable = None
         self.__save_state_manager: SaveStateManager = SaveStateManager()
@@ -58,7 +57,7 @@ class VWSimulationWindow(Frame):
 
         self.__create_and_display()
 
-        # Note: pack() needs to be called by the caller.
+        # Note: pack() for VWSimulationWindow needs to be called by the caller.
     
     def __create_and_display(self) -> None:
         self.configure(background=self.__config["bg_colour"])
@@ -83,8 +82,8 @@ class VWSimulationWindow(Frame):
 
         self.__canvas.bind("<Double-Button-1>", self.__remove_top)
         self.__canvas.bind("<Button-1>", self.__select)
-        self.__canvas.bind("<Motion>", self.on_mouse_move)
-        self.__canvas.bind("<Leave>", self.on_leave_canvas)
+        self.__canvas.bind("<Motion>", self.__on_mouse_move)
+        self.__canvas.bind("<Leave>", self.__on_leave_canvas)
 
     def __load_button_image(self, button_name: str) -> Img:
         return  VWSimulationWindow.__scale(Image.open(os.path.join(self.__config["button_data_path"], self.__button_data[button_name]["image_file"])), self.__config["button_size"])
@@ -193,7 +192,7 @@ class VWSimulationWindow(Frame):
     
     def __init_size_slider(self, parent, length=250) -> None:
         increments: int = self.__config["max_environment_dim"] - self.__config["min_environment_dim"]
-        self.__grid_scale_slider: Slider = Slider(parent, self.__config, self.on_resize, self.on_resize_slide, length * self.__config["scale"],
+        self.__grid_scale_slider: Slider = Slider(parent, self.__config, self.__on_resize, self.__on_resize_slide, length * self.__config["scale"],
                                         16 * self.__config["scale"], slider_width = length * self.__config["scale"] / (increments * 3),
                                         increments=increments,
                                         start=self.__config["grid_size"]/self.__config["location_size"] - self.__config["min_environment_dim"])
@@ -429,7 +428,7 @@ class VWSimulationWindow(Frame):
         return img.resize((int(img.width * scale), int(img.height * scale)), Image.BICUBIC)
 
     # Resize the grid.
-    def on_resize(self, value: int) -> None:
+    def __on_resize(self, value: int) -> None:
         value += self.__config["min_environment_dim"]
 
         if value != self.__env.get_ambient().get_grid_dim():
@@ -439,13 +438,13 @@ class VWSimulationWindow(Frame):
             self.__scaled_tk()
             self.__draw_grid()
             
-    def on_resize_slide(self, value: int) -> None:
+    def __on_resize_slide(self, value: int) -> None:
         self.__size_text.set(str(value + self.__config["min_environment_dim"]))
 
-    def on_leave_canvas(self, _) -> None:
+    def __on_leave_canvas(self, _) -> None:
         self.__coordinate_text.set(self.__empty_location_coordinates_text)
     
-    def on_mouse_move(self, event: Event) -> None:
+    def __on_mouse_move(self, event: Event) -> None:
         if self.__bounds_manager.in_bounds(event.x, event.y):
             inc: int = self.__config["grid_size"] / self.__env.get_ambient().get_grid_dim()
             self.__coordinate_text.set("({},{})".format(int(event.x / inc), int(event.y / inc)))
@@ -608,12 +607,12 @@ class VWSimulationWindow(Frame):
                 time: int = int(self.__config["time_step"]*1000)
                 self.__after_hook = self.__parent.after(time, self.__simulate)
             
-        except Exception as e:
-            print("INFO: SIMULATION ERROR: {}".format(e.args[0][0]))
+        except Exception:
+            print("INFO: SIMULATION ERROR!")
+
+            self.__running = False
 
             self.__error()
-            self.__running = False
-            self.__finish()
 
     def __stop(self) -> None:
         print("INFO: stop")

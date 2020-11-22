@@ -5,6 +5,7 @@ from pystarworldsturbo.elements.sensor import Sensor
 from pystarworldsturbo.elements.actuator import Actuator
 from pystarworldsturbo.elements.actor import Actor
 
+from .actor_behaviour_debugger import ActorBehaviourDebugger
 from .vwactormind import VWMind
 from .vwsensors import VWListeningSensor, VWObservationSensor
 from ..actions.vwactions import VWAction, VWPhysicalAction, VWCommunicativeAction
@@ -52,6 +53,8 @@ class VWActor(Actor):
         return observation, messages
 
     def cycle(self) -> None:
+        ActorBehaviourDebugger.debug()
+
         observation, messages = self.perceive()
 
         self.get_mind().revise(observation=observation, messages=messages)
