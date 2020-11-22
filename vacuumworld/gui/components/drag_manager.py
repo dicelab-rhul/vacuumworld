@@ -8,6 +8,8 @@ class CanvasDragManager():
         self.__config: dict = config
         self.__x: int = 0
         self.__y: int = 0
+
+        self.__grid_dim: int = grid_dim
         self.__canvas: Canvas = canvas
 
         self.__on_start_callback: Callable = on_start_callback
@@ -20,7 +22,6 @@ class CanvasDragManager():
         self.__drag_image: Image
         self.__drag: Image
         self.__dragging: bool = False
-        self.__grid_dim: int = grid_dim
 
     def on_start(self, event: Event) -> None:
         if not self.__dragging:
@@ -30,6 +31,8 @@ class CanvasDragManager():
             self.__y = event.y
 
     def on_drag(self, event: Event) -> None:
+        #print(self.__grid_dim)
+
         inc: int = self.__config["grid_size"] / self.__grid_dim
         x: int = int(event.x / inc) * inc + (inc / 2) + 1
         y: int = int(event.y / inc) * inc + (inc / 2) + 1

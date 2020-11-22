@@ -13,3 +13,9 @@ class Colour(Enum):
     
     def __repr__(self) -> str:
         return str(self)
+
+    def str_with_article(self) -> str:
+        if self == Colour.orange:
+            return "an {}".format(self)
+        else:
+            return "a {}".format(self)
