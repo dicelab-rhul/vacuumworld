@@ -8,6 +8,7 @@ from ..buttons.vwbutton import VWButton
 from ..buttons.vwdifficultybutton import VWDifficultyButton
 from ..slider import Slider
 from ..drag_manager import CanvasDragManager
+from ..bounds_manager import BoundsManager
 from ...saveload import SaveStateManager
 
 from ....common.coordinates import Coord
@@ -30,9 +31,9 @@ class VWSimulationWindow(Frame):
     def __init__(self, parent: Tk, config: dict, buttons: dict, minds: Dict[Colour, ActorMindSurrogate], env: VWEnvironment, _guide: Callable, _save: Callable, _load: Callable, _finish: Callable, _error: Callable) -> None:
         super(VWSimulationWindow, self).__init__(parent)
 
-        self.__root: Tk = parent
-        self.__drag_manager: CanvasDragManager = None
+        self.__parent: Tk = parent
         self.__config: dict = config
+        self.__bounds_manager: BoundsManager = BoundsManager(config=self.__config)
         self.__button_data: dict = buttons
         self.__env: VWEnvironment = env
         self.__guide: Callable = _guide
@@ -62,7 +63,7 @@ class VWSimulationWindow(Frame):
     def __create_and_display(self) -> None:
         self.configure(background=self.__config["bg_colour"])
 
-        self.__canvas: Canvas = Canvas(self, width=self.__config["grid_size"]+self.__config["location_size"]+4, height=self.__config["grid_size"]+1, bd=0, highlightthickness=0)
+        self.__canvas: Canvas = Canvas(self, width=self.__config["grid_size"] + self.__config["location_size"] + 4, height=self.__config["grid_size"] + 1, bd=0, highlightthickness=0)
 
         self.__init_buttons()
 
@@ -75,10 +76,10 @@ class VWSimulationWindow(Frame):
         self.__canvas.grid(row=0,column=0) #packing
 
         # Bind keys for rotation
-        self.__root.bind("<Left>", self.__rotate_actor_left)
-        self.__root.bind("<Right>", self.__rotate_actor_right)
-        self.__root.bind("<a>", self.__rotate_actor_left)
-        self.__root.bind("<d>", self.__rotate_actor_right)
+        self.__parent.bind("<Left>", self.__rotate_actor_left)
+        self.__parent.bind("<Right>", self.__rotate_actor_right)
+        self.__parent.bind("<a>", self.__rotate_actor_left)
+        self.__parent.bind("<d>", self.__rotate_actor_right)
 
         self.__canvas.bind("<Double-Button-1>", self.__remove_top)
         self.__canvas.bind("<Button-1>", self.__select)
@@ -208,10 +209,12 @@ class VWSimulationWindow(Frame):
         ix: int = self.__config["grid_size"] + self.__config["location_size"] / 2 + 2
         iy: int = self.__config["location_size"] / 2 + 4
 
+        print(self.__env.get_ambient().get_grid_dim())
+
         for i, key in enumerate(keys):
             item: Img = self.__canvas.create_image(ix, iy + i * self.__config["location_size"], image=self.__all_images_tk[key])
-            self.__drag_manager: CanvasDragManager = CanvasDragManager(self.__config, key, self.__env.get_ambient().get_grid_dim(), self.__canvas, item, self.__drag_on_start, self.__drag_on_drop)
-            self.__dragables[item] = (self.__drag_manager, key)
+            drag_manager: CanvasDragManager = CanvasDragManager(self.__config, key, self.__env.get_ambient().get_grid_dim(), self.__canvas, item, self.__drag_on_start, self.__drag_on_drop)
+            self.__dragables[item] = (drag_manager, key)
 
     def __deselect(self) -> None:
         self.__selected = None
@@ -219,23 +222,23 @@ class VWSimulationWindow(Frame):
             self.__canvas.delete(self.__rectangle_selected)
         self.__rectangle_selected = None
 
-    def __select(self, event: Event) -> None:
-        if not self.__running and self.__drag_manager.in_bounds(event.x, event.y):
+    def __select(self, event: Event, print_message: bool=True) -> None:
+        if not self.__running and self.__bounds_manager.in_bounds(event.x, event.y):
             self.__deselect()
             self.focus()
             inc: int = self.__config["grid_size"] / self.__env.get_ambient().get_grid_dim()
             coordinate: Coord = Coord(int(event.x / inc), int(event.y / inc))
 
-            print("SELECT: selected location {}.".format(coordinate))
+            if print_message:
+                print("SELECT: selected location {}.".format(coordinate))
 
             self.__selected = coordinate
             xx: int = coordinate.x * inc
             yy: int = coordinate.y * inc
             self.__rectangle_selected = self.__canvas.create_rectangle((xx, yy, xx + inc, yy + inc), fill="", width=3)
 
-
     def __remove_top(self, event: Event) -> None:
-        if not self.__running and self.__drag_manager.in_bounds(event.x, event.y):
+        if not self.__running and self.__bounds_manager.in_bounds(event.x, event.y):
 
             print("remove top")
 
@@ -302,18 +305,21 @@ class VWSimulationWindow(Frame):
         for i in range(len(buttons)):
             self.__buttons[buttons[i]].get_button().grid(row=0, column=i, sticky=W)
 
-    def __reset_canvas(self, lines: bool=True, dirts: bool=True, agents: bool=True, select: bool=True) -> None:
+    def __reset_canvas(self, lines: bool=True, dirts: bool=True, agents: bool=True, select: bool=True) -> None:      
         if lines:
             for line in self.__grid_lines:
                 self.__canvas.delete(line)
+
             self.__grid_lines.clear()
         if agents:
             for a in self.__canvas_agents.values():
                 self.__canvas.delete(a)
+
             self.__canvas_agents.clear()
         if dirts:
             for d in self.__canvas_dirts.values():
                 self.__canvas.delete(d)
+
             self.__canvas_dirts.clear()
         if select:
             self.__deselect()
@@ -430,6 +436,7 @@ class VWSimulationWindow(Frame):
 
         if value != self.__env.get_ambient().get_grid_dim():
             self.__env = VWEnvironment.generate_empty_env(config=self.__config, forced_line_dim=value)
+            self.__init_dragables()
             self.__reset_canvas()
             self.__scaled_tk()
             self.__draw_grid()
@@ -441,7 +448,7 @@ class VWSimulationWindow(Frame):
         self.__coordinate_text.set(self.__empty_location_coordinates_text)
     
     def on_mouse_move(self, event: Event) -> None:
-        if self.__drag_manager.in_bounds(event.x, event.y):
+        if self.__bounds_manager.in_bounds(event.x, event.y):
             inc: int = self.__config["grid_size"] / self.__env.get_ambient().get_grid_dim()
             self.__coordinate_text.set("({},{})".format(int(event.x / inc), int(event.y / inc)))
         else:
@@ -486,7 +493,7 @@ class VWSimulationWindow(Frame):
 
         print("INFO: dropped something at {}.".format(coord))
         
-        self.__select(event)
+        self.__select(event=event, print_message=False)
         self.redraw()
 
     def __drop_element(self, obj: str, coord: Coord, colour: Colour, drag_manager: CanvasDragManager) -> None:
@@ -543,16 +550,18 @@ class VWSimulationWindow(Frame):
     def __get_selected_user_difficulty_level(self) -> int:
         return self.__buttons["difficulty"].get_difficulty()
 
-    # Resets the grid and enviroment
+    # Resets the grid and enviroment to the default values (empty 8x8).
     def __reset(self) -> None:
         print("INFO: reset")
 
-        self.__reset_canvas(lines=False, agents=True, dirts=True)
+        self.__env = VWEnvironment.generate_empty_env(config=self.__config)
 
-        grid_dim: int = self.__env.get_ambient().get_grid_dim()
-        
-        self.__env = VWEnvironment.generate_empty_env(config=self.__config, forced_line_dim=grid_dim)
+        self.__grid_scale_slider.set_position(self.__env.get_ambient().get_grid_dim() - self.__config["min_environment_dim"])
 
+        self.__init_dragables()
+        self.__reset_canvas()
+        self.__scaled_tk()
+        self.__draw_grid()
         self.__reset_time_step()
 
     def play(self) -> None:
@@ -568,10 +577,10 @@ class VWSimulationWindow(Frame):
         self.__running = True
 
         if self.__after_hook: # Prevent button spam
-            self.__root.after_cancel(self.__after_hook)
+            self.__parent.after_cancel(self.__after_hook)
 
         time: int = int(self.__config["time_step"]*1000)
-        self.__after_hook = self.__root.after(time, self.__simulate)
+        self.__after_hook = self.__parent.after(time, self.__simulate)
 
     def __simulate(self) -> None:
         try: 
@@ -579,10 +588,10 @@ class VWSimulationWindow(Frame):
                 print("------------ Cycle {} ------------ ".format(self.__env.get_current_cycle_number()))
   
                 self.__env.evolve()
-                self.__root.after(0, self.redraw)
+                self.__parent.after(0, self.redraw)
 
                 time: int = int(self.__config["time_step"]*1000)
-                self.__after_hook = self.__root.after(time, self.__simulate)
+                self.__after_hook = self.__parent.after(time, self.__simulate)
             
         except Exception as e:
             print("INFO: SIMULATION ERROR: {}".format(e.args[0][0]))
@@ -607,10 +616,10 @@ class VWSimulationWindow(Frame):
         self.__running = True
         
         if self.__after_hook: # Prevent button spam
-            self.__root.after_cancel(self.__after_hook)
+            self.__parent.after_cancel(self.__after_hook)
 
         time = int(self.__config["time_step"]*1000)
-        self.__after_hook = self.__root.after(time, self.__simulate)
+        self.__after_hook = self.__parent.after(time, self.__simulate)
 
     def __pause(self) -> None:
         print("INFO: pause")

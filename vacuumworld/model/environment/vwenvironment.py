@@ -1,6 +1,8 @@
 from __future__ import annotations
 from typing import List, Tuple, Dict
 from inspect import getfile
+from itertools import product
+from math import floor, sqrt
 
 from pystarworldsturbo.common.action import Action
 from pystarworldsturbo.common.action_result import ActionResult
@@ -202,6 +204,8 @@ class VWEnvironment(Environment):
 
                 grid[coord] = VWLocation(coord=coord, actor_appearance=actor_appearance, dirt_appearance=dirt_appearance)
 
+            VWEnvironment.__validate_grid(grid=grid, config=config)
+
             return VWEnvironment(config=config, ambient=VWAmbient(grid=grid), initial_actors=actors, initial_dirts=dirts)
         except AssertionError as e:
             raise e
@@ -217,10 +221,24 @@ class VWEnvironment(Environment):
                 assert forced_line_dim >= config["min_environment_dim"] and forced_line_dim <= config["max_environment_dim"]
                 line_dim = forced_line_dim
 
-            grid: Dict[Coord, VWLocation] = {Coord(x, y): VWLocation(coord=Coord(x, y), actor_appearance=None, dirt_appearance=None) for x in range(line_dim) for y in range(line_dim)}
+            grid: Dict[Coord, VWLocation] = {Coord(x, y): VWLocation(coord=Coord(x, y), actor_appearance=None, dirt_appearance=None) for x, y in product(range(line_dim), range(line_dim))}
+
+            VWEnvironment.__validate_grid(grid=grid, config=config, candidate_grid_line_dim=line_dim)
 
             return VWEnvironment(config=config, ambient=VWAmbient(grid=grid), initial_actors=[], initial_dirts=[])
         except AssertionError as e:
             raise e
         except Exception:
             raise IOError("Could not construct the environment from the given config.")
+
+    @staticmethod
+    def __validate_grid(grid: Dict[Coord, VWLocation], config: dict, candidate_grid_line_dim: int=-1) -> None:
+        assert grid is not None and type(grid) == dict
+
+        grid_line_dim: int = sqrt(len(grid))
+
+        assert floor(grid_line_dim) == grid_line_dim
+
+        if candidate_grid_line_dim != -1:
+            assert candidate_grid_line_dim >= config["min_environment_dim"] and candidate_grid_line_dim <= config["max_environment_dim"]
+            assert candidate_grid_line_dim == grid_line_dim
