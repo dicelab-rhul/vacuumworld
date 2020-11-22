@@ -209,8 +209,6 @@ class VWSimulationWindow(Frame):
         ix: int = self.__config["grid_size"] + self.__config["location_size"] / 2 + 2
         iy: int = self.__config["location_size"] / 2 + 4
 
-        print(self.__env.get_ambient().get_grid_dim())
-
         for i, key in enumerate(keys):
             item: Img = self.__canvas.create_image(ix, iy + i * self.__config["location_size"], image=self.__all_images_tk[key])
             drag_manager: CanvasDragManager = CanvasDragManager(self.__config, key, self.__env.get_ambient().get_grid_dim(), self.__canvas, item, self.__drag_on_start, self.__drag_on_drop)
@@ -490,9 +488,6 @@ class VWSimulationWindow(Frame):
         colour: Colour = Colour(col)
 
         self.__drop_element(obj=obj, coord=coord, colour=colour, drag_manager=drag_manager)
-
-        print("INFO: dropped something at {}.".format(coord))
-        
         self.__select(event=event, print_message=False)
         self.redraw()
 
@@ -505,8 +500,14 @@ class VWSimulationWindow(Frame):
             raise ValueError("Unknown obj: {}.".format(obj))
 
     def __drop_dirt(self, coord: Coord, colour: Colour, drag_manager:  CanvasDragManager) -> None:
+        message: str = ""
+        
         if self.__env.get_ambient().is_dirt_at(coord=coord):
+            dirt_colour: Colour = self.__env.get_ambient().get_location_interface(coord=coord).get_dirt_appearance().get_colour()
+
             self.__env.remove_dirt(coord=coord)
+
+            message += " (replacing {} dirt)".format(dirt_colour.str_with_article())
 
         self.__env.drop_dirt(coord=coord, dirt_colour=colour)
 
@@ -516,15 +517,25 @@ class VWSimulationWindow(Frame):
         self.__canvas_dirts[coord] = drag_manager.get_drag()
         self.__canvas.tag_lower(self.__canvas_dirts[coord])
 
+        message = "INFO: dropped {} dirt at {}".format(colour.str_with_article(), coord) + message
+
+        print(message)
+
     def __drop_actor_facing_north(self, coord: Coord, colour: Colour, drag_manager: CanvasDragManager) -> None:
+        message: str = ""
+        
         actor, actor_appearance = VWActorsFactory.create_actor(colour=colour, orientation=Orientation.north, mind_surrogate=self.__agent_minds[colour])
 
         if self.__env.get_ambient().is_actor_at(coord=coord):
             actor_id: str = self.__env.get_ambient().get_location_interface(coord=coord).get_actor_appearance().get_id()
+            actor_colour: Colour = self.__env.get_ambient().get_location_interface(coord=coord).get_actor_appearance().get_colour()
+
             # Removes the actor appearance from the grid.
             self.__env.get_ambient().get_location_interface(coord=coord).remove_actor()
             # Removes the actor from the list of actors.
             self.__env.remove_actor(actor_id=actor_id)
+
+            message += " (replacing {} actor)".format(actor_colour.str_with_article())
 
         self.__env.add_actor(actor=actor)
         self.__env.get_ambient().get_location_interface(coord=coord).add_actor(actor_appearance=actor_appearance)
@@ -533,6 +544,10 @@ class VWSimulationWindow(Frame):
             self.__canvas.delete(self.__canvas_agents[coord])
 
         self.__canvas_agents[coord] = drag_manager.get_drag()
+
+        message = "INFO: dropped {} actor at {}".format(colour.str_with_article(), coord) + message
+
+        print(message)
 
     def __show_hide_side(self, state: str) -> None:
         for item in self.__dragables.keys():
