@@ -42,7 +42,7 @@ class Coord(NamedTuple):
 
             return Coord(self[0] * other[0], self[1] * other[1])
     
-    # Integer division
+    # Integer division.
     def __floordiv__(self, other: Union[int, List[int], Tuple[int, int]]) -> Coord:
         assert other is not None
 
@@ -54,7 +54,7 @@ class Coord(NamedTuple):
 
             return Coord(self[0] // other[0], self[1] // other[1])
 
-    # We force `/` to work like `//`
+    # We force `/` to work like `//`.
     def __truediv__(self, other: Union[int, List[int], Tuple[int, int]]) -> Coord:
         assert other is not None
 

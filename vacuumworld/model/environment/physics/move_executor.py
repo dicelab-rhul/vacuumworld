@@ -46,7 +46,7 @@ class MoveExecutor(ActionExecutor):
 
     def succeeded(self, env: VWEnvironment, action: VWMoveAction) -> bool:
         # This only checks that the agent has not vanished and has not been duplicated.
-        # The check for the move success is implicit at this point if not exception has been raised by attempt()
+        # The check for the move success is implicit at this point if not exception has been raised by attempt().
 
         ignore(self)
 

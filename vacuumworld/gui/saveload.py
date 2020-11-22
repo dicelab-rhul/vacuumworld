@@ -26,13 +26,13 @@ class SaveStateManager():
         elif not os.path.isdir(self.__files_dir):
             raise ValueError("Could not create the `{}` directory.".format(self.__files_dir))
 
-        if not os.path.isdir(self.__files_dir): # the directory was not created
+        if not os.path.isdir(self.__files_dir): # The directory was not created.
             raise ValueError("Could not create the `{}` directory.".format(self.__files_dir))
 
     def __file_exists(self, file: str) -> bool:
         assert file and type(file) == str
 
-        # Absolute path vs. relative path
+        # Absolute path vs. relative path.
         return os.path.exists(file) or os.path.exists(os.path.join(self.__files_dir, os.path.basename(file)))
 
     def save_state(self, env: VWEnvironment, file: str) -> bool:

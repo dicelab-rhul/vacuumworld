@@ -71,10 +71,10 @@ class UserMindSurrogate(ActorMindSurrogate):
         if self.__is_wall_ahead():
             return self.__decide_if_wall_ahead_and_kind()
         elif self.__is_on_dirt():
-            # If there is already a dirt at this location, move or turn
+            # If there is already a dirt on this location, move or turn.
             return self.__decide_if_on_dirt_and_kind()
         else:
-            # Otherwise, do a random action (including dropping dirt)
+            # Otherwise, do a random action (including dropping dirt).
             return UserMindSurrogate.__act_randomly(weights=[0.2, 0.2, 0.45, 0.075, 0.075])
 
     def __decide_if_wall_ahead_and_kind(self) -> VWPhysicalAction:
@@ -139,73 +139,73 @@ class UserMindSurrogate(ActorMindSurrogate):
             return VWTurnAction(direction=Direction.right)
 
     def __be_inconsiderate(self) -> VWPhysicalAction:
-        # Wall ahead
+        # Wall ahead.
         if self.__is_wall_ahead():
             return self.__decide_if_wall_ahead_and_inconsiderate()
-        # Agent ahead
+        # Actor ahead.
         elif self.__is_actor_ahead():
             return self.__decide_if_agent_ahead_and_inconsiderate()
-        # Right and left occupied
+        # Both right and left occupied by actors.
         elif self.__is_actor_on_the_left() and self.__is_actor_on_the_right():
             return UserMindSurrogate.__move_or_drop_randomly(weights=[0.1, 0.1, 0.8])
-        # Agent on the left and no wall on the right
+        # Actor on the left and no wall on the right.
         elif self.__is_actor_on_the_left() and not self.__is_wall_on_the_right():
             return UserMindSurrogate.__move_randomly(weights=[0.5, 0.0, 0.5])
-        # Agent on the right and no wall on the left
+        # Actor on the right and no wall on the left.
         elif self.__is_actor_on_the_right() and not self.__is_wall_on_the_left():
             return UserMindSurrogate.__move_randomly(weights=[0.5, 0.5, 0.0])
-        # Wall on the left
+        # Wall on the left.
         elif self.__is_wall_on_the_left():
             return self.__decide_if_wall_on_the_left_and_inconsiderate()
-        # Wall on the right
+        # Wall on the right.
         elif self.__is_wall_on_the_right():
             return self.__decide_if_wall_on_the_right_and_inconsiderate()
-        # Any other possibility
+        # Any other possibility.
         else:
             return self.__act_randomly(weights=[0.15, 0.15, 0.6, 0.05, 0.05])
 
         # Always wall ahead
     def __decide_if_wall_ahead_and_inconsiderate(self) -> list:
-        if self.__is_wall_on_the_left(): # wall on the left
+        if self.__is_wall_on_the_left(): # Wall on the left.
             return VWTurnAction(direction=Direction.right)
-        elif self.__is_wall_on_the_right(): # wall on the right
+        elif self.__is_wall_on_the_right(): # Wall on the right.
             return VWTurnAction(direction=Direction.left)
-        elif self.__is_actor_on_the_left() and self.__is_actor_on_the_right(): # both left and right are full
+        elif self.__is_actor_on_the_left() and self.__is_actor_on_the_right(): # Both left and right are occupied by actors.
             return UserMindSurrogate.__turn_randomly()
-        elif self.__is_actor_on_the_left(): # agent on the left
+        elif self.__is_actor_on_the_left(): # Actor on the left.
             return VWTurnAction(direction=Direction.right)
-        elif self.__is_actor_on_the_right(): # agent on the right
+        elif self.__is_actor_on_the_right(): # Actor on the right.
             return VWTurnAction(direction=Direction.left)
-        elif self.__is_on_dirt(): # both left and right are free, drop dirt?
+        elif self.__is_on_dirt(): # Both left and right are free.
             return UserMindSurrogate.__turn_randomly()
-        else: # wall ahead, left and right free, no dirt on center.
+        else: # Wall ahead, left and right free, no dirt on center.
             return self.__act_randomly(weights=[0.075, 0.075, 0.6, 0.0, 0.25])
         
-    # Always agent ahead
+    # Always actor ahead.
     def __decide_if_agent_ahead_and_inconsiderate(self) -> list:
-        if self.__is_wall_on_the_left():
+        if self.__is_wall_on_the_left(): # Wall on the left.
             return VWTurnAction(direction=Direction.right)
-        elif not self.__is_wall_on_the_right():
+        elif not self.__is_wall_on_the_right(): #  Wall on the right.
             return VWTurnAction(direction=Direction.left)
-        elif self.__is_actor_on_the_left() and self.__is_actor_on_the_right(): # both left and right are full
-            return self.__drop_random_dirt() # dropping a dirt in front of the agent, if possible
-        elif self.__is_actor_on_the_left(): # agent on the left
+        elif self.__is_actor_on_the_left() and self.__is_actor_on_the_right(): # Both left and right are occupied by actors.
+            return self.__drop_random_dirt() # Dropping a dirt in front of the actor, if possible.
+        elif self.__is_actor_on_the_left(): # Actor on the left.
             return VWTurnAction(direction=Direction.right)
-        elif self.__is_actor_on_the_right(): # agent on the right
+        elif self.__is_actor_on_the_right(): # Actor on the right.
             return VWTurnAction(direction=Direction.left)
-        elif self.__is_on_dirt(): # both left and right are free, drop dirt?
+        elif self.__is_on_dirt(): # Both left and right are free.
             return UserMindSurrogate.__turn_randomly()
         else:
             return UserMindSurrogate.__act_randomly(weights=[0.25, 0.25, 0.0, 0.25, 0.25])
 
-    # Always wall on the left
+    # Always wall on the left.
     def __decide_if_wall_on_the_left_and_inconsiderate(self) -> list:
         if self.__is_on_dirt():
             return UserMindSurrogate.__move_randomly(weights=[0.9, 0.0, 0.1])
         else:
             return UserMindSurrogate.__act_randomly(weights=[0.075, 0.075, 0.6, 0.0, 0.25])
 
-    # Always wall on the right
+    # Always wall on the right.
     def __decide_if_wall_on_the_right_and_inconsiderate(self) -> list:
         if self.__is_on_dirt():
             return UserMindSurrogate.__move_randomly(weights=[0.9, 0.1, 0.0])

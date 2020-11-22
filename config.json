@@ -65,8 +65,8 @@
     "initial_environment_dim": 8,
     "min_environment_dim": 3,
     "max_environment_dim": 13,
-    "max_number_of_actions_per_agent_per_cycle": 2,
-    "max_number_of_physical_actions_per_agent_per_cycle": 1,
-    "max_number_of_communicative_actions_per_agent_per_cycle": 1,
+    "max_number_of_actions_per_actor_per_cycle": 2,
+    "max_number_of_physical_actions_per_actor_per_cycle": 1,
+    "max_number_of_communicative_actions_per_actor_per_cycle": 1,
     "version_number": "4.1.9"
 }

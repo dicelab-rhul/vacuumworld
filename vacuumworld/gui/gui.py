@@ -95,7 +95,7 @@ class VWGUI(Thread):
             self.__root.protocol("WM_DELETE_WINDOW", self.kill)
             self.__root.configure(background=self.__config["bg_colour"])
 
-            # A fresh one will be created if there is nothing to load
+            # A fresh one will be created if there is nothing to load.
             env: VWEnvironment = self.__load_env()
 
             self.__show_appropriate_window(env=env)

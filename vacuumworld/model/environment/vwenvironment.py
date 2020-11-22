@@ -57,14 +57,14 @@ class VWEnvironment(Environment):
     def validate_actions(self, actions: List[Action]) -> None:
         ignore(self)
 
-        n: int = self.__config["max_number_of_actions_per_agent_per_cycle"]
+        n: int = self.__config["max_number_of_actions_per_actor_per_cycle"]
 
         if len(actions) > n:
-            raise VWActionAttemptException("Too many actions were attempted. There is a hard limit of 1 physical action, and 1 communicative action per agent per cycle.")
+            raise VWActionAttemptException("Too many actions were attempted. There is a hard limit of 1 physical action, and 1 communicative action per actor per cycle.")
         elif len(actions) == n and isinstance(actions[0], VWPhysicalAction) and isinstance(actions[1], VWPhysicalAction):
-            raise VWActionAttemptException("Too many physical actions were attempted. There is a hard limit of 1 physical action, and 1 communicative action per agent per cycle.")
+            raise VWActionAttemptException("Too many physical actions were attempted. There is a hard limit of 1 physical action, and 1 communicative action per actor per cycle.")
         elif len(actions) == n and isinstance(actions[0], VWCommunicativeAction) and isinstance(actions[1], VWCommunicativeAction):
-            raise VWActionAttemptException("Too many communicative actions were attempted. There is a hard limit of 1 physical action, and 1 communicative action per agent per cycle.")
+            raise VWActionAttemptException("Too many communicative actions were attempted. There is a hard limit of 1 physical action, and 1 communicative action per actor per cycle.")
         
         for action in actions:
             if not isinstance(action, VWPhysicalAction) and not isinstance(action, VWCommunicativeAction):
