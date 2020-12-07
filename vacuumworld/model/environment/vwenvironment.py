@@ -5,6 +5,7 @@ from itertools import product
 from math import floor, sqrt
 
 from pystarworldsturbo.common.action import Action
+from pystarworldsturbo.common.action_outcome import ActionOutcome
 from pystarworldsturbo.common.action_result import ActionResult
 from pystarworldsturbo.environment.environment import Environment
 from pystarworldsturbo.environment.physics.action_executor import ActionExecutor
@@ -74,8 +75,18 @@ class VWEnvironment(Environment):
         return VWExecutorFactory.get_executor_for(action=action)
 
     def evolve(self) -> None:
-        self.execute_cycle_actions()
+        if self.__cycle == 0:
+            self.__force_initial_perception_to_actors() # For back compatibility with 4.1.8.
+        else:
+            self.execute_cycle_actions()
+        
         self.__cycle += 1
+
+    def __force_initial_perception_to_actors(self) -> None:
+        for actor_id in self.get_actors():
+            observation: Observation = self.generate_perception_for_actor(actor_id=actor_id, action_result=ActionResult(outcome=ActionOutcome.impossible))
+            
+            self.send_perception_to_actor(perception=observation, actor_id=actor_id)
 
     def get_ambient(self) -> VWAmbient:
         return super(VWEnvironment, self).get_ambient()

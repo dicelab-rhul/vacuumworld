@@ -21,7 +21,7 @@ class VWActorAppearance(ActorAppearance):
 
         self.__create_quick_api()
 
-    # For back compatibility with 4.1.8
+    # For back compatibility with 4.1.8.
     def __create_quick_api(self) -> None:
         self.id: str = self.get_id()
         self.progressive_id: str = self.get_progressive_id()
