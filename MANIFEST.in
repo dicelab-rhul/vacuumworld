@@ -1,3 +1,7 @@
+# Include the config files
+include vacuumworld/config.json
+include vacuumworld/res/buttons.json
+
 # Include the relevant images
 include vacuumworld/res/*.png
 include vacuumworld/res/locations/agent/*.png

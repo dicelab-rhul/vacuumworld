@@ -39,6 +39,12 @@ class VWMind(Mind):
         assert hasattr(self.__surrogate, "revise")
         assert callable(getattr(self.__surrogate, "revise"))
 
+        if not observation:
+            observation = Observation.create_empty_observation()
+
+        if not messages:
+            messages = []
+
         self.__surrogate.revise(observation=observation, messages=messages)
 
     def decide(self) -> None:

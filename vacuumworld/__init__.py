@@ -1,23 +1,29 @@
 from signal import signal, SIGTSTP, SIG_IGN
 from json import load
 from screeninfo import get_monitors
-from typing import Tuple
+from typing import List, Tuple
 
 from .model.actor.actor_mind_surrogate import ActorMindSurrogate
 from .model.actor.user_mind_surrogate import UserMindSurrogate
 from .model.actor.user_difficulty import UserDifficulty
 from .common.colour import Colour
 from .gui.gui import VWGUI
+from . import vwc # For back compatibility with 4.1.8
 
 import os
 
 
 
-CONFIG_FILE_PATH: str = "config.json"
+# For back compatibility with 4.1.8
+__all__: List[str] = ["vwc"]
 
 
 
-def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, **kwargs) -> None:
+CONFIG_FILE_PATH: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
+
+
+
+def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, **kwargs) -> None:   
     if hasattr(signal, "SIGTSTP"): # To exclude Windows and every OS without SIGTSTP.
         signal(SIGTSTP, SIG_IGN)
 
@@ -56,7 +62,7 @@ def __load_config() -> dict:
     else:
         config["scale"] = config["x_scale"]
 
-    top_directory_path: str = os.path.join(os.getcwd(), config["top_directory_name"])
+    top_directory_path: str = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), config["top_directory_name"])
     config["button_data_path"] = os.path.join(top_directory_path, config["res_directory_name"])
     config["location_agent_images_path"] = os.path.join(top_directory_path, config["res_directory_name"], config["locations_directory_name"], config["agent_images_directory_name"])
     config["location_dirt_images_path"] = os.path.join(top_directory_path, config["res_directory_name"], config["locations_directory_name"], config["dirt_images_directory_name"])
