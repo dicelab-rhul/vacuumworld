@@ -4,8 +4,7 @@ from webbrowser import open_new_tab
 from typing import Dict
 from threading import Thread
 from json import load
-
-from pystarworldsturbo.utils.utils import ignore
+from traceback import print_exc
 
 from .components.autocomplete import AutocompleteEntry
 from .components.frames.initial_window import VWInitialWindow
@@ -48,8 +47,8 @@ class VWGUI(Thread):
             self.__override_default_config(skip=skip, play=play, speed=speed, file_to_load=load, scale=scale, tooltips=tooltips)
             self.__scale_config_parameters()
             self.__button_data = self.__load_button_data()
-        except Exception as e:
-            self.__clean_exit(exc=e)
+        except Exception:
+            self.__clean_exit()
 
     @staticmethod
     def __validate_arguments(play: bool, speed: float, file_to_load: str, scale: str) -> None:
@@ -136,7 +135,7 @@ class VWGUI(Thread):
         self.__center_and_adapt_to_resolution()
 
     def __show_simulation_window(self, env: VWEnvironment) -> None:
-        self.__simulation_window: VWSimulationWindow = VWSimulationWindow(parent=self.__root, config=self.__config, buttons=self.__button_data, minds=self.__minds, env=env, _guide=self.__guide, _save=self.__save, _load=self.__load, _finish=self.__finish, _error=self.__clean_exit)
+        self.__simulation_window: VWSimulationWindow = VWSimulationWindow(parent=self.__root, config=self.__config, buttons=self.__button_data, minds=self.__minds, env=env, _guide=self.__guide, _save=self.__save, _load=self.__load, _error=self.__clean_exit)
 
         self.__simulation_window.pack()
         self.__center_and_adapt_to_resolution()
@@ -150,13 +149,9 @@ class VWGUI(Thread):
         if self.__config["play"]:
             self.__simulation_window.play()
 
-    def __clean_exit(self, *args, **kwargs) -> None:
-        ignore(args)
-        ignore(kwargs)
+    def __clean_exit(self) -> None:
+        print_exc()
 
-        self.__finish()
-
-    def finish(self) -> None:
         self.__finish()
 
     def __finish(self) -> None:

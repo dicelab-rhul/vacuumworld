@@ -37,7 +37,7 @@ class VWInitialWindow(Frame):
 
         self.__button_frame.pack()
 
-        # Note: pack() needs to be called by the caller.
+        # Note: pack() for VWInitialWindow needs to be called by the caller.
     
     def get_image(self) -> Img:
         return self.__image

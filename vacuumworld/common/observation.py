@@ -1,5 +1,7 @@
+from __future__ import annotations
 from typing import Dict, Iterable, List
 
+from pystarworldsturbo.common.action_outcome import ActionOutcome
 from pystarworldsturbo.common.perception import Perception
 from pystarworldsturbo.common.action_result import ActionResult
 
@@ -22,6 +24,7 @@ class Observation(Perception):
 
         self.__create_quick_api()
 
+    # For back compatibility with 4.1.8
     def __create_quick_api(self) -> None:
         self.center: VWLocation = self.get_center()
         self.forward: VWLocation = self.get_forward()
@@ -68,6 +71,10 @@ class Observation(Perception):
             return self.__locations[PositionNames.forwardright]
         else:
             return None
+
+    @staticmethod
+    def create_empty_observation() -> Observation:
+        return Observation(action_result=ActionResult(outcome=ActionOutcome.impossible), locations_dict={})
 
     def __iter__(self) -> Iterable:
         return self.__locations.values()
