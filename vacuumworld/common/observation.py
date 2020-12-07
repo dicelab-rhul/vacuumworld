@@ -24,7 +24,7 @@ class Observation(Perception):
 
         self.__create_quick_api()
 
-    # For back compatibility with 4.1.8
+    # For back compatibility with 4.1.8.
     def __create_quick_api(self) -> None:
         self.center: VWLocation = self.get_center()
         self.forward: VWLocation = self.get_forward()
@@ -77,7 +77,8 @@ class Observation(Perception):
         return Observation(action_result=ActionResult(outcome=ActionOutcome.impossible), locations_dict={})
 
     def __iter__(self) -> Iterable:
-        return self.__locations.values()
+        for location in self.__locations.values():
+            yield location
 
     def __str__(self) -> str:
         return "Action outcome: {}. Perceived locations: {}".format(self.__action_result.get_outcome(), self.__format_perceived_locations())

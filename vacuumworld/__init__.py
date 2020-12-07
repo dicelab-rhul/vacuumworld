@@ -8,13 +8,13 @@ from .model.actor.user_mind_surrogate import UserMindSurrogate
 from .model.actor.user_difficulty import UserDifficulty
 from .common.colour import Colour
 from .gui.gui import VWGUI
-from . import vwc # For back compatibility with 4.1.8
+from . import vwc # For back compatibility with 4.1.8.
 
 import os
 
 
 
-# For back compatibility with 4.1.8
+# For back compatibility with 4.1.8.
 __all__: List[str] = ["vwc"]
 
 

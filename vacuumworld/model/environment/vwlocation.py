@@ -20,7 +20,7 @@ class VWLocation(LocationAppearance):
 
         self.__create_quick_api()
 
-    # For back compatibility with 4.1.8
+    # For back compatibility with 4.1.8.
     def __create_quick_api(self) -> None:
         self.coordinate: Coord = self.__coord
         self.actor: VWActorAppearance = self.__actor_appearance

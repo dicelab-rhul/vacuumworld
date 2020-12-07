@@ -1,10 +1,11 @@
-from typing import Iterable, Tuple, Union
+from typing import Iterable, List, Tuple, Union
 
 from pystarworldsturbo.elements.mind import Mind
 from pystarworldsturbo.common.message import BccMessage
 
 from .actor_mind_surrogate import ActorMindSurrogate
 from ..actions.vwactions import VWAction
+from ..actions.idle_action import VWIdleAction
 from ...common.observation import Observation
 
 
@@ -38,7 +39,7 @@ class VWMind(Mind):
     def revise(self, observation: Observation, messages: Iterable[BccMessage]) -> None:
         assert hasattr(self.__surrogate, "revise")
         assert callable(getattr(self.__surrogate, "revise"))
-
+        
         if not observation:
             observation = Observation.create_empty_observation()
 
@@ -53,14 +54,28 @@ class VWMind(Mind):
 
         actions: Union[VWAction, Tuple[VWAction]] = self.__surrogate.decide()
 
-        if type(actions) == tuple:
-            for action in actions:
-                assert isinstance(action, VWAction)
-
-            self.__next_actions = actions
+        if actions is None:
+            self.__next_actions = (VWIdleAction(),) # For safety and back compatibility with 4.1.8.
+        elif type(actions) == tuple:
+            self.__store_actions_for_next_cycle(actions=actions)
         else:
             assert isinstance(actions, VWAction)
             self.__next_actions = (actions,)
 
+    def __store_actions_for_next_cycle(self, actions: Tuple[VWAction]) -> None:
+        sanitised_actions: List[VWAction] = []
+
+        for action in actions:
+            if action is None:
+                sanitised_actions.append(VWIdleAction()) # For safety and back compatibility with 4.1.8.
+            else:
+                assert isinstance(action, VWAction)
+                sanitised_actions.append(action)
+
+        self.__next_actions = tuple(sanitised_actions)
+
     def execute(self) -> Tuple[VWAction]:
+        assert len(self.__next_actions) > 0
+        
+
         return self.__next_actions
