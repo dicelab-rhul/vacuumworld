@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 # All the metadata that are expected to be reused should go here.
 
 name: str = "vacuumworld"
-version: str = "4.1.9"
+version: str = "4.2.0"
 description: str = "VacuumWorld: an agent platform for cleaning robots."
 author: list = ["Benedict Wilkins", "Nausheen Saba", "Emanuele Uliana", "Joel Clarke"]
 author_email: str = "brjw@hotmail.co.uk"
