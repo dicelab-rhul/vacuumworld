@@ -18,9 +18,9 @@ class CanvasDragManager():
         self.__canvas.tag_bind(item, "<B1-Motion>", self.on_drag)
         self.__canvas.tag_bind(item, "<ButtonRelease-1>", self.on_drop)
 
-        self.__key: tuple = key
-        self.__drag_image: Image
-        self.__drag: Image
+        self.__key: Tuple[str, str] = key
+        self.__drag_image: Image = None
+        self.__drag: Image = None
         self.__dragging: bool = False
 
     def on_start(self, event: Event) -> None:

@@ -49,7 +49,7 @@ class Slider(Canvas):
         x: int = event.x     
         if x > 0 and x < width:
             if self.__increments:
-                inc = int(width / self.__increments)
+                inc: int = int(width / self.__increments)
                 self.__inc = int(x / inc) 
                 x = self.__inc * inc
 

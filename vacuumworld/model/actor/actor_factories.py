@@ -17,6 +17,7 @@ class VWCleaningAgentsFactory():
     def create_cleaning_agent(colour: Colour, orientation: Orientation, mind_surrogate: ActorMindSurrogate) -> Tuple[VWCleaningAgent, VWActorAppearance]:
         try:
             assert Colour != Colour.user
+            assert isinstance(mind_surrogate, ActorMindSurrogate) and not isinstance(mind_surrogate, UserMindSurrogate)
 
             agent: VWCleaningAgent = VWCleaningAgent(mind=VWMind(surrogate=mind_surrogate))
             agent_appearance: VWActorAppearance = VWActorAppearance(actor_id=agent.get_id(), progressive_id=agent.get_progressive_id(), colour=colour, orientation=orientation)
@@ -97,6 +98,6 @@ class VWActorsFactory():
             
             return VWUsersFactory.create_user(difficulty_level=difficulty_level, orientation=orientation)
         else:
-            assert type(mind_surrogate) != UserMindSurrogate
+            assert isinstance(mind_surrogate, ActorMindSurrogate) and not isinstance(mind_surrogate, UserMindSurrogate)
 
             return VWCleaningAgentsFactory.create_cleaning_agent(colour=colour, orientation=orientation, mind_surrogate=mind_surrogate)

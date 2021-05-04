@@ -23,13 +23,6 @@ class VWButton():
 
     def pack(self, side: str) -> None:
         self.__button.pack(side=side)
-        
-    def grid(self, row: int, col: int) -> None:
-        self.__button.grid(row=row,column=col)
-        
-    def destroy(self) -> None:
-        self.__button.destroy()
-        self.__img.destroy()
 
     def get_button(self) -> Button:
         return self.__button
