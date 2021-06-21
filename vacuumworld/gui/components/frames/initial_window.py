@@ -1,6 +1,7 @@
 from tkinter import Tk, Frame, Canvas, Image as Img
 from typing import Callable, Dict
-from PIL import ImageTk, Image
+from PIL import Image
+from PIL.ImageTk import PhotoImage
 
 from ..buttons.vwbutton import VWButton
 from ....model.environment.vwenvironment import VWEnvironment
@@ -23,7 +24,7 @@ class VWInitialWindow(Frame):
         self.configure(background=self.__config["bg_colour"])
         self.__canvas: Canvas = Canvas(self, width = self.__config["grid_size"] + 1, height = self.__config["grid_size"] + 1, bd=0, highlightthickness=0)
 
-        self.__img_tk: ImageTk.PhotoImage = ImageTk.PhotoImage(Image.open(self.__config["main_menu_image_path"]).resize((int(self.__config["grid_size"]), int(self.__config["grid_size"])), Image.BICUBIC))
+        self.__img_tk: PhotoImage = PhotoImage(Image.open(self.__config["main_menu_image_path"]).resize((int(self.__config["grid_size"]), int(self.__config["grid_size"])), Image.BICUBIC))
         self.__image: Img = self.__canvas.create_image(self.__config["grid_size"]/2,self.__config["grid_size"]/2,image=self.__img_tk)
         
         self.__button_frame: Frame = Frame(self)

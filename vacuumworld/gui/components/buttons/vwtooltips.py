@@ -12,7 +12,7 @@ class ToolTip():
         self.__text: str = text
 
         if not self.__already_init:
-            self.__tipwindow = None
+            self.__tipwindow: Toplevel = None
             self.__already_init = True
 
         if self.__tipwindow or not self.__text:

@@ -1,6 +1,7 @@
 from tkinter import Event, Tk, Frame, Canvas, Label, StringVar, W, E, X, Image as Img
 from typing import Callable, Dict, List, Tuple
-from PIL import ImageTk, Image
+from PIL import Image
+from PIL.ImageTk import PhotoImage
 from collections import OrderedDict
 
 from ..autocomplete import AutocompleteEntry
@@ -51,8 +52,8 @@ class VWSimulationWindow(Frame):
         self.__canvas_dirts: Dict[Coord, Img] = {}
         self.__canvas_agents: Dict[Coord, Img] = {}
         self.__all_images: Dict[Tuple[str, str], Img] = {} # Will store all PIL images.
-        self.__all_images_tk: Dict[Tuple[str, str], ImageTk.PhotoImage] = {} # Will store all tk images.
-        self.__all_images_tk_scaled: Dict[Tuple[str, str], ImageTk.PhotoImage] = {} # Will store all tk images scale to fit grid.
+        self.__all_images_tk: Dict[Tuple[str, str], PhotoImage] = {} # Will store all tk images.
+        self.__all_images_tk_scaled: Dict[Tuple[str, str], PhotoImage] = {} # Will store all tk images scaled to fit grid.
         self.__grid_lines: list = [] # Will store line objects.
 
         self.__create_and_display()
@@ -282,7 +283,7 @@ class VWSimulationWindow(Frame):
             new_orientation: Orientation =  working_location.get_actor_appearance().get_orientation().get(direction=direction)
             actor_colour: Colour = working_location.get_actor_appearance().get_colour()
             inc: int = self.__config["grid_size"] / self.__env.get_ambient().get_grid_dim()
-            tk_img: ImageTk.PhotoImage = self.__all_images_tk_scaled[(actor_colour.value, new_orientation.value)]
+            tk_img: PhotoImage = self.__all_images_tk_scaled[(actor_colour.value, new_orientation.value)]
             item: Img = self.__canvas.create_image(self.__selected.x * inc + inc/2, self.__selected.y * inc + inc/2, image=tk_img)
             self.__canvas_agents[self.__selected] = item
             
@@ -345,7 +346,7 @@ class VWSimulationWindow(Frame):
             if location:
                 if location.has_actor():
                     actor_appearance: VWActorAppearance = location.get_actor_appearance()
-                    tk_img: ImageTk.PhotoImage = self.__all_images_tk_scaled[(actor_appearance.get_colour().value, actor_appearance.get_orientation().value)]
+                    tk_img: PhotoImage = self.__all_images_tk_scaled[(actor_appearance.get_colour().value, actor_appearance.get_orientation().value)]
                     item: Img = self.__canvas.create_image(coord.x * inc + inc/2, coord.y * inc + inc/2, image=tk_img)
                     self.__canvas_agents[coord] = item
                     self.__canvas.tag_lower(item) # Keep the agent behind the grid lines.
@@ -354,7 +355,7 @@ class VWSimulationWindow(Frame):
                         self.__canvas.tag_lower(self.__canvas_dirts[coord])
 
                 if location.has_dirt():
-                    tk_img: ImageTk.PhotoImage = self.__all_images_tk_scaled[(location.get_dirt_appearance().get_colour().value, "dirt")]
+                    tk_img: PhotoImage = self.__all_images_tk_scaled[(location.get_dirt_appearance().get_colour().value, "dirt")]
                     item: Img = self.__canvas.create_image(coord.x * inc + inc/2, coord.y * inc + inc/2, image=tk_img)
                     self.__canvas_dirts[coord] = item
                     
@@ -392,7 +393,7 @@ class VWSimulationWindow(Frame):
 
             for img_name, img in images.items():
                 img_key: Tuple[str, str] = VWSimulationWindow.__get_image_key(img_name)
-                tk_img: ImageTk.PhotoImage = ImageTk.PhotoImage(img)
+                tk_img: PhotoImage = PhotoImage(img)
                 self.__all_images[img_key] = img
                 self.__all_images_tk[img_key] = tk_img
 
@@ -404,7 +405,7 @@ class VWSimulationWindow(Frame):
             file: str = os.path.join(self.__config["location_dirt_images_path"], name) +  ".png"
             img: Img = VWSimulationWindow.__scale(Image.open(file), self.__config["location_size"])
             img_key: Tuple[str, str] = VWSimulationWindow.__get_image_key(name)
-            tk_img: ImageTk.PhotoImage = ImageTk.PhotoImage(img)
+            tk_img: PhotoImage = PhotoImage(img)
             self.__all_images[img_key] = img
             self.__all_images_tk[img_key] = tk_img
 
@@ -420,7 +421,7 @@ class VWSimulationWindow(Frame):
     def __scaled_tk(self) -> None:
         size: int = min(self.__config["location_size"], self.__config["grid_size"]  / self.__env.get_ambient().get_grid_dim())
         for name, image in self.__all_images.items():
-            self.__all_images_tk_scaled[name] = ImageTk.PhotoImage(VWSimulationWindow.__scale(image, size))
+            self.__all_images_tk_scaled[name] = PhotoImage(VWSimulationWindow.__scale(image, size))
 
     @staticmethod
     def __scale(img: Img, lsize: int) -> Img:

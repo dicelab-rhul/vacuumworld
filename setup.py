@@ -12,7 +12,6 @@ author_email: str = "brjw@hotmail.co.uk"
 license: str = "GNU3"
 classifiers: list = [
       "Programming Language :: Python :: 3",
-      "Programming Language :: Python :: 3.7",
       "Programming Language :: Python :: 3.8",
       "Programming Language :: Python :: 3.9",
       "Programming Language :: Python :: 3 :: Only",
@@ -23,7 +22,7 @@ classifiers: list = [
 url: str = "https://github.com/dicelab-rhul/vacuumworld"
 wiki: str = url + "/wiki"
 issues: str = url + "/issues"
-dependencies: list = ["pystarworldsturbo", "pillow", "wheel", "ipython", "screeninfo"]
+dependencies: list = ["pystarworldsturbo>=1.0.3", "pillow", "wheel", "ipython", "screeninfo"]
 
 # End of metadata
 
