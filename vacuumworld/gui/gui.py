@@ -2,7 +2,7 @@ from tkinter import Tk
 from inspect import getsourcefile
 from webbrowser import open_new_tab
 from typing import Dict
-#from threading import Thread
+from threading import Thread
 from json import load
 from traceback import print_exc
 
@@ -19,8 +19,7 @@ import os
 
 
 
-#class VWGUI(Thread):
-class VWGUI():
+class VWGUI(Thread):
     def __init__(self, config: dict) -> None:
         super(VWGUI, self).__init__()
 
@@ -33,9 +32,6 @@ class VWGUI():
         self.__save_state_manager: SaveStateManager = SaveStateManager()
         self.__already_centered: bool = False
         self.__forceful_stop: bool = False
-
-    def start(self) -> None:
-        self.run()
 
     def kill(self) -> None:
         self.__forceful_stop = True
