@@ -38,13 +38,13 @@ def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, *
     try:
         vwgui.init_gui_conf(minds={Colour.white: white_mind, Colour.green: green_mind, Colour.orange: orange_mind, Colour.user: user_mind}, **kwargs)
         vwgui.start()
-        vwgui.join()
+        #vwgui.join()
     except KeyboardInterrupt:
         print("Received a SIGINT (possibly via CTRL+C). Stopping...")
         vwgui.kill()
-        vwgui.join()
-    except Exception:
-        print("here")
+        #vwgui.join()
+    except Exception as e:
+        print("Unmanaged exception: {}. Bye!".format(e))
 
 
 def __load_config() -> dict:
