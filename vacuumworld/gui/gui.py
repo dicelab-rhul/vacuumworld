@@ -2,8 +2,10 @@ from tkinter import Tk
 from inspect import getsourcefile
 from webbrowser import open_new_tab
 from typing import Dict
-from threading import Thread
+from multiprocessing import Process, Event
+from multiprocessing.synchronize import Event as EventType
 from json import load
+from signal import signal, SIGINT, SIGTSTP, SIG_IGN
 from traceback import print_exc
 
 from .components.autocomplete import AutocompleteEntry
@@ -19,7 +21,7 @@ import os
 
 
 
-class VWGUI(Thread):
+class VWGUI(Process):
     def __init__(self, config: dict) -> None:
         super(VWGUI, self).__init__()
 
@@ -32,6 +34,10 @@ class VWGUI(Thread):
         self.__save_state_manager: SaveStateManager = SaveStateManager()
         self.__already_centered: bool = False
         self.__forceful_stop: bool = False
+        self.__exit: EventType = Event()
+
+    def propagate_stop_signal(self) -> None:
+        self.__exit.set()
 
     def kill(self) -> None:
         self.__forceful_stop = True
@@ -89,6 +95,11 @@ class VWGUI(Thread):
 
     def run(self) -> None:
         try:
+            signal(SIGINT, SIG_IGN)
+
+            if hasattr(signal, "SIGTSTP"): # To exclude Windows and every OS without SIGTSTP.
+                signal(SIGTSTP, SIG_IGN)
+            
             self.__root: Tk = Tk()
             self.__root.title("VacuumWorld v{}".format(self.__config["version_number"]))
             self.__root.protocol("WM_DELETE_WINDOW", self.kill)
@@ -103,7 +114,7 @@ class VWGUI(Thread):
             self.__clean_exit()
 
     def __loop(self) -> None:
-        while True:
+        while not self.__exit.is_set():
             if self.__forceful_stop:
                 break
             else:
