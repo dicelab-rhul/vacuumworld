@@ -588,6 +588,7 @@ class VWSimulationWindow(Frame):
         self.__pack_buttons("stop", "pause", "fast")
         self.__show_hide_side("hidden")
         self.__deselect()
+        self.redraw()
 
         self.__running = True
 
@@ -622,11 +623,13 @@ class VWSimulationWindow(Frame):
         self.__running = False
         self.__pack_buttons("play", "reset", "fast", "difficulty", "guide_bis", "save", "load")
         self.__show_hide_side("normal")
+        self.redraw()
 
     def __resume(self) -> None:
         print("INFO: resume")
 
         self.__pack_buttons("stop", "pause", "fast")
+        self.redraw()
         
         self.__running = True
         
@@ -641,6 +644,8 @@ class VWSimulationWindow(Frame):
 
         self.__reset_time_step()
         self.__pack_buttons("stop", "resume", "fast", "guide_bis")
+        self.redraw()
+        
         self.__running = False
 
     def __fast(self) -> None:
