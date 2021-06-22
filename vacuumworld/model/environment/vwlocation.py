@@ -61,6 +61,9 @@ class VWLocation(LocationAppearance):
     def has_user(self) -> bool:
         return self.__actor_appearance is not None and self.__actor_appearance.get_colour() == Colour.user
 
+    def is_empty(self) -> bool:
+        return not self.has_actor() and not self.has_dirt()
+
     def get_dirt_appearance(self) -> VWDirtAppearance:
         return self.__dirt_appearance
 
@@ -128,3 +131,17 @@ class VWLocation(LocationAppearance):
             result = prime * result + 0
 
         return result
+
+    def visualise(self) -> str:
+        s: str = "#######\n#{}#\n".format(str(self.__coord).replace(" ", ""))
+
+        if self.is_empty():
+            s += "#     #\n"
+        elif not self.has_actor() and self.has_dirt():
+            s += "#  " + str(self.__dirt_appearance.get_colour())[0] + "  #\n"
+        elif not self.has_dirt():
+            s += "#  " + str(self.__actor_appearance.get_colour())[0].upper() + "  #\n"
+        else:
+            s += "# " + str(self.__actor_appearance.get_colour())[0].upper() + "+" + str(self.__dirt_appearance.get_colour())[0] + " #\n"
+
+        return s + "#######"

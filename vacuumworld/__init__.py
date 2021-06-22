@@ -8,6 +8,7 @@ from .model.actor.user_mind_surrogate import UserMindSurrogate
 from .model.actor.user_difficulty import UserDifficulty
 from .common.colour import Colour
 from .gui.gui import VWGUI
+from .guiless import VWGuilessRunner
 from . import vwc # For back compatibility with 4.1.8.
 
 import os
@@ -33,6 +34,21 @@ def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, *
 
     user_mind: UserMindSurrogate = UserMindSurrogate(difficulty_level=UserDifficulty(config["default_user_mind_level"]))
 
+    if "gui" in kwargs and not kwargs.get("gui"):
+        __run_guiless(config=config, white_mind=white_mind, green_mind=green_mind, orange_mind=orange_mind, user_mind=user_mind, **kwargs)
+    else:
+        __run_with_gui(config=config, white_mind=white_mind, green_mind=green_mind, orange_mind=orange_mind, user_mind=user_mind, **kwargs)
+
+
+def __run_guiless(config: dict, white_mind: ActorMindSurrogate, green_mind: ActorMindSurrogate, orange_mind: ActorMindSurrogate, user_mind: UserMindSurrogate, **kwargs) -> None:
+    if not "load" in kwargs or not kwargs.get("load"):
+        print("VacuumWorld cannot run GUI-less if no savestate file is provided.")
+    else:
+        print("RunningGUI-less...")
+        vw_runner: VWGuilessRunner = VWGuilessRunner(config=config, minds={Colour.white: white_mind, Colour.green: green_mind, Colour.orange: orange_mind, Colour.user: user_mind}, load=kwargs.get("load"))
+        vw_runner.start()
+
+def __run_with_gui(config: dict, white_mind: ActorMindSurrogate, green_mind: ActorMindSurrogate, orange_mind: ActorMindSurrogate, user_mind: UserMindSurrogate, **kwargs) -> None:
     vwgui: VWGUI = VWGUI(config=config)
 
     try:
