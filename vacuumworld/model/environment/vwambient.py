@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List
 from math import floor, sqrt
 
 from pystarworldsturbo.environment.ambient import Ambient
@@ -98,3 +98,43 @@ class VWAmbient(Ambient):
             locations_dict[PositionNames.forwardright] = self.__grid[forwardright_coord]
 
         return Observation(action_result=action_result, locations_dict=locations_dict)
+
+    def __str__(self) -> str:
+        grid_dim: int = self.get_grid_dim()
+        locations_list: List[str] = []
+
+        for i in range(grid_dim):
+            for j in range(grid_dim):
+                c: Coord = Coord(x=j, y=i)
+                locations_list.append(self.__grid[c].visualise())
+
+        partial_representation: str = self.__compactify(grid_dim=grid_dim, locations_list=locations_list)
+
+        return self.__streamline(grid_dim=grid_dim, partial_representation=partial_representation)
+
+    @staticmethod
+    def __compactify(grid_dim: int, locations_list: List[str]) -> str:
+        partial_representation: str = ""
+
+        for _ in range(grid_dim):
+            tmp: List[str] = locations_list[:grid_dim]
+
+            for i in range(4):
+                for location in tmp:
+                    partial_representation += location.split("\n")[i]
+                partial_representation += "\n"
+
+            if len(locations_list) > grid_dim:
+                locations_list = locations_list[grid_dim:]
+        
+        return partial_representation
+
+    @staticmethod
+    def __streamline(grid_dim: int, partial_representation: str) -> str:
+        p1_new: str = ("#######" * grid_dim) + "\n"
+        p1: str = p1_new * 2
+
+        p2: str = p1_new
+        p2_new: str = p2[grid_dim - 1:]
+
+        return partial_representation.replace(p1, p1_new[grid_dim - 1:]).replace(p2, p2_new).replace("## ", "# ").replace(" ##", " #").replace("##(", "#(").replace(")##", ")#")

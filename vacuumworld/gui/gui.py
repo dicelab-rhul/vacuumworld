@@ -42,7 +42,7 @@ class VWGUI(Process):
     def kill(self) -> None:
         self.__forceful_stop = True
 
-    def init_gui_conf(self, minds: Dict[Colour, ActorMindSurrogate], skip: bool=False, play: bool=False, speed: float=0.0, load: str=None, scale: float=0.0, tooltips: bool=True) -> None:
+    def init_gui_conf(self, minds: Dict[Colour, ActorMindSurrogate], skip: bool=False, play: bool=False, speed: float=0.0, load: str=None, scale: float=0.0, tooltips: bool=True, **_) -> None:
         try:
             assert minds
 

@@ -253,3 +253,6 @@ class VWEnvironment(Environment):
         if candidate_grid_line_dim != -1:
             assert candidate_grid_line_dim >= config["min_environment_dim"] and candidate_grid_line_dim <= config["max_environment_dim"]
             assert candidate_grid_line_dim == grid_line_dim
+
+    def __str__(self) -> str:
+        return str(self.get_ambient())
