@@ -1,4 +1,3 @@
-from signal import SIGINT, SIG_IGN
 from tkinter import Tk
 from inspect import getsourcefile
 from webbrowser import open_new_tab
@@ -6,7 +5,7 @@ from typing import Dict
 from multiprocessing import Process, Event
 from multiprocessing.synchronize import Event as EventType
 from json import load
-from signal import signal, SIGINT, SIG_IGN
+from signal import signal, SIGINT, SIGTSTP, SIG_IGN
 from traceback import print_exc
 
 from .components.autocomplete import AutocompleteEntry
@@ -97,6 +96,9 @@ class VWGUI(Process):
     def run(self) -> None:
         try:
             signal(SIGINT, SIG_IGN)
+
+            if hasattr(signal, "SIGTSTP"): # To exclude Windows and every OS without SIGTSTP.
+                signal(SIGTSTP, SIG_IGN)
             
             self.__root: Tk = Tk()
             self.__root.title("VacuumWorld v{}".format(self.__config["version_number"]))
