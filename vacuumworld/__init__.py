@@ -41,7 +41,7 @@ def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, *
         vwgui.join()
     except KeyboardInterrupt:
         print("Received a SIGINT (possibly via CTRL+C). Stopping...")
-        vwgui.kill()
+        vwgui.propagate_stop_signal()
         vwgui.join()
     except Exception as e:
         print("Fatal error: {}. Bye".format(e))
