@@ -1,7 +1,7 @@
 from signal import signal, SIGTSTP, SIG_IGN
 from json import load
 from screeninfo import get_monitors
-from typing import Tuple
+from typing import List, Tuple
 
 from .model.actor.actor_mind_surrogate import ActorMindSurrogate
 from .model.actor.user_mind_surrogate import UserMindSurrogate
@@ -9,6 +9,15 @@ from .model.actor.user_difficulty import UserDifficulty
 from .common.colour import Colour
 from .gui.gui import VWGUI
 from .guiless import VWGuilessRunner
+
+
+import vacuumworld.common
+import vacuumworld.gui
+import vacuumworld.model
+import vacuumworld.res
+
+__all__: List[str] = [vacuumworld.common, vacuumworld.gui, vacuumworld.model, vacuumworld.res]
+
 
 import os
 

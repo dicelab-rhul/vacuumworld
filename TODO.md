@@ -1,5 +1,6 @@
 # List of TODOs
 
+* File /home/cloudstrife9999/python/vacuumworld/setup.py - line 8: `version: str = "4.2.0" # TODO: merge this with the string in config.json .`
 * File /home/cloudstrife9999/python/vacuumworld/tests/test_tbd.py - line 1: `# TODO: test the saveload module.`
 * File /home/cloudstrife9999/python/vacuumworld/tests/test_tbd.py - line 2: `# TODO: test the GUI.`
 * File /home/cloudstrife9999/python/vacuumworld/tests/test_tbd.py - line 3: `# TODO: test the VWEnvironment (how?).`
