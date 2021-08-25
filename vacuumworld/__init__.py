@@ -16,12 +16,11 @@ import vacuumworld.gui
 import vacuumworld.model
 import vacuumworld.res
 
-__all__: List[str] = [vacuumworld.common, vacuumworld.gui, vacuumworld.model, vacuumworld.res]
-
-
 import os
 
 
+
+__all__: List[str] = [vacuumworld.common, vacuumworld.gui, vacuumworld.model, vacuumworld.res]
 
 CONFIG_FILE_PATH: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
 
