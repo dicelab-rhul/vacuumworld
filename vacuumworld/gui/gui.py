@@ -5,7 +5,7 @@ from typing import Dict
 from multiprocessing import Process, Event
 from multiprocessing.synchronize import Event as EventType
 from json import load
-from signal import signal, SIGINT, SIGTSTP, SIG_IGN
+from signal import signal, SIGINT, SIG_IGN
 from traceback import print_exc
 
 from .components.autocomplete import AutocompleteEntry
@@ -97,7 +97,10 @@ class VWGUI(Process):
         try:
             signal(SIGINT, SIG_IGN)
 
-            if hasattr(signal, "SIGTSTP"): # To exclude Windows and every OS without SIGTSTP.
+            # Safeguard against crashes on Windows and every other OS without SIGTSTP.
+            if hasattr(signal, "SIGTSTP"):
+                from signal import SIGTSTP
+
                 signal(SIGTSTP, SIG_IGN)
             
             self.__root: Tk = Tk()
