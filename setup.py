@@ -1,14 +1,17 @@
 from setuptools import setup, find_packages
+from json import load
+
+import os
 
 
 
-# All the metadata that are expected to be reused should go here.
+# All reusable metadata should go here.
 
 name: str = "vacuumworld"
-version: str = "4.2.0" # TODO: merge this with the string in config.json .
+version: str = "TO_OVERRIDE_PROGRAMMATICALLY"
 description: str = "VacuumWorld: an agent platform for cleaning robots."
-author: list = ["Benedict Wilkins", "Nausheen Saba", "Emanuele Uliana", "Joel Clarke"]
-author_email: str = "brjw@hotmail.co.uk"
+author: list = ["Benedict Wilkins", "Nausheen Saba", "Joel Clarke", "Emanuele Uliana"]
+author_email: str = "brjw@R.E.M.O.V.E.T.H.I.Shotmail.co.uk"
 license: str = "GNU3"
 classifiers: list = [
       "Programming Language :: Python :: 3",
@@ -24,8 +27,15 @@ wiki: str = url + "/wiki"
 issues: str = url + "/issues"
 dependencies: list = ["pystarworldsturbo>=1.0.4", "pillow", "wheel", "ipython", "screeninfo"]
 
-# End of metadata
+# End of static metadata
 
+CONFIG_FILE_PATH: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "vacuumworld", "config.json")
+
+with open(CONFIG_FILE_PATH, "r") as f:
+      config: dict = load(fp=f)
+      version = config["version_number"]
+
+# End of metadata
 
 setup(
       name=name,

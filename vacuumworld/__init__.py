@@ -1,4 +1,4 @@
-from signal import signal, SIGTSTP, SIG_IGN
+from signal import signal, SIG_IGN
 from json import load
 from screeninfo import get_monitors
 from typing import List, Tuple
@@ -16,19 +16,21 @@ import vacuumworld.gui
 import vacuumworld.model
 import vacuumworld.res
 
-__all__: List[str] = [vacuumworld.common, vacuumworld.gui, vacuumworld.model, vacuumworld.res]
-
-
 import os
 
 
+
+__all__: List[str] = [vacuumworld.common, vacuumworld.gui, vacuumworld.model, vacuumworld.res]
 
 CONFIG_FILE_PATH: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
 
 
 
 def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, **kwargs) -> None:   
-    if hasattr(signal, "SIGTSTP"): # To exclude Windows and every OS without SIGTSTP.
+    # Safeguard against crashes on Windows and every other OS without SIGTSTP.
+    if hasattr(signal, "SIGTSTP"):
+        from signal import SIGTSTP
+
         signal(SIGTSTP, SIG_IGN)
 
     white_mind, green_mind, orange_mind = __process_minds(default_mind, white_mind, green_mind, orange_mind)
