@@ -23,15 +23,15 @@ class VWLocation(LocationAppearance):
     # For back compatibility with 4.1.8.
     def __create_quick_api(self) -> None:
         self.coordinate: Coord = self.__coord
-        self.actor: VWActorAppearance = self.__actor_appearance
-        self.dirt: VWDirtAppearance = self.__dirt_appearance
+        self.actor: VWActorAppearance = self.get_actor_appearance()
+        self.dirt: VWDirtAppearance = self.get_dirt_appearance()
 
         if self.has_cleaning_agent():
-            self.agent: VWActorAppearance = self.__actor_appearance
+            self.agent: VWActorAppearance = self.get_actor_appearance()
             self.user: VWActorAppearance = None
         elif self.has_user():
             self.agent: VWActorAppearance = None
-            self.user: VWActorAppearance = self.__actor_appearance
+            self.user: VWActorAppearance = self.get_actor_appearance()
         else:
             self.agent: VWActorAppearance = None
             self.user: VWActorAppearance = None
