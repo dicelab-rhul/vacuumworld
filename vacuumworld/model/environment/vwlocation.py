@@ -18,20 +18,20 @@ class VWLocation(LocationAppearance):
         self.__actor_appearance: VWActorAppearance = actor_appearance
         self.__dirt_appearance: VWDirtAppearance = dirt_appearance
 
-        self.__create_quick_api()
+        self.__update_quick_api()
 
     # For back compatibility with 4.1.8.
-    def __create_quick_api(self) -> None:
+    def __update_quick_api(self) -> None:
         self.coordinate: Coord = self.__coord
-        self.actor: VWActorAppearance = self.get_actor_appearance()
-        self.dirt: VWDirtAppearance = self.get_dirt_appearance()
+        self.actor: VWActorAppearance = self.__actor_appearance
+        self.dirt: VWDirtAppearance = self.__dirt_appearance
 
         if self.has_cleaning_agent():
-            self.agent: VWActorAppearance = self.get_actor_appearance()
+            self.agent: VWActorAppearance = self.__actor_appearance
             self.user: VWActorAppearance = None
         elif self.has_user():
             self.agent: VWActorAppearance = None
-            self.user: VWActorAppearance = self.get_actor_appearance()
+            self.user: VWActorAppearance = self.__actor_appearance
         else:
             self.agent: VWActorAppearance = None
             self.user: VWActorAppearance = None
@@ -46,11 +46,15 @@ class VWLocation(LocationAppearance):
         assert self.__actor_appearance is not None
 
         self.__actor_appearance = None
+        
+        self.__update_quick_api()
 
     def add_actor(self, actor_appearance: VWActorAppearance) -> None:
         assert self.__actor_appearance is None
         
         self.__actor_appearance = actor_appearance
+        
+        self.__update_quick_api()
 
     def has_actor(self) -> bool:
         return self.__actor_appearance is not None
@@ -71,11 +75,15 @@ class VWLocation(LocationAppearance):
         assert self.__dirt_appearance is not None
 
         self.__dirt_appearance = None
+        
+        self.__update_quick_api()
 
     def add_dirt(self, dirt_appearance: VWDirtAppearance) -> None:
         assert self.__dirt_appearance is None
         
         self.__dirt_appearance = dirt_appearance
+        
+        self.__update_quick_api()
 
     def has_dirt(self) -> bool:
         return self.__dirt_appearance is not None
