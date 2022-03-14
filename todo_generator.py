@@ -2,6 +2,11 @@
 
 
 
+############################## IMPORTANT ##############################
+# Run this file as ./todo_generator from within its parent directory. #
+#    Otherwise, the paths will not be generated/printed correctly.    #
+#######################################################################
+
 from typing import List
 
 import os
@@ -21,7 +26,7 @@ def main() -> None:
     for dir, _, files in os.walk(os.getcwd()):
         for f in filter(lambda candidate: any(filter(lambda ext: candidate.endswith(ext), INTERESTING_FILES_EXTENSIONS)), files):
             if not f in EXCLUSION_LIST:
-                lines += look_for_todos(os.path.join(dir, f))
+                lines += __look_for_todos(os.path.join(dir, f))
 
     
     with open(TODO_FILE, "w") as f:
@@ -36,9 +41,10 @@ def main() -> None:
         f.flush()
 
 
-def look_for_todos(path: str) -> List[str]:
+def __look_for_todos(path: str) -> List[str]:
     to_add: List[str] = []
-    prefix: str = "* File {} - line ".format(path)
+    path_to_print: str = __get_relative_path(absolute_path=path)
+    prefix: str = "* File {} - line ".format(path_to_print)
     lines: List[str] = []
 
     with open(path, "r") as f:
@@ -51,6 +57,21 @@ def look_for_todos(path: str) -> List[str]:
             to_add.append(prefix + "{}: `{}`".format(line_number, lines[i].strip()))
 
     return to_add
+
+
+def __get_relative_path(absolute_path: str) -> str:
+    tokens: List[str] = absolute_path.split("/")
+    vw_top_dir: str = os.path.basename(os.getcwd())
+    
+    while tokens[0] != vw_top_dir:
+        tokens = tokens[1:]
+        
+        if len(tokens) < 2:
+            return "N/A"
+        
+    tokens = tokens[1:]
+        
+    return os.path.join(*tokens)
 
 
 if __name__ == "__main__":
