@@ -23,8 +23,6 @@ classifiers: list = [
       "Operating System :: OS Independent",
 ]
 url: str = "https://github.com/dicelab-rhul/vacuumworld"
-wiki: str = url + "/wiki"
-issues: str = url + "/issues"
 dependencies: list = ["pystarworldsturbo>=1.0.4", "pillow", "wheel", "ipython", "screeninfo"]
 
 # End of static metadata
@@ -42,8 +40,6 @@ setup(
       version=version,
       description=description,
       url=url,
-      wiki=wiki,
-      issues=issues,
       author=author,
       author_email=author_email,
       license=license,
