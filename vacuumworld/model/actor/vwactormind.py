@@ -11,12 +11,17 @@ from ...common.observation import Observation
 
 
 class VWMind(Mind):
+    PERCEIVE_METHOD_NAME: str = "perceive"
+    REVISE_METHOD_NAME: str = "revise"
+    DECIDE_METHOD_NAME: str = "decide"
+    EXECUTE_METHOD_NAME: str = "execute"
+    
     def __init__(self, surrogate: ActorMindSurrogate) -> None:
         super(VWMind, self).__init__()
 
         VWMind.__validate_surrogate(surrogate=surrogate)
 
-        # This is to prevent a bug where when the simulation is stopped and the grid is cleared, the surrogates retain the values of their attributes.
+        # This is to prevent that, when the simulation is stopped and the grid is cleared, the surrogates retain the values of their attributes.
         self.__surrogate: ActorMindSurrogate = type(surrogate)()
         del surrogate
         
@@ -30,18 +35,19 @@ class VWMind(Mind):
         if not isinstance(surrogate, ActorMindSurrogate):
             raise ValueError("Invalid surrogate mind.")
 
-        if not hasattr(surrogate, "revise") or not callable(getattr(surrogate, "revise")):
-            raise ValueError("Invalid surrogate mind: no revise() method found.")
+        if not hasattr(surrogate, VWMind.REVISE_METHOD_NAME) or not callable(getattr(surrogate, VWMind.REVISE_METHOD_NAME)):
+            raise ValueError("Invalid surrogate mind: no callable {}() method found.".format(VWMind.REVISE_METHOD_NAME))
 
-        if not hasattr(surrogate, "decide") or not callable(getattr(surrogate, "decide")):
-            raise ValueError("Invalid surrogate mind: no decide() method found.")
+        if not hasattr(surrogate, VWMind.DECIDE_METHOD_NAME) or not callable(getattr(surrogate, VWMind.DECIDE_METHOD_NAME)):
+            raise ValueError("Invalid surrogate mind: no callable {}() method found.".format(VWMind.DECIDE_METHOD_NAME))
 
     def perceive(*_) -> None:
+        # Not implemented, as the perception is initiated by the body.
         return
 
     def revise(self, observation: Observation, messages: Iterable[BccMessage]) -> None:
-        assert hasattr(self.__surrogate, "revise")
-        assert callable(getattr(self.__surrogate, "revise"))
+        assert hasattr(self.__surrogate, VWMind.REVISE_METHOD_NAME)
+        assert callable(getattr(self.__surrogate, VWMind.REVISE_METHOD_NAME))
         
         if not observation:
             observation = Observation.create_empty_observation()
@@ -52,8 +58,8 @@ class VWMind(Mind):
         self.__surrogate.revise(observation=observation, messages=messages)
 
     def decide(self) -> None:
-        assert hasattr(self.__surrogate, "decide")
-        assert callable(getattr(self.__surrogate, "decide"))
+        assert hasattr(self.__surrogate, VWMind.DECIDE_METHOD_NAME)
+        assert callable(getattr(self.__surrogate, VWMind.DECIDE_METHOD_NAME))
 
         actions: Union[VWAction, Tuple[VWAction]] = self.__surrogate.decide()
 
