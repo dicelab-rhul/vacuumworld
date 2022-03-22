@@ -31,13 +31,18 @@ def test_observation() -> None:
     r: Coord = c.right(orientation=a1.get_orientation())
     fl: Coord = c.forwardleft(orientation=a1.get_orientation())
     fr: Coord = c.forwardright(orientation=a1.get_orientation())
+    
+    # TODO: use non-trivial walls.
+    sample_wall: Dict[Orientation, bool] = {Orientation.north: False, Orientation.south: False, Orientation.west: False, Orientation.east: False}
 
-    center: VWLocation = VWLocation(coord=c, actor_appearance=a1, dirt_appearance=None)
-    left: VWLocation = VWLocation(coord=l, actor_appearance=None, dirt_appearance=None)
-    right: VWLocation = VWLocation(coord=r, actor_appearance=a2, dirt_appearance=d1)
-    forward: VWLocation = VWLocation(coord=f, actor_appearance=None, dirt_appearance=d2)
-    forwardleft: VWLocation = VWLocation(coord=fl, actor_appearance=u1, dirt_appearance=None)
-    forwardright: VWLocation = VWLocation(coord=fr, actor_appearance=u2, dirt_appearance=d3)
+    # TODO: customise the wall depending on the coordinates.
+
+    center: VWLocation = VWLocation(coord=c, actor_appearance=a1, dirt_appearance=None, wall=sample_wall)
+    left: VWLocation = VWLocation(coord=l, actor_appearance=None, dirt_appearance=None, wall=sample_wall)
+    right: VWLocation = VWLocation(coord=r, actor_appearance=a2, dirt_appearance=d1, wall=sample_wall)
+    forward: VWLocation = VWLocation(coord=f, actor_appearance=None, dirt_appearance=d2, wall=sample_wall)
+    forwardleft: VWLocation = VWLocation(coord=fl, actor_appearance=u1, dirt_appearance=None, wall=sample_wall)
+    forwardright: VWLocation = VWLocation(coord=fr, actor_appearance=u2, dirt_appearance=d3, wall=sample_wall)
 
     perceived_locations: Dict[PositionNames, VWLocation] = {
         PositionNames.center: center.deep_copy(),
@@ -81,6 +86,8 @@ def test_observation() -> None:
         assert o.get_forwardright().get_coord() == fr
         assert o.get_forwardright().get_actor_appearance() == u2
         assert o.get_forwardright().get_dirt_appearance() == d3
+        
+        # TODO: check for walls.
 
 
 def test_message() -> None:
