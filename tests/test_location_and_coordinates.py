@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from typing import Dict
 from vacuumworld.common.coordinates import Coord
 from vacuumworld.common.colour import Colour
 from vacuumworld.common.orientation import Orientation
@@ -59,13 +60,17 @@ def test_location() -> None:
     r: Coord = c.right(orientation=a1.get_orientation())
     fl: Coord = c.forwardleft(orientation=a1.get_orientation())
     fr: Coord = c.forwardright(orientation=a1.get_orientation())
+    
+    # TODO: use non-trivial walls.
+    sample_wall: Dict[Orientation, bool] = {Orientation.north: False, Orientation.south: False, Orientation.west: False, Orientation.east: False}
 
-    center: VWLocation = VWLocation(coord=c, actor_appearance=a1, dirt_appearance=None)
-    left: VWLocation = VWLocation(coord=l, actor_appearance=None, dirt_appearance=None)
-    right: VWLocation = VWLocation(coord=r, actor_appearance=a2, dirt_appearance=d1)
-    forward: VWLocation = VWLocation(coord=f, actor_appearance=None, dirt_appearance=d2)
-    forwardleft: VWLocation = VWLocation(coord=fl, actor_appearance=u1, dirt_appearance=None)
-    forwardright: VWLocation = VWLocation(coord=fr, actor_appearance=u2, dirt_appearance=d3)
+    # TODO: customise the wall depending on the coordinates.
+    center: VWLocation = VWLocation(coord=c, actor_appearance=a1, dirt_appearance=None, wall=sample_wall)
+    left: VWLocation = VWLocation(coord=l, actor_appearance=None, dirt_appearance=None, wall=sample_wall)
+    right: VWLocation = VWLocation(coord=r, actor_appearance=a2, dirt_appearance=d1, wall=sample_wall)
+    forward: VWLocation = VWLocation(coord=f, actor_appearance=None, dirt_appearance=d2, wall=sample_wall)
+    forwardleft: VWLocation = VWLocation(coord=fl, actor_appearance=u1, dirt_appearance=None, wall=sample_wall)
+    forwardright: VWLocation = VWLocation(coord=fr, actor_appearance=u2, dirt_appearance=d3, wall=sample_wall)
 
     assert center.get_coord() == c
     assert center.get_actor_appearance() == a1
@@ -90,6 +95,8 @@ def test_location() -> None:
     assert forwardright.get_coord() == fr
     assert forwardright.get_actor_appearance() == u2
     assert forwardright.get_dirt_appearance() == d3
+    
+    # TODO: check for walls.
 
 
 def test_all() -> None:

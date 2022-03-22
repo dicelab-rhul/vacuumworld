@@ -5,18 +5,20 @@ from pystarworldsturbo.environment.location_appearance import LocationAppearance
 
 from ...common.coordinates import Coord
 from ...common.colour import Colour
+from ...common.orientation import Orientation
 from ..dirt.dirt_appearance import VWDirtAppearance
 from ..actor.vwactor_appearance import VWActorAppearance
 
 
 
-class VWLocation(LocationAppearance):
-    def __init__(self, coord: Coord, actor_appearance: VWActorAppearance, dirt_appearance: VWDirtAppearance) -> None:
+class VWLocation(LocationAppearance):        
+    def __init__(self, coord: Coord, actor_appearance: VWActorAppearance, dirt_appearance: VWDirtAppearance, wall: Dict[Orientation, bool]) -> None:
         assert coord is not None
         
         self.__coord: Coord = coord
         self.__actor_appearance: VWActorAppearance = actor_appearance
         self.__dirt_appearance: VWDirtAppearance = dirt_appearance
+        self.__wall: Dict[Orientation, bool] = wall
 
         self.__update_quick_api()
 
@@ -25,6 +27,10 @@ class VWLocation(LocationAppearance):
         self.coordinate: Coord = self.__coord
         self.actor: VWActorAppearance = self.__actor_appearance
         self.dirt: VWDirtAppearance = self.__dirt_appearance
+        self.wall_on_north: bool = self.__wall[Orientation.north]
+        self.wall_on_south: bool = self.__wall[Orientation.south]
+        self.wall_on_west: bool = self.__wall[Orientation.west]
+        self.wall_on_east: bool = self.__wall[Orientation.east]
 
         if self.has_cleaning_agent():
             self.agent: VWActorAppearance = self.__actor_appearance
@@ -87,20 +93,41 @@ class VWLocation(LocationAppearance):
 
     def has_dirt(self) -> bool:
         return self.__dirt_appearance is not None
+    
+    def get_wall_info(self) -> Dict[Orientation, bool]:
+        return self.__wall
+    
+    def has_wall_on_north(self) -> bool:
+        return self.__wall[Orientation.north]
+    
+    def has_wall_on_south(self) -> bool:
+        return self.__wall[Orientation.south]
+    
+    def has_wall_on_west(self) -> bool:
+        return self.__wall[Orientation.west]
+    
+    def has_wall_on_east(self) -> bool:
+        return self.__wall[Orientation.east]
 
     def deep_copy(self) -> VWLocation:
         if not self.__actor_appearance and not self.__dirt_appearance:
-            return VWLocation(coord=self.__coord, actor_appearance=None, dirt_appearance=None)
+            return VWLocation(coord=self.__coord, actor_appearance=None, dirt_appearance=None, wall=self.__wall)
         elif self.__actor_appearance and not self.__dirt_appearance:
-            return VWLocation(coord=self.__coord, actor_appearance=self.__actor_appearance.deep_copy(), dirt_appearance=None)
+            return VWLocation(coord=self.__coord, actor_appearance=self.__actor_appearance.deep_copy(), dirt_appearance=None, wall=self.__wall)
         elif not  self.__actor_appearance and self.__dirt_appearance:
-            return VWLocation(coord=self.__coord, actor_appearance=None, dirt_appearance=self.__dirt_appearance.deep_copy())
+            return VWLocation(coord=self.__coord, actor_appearance=None, dirt_appearance=self.__dirt_appearance.deep_copy(), wall=self.__wall)
         else:
-            return VWLocation(coord=self.__coord, actor_appearance=self.__actor_appearance.deep_copy(), dirt_appearance=self.__dirt_appearance.deep_copy())
+            return VWLocation(coord=self.__coord, actor_appearance=self.__actor_appearance.deep_copy(), dirt_appearance=self.__dirt_appearance.deep_copy(), wall=self.__wall)
 
     def to_json(self) -> Dict[str, Dict[str, str | int]]:
         location: Dict[str, Dict[str, str | int]] = {
-            "coords": self.__coord.to_json()
+            "coords": self.__coord.to_json(),
+            "wall": {
+                str(Orientation.north): self.has_wall_on_north(),
+                str(Orientation.south): self.has_wall_on_south(),
+                str(Orientation.west): self.has_wall_on_west(),
+                str(Orientation.east): self.has_wall_on_east()
+            }
         }
 
         if self.has_actor():
@@ -112,7 +139,7 @@ class VWLocation(LocationAppearance):
         return location
 
     def __str__(self) -> str:
-        return "(actor: {}, dirt: {})".format(str(self.__actor_appearance), str(self.__dirt_appearance))
+        return "(actor: {}, dirt: {}, wall: {})".format(str(self.__actor_appearance), str(self.__dirt_appearance), str(self.__wall))
 
     def __eq__(self, o: object) -> bool:
         if not o or type(o) != VWLocation:
@@ -120,7 +147,7 @@ class VWLocation(LocationAppearance):
         else:
             o = cast(typ=VWLocation, val=o)
 
-            return self.__coord == o.get_coord() and self.__actor_appearance == o.get_actor_appearance() and self.__dirt_appearance == o.get_dirt_appearance()
+            return self.__coord == o.get_coord() and self.__actor_appearance == o.get_actor_appearance() and self.__dirt_appearance == o.get_dirt_appearance() and self.__wall == o.get_wall_info()
 
     def __hash__(self) -> int:
         prime: int = 31
@@ -137,9 +164,22 @@ class VWLocation(LocationAppearance):
             result = prime * result + self.__dirt_appearance.__hash__()
         else:
             result = prime * result + 0
+            
+        if self.has_wall_on_north():
+            result = prime * result + self.__wall[Orientation.north].__hash__()
+        
+        if self.has_wall_on_south():
+            result = prime * result + self.__wall[Orientation.south].__hash__()
+        
+        if self.has_wall_on_west():
+            result = prime * result + self.__wall[Orientation.west].__hash__()
+        
+        if self.has_wall_on_east():
+            result = prime * result + self.__wall[Orientation.east].__hash__()
 
         return result
 
+    # TODO: include the wall.
     def visualise(self) -> str:
         s: str = "#######\n#{}#\n".format(str(self.__coord).replace(" ", ""))
 

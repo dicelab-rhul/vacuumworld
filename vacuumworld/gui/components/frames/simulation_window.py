@@ -273,7 +273,8 @@ class VWSimulationWindow(Frame):
         del old
 
     def __rotate_actor(self, _, direction: Direction) -> None:
-        assert self.__selected
+        if not self.__selected:
+            return
 
         working_location: VWLocation = self.__env.get_ambient().get_location_interface(coord=self.__selected)
 

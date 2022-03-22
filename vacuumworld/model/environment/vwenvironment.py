@@ -212,8 +212,10 @@ class VWEnvironment(Environment):
                     dirt = Dirt(colour=Colour(location_data["dirt"]["colour"]))
                     dirt_appearance = VWDirtAppearance(dirt_id=dirt.get_id(), progressive_id=dirt.get_progressive_id(), colour=dirt.get_colour())
                     dirts.append(dirt)
+                    
+                wall: Dict[Orientation, bool] = {Orientation.north: location_data[str(Orientation.north)], Orientation.south: location_data[str(Orientation.south)], Orientation.west: location_data[str(Orientation.west)], Orientation.east: location_data[str(Orientation.east)]}
 
-                grid[coord] = VWLocation(coord=coord, actor_appearance=actor_appearance, dirt_appearance=dirt_appearance)
+                grid[coord] = VWLocation(coord=coord, actor_appearance=actor_appearance, dirt_appearance=dirt_appearance, wall=wall)
 
             VWEnvironment.__validate_grid(grid=grid, config=config)
 
@@ -231,8 +233,8 @@ class VWEnvironment(Environment):
             if forced_line_dim != -1:
                 assert forced_line_dim >= config["min_environment_dim"] and forced_line_dim <= config["max_environment_dim"]
                 line_dim = forced_line_dim
-
-            grid: Dict[Coord, VWLocation] = {Coord(x, y): VWLocation(coord=Coord(x, y), actor_appearance=None, dirt_appearance=None) for x, y in product(range(line_dim), range(line_dim))}
+            
+            grid: Dict[Coord, VWLocation] = {Coord(x, y): VWLocation(coord=Coord(x, y), actor_appearance=None, dirt_appearance=None, wall=VWEnvironment.__generate_wall_from_coordinates(coord=Coord(x, y), grid_size=line_dim)) for x, y in product(range(line_dim), range(line_dim))}     
 
             VWEnvironment.__validate_grid(grid=grid, config=config, candidate_grid_line_dim=line_dim)
 
@@ -241,6 +243,22 @@ class VWEnvironment(Environment):
             raise e
         except Exception:
             raise IOError("Could not construct the environment from the given config.")
+    
+    @staticmethod
+    def __generate_wall_from_coordinates(coord: Coord, grid_size: int) -> Dict[Orientation, bool]:
+        default_wall: Dict[Orientation, bool] = {Orientation.north: False, Orientation.south: False, Orientation.west: False, Orientation.east: False}
+
+        if coord.x == 0:
+            default_wall[Orientation.west] = True
+        if coord.x == grid_size - 1:
+            default_wall[Orientation.east] = True
+        if coord.y == 0:
+            default_wall[Orientation.north] = True
+        if coord.y == grid_size - 1:
+            default_wall[Orientation.south] = True
+            
+        return default_wall
+        
 
     @staticmethod
     def __validate_grid(grid: Dict[Coord, VWLocation], config: dict, candidate_grid_line_dim: int=-1) -> None:
