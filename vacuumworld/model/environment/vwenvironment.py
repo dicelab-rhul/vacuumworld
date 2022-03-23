@@ -184,46 +184,42 @@ class VWEnvironment(Environment):
 
         return state
 
+    # This is meant to throw an exception if something goes wrong.
     @staticmethod
     def from_json(data: Dict[str, List[Dict[str, Dict[str, str | int]]]], config: dict) -> VWEnvironment:
-        try:
-            grid: Dict[Coord, VWLocation] = {}
-            actors: List[VWActorAppearance] = []
-            dirts: List[Dirt] = []
+        grid: Dict[Coord, VWLocation] = {}
+        actors: List[VWActorAppearance] = []
+        dirts: List[Dirt] = []
 
-            if not data:
-                return VWEnvironment.generate_empty_env(config=config)
-
-            for location_data in data["locations"]:
-                coord: Coord = Coord(x=location_data["coords"]["x"], y=location_data["coords"]["y"])
-                actor: VWActor = None
-                actor_appearance: VWActorAppearance = None
-                dirt: Dirt = None
-                dirt_appearance: VWDirtAppearance = None
-
-                if "actor" in location_data and location_data["actor"]["colour"] != str(Colour.user):
-                    actor, actor_appearance = VWCleaningAgentsFactory.create_cleaning_agent_from_json_data(data=location_data["actor"])
-                    actors.append(actor)
-                elif "actor" in location_data and location_data["actor"]["colour"] == str(Colour.user):
-                    actor, actor_appearance = VWUsersFactory.create_user_from_json_data(data=location_data["actor"])
-                    actors.append(actor)
-
-                if "dirt" in location_data:
-                    dirt = Dirt(colour=Colour(location_data["dirt"]["colour"]))
-                    dirt_appearance = VWDirtAppearance(dirt_id=dirt.get_id(), progressive_id=dirt.get_progressive_id(), colour=dirt.get_colour())
-                    dirts.append(dirt)
-                    
-                wall: Dict[Orientation, bool] = {Orientation.north: location_data[str(Orientation.north)], Orientation.south: location_data[str(Orientation.south)], Orientation.west: location_data[str(Orientation.west)], Orientation.east: location_data[str(Orientation.east)]}
-
-                grid[coord] = VWLocation(coord=coord, actor_appearance=actor_appearance, dirt_appearance=dirt_appearance, wall=wall)
-
-            VWEnvironment.__validate_grid(grid=grid, config=config)
-
-            return VWEnvironment(config=config, ambient=VWAmbient(grid=grid), initial_actors=actors, initial_dirts=dirts)
-        except AssertionError as e:
-            raise e
-        except Exception:
+        if not data:
             return VWEnvironment.generate_empty_env(config=config)
+
+        for location_data in data["locations"]:
+            coord: Coord = Coord(x=location_data["coords"]["x"], y=location_data["coords"]["y"])
+            actor: VWActor = None
+            actor_appearance: VWActorAppearance = None
+            dirt: Dirt = None
+            dirt_appearance: VWDirtAppearance = None
+
+            if "actor" in location_data and location_data["actor"]["colour"] != str(Colour.user):
+                actor, actor_appearance = VWCleaningAgentsFactory.create_cleaning_agent_from_json_data(data=location_data["actor"])
+                actors.append(actor)
+            elif "actor" in location_data and location_data["actor"]["colour"] == str(Colour.user):
+                actor, actor_appearance = VWUsersFactory.create_user_from_json_data(data=location_data["actor"])
+                actors.append(actor)
+
+            if "dirt" in location_data:
+                dirt = Dirt(colour=Colour(location_data["dirt"]["colour"]))
+                dirt_appearance = VWDirtAppearance(dirt_id=dirt.get_id(), progressive_id=dirt.get_progressive_id(), colour=dirt.get_colour())
+                dirts.append(dirt)
+                
+            wall: Dict[Orientation, bool] = {Orientation.north: location_data["wall"][str(Orientation.north)], Orientation.south: location_data["wall"][str(Orientation.south)], Orientation.west: location_data["wall"][str(Orientation.west)], Orientation.east: location_data["wall"][str(Orientation.east)]}
+
+            grid[coord] = VWLocation(coord=coord, actor_appearance=actor_appearance, dirt_appearance=dirt_appearance, wall=wall)
+
+        VWEnvironment.__validate_grid(grid=grid, config=config)
+
+        return VWEnvironment(config=config, ambient=VWAmbient(grid=grid), initial_actors=actors, initial_dirts=dirts)
 
     @staticmethod
     def generate_empty_env(config: dict, forced_line_dim: int=-1) -> VWEnvironment:

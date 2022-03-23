@@ -179,7 +179,6 @@ class VWLocation(LocationAppearance):
 
         return result
 
-    # TODO: include the wall.
     def visualise(self) -> str:
         s: str = "#######\n#{}#\n".format(str(self.__coord).replace(" ", ""))
 

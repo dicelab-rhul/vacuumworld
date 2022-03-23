@@ -31,10 +31,9 @@ class VWAmbient(Ambient):
         return int(grid_dim)
 
     def get_location_interface(self, coord: Coord) -> VWLocation:
-        if coord not in self.__grid:
-            return None
-        else:
-            return self.__grid[coord]
+        assert coord in self.__grid
+        
+        return self.__grid[coord]
 
     def is_actor_at(self, coord: Coord) -> bool:
         return coord in self.__grid and self.__grid[coord].has_actor()
@@ -99,6 +98,7 @@ class VWAmbient(Ambient):
 
         return Observation(action_result=action_result, locations_dict=locations_dict)
 
+    # TODO: highlight the walls.
     def __str__(self) -> str:
         grid_dim: int = self.get_grid_dim()
         locations_list: List[str] = []
