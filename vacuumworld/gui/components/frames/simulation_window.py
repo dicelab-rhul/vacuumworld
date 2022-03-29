@@ -330,7 +330,11 @@ class VWSimulationWindow(Frame):
             self.__canvas.tag_raise(self.__rectangle_selected)
 
     def __load_and_redraw(self, load_menu) -> None:
-        loaded_env: VWEnvironment = self.__load(load_menu)
+        try:
+            loaded_env: VWEnvironment = self.__load(load_menu)
+        except Exception:
+            print("Something went wrong. Could not load any grid from {}".format(self.__config["file_to_load"]))
+            loaded_env: VWEnvironment = VWEnvironment.generate_empty_env(config=self.__config)
 
         if loaded_env is not None:
             self.__env = loaded_env
