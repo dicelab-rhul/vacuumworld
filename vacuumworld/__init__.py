@@ -66,6 +66,7 @@ def __run_guiless(config: dict, white_mind: ActorMindSurrogate, green_mind: Acto
         vw_runner: VWGuilessRunner = VWGuilessRunner(config=config, minds={Colour.white: white_mind, Colour.green: green_mind, Colour.orange: orange_mind, Colour.user: user_mind}, load=kwargs.get("load"))
         vw_runner.start()
 
+
 def __run_with_gui(config: dict, white_mind: ActorMindSurrogate, green_mind: ActorMindSurrogate, orange_mind: ActorMindSurrogate, user_mind: UserMindSurrogate, **kwargs) -> None:
     vwgui: VWGUI = VWGUI(config=config)
 
