@@ -6,6 +6,7 @@ from pystarworldsturbo.common.perception import Perception
 from pystarworldsturbo.common.action_result import ActionResult
 
 from .position_names import PositionNames
+from .orientation import Orientation
 from ..model.environment.vwlocation import VWLocation
 
 
@@ -71,6 +72,93 @@ class Observation(Perception):
             return self.__locations[PositionNames.forwardright]
         else:
             return None
+
+    ##### BEGIN EXPERIMENTAL WALL API #####
+
+    def is_wall_immediately_ahead(self) -> bool:
+        actor_orientation: Orientation = self.get_center().get_actor_appearance().get_orientation()
+        
+        return self.get_center().has_wall_on(orientation=actor_orientation)
+
+    def is_wall_immediately_behind(self) -> bool:
+        actor_orientation: Orientation = self.get_center().get_actor_appearance().get_orientation()
+        
+        return self.get_center().has_wall_on(orientation=actor_orientation.get_opposite())
+
+    def is_wall_immediately_to_the_left(self) -> bool:
+        actor_orientation: Orientation = self.get_center().get_actor_appearance().get_orientation()
+        
+        return self.get_center().has_wall_on(orientation=actor_orientation.get_left())
+
+    def is_wall_immediately_to_the_right(self) -> bool:
+        actor_orientation: Orientation = self.get_center().get_actor_appearance().get_orientation()
+        
+        return self.get_center().has_wall_on(orientation=actor_orientation.get_right())
+
+    def is_wall_one_step_ahead(self) -> bool:
+        if self.is_wall_immediately_ahead():
+            return False
+        
+        assert self.get_forward() is not None
+        
+        actor_orientation: Orientation = self.get_center().get_actor_appearance().get_orientation()
+        
+        return self.get_forward().has_wall_on(orientation=actor_orientation)
+
+    def is_wall_one_step_to_the_left(self) -> bool:
+        if self.is_wall_immediately_to_the_left():
+            return False
+        
+        assert self.get_left() is not None
+        
+        actor_orientation: Orientation = self.get_center().get_actor_appearance().get_orientation()
+        
+        return self.get_left().has_wall_on(orientation=actor_orientation.get_left())
+
+    def is_wall_one_step_to_the_right(self) -> bool:
+        if self.is_wall_immediately_to_the_right():
+            return False
+        
+        assert self.get_right() is not None
+        
+        actor_orientation: Orientation = self.get_center().get_actor_appearance().get_orientation()
+        
+        return self.get_right().has_wall_on(orientation=actor_orientation.get_right())
+
+    def is_wall_visible_somewhere_ahead(self) -> bool:
+        return self.is_wall_immediately_ahead() or self.is_wall_one_step_ahead()
+    
+    def is_wall_visible_somewhere_to_the_left(self) -> bool:
+        return self.is_wall_immediately_to_the_left() or self.is_wall_one_step_to_the_left()
+    
+    def is_wall_visible_somewhere_to_the_right(self) -> bool:
+        return self.is_wall_immediately_to_the_right() or self.is_wall_one_step_to_the_right()
+    
+    def is_wall_visible_ahead(self, immediately_ahead: bool) -> bool:
+        if immediately_ahead:
+            return self.is_wall_immediately_ahead()
+        elif self.is_wall_immediately_ahead():
+            return False # If the wall is immediately ahead, it is not one step ahead.
+        else:
+            return self.is_wall_one_step_ahead()
+    
+    def is_wall_visible_to_the_left(self, immediately_to_the_left: bool) -> bool:
+        if immediately_to_the_left:
+            return self.is_wall_immediately_to_the_left()
+        elif self.is_wall_immediately_to_the_left():
+            return False # If the wall is immediately to the left, it is not one step to the left.
+        else:
+            return self.is_wall_one_step_to_the_left()
+    
+    def is_wall_visible_to_the_right(self, immediately_to_the_right: bool) -> bool:
+        if immediately_to_the_right:
+            return self.is_wall_immediately_to_the_right()
+        elif self.is_wall_immediately_to_the_right():
+            return False # If the wall is immediately to the right, it is not one step to the right.
+        else:
+            return self.is_wall_one_step_to_the_right()
+    
+    ##### END EXPERIMENTAL WALL API #####
 
     @staticmethod
     def create_empty_observation() -> Observation:

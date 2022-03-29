@@ -36,6 +36,16 @@ class Orientation(Enum):
             return Orientation.north
         else:
             return Orientation.south
+        
+    def get_opposite(self) -> Orientation:
+        if self == Orientation.north:
+            return Orientation.south
+        elif self == Orientation.south:
+            return Orientation.north
+        elif self == Orientation.west:
+            return Orientation.east
+        else:
+            return Orientation.west
 
     def get(self, direction: Direction) -> Orientation:
         if direction == Direction.left:
