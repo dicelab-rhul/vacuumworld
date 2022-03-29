@@ -3,6 +3,8 @@ from typing import Iterable, Type, Union, List
 from pystarworldsturbo.common.action import Action
 from pystarworldsturbo.common.message import Message
 
+from .effort import ActionEffort
+
 from ...common.exceptions import VWMalformedActionException
 
 
@@ -10,6 +12,13 @@ from ...common.exceptions import VWMalformedActionException
 class VWAction(Action):
     def __init__(self) -> None:
         super(VWAction, self).__init__()
+        
+    def get_effort(self) -> int:
+        if type(self).__name__ in ActionEffort.EFFORTS:
+            return ActionEffort.EFFORTS[type(self).__name__]
+        else:
+            return ActionEffort.DEFAULT_EFFORT_FOR_OTHER_ACTIONS
+
 
 class VWPhysicalAction(VWAction):
     def __init__(self) -> None:
