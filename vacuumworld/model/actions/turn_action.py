@@ -5,8 +5,6 @@ from ...common.exceptions import VWMalformedActionException
 
 
 class VWTurnAction(VWPhysicalAction):
-    __EFFORT: int = 1
-    
     def __init__(self, direction: Direction) -> None:
         super(VWTurnAction, self).__init__()
 
@@ -19,11 +17,3 @@ class VWTurnAction(VWPhysicalAction):
 
     def get_turning_direction(self) -> Direction:
         return self.__direction
-    
-    @staticmethod
-    def get_effort() -> int:
-        return VWTurnAction.__EFFORT
-    
-    @staticmethod
-    def override_default_effort(new_effort: int) -> None:
-        VWTurnAction.__EFFORT = new_effort
