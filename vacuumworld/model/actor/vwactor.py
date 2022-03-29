@@ -67,6 +67,8 @@ class VWActor(Actor):
 
     def __attempt_actions(self, actions: Tuple[VWAction]) -> None:
         for action in actions:
+            self.get_mind().get_surrogate().update_effort(increment=type(action).get_effort())
+            
             action.set_actor_id(self.get_id())
             
             actuator: Actuator = None

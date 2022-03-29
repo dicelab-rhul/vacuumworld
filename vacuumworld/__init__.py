@@ -3,6 +3,7 @@ from json import load
 from screeninfo import get_monitors
 from typing import List, Tuple
 
+from .model.actions.vwactions import VWAction
 from .model.actor.actor_mind_surrogate import ActorMindSurrogate
 from .model.actor.user_mind_surrogate import UserMindSurrogate
 from .model.actor.user_difficulty import UserDifficulty
@@ -32,6 +33,8 @@ def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, *
         from signal import SIGTSTP
 
         signal(SIGTSTP, SIG_IGN)
+        
+    __assign_efforts_to_actions(**kwargs)
 
     white_mind, green_mind, orange_mind = __process_minds(default_mind, white_mind, green_mind, orange_mind)
 
@@ -43,6 +46,14 @@ def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, *
         __run_guiless(config=config, white_mind=white_mind, green_mind=green_mind, orange_mind=orange_mind, user_mind=user_mind, **kwargs)
     else:
         __run_with_gui(config=config, white_mind=white_mind, green_mind=green_mind, orange_mind=orange_mind, user_mind=user_mind, **kwargs)
+
+
+def __assign_efforts_to_actions(**kwargs) -> None:
+    if "efforts" in kwargs and type(kwargs["efforts"]) == dict:
+        for k, v in kwargs["efforts"].items():
+            if issubclass(k, VWAction) and type(v) == int:
+                k.override_default_effort(new_effort=v)
+                print("The effort of {} is now {}.".format(k.__name__, v))
 
 
 def __run_guiless(config: dict, white_mind: ActorMindSurrogate, green_mind: ActorMindSurrogate, orange_mind: ActorMindSurrogate, user_mind: UserMindSurrogate, **kwargs) -> None:

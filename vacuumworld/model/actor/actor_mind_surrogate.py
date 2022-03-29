@@ -22,6 +22,17 @@ class ActorMindSurrogate():
         "revise": 2, # Not including 'self'.
         "decide": 0  # Not including 'self'.
     }
+    
+    def __init__(self) -> None:        
+        self.__effort: int = 0
+        
+    def get_effort(self) -> int:
+        return self.__effort
+    
+    def update_effort(self, increment: int) -> None:
+        assert type(increment) == int
+        
+        self.__effort += increment
 
     def revise(self, observation: Observation, messages: Iterable[BccMessage]) -> None:
         # Abstract.
