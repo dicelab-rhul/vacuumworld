@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Dict, Iterable, List
+from typing import Dict, Iterable, List, Optional
 
 from pystarworldsturbo.common.action_outcome import ActionOutcome
 from pystarworldsturbo.common.perception import Perception
@@ -26,47 +26,47 @@ class Observation(Perception):
 
     # For back compatibility with 4.1.8.
     def __create_quick_api(self) -> None:
-        self.center: VWLocation = self.get_center()
-        self.forward: VWLocation = self.get_forward()
-        self.left: VWLocation = self.get_left()
-        self.right: VWLocation = self.get_right()
-        self.forwardleft: VWLocation = self.get_forwardleft()
-        self.forwardright: VWLocation = self.get_forwardright()
+        self.center: Optional[VWLocation] = self.get_center()
+        self.forward: Optional[VWLocation] = self.get_forward()
+        self.left: Optional[VWLocation] = self.get_left()
+        self.right: Optional[VWLocation] = self.get_right()
+        self.forwardleft: Optional[VWLocation] = self.get_forwardleft()
+        self.forwardright: Optional[VWLocation] = self.get_forwardright()
 
     def get_latest_action_result(self) -> ActionResult:
         return self.__action_result
 
-    def get_center(self) -> VWLocation:
+    def get_center(self) -> Optional[VWLocation]:
         if PositionNames.center in self.__locations:
             return self.__locations[PositionNames.center]
         else:
             return None
 
-    def get_forward(self) -> VWLocation:
+    def get_forward(self) -> Optional[VWLocation]:
         if PositionNames.forward in self.__locations:
             return self.__locations[PositionNames.forward]
         else:
             return None
 
-    def get_left(self) -> VWLocation:
+    def get_left(self) -> Optional[VWLocation]:
         if PositionNames.left in self.__locations:
             return self.__locations[PositionNames.left]
         else:
             return None
 
-    def get_right(self) -> VWLocation:
+    def get_right(self) -> Optional[VWLocation]:
         if PositionNames.right in self.__locations:
             return self.__locations[PositionNames.right]
         else:
             return None
 
-    def get_forwardleft(self) -> VWLocation:
+    def get_forwardleft(self) -> Optional[VWLocation]:
         if PositionNames.forwardleft in self.__locations:
             return self.__locations[PositionNames.forwardleft]
         else:
             return None
 
-    def get_forwardright(self) -> VWLocation:
+    def get_forwardright(self) -> Optional[VWLocation]:
         if PositionNames.forwardright in self.__locations:
             return self.__locations[PositionNames.forwardright]
         else:
