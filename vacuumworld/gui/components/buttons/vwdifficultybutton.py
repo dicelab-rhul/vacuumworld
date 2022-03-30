@@ -22,7 +22,7 @@ class VWDifficultyButton(VWButton):
         img_dif: Image.Image = Image.new("RGB", img.size)
         img_dif.paste(img)
         rr, gg, bb = img_dif.split()
-        rr = rr.point(lambda p: p + red)
+        rr = rr.point(lambda p: p + int(red))
         img_dif: Image.Image = Image.merge("RGB", (rr, gg, bb))
 
         return PhotoImage(img_dif)
