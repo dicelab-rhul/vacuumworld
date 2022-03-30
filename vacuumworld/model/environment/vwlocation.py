@@ -108,6 +108,9 @@ class VWLocation(LocationAppearance):
     
     def has_wall_on_east(self) -> bool:
         return self.__wall[Orientation.east]
+    
+    def has_wall_on(self, orientation: Orientation) -> bool:
+        return self.__wall[orientation]
 
     def deep_copy(self) -> VWLocation:
         if not self.__actor_appearance and not self.__dirt_appearance:
