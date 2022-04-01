@@ -20,6 +20,8 @@ from ...common.direction import Direction
 
 class UserMindSurrogate(ActorMindSurrogate):
     def __init__(self, difficulty_level: UserDifficulty=UserDifficulty.easy) -> None:
+        super(UserMindSurrogate, self).__init__()
+        
         assert type(difficulty_level) == UserDifficulty
 
         self.__difficulty_level: UserDifficulty = difficulty_level
