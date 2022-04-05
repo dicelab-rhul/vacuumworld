@@ -15,12 +15,6 @@ class VWDirtAppearance(Identifiable):
 
         self.__colour: Colour = colour
 
-        self.__create_quick_api()
-
-    # For back compatibiity with 4.1.8.
-    def __create_quick_api(self) -> None:
-        self.colour: Colour = self.__colour
-
     def get_colour(self) -> Colour:
         return self.__colour
 

@@ -22,6 +22,7 @@ class VWMind(Mind):
         VWMind.__validate_surrogate(surrogate=surrogate)
 
         # This is to prevent that, when the simulation is stopped and the grid is cleared, the surrogates retain the values of their attributes.
+        #self.__surrogate: ActorMindSurrogate = surrogate
         self.__surrogate: ActorMindSurrogate = type(surrogate)()
         del surrogate
         
