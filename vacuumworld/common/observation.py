@@ -23,19 +23,11 @@ class Observation(Perception):
         self.__locations: Dict[PositionNames, VWLocation] = locations_dict
         self.__action_result: ActionResult = action_result
 
-        self.__create_quick_api()
-
-    # For back compatibility with 4.1.8.
-    def __create_quick_api(self) -> None:
-        self.center: Optional[VWLocation] = self.get_center()
-        self.forward: Optional[VWLocation] = self.get_forward()
-        self.left: Optional[VWLocation] = self.get_left()
-        self.right: Optional[VWLocation] = self.get_right()
-        self.forwardleft: Optional[VWLocation] = self.get_forwardleft()
-        self.forwardright: Optional[VWLocation] = self.get_forwardright()
-
     def get_latest_action_result(self) -> ActionResult:
         return self.__action_result
+    
+    def is_empty(self) -> bool:
+        return not self.__locations
 
     def get_center(self) -> Optional[VWLocation]:
         if PositionNames.center in self.__locations:

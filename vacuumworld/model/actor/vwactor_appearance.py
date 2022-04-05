@@ -19,21 +19,6 @@ class VWActorAppearance(ActorAppearance):
         self.__orientation: Orientation = orientation
         self.__previous_orientation: Orientation = self.__orientation
 
-        self.__create_quick_api()
-
-    # For back compatibility with 4.1.8.
-    def __create_quick_api(self) -> None:
-        self.id: str = self.get_id()
-        self.progressive_id: str = self.get_progressive_id()
-        self.colour: Colour = self.__colour
-        self.orientation: Orientation = self.__orientation
-        self.previous_orientation: Orientation = self.__previous_orientation
-
-        if self.__colour == Colour.user:
-            self.name: str = "U-" + self.get_progressive_id()
-        else:
-            self.name: str = "A-" + self.get_progressive_id()
-
     def get_colour(self) -> Colour:
         return self.__colour
 
