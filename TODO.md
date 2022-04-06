@@ -13,4 +13,5 @@
 * File tests/test_tbd.py - line 5: `# TODO: test the action executors.`
 * File tests/test_tbd.py - line 6: `# TODO: integration testing (how?).`
 * File tests/test_tbd.py - line 7: `# TODO: test the intended crashes (i.e., where we want VW to crash immediately on non-compliant (human) user input).`
+* File build/lib/vacuumworld/model/environment/vwambient.py - line 101: `# TODO: highlight the walls.`
 * File vacuumworld/model/environment/vwambient.py - line 101: `# TODO: highlight the walls.`
