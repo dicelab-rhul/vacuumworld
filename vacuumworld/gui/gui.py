@@ -138,14 +138,13 @@ class VWGUI(Process):
                 data = self.__load_grid_data_from_file(file=self.__config["file_to_load"])
 
             return VWEnvironment.from_json(data=data, config=self.__config)
-        except Exception as e:
-            print("########################")
-            print("Something went wrong. Could not load any grid from {}".format(self.__config["file_to_load"]))
-            print("########################")
-            raise(e)
-            #print("Something went wrong. Could not load any grid from {}".format(self.__config["file_to_load"]))
+        except Exception:
+            if self.__config["file_to_load"] not in (None, ""):
+                print("Something went wrong. Could not load any grid from {}".format(self.__config["file_to_load"]))
+            else:
+                print("Something went wrong. Could not load any grid.")
 
-            #return VWEnvironment.generate_empty_env(config=self.__config)
+            return VWEnvironment.generate_empty_env(config=self.__config)
 
     def __show_initial_window(self, env: VWEnvironment) -> None:
         self.__initial_window: VWInitialWindow = VWInitialWindow(parent=self.__root, config=self.__config, buttons=self.__button_data, env=env, _start=self.__start, _exit=self.__finish, _guide=self.__guide)

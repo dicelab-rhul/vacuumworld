@@ -332,13 +332,17 @@ class VWSimulationWindow(Frame):
     def __load_and_redraw(self, load_menu) -> None:
         try:
             loaded_env: VWEnvironment = self.__load(load_menu)
-        except Exception as e:
-            print("########################")
-            print("Something went wrong. Could not load any grid from {}".format(self.__config["file_to_load"]))
-            print("########################")
-            raise e
-            #loaded_env: VWEnvironment = VWEnvironment.generate_empty_env(config=self.__config)
+        except Exception:
+            if self.__config["file_to_load"] not in (None, ""):
+                print("Something went wrong. Could not load any grid from {}".format(self.__config["file_to_load"]))
+            else:
+                print("Something went wrong. Could not load any grid.")
 
+            loaded_env: VWEnvironment = VWEnvironment.generate_empty_env(config=self.__config)
+        finally:
+            self.__redraw_loaded_env(loaded_env=loaded_env)
+
+    def __redraw_loaded_env(self, loaded_env: VWEnvironment) -> None:
         if loaded_env is not None:
             self.__env = loaded_env
             self.__grid_scale_slider.set_position(self.__env.get_ambient().get_grid_dim() - self.__config["min_environment_dim"])
