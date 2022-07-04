@@ -332,9 +332,12 @@ class VWSimulationWindow(Frame):
     def __load_and_redraw(self, load_menu) -> None:
         try:
             loaded_env: VWEnvironment = self.__load(load_menu)
-        except Exception:
+        except Exception as e:
+            print("########################")
             print("Something went wrong. Could not load any grid from {}".format(self.__config["file_to_load"]))
-            loaded_env: VWEnvironment = VWEnvironment.generate_empty_env(config=self.__config)
+            print("########################")
+            raise e
+            #loaded_env: VWEnvironment = VWEnvironment.generate_empty_env(config=self.__config)
 
         if loaded_env is not None:
             self.__env = loaded_env
