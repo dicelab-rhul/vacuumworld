@@ -11,14 +11,15 @@ name: str = "vacuumworld"
 version: str = "TO_OVERRIDE_PROGRAMMATICALLY"
 description: str = "VacuumWorld: an agent platform for cleaning robots."
 author: list = ["Emanuele Uliana", "Benedict Wilkins", "Nausheen Saba", "Joel Clarke", "Kostas Stathis"]
-author_email: str = "kostas.stathis@[R.E.M.O.V.E.T.H.I.S]rhul.ac.uk"
+author_email: str = "vw@[R.E.M.O.V.E.T.H.I.S]dicelab-rhul.org"
 license: str = "GNU3"
 classifiers: list = [
       "Programming Language :: Python :: 3",
+      "Programming Language :: Python :: 3.8",
       "Programming Language :: Python :: 3.9",
       "Programming Language :: Python :: 3.10",
       "Programming Language :: Python :: 3 :: Only",
-      "Development Status :: 3 - Alpha",
+      "Development Status :: 4 - Beta",
       "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
       "Operating System :: OS Independent",
 ]
