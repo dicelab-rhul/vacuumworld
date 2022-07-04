@@ -61,7 +61,10 @@ class VWGuilessRunner():
 
             return VWEnvironment.from_json(data=data, config=self.__config)
         except Exception:
-            print("Something went wrong. Could not load any grid from {}".format(self.__config["file_to_load"]))
+            if self.__config["file_to_load"] not in (None, ""):
+                print("Something went wrong. Could not load any grid from {}".format(self.__config["file_to_load"]))
+            else:
+                print("Something went wrong. Could not load any grid.")
 
             return VWEnvironment.generate_empty_env(config=self.__config)
 
