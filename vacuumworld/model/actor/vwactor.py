@@ -1,4 +1,4 @@
-from typing import List, Tuple, Iterable
+from typing import List, Tuple, Iterable, Union
 
 from pystarworldsturbo.common.message import BccMessage
 from pystarworldsturbo.elements.sensor import Sensor
@@ -41,16 +41,30 @@ class VWActor(Actor):
         return candidate
 
     def perceive(self) -> Tuple[Observation, Iterable[BccMessage]]:
-        observation: Observation = None
+        observations: List[Observation] = []
         messages: List[BccMessage] = []
 
         if self.get_listening_sensor().has_perception():
-            messages += self.get_listening_sensor().source()
+            tmp: Union[BccMessage, Iterable[BccMessage]] = self.get_listening_sensor().source()
+            
+            if isinstance(tmp, BccMessage):
+                messages.append(tmp)
+            elif isinstance(tmp, Iterable):
+                messages += tmp
 
-        if self.get_observation_sensor().has_perception():
-            observation = self.get_observation_sensor().source()
+        # There can be more than one `Observation` if more than one `Action` has been attempted.
+        while self.get_observation_sensor().has_perception():
+            observations.append(self.get_observation_sensor().source())
+            
+        # Merging the observations preserving the most up-to-date observation and all the results.
+        observations.reverse()
+        
+        for i in range(len(observations) - 1):
+            observations[0].append_action_result(observations[i + 1].get_latest_actions_results()[0])
+            
+        observations[0].get_latest_actions_results().reverse()
 
-        return observation, messages
+        return observations[0], messages
 
     def cycle(self) -> None:
         ActorBehaviourDebugger.debug()

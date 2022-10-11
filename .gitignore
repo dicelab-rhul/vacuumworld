@@ -137,6 +137,9 @@ dmypy.json
 .vscode/**
 
 # Test entry point
+examples/
+examples/*
+examples/**
 vw4_test.py
 cw1.py
 cw2.py

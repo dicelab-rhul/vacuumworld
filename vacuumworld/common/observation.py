@@ -21,10 +21,13 @@ class Observation(Perception):
             assert position_name in PositionNames
 
         self.__locations: Dict[PositionNames, VWLocation] = locations_dict
-        self.__action_result: ActionResult = action_result
+        self.__action_results: List[ActionResult] = [action_result]
 
-    def get_latest_action_result(self) -> ActionResult:
-        return self.__action_result
+    def get_latest_actions_results(self) -> List[ActionResult]:
+        return self.__action_results
+    
+    def append_action_result(self, result: ActionResult) -> None:
+        self.__action_results.append(result)
     
     def is_empty(self) -> bool:
         return not self.__locations
@@ -161,7 +164,7 @@ class Observation(Perception):
             yield location
 
     def __str__(self) -> str:
-        return "Action outcome: {}. Perceived locations: {}".format(self.__action_result.get_outcome(), self.__format_perceived_locations())
+        return "Actions outcomes: {}. Perceived locations: {}".format([result.get_outcome() for result in self.__action_results], self.__format_perceived_locations())
 
     def __format_perceived_locations(self) -> List[str]:
         return ["{}: {}".format(str(pos), str(loc)) for pos, loc in self.__locations.items()]
