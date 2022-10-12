@@ -24,7 +24,7 @@ class MyMind(ActorMindSurrogate):
         print("Observation:", observation)
         print("Messages: {}".format([str(m) for m in messages]))
 
-    def decide(self, o) -> Union[VWAction, Tuple[VWAction]]:
+    def decide(self) -> Union[VWAction, Tuple[VWAction]]:
         return VWIdleAction()
     
         # Replace this trivial decision process with something meaningful.
