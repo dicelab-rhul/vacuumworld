@@ -52,14 +52,14 @@ class ActorMindSurrogate():
 
         for fun_name, number_of_parameters in ActorMindSurrogate.MUST_BE_DEFINED.items():
             if fun_name not in set(dir(mind)):
-                raise VWInternalError("The {} mind surrogate must define the following method: {}".format(colour, fun_name))
+                raise VWInternalError("The {} mind surrogate must define the following method: `{}`".format(colour, fun_name))
             
             fun: Any = getattr(mind, fun_name)
             
             if not callable(fun):
                 raise VWInternalError("{} agent: {} must be callable".format(colour, fun_name))
             elif len(signature(fun).parameters) != number_of_parameters:
-                raise VWInternalError("{} agent: {} must be defined with no arguments, decide(self)".format(colour, fun_name))
+                raise VWInternalError("{} agent: `{}` must be defined with {} arguments, excluding `self`.".format(colour, fun_name, number_of_parameters))
 
     @staticmethod
     def load_from_file(surrogate_mind_file: str, surrogate_mind_class_name: str) -> ActorMindSurrogate:
