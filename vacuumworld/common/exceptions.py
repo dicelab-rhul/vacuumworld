@@ -11,23 +11,23 @@ if TYPE_CHECKING:
 
 
 class VWMalformedActionException(Exception):
-    def __init__(self, *args, **kwargs) -> None:
-        super(VWMalformedActionException, self).__init__(args, kwargs)
+    def __init__(self, message) -> None:
+        super(VWMalformedActionException, self).__init__(message)
 
 
 class VWActionAttemptException(Exception):
-    def __init__(self, *args, **kwargs) -> None:
-        super(VWActionAttemptException, self).__init__(args, kwargs)
+    def __init__(self, message) -> None:
+        super(VWActionAttemptException, self).__init__(message)
 
 
 class VWLoadException(Exception):
-    def __init__(self, *args, **kwargs) -> None:
-        super(VWActionAttemptException, self).__init__(args, kwargs)
+    def __init__(self, message) -> None:
+        super(VWLoadException, self).__init__(message)
 
 
 class VWInternalError(Exception):
-    def __init__(self, *args, **kwargs) -> None:
-        super(VWActionAttemptException, self).__init__(args, kwargs)
+    def __init__(self, message) -> None:
+        super(VWInternalError, self).__init__(message)
 
 
 class VWExceptionManager():
