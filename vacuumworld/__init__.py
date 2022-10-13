@@ -59,7 +59,7 @@ def __assign_efforts_to_actions(**kwargs) -> None:
 
 
 def __run_guiless(config: dict, white_mind: ActorMindSurrogate, green_mind: ActorMindSurrogate, orange_mind: ActorMindSurrogate, user_mind: UserMindSurrogate, **kwargs) -> None:
-    if not "load" in kwargs or not kwargs.get("load"):
+    if "load" not in kwargs or not kwargs.get("load"):
         print("VacuumWorld cannot run GUI-less if no savestate file is provided.")
     else:
         print("RunningGUI-less...")

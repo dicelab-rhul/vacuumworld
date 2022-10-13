@@ -60,7 +60,7 @@ class AutocompleteEntry(Entry):
             self.icursor(END)
 
     def __up(self, _) -> None:
-        if self.lb_up and not self.lb.curselection() == ():
+        if self.lb_up and self.lb.curselection() != ():
             index: int = self.lb.curselection()[0]
             if index >= 0:
                 self.lb.yview_scroll(-1, "units")
