@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Type
 from math import floor, sqrt
 
 from pystarworldsturbo.environment.ambient import Ambient
@@ -12,6 +12,7 @@ from ...common.direction import Direction
 from ...common.observation import Observation
 from ...common.position_names import PositionNames
 from ...common.orientation import Orientation
+from ...model.actions.vwactions import VWAction
 
 
 
@@ -66,7 +67,7 @@ class VWAmbient(Ambient):
 
         self.__grid[coord].remove_dirt()
 
-    def generate_perception(self, actor_position: Coord, action_result:  ActionResult) -> Observation:
+    def generate_perception(self, actor_position: Coord, action_type: Type[VWAction], action_result:  ActionResult) -> Observation:
         assert actor_position in self.__grid and self.__grid[actor_position].has_actor()
 
         locations_dict: Dict[PositionNames, VWLocation] = {}
@@ -96,7 +97,7 @@ class VWAmbient(Ambient):
         if forwardright_coord in self.__grid:
             locations_dict[PositionNames.forwardright] = self.__grid[forwardright_coord]
 
-        return Observation(action_result=action_result, locations_dict=locations_dict)
+        return Observation(action_type=action_type, action_result=action_result, locations_dict=locations_dict)
 
     # TODO: highlight the walls.
     def __str__(self) -> str:

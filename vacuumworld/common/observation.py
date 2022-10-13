@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Dict, Iterable, List, Optional
+from typing import Dict, Iterable, List, Optional, Type, Tuple
 
 from pystarworldsturbo.common.action_outcome import ActionOutcome
 from pystarworldsturbo.common.perception import Perception
@@ -8,11 +8,13 @@ from pystarworldsturbo.common.action_result import ActionResult
 from .position_names import PositionNames
 from .orientation import Orientation
 from ..model.environment.vwlocation import VWLocation
+from ..model.actions.vwactions import VWAction
+from ..model.actions.idle_action import VWIdleAction
 
 
 
 class Observation(Perception):
-    def __init__(self, action_result: ActionResult, locations_dict: Dict[PositionNames, VWLocation]={}) -> None:
+    def __init__(self, action_type: Type[VWAction], action_result: ActionResult, locations_dict: Dict[PositionNames, VWLocation]={}) -> None:
         super(Observation, self).__init__()
 
         assert locations_dict is not None
@@ -21,13 +23,25 @@ class Observation(Perception):
             assert position_name in PositionNames
 
         self.__locations: Dict[PositionNames, VWLocation] = locations_dict
-        self.__action_results: List[ActionResult] = [action_result]
+        self.__action_results: List[Tuple[Type[VWAction], ActionResult]] = [(action_type, action_result)]
 
-    def get_latest_actions_results(self) -> List[ActionResult]:
+    def get_latest_actions_results(self) -> List[Tuple[Type[VWAction], ActionResult]]:
         return self.__action_results
     
-    def append_action_result(self, result: ActionResult) -> None:
-        self.__action_results.append(result)
+    def __print_latest_action_results(self) -> str:
+        return ", ".join(["{}: {}".format(action_type.__name__, action_result.get_outcome()) for action_type, action_result in self.__action_results])
+
+    def merge_action_result_with_previous_observations(self, observations: Iterable[Observation]) -> None:
+        assert len(self.__action_results) == 1
+        
+        previous_results: List[Tuple[Type[VWAction], ActionResult]] = []
+        
+        for observation in observations:
+            assert len(observation.get_latest_actions_results()) == 1
+            
+            previous_results += observation.get_latest_actions_results()
+        
+        self.__action_results = previous_results + self.__action_results
     
     def is_empty(self) -> bool:
         return not self.__locations
@@ -157,14 +171,14 @@ class Observation(Perception):
 
     @staticmethod
     def create_empty_observation() -> Observation:
-        return Observation(action_result=ActionResult(outcome=ActionOutcome.impossible), locations_dict={})
+        return Observation(action_type=VWIdleAction, action_result=ActionResult(outcome=ActionOutcome.impossible), locations_dict={})
 
     def __iter__(self) -> Iterable:
         for location in self.__locations.values():
             yield location
 
     def __str__(self) -> str:
-        return "Actions outcomes: {}. Perceived locations: {}".format([result.get_outcome() for result in self.__action_results], self.__format_perceived_locations())
+        return "Actions outcomes: [{}]. Perceived locations: {}".format(self.__print_latest_action_results(), self.__format_perceived_locations())
 
     def __format_perceived_locations(self) -> List[str]:
         return ["{}: {}".format(str(pos), str(loc)) for pos, loc in self.__locations.items()]

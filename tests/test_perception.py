@@ -7,6 +7,7 @@ from pystarworldsturbo.common.action_outcome import ActionOutcome
 from pystarworldsturbo.common.action_result import ActionResult
 
 from vacuumworld.common.position_names import PositionNames
+from vacuumworld.model.actions.idle_action import VWIdleAction
 from vacuumworld.model.dirt.dirt_appearance import VWDirtAppearance
 from vacuumworld.common.orientation import Orientation
 from vacuumworld.common.colour import Colour
@@ -55,7 +56,7 @@ def test_observation() -> None:
 
     for action_outcome in (ActionOutcome.impossible, ActionOutcome.success, ActionOutcome.failure):
         result: ActionResult = ActionResult(outcome=action_outcome)
-        o: Observation = Observation(action_result=result, locations_dict=perceived_locations)
+        o: Observation = Observation(action_type=VWIdleAction, action_result=result, locations_dict=perceived_locations)
 
         assert o.get_center() == o.center
         assert o.get_center().get_coord() == c
