@@ -23,7 +23,7 @@ classifiers: list = [
       "Operating System :: OS Independent",
 ]
 url: str = "https://github.com/dicelab-rhul/vacuumworld"
-dependencies: list = ["pystarworldsturbo>=1.0.5", "pillow", "wheel", "ipython", "screeninfo", "tk"]
+dependencies: list = ["pystarworldsturbo>=1.0.6", "pillow", "wheel", "ipython", "screeninfo", "tk"]
 
 # End of static metadata
 
