@@ -57,7 +57,7 @@ class VWGuilessRunner():
             data: dict = {}
 
             if self.__config["file_to_load"]:
-                data = self.__load_grid_data_from_file(file=self.__config["file_to_load"])
+                data = self.__load_grid_data_from_file(filename=self.__config["file_to_load"])
 
             return VWEnvironment.from_json(data=data, config=self.__config)
         except Exception:
@@ -68,8 +68,8 @@ class VWGuilessRunner():
 
             return VWEnvironment.generate_empty_env(config=self.__config)
 
-    def __load_grid_data_from_file(self, file: str) -> dict:
-        data: dict = self.__save_state_manager.load_state(file=file, no_gui=True)
+    def __load_grid_data_from_file(self, filename: str) -> dict:
+        data: dict = self.__save_state_manager.load_state(filename=filename, no_gui=True)
 
         if data:
             print("The saved grid was successfully loaded.")

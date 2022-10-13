@@ -135,7 +135,7 @@ class VWGUI(Process):
             data: dict = {}
 
             if self.__config["file_to_load"]:
-                data = self.__load_grid_data_from_file(file=self.__config["file_to_load"])
+                data = self.__load_grid_data_from_file(filename=self.__config["file_to_load"])
 
             return VWEnvironment.from_json(data=data, config=self.__config)
         except Exception:
@@ -186,8 +186,8 @@ class VWGUI(Process):
         self.__show_simulation_window(env=env)
 
     def __save(self, env: VWEnvironment, saveloadmenu: AutocompleteEntry) -> None:
-        file: str = saveloadmenu.var.get()
-        result: bool = self.__save_state_manager.save_state(env=env, file=file)
+        filename: str = saveloadmenu.var.get()
+        result: bool = self.__save_state_manager.save_state(env=env, filename=filename)
 
         if result:
             saveloadmenu.lista = self.__save_state_manager.get_ordered_list_of_filenames_in_save_directory()
@@ -196,14 +196,14 @@ class VWGUI(Process):
             print("The current grid was not saved.")
 
     def __load(self, saveloadmenu: AutocompleteEntry) -> VWEnvironment:
-        file: str = saveloadmenu.var.get()
+        filename: str = saveloadmenu.var.get()
         
-        data: dict = self.__save_state_manager.load_state(file=file)
+        data: dict = self.__save_state_manager.load_state(filename=filename)
 
         return VWEnvironment.from_json(data=data, config=self.__config)
 
-    def __load_grid_data_from_file(self, file: str) -> dict:
-        data: dict = self.__save_state_manager.load_state(file=file, no_gui=True)
+    def __load_grid_data_from_file(self, filename: str) -> dict:
+        data: dict = self.__save_state_manager.load_state(filename=filename, no_gui=True)
 
         if data:
             print("The saved grid was successfully loaded.")

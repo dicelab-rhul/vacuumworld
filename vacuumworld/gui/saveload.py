@@ -29,40 +29,40 @@ class SaveStateManager():
         if not os.path.isdir(self.__files_dir): # The directory was not created.
             raise ValueError("Could not create the `{}` directory.".format(self.__files_dir))
 
-    def __file_exists(self, file: str) -> bool:
-        assert file and type(file) == str
+    def __file_exists(self, filename: str) -> bool:
+        assert filename and type(filename) == str
 
         # Absolute path vs. relative path.
-        return os.path.exists(file) or os.path.exists(os.path.join(self.__files_dir, os.path.basename(file)))
+        return os.path.exists(filename) or os.path.exists(os.path.join(self.__files_dir, os.path.basename(filename)))
 
-    def save_state(self, env: VWEnvironment, file: str) -> bool:
+    def save_state(self, env: VWEnvironment, filename: str) -> bool:
         assert env
 
         state: dict = env.to_json()
 
-        if file and not self.__file_exists(file) and match(self.__vw_file_regex, file):
-            return self.__quick_save(state=state, file=file)
+        if filename and not self.__file_exists(filename) and match(self.__vw_file_regex, filename):
+            return self.__quick_save(state=state, filename=filename)
         else:
-            return self.__save_dialog(state=state, file=file)
+            return self.__save_dialog(state=state, filename=filename)
 
-    def __quick_save(self, state: dict, file: str) -> bool:
-        assert file
+    def __quick_save(self, state: dict, filename: str) -> bool:
+        assert filename
 
         try:
-            with open(os.path.join(self.__files_dir, os.path.basename(file)), "wb") as f:
+            with open(os.path.join(self.__files_dir, os.path.basename(filename)), "wb") as f:
                 dump(obj=state, fp=f, indent=4)
                 return True
         except Exception:
             return False
 
-    def __save_dialog(self, state: dict, file: str) -> bool:
+    def __save_dialog(self, state: dict, filename: str) -> bool:
         try:
-            if not file:
-                file = "".join(choice(ascii_letters) for _ in range(self.__random_file_name_length)) + self.__vw_extension
-            elif not file.endswith(self.__vw_extension):
-                file += self.__vw_extension
+            if not filename:
+                filename = "".join(choice(ascii_letters) for _ in range(self.__random_file_name_length)) + self.__vw_extension
+            elif not filename.endswith(self.__vw_extension):
+                filename += self.__vw_extension
 
-            with asksaveasfile(mode="w", initialdir=self.__files_dir, initialfile=file, defaultextension=self.__vw_extension) as f:
+            with asksaveasfile(mode="w", initialdir=self.__files_dir, initialfile=filename, defaultextension=self.__vw_extension) as f:
                 dump(obj=state, fp=f, indent=4)
                 return True
         except AttributeError:
@@ -70,19 +70,19 @@ class SaveStateManager():
         except Exception:
             return False
 
-    def load_state(self, file: str="", no_gui: bool=False) -> dict:
-        if file and self.__file_exists(file) and match(self.__vw_file_regex, os.path.basename(file)):
-            return self.__quick_load(file)
+    def load_state(self, filename: str="", no_gui: bool=False) -> dict:
+        if filename and self.__file_exists(filename) and match(self.__vw_file_regex, os.path.basename(filename)):
+            return self.__quick_load(filename)
         elif no_gui:
             return {}
         else:
-            return self.__load_dialog(file)
+            return self.__load_dialog(filename)
 
-    def __quick_load(self, file: str) -> dict:
-        assert file
+    def __quick_load(self, filename: str) -> dict:
+        assert filename
 
         try:
-            with open(os.path.join(self.__files_dir, os.path.basename(file)), "rb") as f:
+            with open(os.path.join(self.__files_dir, os.path.basename(filename)), "rb") as f:
                 return load(fp=f)
         except Exception:
             return {}
@@ -96,12 +96,12 @@ class SaveStateManager():
         except Exception:
             return {}
     
-    def add_vw_extension_to_filename_string_if_missing(self, file: str) -> str:
-        assert file
+    def add_vw_extension_to_filename_string_if_missing(self, filename: str) -> str:
+        assert filename
 
-        if not file.endswith(self.__vw_extension):
-            file += self.__vw_extension
-        return file
+        if not filename.endswith(self.__vw_extension):
+            filename += self.__vw_extension
+        return filename
 
     def get_ordered_list_of_filenames_in_save_directory(self) -> List[str]:
         try:
