@@ -99,7 +99,6 @@ class VWAmbient(Ambient):
 
         return Observation(action_type=action_type, action_result=action_result, locations_dict=locations_dict)
 
-    # TODO: highlight the walls.
     def __str__(self) -> str:
         grid_dim: int = self.get_grid_dim()
         locations_list: List[str] = []
@@ -109,9 +108,10 @@ class VWAmbient(Ambient):
                 c: Coord = Coord(x=j, y=i)
                 locations_list.append(self.__grid[c].visualise())
 
-        partial_representation: str = self.__compactify(grid_dim=grid_dim, locations_list=locations_list)
-
-        return self.__streamline(grid_dim=grid_dim, partial_representation=partial_representation)
+        partial_representation: str = VWAmbient.__compactify(grid_dim=grid_dim, locations_list=locations_list)
+        streamlined_representation: str = VWAmbient.__streamline(grid_dim=grid_dim, partial_representation=partial_representation)
+        
+        return VWAmbient.__highlight_walls(streamlined_representation=streamlined_representation)
 
     @staticmethod
     def __compactify(grid_dim: int, locations_list: List[str]) -> str:
@@ -132,10 +132,25 @@ class VWAmbient(Ambient):
 
     @staticmethod
     def __streamline(grid_dim: int, partial_representation: str) -> str:
-        p1_new: str = ("#######" * grid_dim) + "\n"
+        p1_new: str = (chr(164) * 7 * grid_dim) + "\n"
         p1: str = p1_new * 2
 
         p2: str = p1_new
         p2_new: str = p2[grid_dim - 1:]
 
-        return partial_representation.replace(p1, p1_new[grid_dim - 1:]).replace(p2, p2_new).replace("## ", "# ").replace(" ##", " #").replace("##(", "#(").replace(")##", ")#")
+        return partial_representation.replace(p1, p1_new[grid_dim - 1:]).replace(p2, p2_new).replace(f"{chr(164)}{chr(164)} ", f"{chr(164)} ").replace(f" {chr(164)}{chr(164)}", f" {chr(164)}").replace(f"{chr(164)}{chr(164)}(", f"{chr(164)}(").replace(f"){chr(164)}{chr(164)}", f"){chr(164)}")
+
+    @staticmethod
+    def __highlight_walls(streamlined_representation: str) -> str:
+        tokens: List[str] = streamlined_representation.split("\n")
+
+        tokens[0] = tokens[0].replace(chr(164), "#")
+        tokens[-2] = tokens[-2].replace(chr(164), "#")
+        
+        for i in range(len(tokens) -1):
+            if tokens[i][0] == chr(164):
+                tokens[i] = "#" + tokens[i][1:]
+            if tokens[i][-1] == chr(164):
+                tokens[i] = tokens[i][:-1] + "#"
+                
+        return "\n".join(tokens)

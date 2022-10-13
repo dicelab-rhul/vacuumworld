@@ -185,9 +185,9 @@ class Observation(Perception):
         return ["{}: {}".format(pos.name, loc) for pos, loc in self.__locations.items()]
     
     def pretty_format(self) -> str:
-        to_print: dict = {
+        observation_dict: dict = {
             "Action outcomes": [{action_type.__name__: action_result.get_outcome().name} for action_type, action_result in self.__action_results],
             "Perceived locations": {pos.name: loc.pretty_format() for pos, loc in self.__locations.items()}
         }
         
-        return dumps(to_print, indent=4)
+        return dumps(observation_dict, indent=4)
