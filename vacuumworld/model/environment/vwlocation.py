@@ -110,6 +110,15 @@ class VWLocation(LocationAppearance):
             location["dirt"] = self.__dirt_appearance.to_json()
 
         return location
+    
+    def pretty_format(self) -> Dict[str, Dict[str, str | int]]:
+        location: Dict[str, Dict[str, str | int]] = self.to_json()
+        
+        if self.has_actor():
+            location["actor"]["ID"] = self.get_actor_appearance().get_id()
+            location["actor"]["progressive_ID"] = self.get_actor_appearance().get_progressive_id()
+            
+        return location
 
     def __str__(self) -> str:
         return "(actor: {}, dirt: {}, wall: {})".format(str(self.__actor_appearance), str(self.__dirt_appearance), str(self.__wall))

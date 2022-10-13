@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import Dict, Iterable, List, Optional, Type, Tuple
+from json import dumps
 
 from pystarworldsturbo.common.action_outcome import ActionOutcome
 from pystarworldsturbo.common.perception import Perception
@@ -28,7 +29,7 @@ class Observation(Perception):
     def get_latest_actions_results(self) -> List[Tuple[Type[VWAction], ActionResult]]:
         return self.__action_results
     
-    def __print_latest_action_results(self) -> str:
+    def __format_latest_action_results(self) -> str:
         return ", ".join(["{}: {}".format(action_type.__name__, action_result.get_outcome()) for action_type, action_result in self.__action_results])
 
     def merge_action_result_with_previous_observations(self, observations: Iterable[Observation]) -> None:
@@ -178,7 +179,15 @@ class Observation(Perception):
             yield location
 
     def __str__(self) -> str:
-        return "Actions outcomes: [{}]. Perceived locations: {}".format(self.__print_latest_action_results(), self.__format_perceived_locations())
+        return "Actions outcomes: [{}]. Perceived locations: {}".format(self.__format_latest_action_results(), self.__format_perceived_locations())
 
     def __format_perceived_locations(self) -> List[str]:
-        return ["{}: {}".format(str(pos), str(loc)) for pos, loc in self.__locations.items()]
+        return ["{}: {}".format(pos.name, loc) for pos, loc in self.__locations.items()]
+    
+    def pretty_format(self) -> str:
+        to_print: dict = {
+            "Action outcomes": [{action_type.__name__: action_result.get_outcome().name} for action_type, action_result in self.__action_results],
+            "Perceived locations": {pos.name: loc.pretty_format() for pos, loc in self.__locations.items()}
+        }
+        
+        return dumps(to_print, indent=4)
