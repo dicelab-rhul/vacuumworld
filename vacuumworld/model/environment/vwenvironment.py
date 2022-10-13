@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import List, Tuple, Dict
+from typing import List, Tuple, Dict, Type
 from inspect import getfile
 from itertools import product
 from math import floor, sqrt
@@ -26,7 +26,7 @@ from ...common.colour import Colour
 from ...common.observation import Observation
 from ...common.orientation import Orientation
 from ...common.exceptions import VWActionAttemptException, VWMalformedActionException
-from ...model.actions.vwactions import VWPhysicalAction, VWCommunicativeAction
+from ...model.actions.vwactions import VWAction, VWPhysicalAction, VWCommunicativeAction
 
 
 
@@ -84,7 +84,7 @@ class VWEnvironment(Environment):
 
     def __force_initial_perception_to_actors(self) -> None:
         for actor_id in self.get_actors():
-            observation: Observation = self.generate_perception_for_actor(actor_id=actor_id, action_result=ActionResult(outcome=ActionOutcome.impossible))
+            observation: Observation = self.generate_perception_for_actor(actor_id=actor_id, action_type=VWAction, action_result=ActionResult(outcome=ActionOutcome.impossible))
             
             self.send_perception_to_actor(perception=observation, actor_id=actor_id)
 
@@ -118,12 +118,12 @@ class VWEnvironment(Environment):
         # Adding the dirt to the grid.
         self.get_ambient().drop_dirt(coord=coord, dirt_appearance=dirt_appearance)
 
-    def generate_perception_for_actor(self, actor_id: str, action_result: ActionResult) -> Observation:
+    def generate_perception_for_actor(self, actor_id: str, action_type: Type[VWAction], action_result: ActionResult) -> Observation:
         assert actor_id in self.get_actors()
 
         coord: Coord = self.get_actor_position(actor_id=actor_id)
 
-        return self.get_ambient().generate_perception(actor_position=coord, action_result=action_result)
+        return self.get_ambient().generate_perception(actor_position=coord, action_type=action_type, action_result=action_result)
 
     def get_actor_position(self, actor_id) -> Coord:
         assert actor_id in self.get_actors()

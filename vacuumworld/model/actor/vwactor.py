@@ -41,30 +41,44 @@ class VWActor(Actor):
         return candidate
 
     def perceive(self) -> Tuple[Observation, Iterable[BccMessage]]:
+        observations: List[Observation] = self.__fetch_observations()
+        messages: List[BccMessage] = self.__fetch_messages()
+        
+        assert len(observations) > 0
+        
+        if len(observations) > 1:
+            return self.__merge_observations(observations), messages
+        else:
+            return observations[0], messages
+    
+    def __fetch_observations(self) -> List[Observation]:
         observations: List[Observation] = []
+        
+        # There can be more than one `Observation` if more than one `VWAction` has been attempted.
+        while self.get_observation_sensor().has_perception():
+            observations.append(self.get_observation_sensor().source())
+            
+        return observations
+    
+    def __fetch_messages(self) -> List[BccMessage]:
         messages: List[BccMessage] = []
-
+        
         if self.get_listening_sensor().has_perception():
             tmp: Union[BccMessage, Iterable[BccMessage]] = self.get_listening_sensor().source()
-            
+
             if isinstance(tmp, BccMessage):
                 messages.append(tmp)
             elif isinstance(tmp, Iterable):
                 messages += tmp
-
-        # There can be more than one `Observation` if more than one `Action` has been attempted.
-        while self.get_observation_sensor().has_perception():
-            observations.append(self.get_observation_sensor().source())
-            
-        # Merging the observations preserving the most up-to-date observation and all the results.
-        observations.reverse()
+                
+        return messages
+    
+    def __merge_observations(self, observations: List[Observation]) -> Observation:
+        assert len(observations) > 1
         
-        for i in range(len(observations) - 1):
-            observations[0].append_action_result(observations[i + 1].get_latest_actions_results()[0])
-            
-        observations[0].get_latest_actions_results().reverse()
-
-        return observations[0], messages
+        observations[-1].merge_action_result_with_previous_observations(observations=observations[:-1])
+        
+        return observations[-1]
 
     def cycle(self) -> None:
         ActorBehaviourDebugger.debug()
