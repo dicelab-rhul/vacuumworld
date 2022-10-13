@@ -399,8 +399,8 @@ class VWSimulationWindow(Frame):
         image_names: List[str] = [file.split(".")[0] for file in files]
 
         for img_name in image_names:
-            file: str = os.path.join(self.__config["location_agent_images_path"], img_name) +  ".png"
-            img: Img = VWSimulationWindow.__scale(Image.open(file), self.__config["location_size"])
+            file_path: str = os.path.join(self.__config["location_agent_images_path"], img_name) +  ".png"
+            img: Img = VWSimulationWindow.__scale(Image.open(file_path), self.__config["location_size"])
             images: OrderedDict[str, Img] = VWSimulationWindow.__construct_images(img, img_name + "_")
 
             for img_name, img in images.items():
@@ -414,8 +414,8 @@ class VWSimulationWindow(Frame):
         images_names: List[str] = [file.split(".")[0] for file in files]
 
         for name in images_names:
-            file: str = os.path.join(self.__config["location_dirt_images_path"], name) +  ".png"
-            img: Img = VWSimulationWindow.__scale(Image.open(file), self.__config["location_size"])
+            file_path: str = os.path.join(self.__config["location_dirt_images_path"], name) +  ".png"
+            img: Img = VWSimulationWindow.__scale(Image.open(file_path), self.__config["location_size"])
             img_key: Tuple[str, str] = VWSimulationWindow.__get_image_key(name)
             tk_img: PhotoImage = PhotoImage(img)
             self.__all_images[img_key] = img

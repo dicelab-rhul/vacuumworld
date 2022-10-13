@@ -7,6 +7,7 @@ from pystarworldsturbo.common.message import BccMessage
 from vacuumworld import run
 from vacuumworld.model.actions.vwactions import VWAction
 from vacuumworld.model.actions.idle_action import VWIdleAction
+from vacuumworld.model.actions.broadcast_action import VWBroadcastAction
 from vacuumworld.model.actor.actor_mind_surrogate import ActorMindSurrogate
 from vacuumworld.common.observation import Observation
 
@@ -21,11 +22,11 @@ class MyMind(ActorMindSurrogate):
     def revise(self, observation: Observation, messages: Iterable[BccMessage]) -> None:
         # Do something with the observation and the messages, instead of printing them.
 
-        print("Observation:", observation)
+        print("Observation:", observation.pretty_format())
         print("Messages: {}".format([str(m) for m in messages]))
 
     def decide(self) -> Union[VWAction, Tuple[VWAction]]:
-        return VWIdleAction()
+        return VWIdleAction(), VWBroadcastAction(message="Hello!", sender_id="HIDDEN")
     
         # Replace this trivial decision process with something meaningful.
         
