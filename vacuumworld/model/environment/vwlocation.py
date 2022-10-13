@@ -112,13 +112,14 @@ class VWLocation(LocationAppearance):
         return location
     
     def pretty_format(self) -> Dict[str, Dict[str, str | int]]:
-        location: Dict[str, Dict[str, str | int]] = self.to_json()
+        location_dict: Dict[str, Dict[str, str | int]] = self.to_json()
         
+        # Unlike `to_json()`, we want to store the ID and progressive ID of the actor.
         if self.has_actor():
-            location["actor"]["ID"] = self.get_actor_appearance().get_id()
-            location["actor"]["progressive_ID"] = self.get_actor_appearance().get_progressive_id()
+            location_dict["actor"]["ID"] = self.get_actor_appearance().get_id()
+            location_dict["actor"]["progressive_ID"] = self.get_actor_appearance().get_progressive_id()
             
-        return location
+        return location_dict
 
     def __str__(self) -> str:
         return "(actor: {}, dirt: {}, wall: {})".format(str(self.__actor_appearance), str(self.__dirt_appearance), str(self.__wall))
@@ -162,15 +163,15 @@ class VWLocation(LocationAppearance):
         return result
 
     def visualise(self) -> str:
-        s: str = "#######\n#{}#\n".format(str(self.__coord).replace(" ", ""))
+        s: str = chr(164) * 7 + "\n{}{}{}\n".format(chr(164), str(self.__coord).replace(" ", ""), chr(164))
 
         if self.is_empty():
-            s += "#     #\n"
+            s += f"{chr(164)}     {chr(164)}\n"
         elif not self.has_actor() and self.has_dirt():
-            s += "#  " + str(self.__dirt_appearance.get_colour())[0] + "  #\n"
+            s += f"{chr(164)}  " + str(self.__dirt_appearance.get_colour())[0] + f"  {chr(164)}\n"
         elif not self.has_dirt():
-            s += "#  " + str(self.__actor_appearance.get_colour())[0].upper() + "  #\n"
+            s += f"{chr(164)}  " + str(self.__actor_appearance.get_colour())[0].upper() + f"  {chr(164)}\n"
         else:
-            s += "# " + str(self.__actor_appearance.get_colour())[0].upper() + "+" + str(self.__dirt_appearance.get_colour())[0] + " #\n"
+            s += f"{chr(164)} " + str(self.__actor_appearance.get_colour())[0].upper() + "+" + str(self.__dirt_appearance.get_colour())[0] + f" {chr(164)}\n"
 
-        return s + "#######"
+        return s + chr(164) * 7
