@@ -1,7 +1,6 @@
 from enum import Enum
 
 
-
 class Colour(Enum):
     green = "green"
     orange = "orange"

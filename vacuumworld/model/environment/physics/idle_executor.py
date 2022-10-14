@@ -12,7 +12,6 @@ if TYPE_CHECKING:
     from ..vwenvironment import VWEnvironment
 
 
-
 class IdleExecutor(ActionExecutor):
     def is_possible(self, env: VWEnvironment, action: VWIdleAction) -> bool:
         ignore(self)

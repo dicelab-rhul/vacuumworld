@@ -12,7 +12,6 @@ from ...common.colour import Colour
 from ...common.orientation import Orientation
 
 
-
 class VWCleaningAgentsFactory():
     @staticmethod
     def create_cleaning_agent(colour: Colour, orientation: Orientation, mind_surrogate: ActorMindSurrogate) -> Tuple[VWCleaningAgent, VWActorAppearance]:

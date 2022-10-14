@@ -5,7 +5,6 @@ from shutil import rmtree
 import os
 
 
-
 def main() -> None:
     pycache_dir_name: str = "__pycache__"
 

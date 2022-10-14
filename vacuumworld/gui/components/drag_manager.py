@@ -2,7 +2,6 @@ from tkinter import Canvas, Event, Image
 from typing import Callable, Tuple
 
 
-
 class CanvasDragManager():
     def __init__(self, config: dict, key: Tuple[str, str], grid_dim: int, canvas: Canvas, item: Image, on_start_callback: Callable, on_drop_callback: Callable) -> None:
         self.__config: dict = config

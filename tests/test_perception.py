@@ -18,7 +18,6 @@ from vacuumworld.model.environment.vwlocation import VWLocation
 from vacuumworld.common.observation import Observation
 
 
-
 class TestPerception(TestCase):
     def test_observation(self) -> None:
         a1: VWActorAppearance = VWActorAppearance(actor_id="foo", progressive_id="1", colour=Colour.green, orientation=Orientation.east)

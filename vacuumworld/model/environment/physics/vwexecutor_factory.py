@@ -20,7 +20,6 @@ from ...actions.speak_action import VWSpeakAction
 from ...actions.broadcast_action import VWBroadcastAction
 
 
-
 class VWExecutorFactory(ExecutorFactory):
     @staticmethod
     def get_executor_for(action: VWAction) -> ActionExecutor:

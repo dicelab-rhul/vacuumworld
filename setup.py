@@ -4,7 +4,6 @@ from json import load
 import os
 
 
-
 # All reusable metadata should go here.
 
 name: str = "vacuumworld"

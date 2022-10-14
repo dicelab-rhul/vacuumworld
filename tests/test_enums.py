@@ -9,7 +9,6 @@ from vacuumworld.common.position_names import PositionNames
 from vacuumworld.model.actor.user_difficulty import UserDifficulty
 
 
-
 class TestEnums(TestCase):
     def test_colour(self) -> None:
         self.assertEqual("white", Colour.white.value)

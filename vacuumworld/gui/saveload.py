@@ -10,7 +10,6 @@ from ..model.environment.vwenvironment import VWEnvironment
 import os
 
 
-
 class SaveStateManager():
     def __init__(self) -> None:
         self.__files_dir: str = os.path.join(os.getcwd(), "files")

@@ -13,7 +13,6 @@ from ..model.actions.vwactions import VWAction
 from ..model.actions.idle_action import VWIdleAction
 
 
-
 class Observation(Perception):
     def __init__(self, action_type: Type[VWAction], action_result: ActionResult, locations_dict: Dict[PositionNames, VWLocation]={}) -> None:
         super(Observation, self).__init__()

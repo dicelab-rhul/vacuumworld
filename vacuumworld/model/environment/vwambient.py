@@ -15,7 +15,6 @@ from ...common.orientation import Orientation
 from ...model.actions.vwactions import VWAction
 
 
-
 class VWAmbient(Ambient):
     def __init__(self, grid: Dict[Coord, VWLocation]={}) -> None:
         self.__grid: Dict[Coord, VWLocation] = grid

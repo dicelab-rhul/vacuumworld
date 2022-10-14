@@ -9,7 +9,6 @@ from ..actions.idle_action import VWIdleAction
 from ...common.observation import Observation
 
 
-
 class VWMind(Mind):
     PERCEIVE_METHOD_NAME: str = "perceive"
     REVISE_METHOD_NAME: str = "revise"

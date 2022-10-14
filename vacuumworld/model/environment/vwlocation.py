@@ -10,7 +10,6 @@ from ..dirt.dirt_appearance import VWDirtAppearance
 from ..actor.vwactor_appearance import VWActorAppearance
 
 
-
 class VWLocation(LocationAppearance):
     def __init__(self, coord: Coord, actor_appearance: VWActorAppearance, dirt_appearance: VWDirtAppearance, wall: Dict[Orientation, bool]) -> None:
         assert coord is not None

@@ -3,7 +3,6 @@ from ...common.colour import Colour
 from ...common.exceptions import VWMalformedActionException
 
 
-
 class VWDropAction(VWPhysicalAction):
     def __init__(self, dirt_colour: Colour) -> None:
         super(VWDropAction, self).__init__()

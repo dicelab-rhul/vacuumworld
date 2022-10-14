@@ -8,7 +8,6 @@ from ...common.orientation import Orientation
 from ...common.direction import Direction
 
 
-
 class VWActorAppearance(ActorAppearance):
     def __init__(self, actor_id: str, progressive_id: str, colour: Colour, orientation: Orientation) -> None:
         super(VWActorAppearance, self).__init__(actor_id=actor_id, progressive_id=progressive_id)

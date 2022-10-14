@@ -11,7 +11,6 @@ from vacuumworld.model.actor.vwactor_appearance import VWActorAppearance
 from vacuumworld.model.dirt.dirt_appearance import VWDirtAppearance
 
 
-
 class TestLocationAndCoordinates(TestCase):
     def test_coord(self) -> None:
         c: Coord = Coord(4, 5)

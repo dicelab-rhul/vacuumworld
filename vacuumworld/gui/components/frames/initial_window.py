@@ -9,7 +9,6 @@ from ....model.environment.vwenvironment import VWEnvironment
 import os
 
 
-
 class VWInitialWindow(Frame):
     def __init__(self, parent: Tk, config: dict, buttons: dict, env: VWEnvironment, _start: Callable, _exit: Callable, _guide: Callable) -> None:
         super(VWInitialWindow, self).__init__(parent)

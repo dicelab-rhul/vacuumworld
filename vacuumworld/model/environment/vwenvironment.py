@@ -29,7 +29,6 @@ from ...common.exceptions import VWActionAttemptException, VWMalformedActionExce
 from ...model.actions.vwactions import VWAction, VWPhysicalAction, VWCommunicativeAction
 
 
-
 class VWEnvironment(Environment):
     def __init__(self, config: dict, ambient: VWAmbient, initial_actors: List[VWActor]=[], initial_dirts: List[Dirt]=[]) -> None:
         super(VWEnvironment, self).__init__(ambient=ambient, initial_actors=initial_actors, initial_passive_bodies=initial_dirts)

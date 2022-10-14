@@ -4,7 +4,6 @@ from typing import Dict, NamedTuple, List, Union, Tuple, cast
 from .orientation import Orientation
 
 
-
 class Coord(NamedTuple):
     x: int
     y: int

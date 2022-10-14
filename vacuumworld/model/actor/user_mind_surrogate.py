@@ -17,7 +17,6 @@ from ...common.colour import Colour
 from ...common.direction import Direction
 
 
-
 class UserMindSurrogate(ActorMindSurrogate):
     def __init__(self, difficulty_level: UserDifficulty=UserDifficulty.easy) -> None:
         super(UserMindSurrogate, self).__init__()

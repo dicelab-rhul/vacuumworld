@@ -27,7 +27,6 @@ from ....model.environment.vwlocation import VWLocation
 import os
 
 
-
 class VWSimulationWindow(Frame):
     def __init__(self, parent: Tk, config: dict, buttons: dict, minds: Dict[Colour, ActorMindSurrogate], env: VWEnvironment, _guide: Callable, _save: Callable, _load: Callable, _error: Callable) -> None:
         super(VWSimulationWindow, self).__init__(parent)

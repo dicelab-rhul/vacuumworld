@@ -1,7 +1,6 @@
 from typing import Dict
 
 
-
 class ActionEffort():
     __DEFAULT_EFFORTS: Dict[str, int] = {
         "VWBroadcastAction": 1,

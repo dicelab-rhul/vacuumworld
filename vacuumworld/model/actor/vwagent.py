@@ -5,7 +5,6 @@ from .vwactuators import VWPhysicalActuator, VWCommunicativeActuator
 from ..actions.clean_action import VWCleanAction
 
 
-
 class VWCleaningAgent(VWActor):
     def __init__(self, mind: VWMind) -> None:
         super(VWCleaningAgent, self).__init__(mind=mind, sensors=[VWObservationSensor(), VWListeningSensor()], actuators=[VWPhysicalActuator(), VWCommunicativeActuator()])

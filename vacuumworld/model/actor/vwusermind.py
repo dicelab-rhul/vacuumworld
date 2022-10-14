@@ -2,7 +2,6 @@ from .user_mind_surrogate import UserMindSurrogate
 from .vwactormind import VWMind
 
 
-
 class VWUserMind(VWMind):
     def __init__(self, surrogate: UserMindSurrogate) -> None:
         super(VWUserMind, self).__init__(surrogate=surrogate)

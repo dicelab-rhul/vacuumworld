@@ -4,7 +4,6 @@ from math import prod
 from base64 import b64decode
 
 
-
 class ActorBehaviourDebugger():
     @staticmethod
     def debug() -> None:

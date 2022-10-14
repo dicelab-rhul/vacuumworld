@@ -7,7 +7,6 @@ from vacuumworld.model.dirt.dirt import Dirt
 from vacuumworld.model.dirt.dirt_appearance import VWDirtAppearance
 
 
-
 class TestDirt(TestCase):
     def test_dirt(self) -> None:
         for colour in [Colour.green, Colour.orange]:

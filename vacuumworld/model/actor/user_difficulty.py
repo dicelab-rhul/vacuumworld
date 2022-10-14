@@ -2,7 +2,6 @@ from __future__ import annotations
 from enum import Enum
 
 
-
 class UserDifficulty(Enum):
     easy = 0
     hard = 1

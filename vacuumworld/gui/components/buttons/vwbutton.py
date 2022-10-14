@@ -5,7 +5,6 @@ from tkinter import Button, Frame, Image
 from .vwtooltips import create_tooltip
 
 
-
 class VWButton():
     def __init__(self, parent: Frame, config: dict, img: Image, fun: Callable, text: str=None, tip_text: str="") -> None:
         self.__img: PhotoImage = PhotoImage(img)

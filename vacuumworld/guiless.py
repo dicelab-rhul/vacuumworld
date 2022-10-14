@@ -9,7 +9,6 @@ from .model.environment.vwenvironment import VWEnvironment
 from .gui.saveload import SaveStateManager
 
 
-
 class VWGuilessRunner():
     def __init__(self, config: dict, minds: Dict[Colour, ActorMindSurrogate], load: str=None, speed: float=0.0) -> None:
         assert config

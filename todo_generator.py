@@ -10,7 +10,6 @@ from typing import List
 import os
 
 
-
 INTERESTING_FILES_EXTENSIONS: List[str] = [".py"]
 EXCLUSION_LIST: List[str] = [os.path.basename(__file__)]
 TODO_FILE: str = "TODO.md"

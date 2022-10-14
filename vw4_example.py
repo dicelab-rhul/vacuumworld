@@ -12,7 +12,6 @@ from vacuumworld.model.actor.actor_mind_surrogate import ActorMindSurrogate
 from vacuumworld.common.observation import Observation
 
 
-
 class MyMind(ActorMindSurrogate):
     def __init__(self) -> None:
         super(MyMind, self).__init__()

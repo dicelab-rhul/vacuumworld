@@ -12,7 +12,6 @@ from .common.colour import Colour
 from .gui.gui import VWGUI
 from .guiless import VWGuilessRunner
 
-
 import vacuumworld.common
 import vacuumworld.gui
 import vacuumworld.model
@@ -21,11 +20,9 @@ import vacuumworld.res
 import os
 
 
-
 __all__: List[str] = [vacuumworld.common, vacuumworld.gui, vacuumworld.model, vacuumworld.res]
 
 CONFIG_FILE_PATH: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
-
 
 
 def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, **kwargs) -> None:

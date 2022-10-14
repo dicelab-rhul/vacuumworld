@@ -20,7 +20,6 @@ from ..model.environment.vwenvironment import VWEnvironment
 import os
 
 
-
 class VWGUI(Process):
     def __init__(self, config: dict) -> None:
         super(VWGUI, self).__init__()
