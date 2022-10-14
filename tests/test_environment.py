@@ -200,13 +200,13 @@ class TestEnvironment(TestCase):
         env.get_ambient().get_grid()[white_agent_coord] = VWLocation(coord=white_agent_coord, actor_appearance=white_agent_appearance, wall=VWEnvironment.generate_wall_from_coordinates(coord=white_agent_coord, grid_size=grid_size))
         env.get_ambient().get_grid()[user_coord] = VWLocation(coord=user_coord, actor_appearance=user_appearance, wall=VWEnvironment.generate_wall_from_coordinates(coord=user_coord, grid_size=grid_size))
 
-        if green_dirt_coord not in env.get_ambient().get_grid():
-            env.get_ambient().get_grid()[green_dirt_coord].add_actor(actor_appearance=green_dirt_appearance)
+        if green_dirt_coord in env.get_ambient().get_grid():
+            env.get_ambient().get_grid()[green_dirt_coord].add_dirt(dirt_appearance=green_dirt_appearance)
         else:
             env.get_ambient().get_grid()[green_dirt_coord] = VWLocation(coord=green_dirt_coord, dirt_appearance=green_dirt_appearance, wall=VWEnvironment.generate_wall_from_coordinates(coord=green_dirt_coord, grid_size=grid_size))
 
-        if orange_dirt_coord not in env.get_ambient().get_grid():
-            env.get_ambient().get_grid()[orange_dirt_coord].add_actor(actor_appearance=orange_dirt_appearance)
+        if orange_dirt_coord in env.get_ambient().get_grid():
+            env.get_ambient().get_grid()[orange_dirt_coord].add_dirt(dirt_appearance=orange_dirt_appearance)
         else:
             env.get_ambient().get_grid()[orange_dirt_coord] = VWLocation(coord=orange_dirt_coord, dirt_appearance=orange_dirt_appearance, wall=VWEnvironment.generate_wall_from_coordinates(coord=orange_dirt_coord, grid_size=grid_size))
 
