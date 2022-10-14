@@ -1,0 +1,6 @@
+pystarworldsturbo>=1.0.6
+pillow
+wheel
+ipython
+screeninfo
+tk
