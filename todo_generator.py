@@ -25,7 +25,6 @@ def main() -> None:
             if f not in EXCLUSION_LIST:
                 lines += __look_for_todos(os.path.join(dir, f))
 
-
     with open(TODO_FILE, "w") as f:
         f.write(TODO_HEADER + "\n")
 
