@@ -95,7 +95,7 @@ class SaveStateManager():
             return {}
         except Exception:
             return {}
-    
+
     def add_vw_extension_to_filename_string_if_missing(self, filename: str) -> str:
         assert filename
 

@@ -39,7 +39,7 @@ class CanvasDragManager():
             self.__canvas.itemconfigure(self.__drag, state="hidden")
         elif x <= self.__config["grid_size"] and y <= self.__config["grid_size"] and self.in_bounds(x, y):
             self.__canvas.itemconfigure(self.__drag, state="normal")
-        
+
         # To prevent unnecessary re-renderings.
         if x != self.__x or y != self.__y:
             dx: int = x - self.__x

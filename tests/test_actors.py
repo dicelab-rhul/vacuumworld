@@ -40,14 +40,14 @@ class HystereticMind(ActorMindSurrogate):
     def decide(self) -> Union[VWAction, Tuple[VWAction]]:
         ignore(self)
 
-        return VWIdleAction() 
+        return VWIdleAction()
 
 
 class TestActors(TestCase):
     def test_agent_mind_creation(self) -> None:
         surrogate: HystereticMind = HystereticMind()
         mind: VWMind = VWMind(surrogate=surrogate)
-        
+
         self.assertEqual(surrogate.__class__, mind.get_surrogate().__class__)
 
     def test_user_mind_creation(self) -> None:
@@ -76,13 +76,13 @@ class TestActors(TestCase):
                 self.assertEqual(factory_agent.get_id(), factory_agent_appearance.get_id())
                 self.assertEqual(agent.get_progressive_id(), appearance.get_progressive_id())
                 self.assertEqual(factory_agent.get_progressive_id(), factory_agent_appearance.get_progressive_id())
-                
+
                 # Test agent appearance
                 self.assertEqual(appearance.get_colour(), colour)
                 self.assertEqual(factory_agent_appearance.get_colour(), colour)
                 self.assertEqual(appearance.get_orientation(), orientation)
                 self.assertEqual(factory_agent_appearance.get_orientation(), orientation)
-                
+
                 # Test sensors and actuators
                 for a in (agent, factory_agent):
                     self.assertEqual(len(a.get_sensors()), 2)
@@ -120,7 +120,7 @@ class TestActors(TestCase):
                 self.assertEqual(factory_user.get_id(), factory_user_appearance.get_id())
                 self.assertEqual(user.get_progressive_id(), appearance.get_progressive_id())
                 self.assertEqual(factory_user.get_progressive_id(), factory_user_appearance.get_progressive_id())
-                
+
                 # Test user appearance
                 self.assertEqual(appearance.get_colour(), Colour.user)
                 self.assertEqual(factory_user_appearance.get_colour(), Colour.user)

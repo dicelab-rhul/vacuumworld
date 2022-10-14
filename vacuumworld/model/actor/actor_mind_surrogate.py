@@ -22,16 +22,16 @@ class ActorMindSurrogate():
         "revise": 2, # Not including 'self'.
         "decide": 0  # Not including 'self'.
     }
-    
-    def __init__(self) -> None:        
+
+    def __init__(self) -> None:
         self.__effort: int = 0
-        
+
     def get_effort(self) -> int:
         return self.__effort
-    
+
     def update_effort(self, increment: int) -> None:
         assert type(increment) == int
-        
+
         self.__effort += increment
 
     def revise(self, observation: Observation, messages: Iterable[BccMessage]) -> None:
@@ -53,9 +53,9 @@ class ActorMindSurrogate():
         for fun_name, number_of_parameters in ActorMindSurrogate.MUST_BE_DEFINED.items():
             if fun_name not in set(dir(mind)):
                 raise VWInternalError("The {} mind surrogate must define the following method: `{}`".format(colour, fun_name))
-            
+
             fun: Any = getattr(mind, fun_name)
-            
+
             if not callable(fun):
                 raise VWInternalError("{} agent: {} must be callable".format(colour, fun_name))
             elif len(signature(fun).parameters) != number_of_parameters:

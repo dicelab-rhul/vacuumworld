@@ -11,10 +11,10 @@ from ..actor.vwactor_appearance import VWActorAppearance
 
 
 
-class VWLocation(LocationAppearance):        
+class VWLocation(LocationAppearance):
     def __init__(self, coord: Coord, actor_appearance: VWActorAppearance, dirt_appearance: VWDirtAppearance, wall: Dict[Orientation, bool]) -> None:
         assert coord is not None
-        
+
         self.__coord: Coord = coord
         self.__actor_appearance: VWActorAppearance = actor_appearance
         self.__dirt_appearance: VWDirtAppearance = dirt_appearance
@@ -33,7 +33,7 @@ class VWLocation(LocationAppearance):
 
     def add_actor(self, actor_appearance: VWActorAppearance) -> None:
         assert self.__actor_appearance is None
-        
+
         self.__actor_appearance = actor_appearance
 
     def has_actor(self) -> bool:
@@ -58,27 +58,27 @@ class VWLocation(LocationAppearance):
 
     def add_dirt(self, dirt_appearance: VWDirtAppearance) -> None:
         assert self.__dirt_appearance is None
-        
+
         self.__dirt_appearance = dirt_appearance
 
     def has_dirt(self) -> bool:
         return self.__dirt_appearance is not None
-    
+
     def get_wall_info(self) -> Dict[Orientation, bool]:
         return self.__wall
-    
+
     def has_wall_on_north(self) -> bool:
         return self.__wall[Orientation.north]
-    
+
     def has_wall_on_south(self) -> bool:
         return self.__wall[Orientation.south]
-    
+
     def has_wall_on_west(self) -> bool:
         return self.__wall[Orientation.west]
-    
+
     def has_wall_on_east(self) -> bool:
         return self.__wall[Orientation.east]
-    
+
     def has_wall_on(self, orientation: Orientation) -> bool:
         return self.__wall[orientation]
 
@@ -110,15 +110,15 @@ class VWLocation(LocationAppearance):
             location["dirt"] = self.__dirt_appearance.to_json()
 
         return location
-    
+
     def pretty_format(self) -> Dict[str, Dict[str, str | int]]:
         location_dict: Dict[str, Dict[str, str | int]] = self.to_json()
-        
+
         # Unlike `to_json()`, we want to store the ID and progressive ID of the actor.
         if self.has_actor():
             location_dict["actor"]["ID"] = self.get_actor_appearance().get_id()
             location_dict["actor"]["progressive_ID"] = self.get_actor_appearance().get_progressive_id()
-            
+
         return location_dict
 
     def __str__(self) -> str:
@@ -147,16 +147,16 @@ class VWLocation(LocationAppearance):
             result = prime * result + self.__dirt_appearance.__hash__()
         else:
             result = prime * result + 0
-            
+
         if self.has_wall_on_north():
             result = prime * result + self.__wall[Orientation.north].__hash__()
-        
+
         if self.has_wall_on_south():
             result = prime * result + self.__wall[Orientation.south].__hash__()
-        
+
         if self.has_wall_on_west():
             result = prime * result + self.__wall[Orientation.west].__hash__()
-        
+
         if self.has_wall_on_east():
             result = prime * result + self.__wall[Orientation.east].__hash__()
 

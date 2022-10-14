@@ -12,7 +12,7 @@ from ...common.exceptions import VWMalformedActionException
 class VWAction(Action):
     def __init__(self) -> None:
         super(VWAction, self).__init__()
-        
+
     def get_effort(self) -> int:
         if type(self).__name__ in ActionEffort.EFFORTS:
             return ActionEffort.EFFORTS[type(self).__name__]

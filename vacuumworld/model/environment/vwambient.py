@@ -33,7 +33,7 @@ class VWAmbient(Ambient):
 
     def get_location_interface(self, coord: Coord) -> VWLocation:
         assert coord in self.__grid
-        
+
         return self.__grid[coord]
 
     def is_actor_at(self, coord: Coord) -> bool:
@@ -73,7 +73,7 @@ class VWAmbient(Ambient):
         locations_dict: Dict[PositionNames, VWLocation] = {}
 
         orientation: Orientation = self.__grid[actor_position].get_actor_appearance().get_orientation()
-        
+
         forward_coord: Coord = actor_position.forward(orientation=orientation)
         left_coord: Coord = actor_position.left(orientation=orientation)
         right_coord: Coord = actor_position.right(orientation=orientation)
@@ -83,16 +83,16 @@ class VWAmbient(Ambient):
         locations_dict[PositionNames.center] = self.__grid[actor_position].deep_copy()
 
         if forward_coord in self.__grid:
-            locations_dict[PositionNames.forward] = self.__grid[forward_coord]        
+            locations_dict[PositionNames.forward] = self.__grid[forward_coord]
 
         if left_coord in self.__grid:
-            locations_dict[PositionNames.left] = self.__grid[left_coord] 
+            locations_dict[PositionNames.left] = self.__grid[left_coord]
 
         if right_coord in self.__grid:
-            locations_dict[PositionNames.right] = self.__grid[right_coord] 
+            locations_dict[PositionNames.right] = self.__grid[right_coord]
 
         if forwardleft_coord in self.__grid:
-            locations_dict[PositionNames.forwardleft] = self.__grid[forwardleft_coord] 
+            locations_dict[PositionNames.forwardleft] = self.__grid[forwardleft_coord]
 
         if forwardright_coord in self.__grid:
             locations_dict[PositionNames.forwardright] = self.__grid[forwardright_coord]
@@ -110,7 +110,7 @@ class VWAmbient(Ambient):
 
         partial_representation: str = VWAmbient.__compactify(grid_dim=grid_dim, locations_list=locations_list)
         streamlined_representation: str = VWAmbient.__streamline(grid_dim=grid_dim, partial_representation=partial_representation)
-        
+
         return VWAmbient.__highlight_walls(streamlined_representation=streamlined_representation)
 
     @staticmethod
@@ -127,7 +127,7 @@ class VWAmbient(Ambient):
 
             if len(locations_list) > grid_dim:
                 locations_list = locations_list[grid_dim:]
-        
+
         return partial_representation
 
     @staticmethod
@@ -146,11 +146,11 @@ class VWAmbient(Ambient):
 
         tokens[0] = tokens[0].replace(chr(164), "#")
         tokens[-2] = tokens[-2].replace(chr(164), "#")
-        
+
         for i in range(len(tokens) -1):
             if tokens[i][0] == chr(164):
                 tokens[i] = "#" + tokens[i][1:]
             if tokens[i][-1] == chr(164):
                 tokens[i] = tokens[i][:-1] + "#"
-                
+
         return "\n".join(tokens)

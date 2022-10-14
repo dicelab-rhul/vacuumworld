@@ -33,17 +33,17 @@ class AutocompleteEntry(Entry):
             self.lb_up = False
         else:
             self.__check_words()
-                    
+
     def __check_words(self) -> None:
         words = self.__comparison()
-        if words:            
+        if words:
             if not self.lb_up:
                 self.lb = Listbox(self.dropdown_parent, font=self.font, height=self.height)
-                
+
                 self.lb.bind("<Double-Button-1>", self.__selection)
                 self.lb.place(x=self.winfo_x(), y=self.winfo_y()+self.winfo_height())
                 self.lb_up = True
-            
+
             self.lb.delete(0, END)
             for w in words:
                 self.lb.insert(END, w)
@@ -51,7 +51,7 @@ class AutocompleteEntry(Entry):
             if self.lb_up:
                 self.lb.destroy()
                 self.lb_up = False
-        
+
     def __selection(self, _) -> None:
         if self.lb_up:
             self.var.set(self.lb.get(ACTIVE))
@@ -65,26 +65,26 @@ class AutocompleteEntry(Entry):
             if index >= 0:
                 self.lb.yview_scroll(-1, "units")
                 self.lb.selection_clear(first=index)
-                index_str: str = str(int(index)-1)                
+                index_str: str = str(int(index)-1)
                 self.lb.selection_set(first=index_str)
-                self.lb.activate(index_str) 
+                self.lb.activate(index_str)
 
     def __down(self, _) -> None:
         if self.lb_up:
             if self.lb.curselection() == ():
                 self.lb.selection_set(first=0)
-                self.lb.activate(0) 
+                self.lb.activate(0)
                 return
 
             index: int = self.lb.curselection()[0]
             if int(index) + 1 < len(self.lista):
                 if int(index) + 1 >= self.height:
-                    self.lb.yview_scroll(1, "units") 
-                
+                    self.lb.yview_scroll(1, "units")
+
                 self.lb.selection_clear(first=index)
-                index_str: str = str(int(index)+1)        
+                index_str: str = str(int(index)+1)
                 self.lb.selection_set(first=index_str)
-                self.lb.activate(index_str) 
-                
+                self.lb.activate(index_str)
+
     def __comparison(self) -> List[str]:
         return [w for w in self.lista if match(".*" + self.var.get() + ".*", w)]

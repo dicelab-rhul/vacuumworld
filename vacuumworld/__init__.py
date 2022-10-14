@@ -28,13 +28,13 @@ CONFIG_FILE_PATH: str = os.path.join(os.path.dirname(os.path.abspath(__file__)),
 
 
 
-def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, **kwargs) -> None:   
+def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, **kwargs) -> None:
     # Safeguard against crashes on Windows and every other OS without SIGTSTP.
     if hasattr(signal, "SIGTSTP"):
         from signal import SIGTSTP
 
         signal(SIGTSTP, SIG_IGN)
-        
+
     __assign_efforts_to_actions(**kwargs)
 
     white_mind, green_mind, orange_mind = __process_minds(default_mind, white_mind, green_mind, orange_mind)
@@ -54,7 +54,7 @@ def __assign_efforts_to_actions(**kwargs) -> None:
         for k, v in kwargs["efforts"].items():
             if type(k) == type and issubclass(k, VWAction) and type(v) == int:
                 ActionEffort.override_default_effort_for_action(action_name=k.__name__, new_effort=v)
-                
+
                 print("The effort of {} is now {}.".format(k.__name__, ActionEffort.EFFORTS[k.__name__]))
 
 
@@ -111,7 +111,7 @@ def __load_config() -> dict:
 
 def __process_minds(default_mind: ActorMindSurrogate=None, white_mind: ActorMindSurrogate=None, green_mind: ActorMindSurrogate=None, orange_mind: ActorMindSurrogate=None) -> Tuple[ActorMindSurrogate, ActorMindSurrogate, ActorMindSurrogate]:
     assert default_mind is not None or white_mind is not None and green_mind is not None and orange_mind is not None
-    
+
     if white_mind is None:
         white_mind = default_mind
 
@@ -124,5 +124,5 @@ def __process_minds(default_mind: ActorMindSurrogate=None, white_mind: ActorMind
     ActorMindSurrogate.validate(white_mind, Colour.white)
     ActorMindSurrogate.validate(green_mind, Colour.green)
     ActorMindSurrogate.validate(orange_mind, Colour.orange)
-    
+
     return white_mind, green_mind, orange_mind

@@ -21,7 +21,7 @@ from ...common.direction import Direction
 class UserMindSurrogate(ActorMindSurrogate):
     def __init__(self, difficulty_level: UserDifficulty=UserDifficulty.easy) -> None:
         super(UserMindSurrogate, self).__init__()
-        
+
         assert type(difficulty_level) == UserDifficulty
 
         self.__difficulty_level: UserDifficulty = difficulty_level
@@ -182,7 +182,7 @@ class UserMindSurrogate(ActorMindSurrogate):
             return UserMindSurrogate.__turn_randomly()
         else: # Wall ahead, left and right free, no dirt on center.
             return self.__act_randomly(weights=[0.075, 0.075, 0.6, 0.0, 0.25])
-        
+
     # Always actor ahead.
     def __decide_if_agent_ahead_and_inconsiderate(self) -> list:
         if self.__is_wall_on_the_left(): # Wall on the left.

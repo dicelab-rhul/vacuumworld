@@ -18,7 +18,7 @@ class SpeakExecutor(ActionExecutor):
         ignore(self)
         ignore(env)
         ignore(action)
-        
+
         return True
 
     def attempt(self, env: VWEnvironment, action: VWSpeakAction) -> ActionResult:
@@ -37,5 +37,5 @@ class SpeakExecutor(ActionExecutor):
         ignore(env)
         ignore(self)
         ignore(action)
-        
+
         return True
