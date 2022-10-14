@@ -27,7 +27,7 @@ class UserMindSurrogate(ActorMindSurrogate):
         self.__difficulty_level: UserDifficulty = difficulty_level
         self.__observation: Observation = None
 
-    def get_difficulty_level(self) -> int:
+    def get_difficulty_level(self) -> UserDifficulty:
         return self.__difficulty_level
 
     def set_difficulty_level(self, difficulty_level: UserDifficulty) -> None:
