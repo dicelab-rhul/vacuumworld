@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
-############################## IMPORTANT ##############################
-# Run this file as ./todo_generator from within its parent directory. #
-#    Otherwise, the paths will not be generated/printed correctly.    #
-#######################################################################
+'''
+Please run this file as ./todo_generator from within its parent directory.
+Otherwise, the paths will not be generated/printed correctly. 
+'''   
 
 from typing import List
 
