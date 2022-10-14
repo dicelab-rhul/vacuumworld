@@ -1,16 +1,13 @@
 #!/usr/bin/env python3
 
-
-
-############################## IMPORTANT ##############################
-# Run this file as ./todo_generator from within its parent directory. #
-#    Otherwise, the paths will not be generated/printed correctly.    #
-#######################################################################
+'''
+Please run this file as ./todo_generator from within its parent directory.
+Otherwise, the paths will not be generated/printed correctly.
+'''
 
 from typing import List
 
 import os
-
 
 
 INTERESTING_FILES_EXTENSIONS: List[str] = [".py"]
@@ -28,15 +25,14 @@ def main() -> None:
             if f not in EXCLUSION_LIST:
                 lines += __look_for_todos(os.path.join(dir, f))
 
-
     with open(TODO_FILE, "w") as f:
         f.write(TODO_HEADER + "\n")
 
         if len(lines) > 0:
             f.write("\n")
 
-        for l in lines:
-            f.write(l + "\n")
+        for line in lines:
+            f.write(line + "\n")
 
         f.flush()
 

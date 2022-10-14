@@ -12,7 +12,6 @@ from ..actions.speak_action import VWSpeakAction
 from ..actions.broadcast_action import VWBroadcastAction
 
 
-
 class VWActuator(Actuator):
     def __init__(self, subscribed_events: List[Type]) -> None:
         super(VWActuator, self).__init__(subscribed_events=subscribed_events)
@@ -29,6 +28,7 @@ class VWActuator(Actuator):
                 actions.append(action)
 
         return actions
+
 
 class VWPhysicalActuator(VWActuator):
     def __init__(self) -> None:

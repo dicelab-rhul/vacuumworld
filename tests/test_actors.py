@@ -28,7 +28,6 @@ from vacuumworld.model.actions.clean_action import VWCleanAction
 from vacuumworld.model.actions.drop_action import VWDropAction
 
 
-
 class HystereticMind(ActorMindSurrogate):
     def revise(self, observation: Observation, messages: Iterable[BccMessage]) -> None:
         ignore(self)

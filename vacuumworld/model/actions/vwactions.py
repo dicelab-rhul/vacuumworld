@@ -8,7 +8,6 @@ from .effort import ActionEffort
 from ...common.exceptions import VWMalformedActionException
 
 
-
 class VWAction(Action):
     def __init__(self) -> None:
         super(VWAction, self).__init__()

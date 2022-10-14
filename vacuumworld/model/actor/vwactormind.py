@@ -9,7 +9,6 @@ from ..actions.idle_action import VWIdleAction
 from ...common.observation import Observation
 
 
-
 class VWMind(Mind):
     PERCEIVE_METHOD_NAME: str = "perceive"
     REVISE_METHOD_NAME: str = "revise"
@@ -68,7 +67,7 @@ class VWMind(Mind):
         actions: Union[VWAction, Tuple[VWAction]] = self.__surrogate.decide()
 
         if actions is None:
-            self.__next_actions = (VWIdleAction(),) # For safety and back compatibility with 4.1.8.
+            self.__next_actions = (VWIdleAction(),)  # For safety and back compatibility with 4.1.8.
         elif type(actions) == tuple:
             self.__store_actions_for_next_cycle(actions=actions)
         else:
@@ -80,7 +79,7 @@ class VWMind(Mind):
 
         for action in actions:
             if action is None:
-                sanitised_actions.append(VWIdleAction()) # For safety and back compatibility with 4.1.8.
+                sanitised_actions.append(VWIdleAction())  # For safety and back compatibility with 4.1.8.
             else:
                 assert isinstance(action, VWAction)
                 sanitised_actions.append(action)

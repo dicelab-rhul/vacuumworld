@@ -16,11 +16,10 @@ import os
 import sys
 
 
-
 class ActorMindSurrogate():
     MUST_BE_DEFINED: dict = {
-        "revise": 2, # Not including 'self'.
-        "decide": 0  # Not including 'self'.
+        "revise": 2,  # Not including `self`.
+        "decide": 0   # Not including `self`.
     }
 
     def __init__(self) -> None:

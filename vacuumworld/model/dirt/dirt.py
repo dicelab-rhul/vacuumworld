@@ -3,7 +3,6 @@ from pystarworldsturbo.elements.body import Body
 from ...common.colour import Colour
 
 
-
 class Dirt(Body):
     def __init__(self, colour: Colour) -> None:
         super(Dirt, self).__init__()

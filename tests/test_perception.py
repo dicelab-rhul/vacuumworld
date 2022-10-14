@@ -18,7 +18,6 @@ from vacuumworld.model.environment.vwlocation import VWLocation
 from vacuumworld.common.observation import Observation
 
 
-
 class TestPerception(TestCase):
     def test_observation(self) -> None:
         a1: VWActorAppearance = VWActorAppearance(actor_id="foo", progressive_id="1", colour=Colour.green, orientation=Orientation.east)
@@ -28,7 +27,7 @@ class TestPerception(TestCase):
         d1: VWDirtAppearance = VWDirtAppearance(dirt_id="running", progressive_id="5", colour=Colour.green)
         d2: VWDirtAppearance = VWDirtAppearance(dirt_id="out_of", progressive_id="6", colour=Colour.orange)
         d3: VWDirtAppearance = VWDirtAppearance(dirt_id="ideas", progressive_id="7", colour=Colour.orange)
-        c: Coord = Coord(4,4)
+        c: Coord = Coord(4, 4)
         f: Coord = c.forward(orientation=a1.get_orientation())
         l: Coord = c.left(orientation=a1.get_orientation())
         r: Coord = c.right(orientation=a1.get_orientation())
@@ -85,7 +84,6 @@ class TestPerception(TestCase):
             self.assertEqual(o.get_forwardright().get_dirt_appearance(), d3)
 
             # TODO: check for walls.
-
 
     def test_message(self) -> None:
         for content in (1, 1.32343, "foo", ["foo", 1, 1.234, [], (), {}], ("foo", 1, 1.234, [], (), {}), {1: ["", None], 1.2343: (3, 4.5)}):

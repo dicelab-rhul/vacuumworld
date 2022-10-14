@@ -4,10 +4,9 @@ from typing import Dict, NamedTuple, List, Union, Tuple, cast
 from .orientation import Orientation
 
 
-
 class Coord(NamedTuple):
-    x : int
-    y : int
+    x: int
+    y: int
 
     def __add__(self, other: Union[int, List[int], Tuple[int, int]]) -> Coord:
         assert other is not None

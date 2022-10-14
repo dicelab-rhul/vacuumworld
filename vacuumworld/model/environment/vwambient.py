@@ -15,7 +15,6 @@ from ...common.orientation import Orientation
 from ...model.actions.vwactions import VWAction
 
 
-
 class VWAmbient(Ambient):
     def __init__(self, grid: Dict[Coord, VWLocation]={}) -> None:
         self.__grid: Dict[Coord, VWLocation] = grid
@@ -147,7 +146,7 @@ class VWAmbient(Ambient):
         tokens[0] = tokens[0].replace(chr(164), "#")
         tokens[-2] = tokens[-2].replace(chr(164), "#")
 
-        for i in range(len(tokens) -1):
+        for i in range(len(tokens) - 1):
             if tokens[i][0] == chr(164):
                 tokens[i] = "#" + tokens[i][1:]
             if tokens[i][-1] == chr(164):

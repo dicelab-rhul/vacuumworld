@@ -11,7 +11,6 @@ from vacuumworld.model.actor.vwactor_appearance import VWActorAppearance
 from vacuumworld.model.dirt.dirt_appearance import VWDirtAppearance
 
 
-
 class TestLocationAndCoordinates(TestCase):
     def test_coord(self) -> None:
         c: Coord = Coord(4, 5)
@@ -49,7 +48,6 @@ class TestLocationAndCoordinates(TestCase):
         self.assertEqual(c.forwardright(orientation=Orientation.west), Coord(3, 4))
         self.assertEqual(c.forwardright(orientation=Orientation.east), Coord(5, 6))
 
-
     def test_location(self) -> None:
         a1: VWActorAppearance = VWActorAppearance(actor_id="foo", progressive_id="1", colour=Colour.green, orientation=Orientation.east)
         a2: VWActorAppearance = VWActorAppearance(actor_id="bar", progressive_id="2", colour=Colour.orange, orientation=Orientation.north)
@@ -58,7 +56,7 @@ class TestLocationAndCoordinates(TestCase):
         d1: VWDirtAppearance = VWDirtAppearance(dirt_id="running", progressive_id="5", colour=Colour.green)
         d2: VWDirtAppearance = VWDirtAppearance(dirt_id="out_of", progressive_id="6", colour=Colour.orange)
         d3: VWDirtAppearance = VWDirtAppearance(dirt_id="ideas", progressive_id="7", colour=Colour.orange)
-        c: Coord = Coord(4,4)
+        c: Coord = Coord(4, 4)
         f: Coord = c.forward(orientation=a1.get_orientation())
         l: Coord = c.left(orientation=a1.get_orientation())
         r: Coord = c.right(orientation=a1.get_orientation())

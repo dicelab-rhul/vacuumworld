@@ -15,7 +15,6 @@ from ...common.observation import Observation
 from ...common.exceptions import VWActionAttemptException
 
 
-
 class VWActor(Actor):
     def __init__(self, mind: VWMind, sensors: List[Sensor], actuators: List[Actuator]) -> None:
         super(VWActor, self).__init__(mind=mind, sensors=sensors, actuators=actuators)

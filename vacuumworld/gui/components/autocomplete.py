@@ -7,7 +7,6 @@ from re import match
 from typing import List
 
 
-
 class AutocompleteEntry(Entry):
     def __init__(self, lista: List[str], height: int, *args, **kwargs) -> None:
         Entry.__init__(self, *args, **kwargs)

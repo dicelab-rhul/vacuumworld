@@ -14,7 +14,6 @@ if TYPE_CHECKING:
     from ..vwenvironment import VWEnvironment
 
 
-
 class TurnExecutor(ActionExecutor):
     def is_possible(self, env: VWEnvironment, action: VWTurnAction) -> bool:
         ignore(self)

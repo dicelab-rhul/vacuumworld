@@ -1,7 +1,6 @@
 from tkinter import Button, Label, Toplevel, LEFT, SOLID
 
 
-
 class ToolTip():
     def __init__(self, widget: Button, config: dict) -> None:
         self.__widget: Button = widget
@@ -34,6 +33,7 @@ class ToolTip():
 
         if tw:
             tw.destroy()
+
 
 def create_tooltip(widget: Button, text: str, config: dict) -> None:
     tooltip: ToolTip = ToolTip(widget=widget, config=config)

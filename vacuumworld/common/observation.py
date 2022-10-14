@@ -13,7 +13,6 @@ from ..model.actions.vwactions import VWAction
 from ..model.actions.idle_action import VWIdleAction
 
 
-
 class Observation(Perception):
     def __init__(self, action_type: Type[VWAction], action_result: ActionResult, locations_dict: Dict[PositionNames, VWLocation]={}) -> None:
         super(Observation, self).__init__()
@@ -83,8 +82,6 @@ class Observation(Perception):
         else:
             return None
 
-    ##### BEGIN EXPERIMENTAL WALL API #####
-
     def is_wall_immediately_ahead(self) -> bool:
         actor_orientation: Orientation = self.get_center().get_actor_appearance().get_orientation()
 
@@ -148,7 +145,7 @@ class Observation(Perception):
         if immediately_ahead:
             return self.is_wall_immediately_ahead()
         elif self.is_wall_immediately_ahead():
-            return False # If the wall is immediately ahead, it is not one step ahead.
+            return False  # If the wall is immediately ahead, it is not one step ahead.
         else:
             return self.is_wall_one_step_ahead()
 
@@ -156,7 +153,7 @@ class Observation(Perception):
         if immediately_to_the_left:
             return self.is_wall_immediately_to_the_left()
         elif self.is_wall_immediately_to_the_left():
-            return False # If the wall is immediately to the left, it is not one step to the left.
+            return False  # If the wall is immediately to the left, it is not one step to the left.
         else:
             return self.is_wall_one_step_to_the_left()
 
@@ -164,11 +161,9 @@ class Observation(Perception):
         if immediately_to_the_right:
             return self.is_wall_immediately_to_the_right()
         elif self.is_wall_immediately_to_the_right():
-            return False # If the wall is immediately to the right, it is not one step to the right.
+            return False  # If the wall is immediately to the right, it is not one step to the right.
         else:
             return self.is_wall_one_step_to_the_right()
-
-    ##### END EXPERIMENTAL WALL API #####
 
     @staticmethod
     def create_empty_observation() -> Observation:

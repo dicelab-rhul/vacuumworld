@@ -6,7 +6,6 @@ from pystarworldsturbo.common.identifiable import Identifiable
 from ...common.colour import Colour
 
 
-
 class VWDirtAppearance(Identifiable):
     def __init__(self, dirt_id: str, progressive_id: str, colour: Colour) -> None:
         super(VWDirtAppearance, self).__init__(identifiable_id=dirt_id, progressive_id=progressive_id)

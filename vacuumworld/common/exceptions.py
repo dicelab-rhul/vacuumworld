@@ -9,7 +9,6 @@ if TYPE_CHECKING:
     from ..model.actor.vwagent import VWCleaningAgent
 
 
-
 class VWMalformedActionException(Exception):
     def __init__(self, message) -> None:
         super(VWMalformedActionException, self).__init__(message)

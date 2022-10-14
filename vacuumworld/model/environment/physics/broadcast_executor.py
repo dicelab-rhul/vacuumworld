@@ -12,7 +12,6 @@ if TYPE_CHECKING:
     from ..vwenvironment import VWEnvironment
 
 
-
 class BroadcastExecutor(ActionExecutor):
     def is_possible(self, env: VWEnvironment, action: VWBroadcastAction) -> bool:
         ignore(self)

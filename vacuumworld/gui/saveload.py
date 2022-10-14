@@ -10,7 +10,6 @@ from ..model.environment.vwenvironment import VWEnvironment
 import os
 
 
-
 class SaveStateManager():
     def __init__(self) -> None:
         self.__files_dir: str = os.path.join(os.getcwd(), "files")
@@ -26,7 +25,7 @@ class SaveStateManager():
         elif not os.path.isdir(self.__files_dir):
             raise ValueError("Could not create the `{}` directory.".format(self.__files_dir))
 
-        if not os.path.isdir(self.__files_dir): # The directory was not created.
+        if not os.path.isdir(self.__files_dir):  # The directory was not created.
             raise ValueError("Could not create the `{}` directory.".format(self.__files_dir))
 
     def __file_exists(self, filename: str) -> bool:

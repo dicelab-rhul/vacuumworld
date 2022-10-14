@@ -9,9 +9,8 @@ from vacuumworld.common.position_names import PositionNames
 from vacuumworld.model.actor.user_difficulty import UserDifficulty
 
 
-
 class TestEnums(TestCase):
-    def test_colour(self) ->  None:
+    def test_colour(self) -> None:
         self.assertEqual("white", Colour.white.value)
         self.assertEqual("white", repr(Colour.white))
         self.assertEqual("white", str(Colour.white))
@@ -32,7 +31,6 @@ class TestEnums(TestCase):
         self.assertEqual("user", str(Colour.user))
         self.assertEqual(Colour("user"), Colour.user)
 
-
     def test_direction(self) -> None:
         self.assertEqual("left", Direction.left.value)
         self.assertEqual("left", repr(Direction.left))
@@ -43,7 +41,6 @@ class TestEnums(TestCase):
         self.assertEqual("right", repr(Direction.right))
         self.assertEqual("right", str(Direction.right))
         self.assertEqual(Direction("right"), Direction.right)
-
 
     def test_orientation(self) -> None:
         self.assertEqual("north", Orientation.north.value)
@@ -120,7 +117,6 @@ class TestEnums(TestCase):
         self.assertEqual("forwardright", repr(PositionNames.forwardright))
         self.assertEqual("forwardright", str(PositionNames.forwardright))
         self.assertEqual(PositionNames("forwardright"), PositionNames.forwardright)
-
 
     def test_user_difficulty(self) -> None:
         self.assertEqual(0, UserDifficulty.easy.value)

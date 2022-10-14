@@ -1,7 +1,6 @@
 from enum import Enum
 
 
-
 class PositionNames(Enum):
     center = "center"
     forward = "forward"

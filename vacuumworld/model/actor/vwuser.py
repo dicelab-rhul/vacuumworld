@@ -5,7 +5,6 @@ from .vwactuators import VWUserPhysicalActuator, VWCommunicativeActuator
 from ..actions.drop_action import VWDropAction
 
 
-
 class VWUser(VWActor):
     def __init__(self, mind: VWUserMind) -> None:
         super(VWUser, self).__init__(mind=mind, sensors=[VWObservationSensor(), VWListeningSensor()], actuators=[VWUserPhysicalActuator(), VWCommunicativeActuator()])

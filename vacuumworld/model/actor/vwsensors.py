@@ -6,7 +6,6 @@ from pystarworldsturbo.common.message import BccMessage
 from ...common.observation import Observation
 
 
-
 class VWObservationSensor(Sensor):
     def __init__(self) -> None:
         super(VWObservationSensor, self).__init__(subscribed_events=[Observation])

@@ -3,7 +3,6 @@ from ...common.direction import Direction
 from ...common.exceptions import VWMalformedActionException
 
 
-
 class VWTurnAction(VWPhysicalAction):
     def __init__(self, direction: Direction) -> None:
         super(VWTurnAction, self).__init__()

@@ -15,7 +15,6 @@ if TYPE_CHECKING:
     from ..vwenvironment import VWEnvironment
 
 
-
 class DropExecutor(ActionExecutor):
     def is_possible(self, env: VWEnvironment, action: VWDropAction) -> bool:
         ignore(self)

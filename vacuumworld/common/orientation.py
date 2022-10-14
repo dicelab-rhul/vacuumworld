@@ -4,7 +4,6 @@ from enum import Enum
 from .direction import Direction
 
 
-
 class Orientation(Enum):
     north = "north"
     east = "east"
