@@ -2,8 +2,8 @@
 
 '''
 Please run this file as ./todo_generator from within its parent directory.
-Otherwise, the paths will not be generated/printed correctly. 
-'''   
+Otherwise, the paths will not be generated/printed correctly.
+'''
 
 from typing import List
 
