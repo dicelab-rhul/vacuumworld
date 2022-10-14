@@ -36,8 +36,4 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        pytest ../tests/test_actors.py
-        pytest ../tests/test_dirt.py
-        pytest ../tests/test_enums.py
-        pytest ../tests/test_location_and_coordinates.py
-        pytest ../tests/test_perception.py
+        python -m pytest -v ../tests/*
