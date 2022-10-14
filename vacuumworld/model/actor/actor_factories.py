@@ -3,6 +3,7 @@ from typing import Tuple, Union, Dict
 from .actor_mind_surrogate import ActorMindSurrogate
 from .user_mind_surrogate import UserMindSurrogate
 from .vwactormind import VWMind
+from .vwusermind import VWUserMind
 from .vwagent import VWCleaningAgent
 from .vwuser import VWUser
 from .user_difficulty import UserDifficulty
@@ -50,7 +51,7 @@ class VWUsersFactory():
     @staticmethod
     def create_user(difficulty_level: UserDifficulty, orientation: Orientation) -> Tuple[VWUser, VWActorAppearance]:
         try:
-            user: VWUser = VWUser(mind=VWMind(surrogate=UserMindSurrogate(difficulty_level=difficulty_level)))
+            user: VWUser = VWUser(mind=VWUserMind(surrogate=UserMindSurrogate(difficulty_level=difficulty_level)))
             user_appearance: VWActorAppearance = VWActorAppearance(actor_id=user.get_id(), progressive_id=user.get_progressive_id(), colour=Colour.user, orientation=orientation)
 
             return user, user_appearance
