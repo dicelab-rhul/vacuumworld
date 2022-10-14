@@ -30,6 +30,7 @@ class VWActuator(Actuator):
 
         return actions
 
+
 class VWPhysicalActuator(VWActuator):
     def __init__(self) -> None:
         super(VWPhysicalActuator, self).__init__(subscribed_events=[VWMoveAction, VWTurnAction, VWCleanAction, VWIdleAction])

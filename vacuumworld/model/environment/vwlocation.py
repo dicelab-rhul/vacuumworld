@@ -87,7 +87,7 @@ class VWLocation(LocationAppearance):
             return VWLocation(coord=self.__coord, actor_appearance=None, dirt_appearance=None, wall=self.__wall)
         elif self.__actor_appearance and not self.__dirt_appearance:
             return VWLocation(coord=self.__coord, actor_appearance=self.__actor_appearance.deep_copy(), dirt_appearance=None, wall=self.__wall)
-        elif not  self.__actor_appearance and self.__dirt_appearance:
+        elif not self.__actor_appearance and self.__dirt_appearance:
             return VWLocation(coord=self.__coord, actor_appearance=None, dirt_appearance=self.__dirt_appearance.deep_copy(), wall=self.__wall)
         else:
             return VWLocation(coord=self.__coord, actor_appearance=self.__actor_appearance.deep_copy(), dirt_appearance=self.__dirt_appearance.deep_copy(), wall=self.__wall)

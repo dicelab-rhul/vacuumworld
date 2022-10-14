@@ -168,34 +168,34 @@ class UserMindSurrogate(ActorMindSurrogate):
 
         # Always wall ahead
     def __decide_if_wall_ahead_and_inconsiderate(self) -> list:
-        if self.__is_wall_on_the_left(): # Wall on the left.
+        if self.__is_wall_on_the_left():  # Wall on the left.
             return VWTurnAction(direction=Direction.right)
-        elif self.__is_wall_on_the_right(): # Wall on the right.
+        elif self.__is_wall_on_the_right():  # Wall on the right.
             return VWTurnAction(direction=Direction.left)
-        elif self.__is_actor_on_the_left() and self.__is_actor_on_the_right(): # Both left and right are occupied by actors.
+        elif self.__is_actor_on_the_left() and self.__is_actor_on_the_right():  # Both left and right are occupied by actors.
             return UserMindSurrogate.__turn_randomly()
-        elif self.__is_actor_on_the_left(): # Actor on the left.
+        elif self.__is_actor_on_the_left():  # Actor on the left.
             return VWTurnAction(direction=Direction.right)
-        elif self.__is_actor_on_the_right(): # Actor on the right.
+        elif self.__is_actor_on_the_right():  # Actor on the right.
             return VWTurnAction(direction=Direction.left)
-        elif self.__is_on_dirt(): # Both left and right are free.
+        elif self.__is_on_dirt():  # Both left and right are free.
             return UserMindSurrogate.__turn_randomly()
-        else: # Wall ahead, left and right free, no dirt on center.
+        else:  # Wall ahead, left and right free, no dirt on center.
             return self.__act_randomly(weights=[0.075, 0.075, 0.6, 0.0, 0.25])
 
     # Always actor ahead.
     def __decide_if_agent_ahead_and_inconsiderate(self) -> list:
-        if self.__is_wall_on_the_left(): # Wall on the left.
+        if self.__is_wall_on_the_left():  # Wall on the left.
             return VWTurnAction(direction=Direction.right)
-        elif not self.__is_wall_on_the_right(): #  Wall on the right.
+        elif not self.__is_wall_on_the_right():  # Wall on the right.
             return VWTurnAction(direction=Direction.left)
-        elif self.__is_actor_on_the_left() and self.__is_actor_on_the_right(): # Both left and right are occupied by actors.
-            return self.__drop_random_dirt() # Dropping a dirt in front of the actor, if possible.
-        elif self.__is_actor_on_the_left(): # Actor on the left.
+        elif self.__is_actor_on_the_left() and self.__is_actor_on_the_right():  # Both left and right are occupied by actors.
+            return self.__drop_random_dirt()  # Dropping a dirt in front of the actor, if possible.
+        elif self.__is_actor_on_the_left():  # Actor on the left.
             return VWTurnAction(direction=Direction.right)
-        elif self.__is_actor_on_the_right(): # Actor on the right.
+        elif self.__is_actor_on_the_right():  # Actor on the right.
             return VWTurnAction(direction=Direction.left)
-        elif self.__is_on_dirt(): # Both left and right are free.
+        elif self.__is_on_dirt():  # Both left and right are free.
             return UserMindSurrogate.__turn_randomly()
         else:
             return UserMindSurrogate.__act_randomly(weights=[0.25, 0.25, 0.0, 0.25, 0.25])

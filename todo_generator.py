@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-
-
 ############################## IMPORTANT ##############################
 # Run this file as ./todo_generator from within its parent directory. #
 #    Otherwise, the paths will not be generated/printed correctly.    #
@@ -35,8 +33,8 @@ def main() -> None:
         if len(lines) > 0:
             f.write("\n")
 
-        for l in lines:
-            f.write(l + "\n")
+        for line in lines:
+            f.write(line + "\n")
 
         f.flush()
 

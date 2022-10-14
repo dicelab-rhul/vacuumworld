@@ -76,7 +76,7 @@ class VWEnvironment(Environment):
 
     def evolve(self) -> None:
         if self.__cycle == 0:
-            self.__force_initial_perception_to_actors() # For back compatibility with 4.1.8.
+            self.__force_initial_perception_to_actors()  # For back compatibility with 4.1.8.
         else:
             self.execute_cycle_actions()
 
@@ -171,11 +171,11 @@ class VWEnvironment(Environment):
             "locations": []
         }
 
-        for l in self.get_ambient().get_grid().values():
-            location: dict = l.to_json()
+        for location in self.get_ambient().get_grid().values():
+            location: dict = location.to_json()
 
-            if l.has_cleaning_agent():
-                actor_id: str = l.get_actor_appearance().get_id()
+            if location.has_cleaning_agent():
+                actor_id: str = location.get_actor_appearance().get_id()
 
                 location["actor"]["surrogate_mind_file"] = self.__get_actor_surrogate_mind_file(actor_id=actor_id)
                 location["actor"]["surrogate_mind_class_name"] = self.get_actor(actor_id=actor_id).get_mind().get_surrogate().__class__.__name__
@@ -230,7 +230,7 @@ class VWEnvironment(Environment):
                 assert forced_line_dim >= config["min_environment_dim"] and forced_line_dim <= config["max_environment_dim"]
                 line_dim = forced_line_dim
 
-            grid: Dict[Coord, VWLocation] = {Coord(x, y): VWLocation(coord=Coord(x, y), actor_appearance=None, dirt_appearance=None, wall=VWEnvironment.__generate_wall_from_coordinates(coord=Coord(x, y), grid_size=line_dim)) for x, y in product(range(line_dim), range(line_dim))}     
+            grid: Dict[Coord, VWLocation] = {Coord(x, y): VWLocation(coord=Coord(x, y), actor_appearance=None, dirt_appearance=None, wall=VWEnvironment.__generate_wall_from_coordinates(coord=Coord(x, y), grid_size=line_dim)) for x, y in product(range(line_dim), range(line_dim))}
 
             VWEnvironment.__validate_grid(grid=grid, config=config, candidate_grid_line_dim=line_dim)
 

@@ -1,13 +1,6 @@
-from typing import Iterable, List, Tuple, Union
-
-from pystarworldsturbo.elements.mind import Mind
-from pystarworldsturbo.common.message import BccMessage
-
 from .user_mind_surrogate import UserMindSurrogate
 from .vwactormind import VWMind
-from ..actions.vwactions import VWAction
-from ..actions.idle_action import VWIdleAction
-from ...common.observation import Observation
+
 
 
 class VWUserMind(VWMind):

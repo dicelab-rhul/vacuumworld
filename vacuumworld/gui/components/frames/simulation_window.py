@@ -73,7 +73,7 @@ class VWSimulationWindow(Frame):
         self.__init_dragables()
         self.__draw_grid()
 
-        self.__canvas.grid(row=0,column=0) # Packing.
+        self.__canvas.grid(row=0, column=0)  # Packing.
 
         # Bind keys for rotation.
         self.__parent.bind("<Left>", self.__rotate_actor_left)
@@ -87,7 +87,7 @@ class VWSimulationWindow(Frame):
         self.__canvas.bind("<Leave>", self.__on_leave_canvas)
 
     def __load_button_image(self, button_name: str) -> Img:
-        return  VWSimulationWindow.__scale(Image.open(os.path.join(self.__config["button_data_path"], self.__button_data[button_name]["image_file"])), self.__config["button_size"])
+        return VWSimulationWindow.__scale(Image.open(os.path.join(self.__config["button_data_path"], self.__button_data[button_name]["image_file"])), self.__config["button_size"])
 
     def __set_button_actions(self) -> None:
         self.__button_data["play"]["action"] = self.__play
@@ -193,10 +193,7 @@ class VWSimulationWindow(Frame):
 
     def __init_size_slider(self, parent, length=250) -> None:
         increments: int = self.__config["max_environment_dim"] - self.__config["min_environment_dim"]
-        self.__grid_scale_slider: Slider = Slider(parent, self.__config, self.__on_resize, self.__on_resize_slide, length * self.__config["scale"],
-                                        16 * self.__config["scale"], slider_width = length * self.__config["scale"] / (increments * 3),
-                                        increments=increments,
-                                        start=self.__config["grid_size"]/self.__config["location_size"] - self.__config["min_environment_dim"])
+        self.__grid_scale_slider: Slider = Slider(parent, self.__config, self.__on_resize, self.__on_resize_slide, length * self.__config["scale"], 16 * self.__config["scale"], slider_width = length * self.__config["scale"]/(increments * 3), increments=increments, start=self.__config["grid_size"]/self.__config["location_size"] - self.__config["min_environment_dim"])
 
         self.__grid_scale_slider.pack(side="top")
 
@@ -281,7 +278,7 @@ class VWSimulationWindow(Frame):
         if working_location and working_location.has_actor():
             self.__remove_actor_from_gui(self.__selected)
 
-            new_orientation: Orientation =  working_location.get_actor_appearance().get_orientation().get(direction=direction)
+            new_orientation: Orientation = working_location.get_actor_appearance().get_orientation().get(direction=direction)
             actor_colour: Colour = working_location.get_actor_appearance().get_colour()
             inc: int = self.__config["grid_size"] / self.__env.get_ambient().get_grid_dim()
             tk_img: PhotoImage = self.__all_images_tk_scaled[(actor_colour.value, new_orientation.value)]
@@ -297,10 +294,10 @@ class VWSimulationWindow(Frame):
     def __rotate_actor_right(self, event:  Event) -> None:
         self.__rotate_actor(event, Direction.right)
 
-    def __pack_buttons(self, *buttons, forget: bool=True) ->  None:
+    def __pack_buttons(self, *buttons, forget: bool=True) -> None:
         if forget:
             for button in self.__buttons.values():
-               button.get_button().grid_remove()
+                button.get_button().grid_remove()
         for i in range(len(buttons)):
             self.__buttons[buttons[i]].get_button().grid(row=0, column=i, sticky=W)
 
@@ -361,9 +358,9 @@ class VWSimulationWindow(Frame):
                     tk_img: PhotoImage = self.__all_images_tk_scaled[(actor_appearance.get_colour().value, actor_appearance.get_orientation().value)]
                     item: Img = self.__canvas.create_image(coord.x * inc + inc/2, coord.y * inc + inc/2, image=tk_img)
                     self.__canvas_agents[coord] = item
-                    self.__canvas.tag_lower(item) # Keep the agent behind the grid lines.
+                    self.__canvas.tag_lower(item)  # Keep the agent behind the grid lines.
 
-                    if coord in self.__canvas_dirts: # Keep the dirt behind the agent.
+                    if coord in self.__canvas_dirts:  # Keep the dirt behind the agent.
                         self.__canvas.tag_lower(self.__canvas_dirts[coord])
 
                 if location.has_dirt():
@@ -371,7 +368,7 @@ class VWSimulationWindow(Frame):
                     item: Img = self.__canvas.create_image(coord.x * inc + inc/2, coord.y * inc + inc/2, image=tk_img)
                     self.__canvas_dirts[coord] = item
 
-                    self.__canvas.tag_lower(item) # Keep dirt behind agents and grid lines.
+                    self.__canvas.tag_lower(item)  # Keep dirt behind agents and grid lines.
 
     def __draw_grid(self) -> None:
         env_dim: int = self.__env.get_ambient().get_grid_dim()
@@ -382,10 +379,10 @@ class VWSimulationWindow(Frame):
         inc: int = size / env_dim
 
         for _ in range(env_dim + 1):
-           self.__grid_lines.append(self.__canvas.create_line(x,0,x,size+1))
-           self.__grid_lines.append(self.__canvas.create_line(0,y,size+1,y))
-           y += inc
-           x += inc
+            self.__grid_lines.append(self.__canvas.create_line(x, 0, x, size+1))
+            self.__grid_lines.append(self.__canvas.create_line(0, y, size+1, y))
+            y += inc
+            x += inc
 
     @staticmethod
     def __get_image_key(name: str) -> Tuple[str, str]:
@@ -399,7 +396,7 @@ class VWSimulationWindow(Frame):
         image_names: List[str] = [file.split(".")[0] for file in files]
 
         for img_name in image_names:
-            file_path: str = os.path.join(self.__config["location_agent_images_path"], img_name) +  ".png"
+            file_path: str = os.path.join(self.__config["location_agent_images_path"], img_name) + ".png"
             img: Img = VWSimulationWindow.__scale(Image.open(file_path), self.__config["location_size"])
             images: OrderedDict[str, Img] = VWSimulationWindow.__construct_images(img, img_name + "_")
 
@@ -414,7 +411,7 @@ class VWSimulationWindow(Frame):
         images_names: List[str] = [file.split(".")[0] for file in files]
 
         for name in images_names:
-            file_path: str = os.path.join(self.__config["location_dirt_images_path"], name) +  ".png"
+            file_path: str = os.path.join(self.__config["location_dirt_images_path"], name) + ".png"
             img: Img = VWSimulationWindow.__scale(Image.open(file_path), self.__config["location_size"])
             img_key: Tuple[str, str] = VWSimulationWindow.__get_image_key(name)
             tk_img: PhotoImage = PhotoImage(img)
@@ -425,13 +422,10 @@ class VWSimulationWindow(Frame):
 
     @staticmethod
     def __construct_images(img: Img, name: str) -> Dict[str, Img]:
-        return OrderedDict({name + str(Orientation.north):img,
-                      name + str(Orientation.west):img.copy().rotate(90),
-                      name + str(Orientation.south):img.copy().rotate(180),
-                      name + str(Orientation.east):img.copy().rotate(270)})
+        return OrderedDict({name + str(Orientation.north): img, name + str(Orientation.west): img.copy().rotate(90), name + str(Orientation.south): img.copy().rotate(180), name + str(Orientation.east): img.copy().rotate(270)})
 
     def __scaled_tk(self) -> None:
-        size: int = min(self.__config["location_size"], self.__config["grid_size"]  / self.__env.get_ambient().get_grid_dim())
+        size: int = min(self.__config["location_size"], self.__config["grid_size"] / self.__env.get_ambient().get_grid_dim())
         for name, image in self.__all_images.items():
             self.__all_images_tk_scaled[name] = PhotoImage(VWSimulationWindow.__scale(image, size))
 
@@ -493,7 +487,7 @@ class VWSimulationWindow(Frame):
         inc: int = self.__config["grid_size"] / self.__env.get_ambient().get_grid_dim()
         x: int = int(event.x / inc)
         y: int = int(event.y / inc)
-        coord: Coord = Coord(x,y)
+        coord: Coord = Coord(x, y)
 
         # Update the environment state.
         col, obj = drag_manager.get_key()
@@ -604,7 +598,7 @@ class VWSimulationWindow(Frame):
 
         self.__running = True
 
-        if self.__after_hook: # Prevent button spam.
+        if self.__after_hook:  # Prevent button spam.
             self.__parent.after_cancel(self.__after_hook)
 
         time: int = int(self.__config["time_step"]*1000)
@@ -644,7 +638,7 @@ class VWSimulationWindow(Frame):
 
         self.__running = True
 
-        if self.__after_hook: # Prevent button spam.
+        if self.__after_hook:  # Prevent button spam.
             self.__parent.after_cancel(self.__after_hook)
 
         time = int(self.__config["time_step"]*1000)

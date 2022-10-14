@@ -35,6 +35,7 @@ class ToolTip():
         if tw:
             tw.destroy()
 
+
 def create_tooltip(widget: Button, text: str, config: dict) -> None:
     tooltip: ToolTip = ToolTip(widget=widget, config=config)
 

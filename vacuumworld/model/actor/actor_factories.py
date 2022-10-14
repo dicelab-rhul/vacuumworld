@@ -47,6 +47,7 @@ class VWCleaningAgentsFactory():
         except Exception:
             raise IOError("Could not parse a cleaning agent from the JSON data.")
 
+
 class VWUsersFactory():
     @staticmethod
     def create_user(difficulty_level: UserDifficulty, orientation: Orientation) -> Tuple[VWUser, VWActorAppearance]:
