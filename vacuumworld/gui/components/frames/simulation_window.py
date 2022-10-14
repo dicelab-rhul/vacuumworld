@@ -51,10 +51,10 @@ class VWSimulationWindow(Frame):
         self.__selected: Coord = None
         self.__canvas_dirts: Dict[Coord, Img] = {}
         self.__canvas_agents: Dict[Coord, Img] = {}
-        self.__all_images: Dict[Tuple[str, str], Img] = {} # Will store all PIL images.
-        self.__all_images_tk: Dict[Tuple[str, str], PhotoImage] = {} # Will store all tk images.
-        self.__all_images_tk_scaled: Dict[Tuple[str, str], PhotoImage] = {} # Will store all tk images scaled to fit grid.
-        self.__grid_lines: list = [] # Will store line objects.
+        self.__all_images: Dict[Tuple[str, str], Img] = {}  # Will store all PIL images.
+        self.__all_images_tk: Dict[Tuple[str, str], PhotoImage] = {}  # Will store all tk images.
+        self.__all_images_tk_scaled: Dict[Tuple[str, str], PhotoImage] = {}  # Will store all tk images scaled to fit grid.
+        self.__grid_lines: list = []  # Will store line objects.
 
         self.__create_and_display()
 
@@ -193,7 +193,7 @@ class VWSimulationWindow(Frame):
 
     def __init_size_slider(self, parent, length=250) -> None:
         increments: int = self.__config["max_environment_dim"] - self.__config["min_environment_dim"]
-        self.__grid_scale_slider: Slider = Slider(parent, self.__config, self.__on_resize, self.__on_resize_slide, length * self.__config["scale"], 16 * self.__config["scale"], slider_width = length * self.__config["scale"]/(increments * 3), increments=increments, start=self.__config["grid_size"]/self.__config["location_size"] - self.__config["min_environment_dim"])
+        self.__grid_scale_slider: Slider = Slider(parent, self.__config, self.__on_resize, self.__on_resize_slide, length * self.__config["scale"], 16 * self.__config["scale"], slider_width=length * self.__config["scale"]/(increments * 3), increments=increments, start=self.__config["grid_size"]/self.__config["location_size"] - self.__config["min_environment_dim"])
 
         self.__grid_scale_slider.pack(side="top")
 
