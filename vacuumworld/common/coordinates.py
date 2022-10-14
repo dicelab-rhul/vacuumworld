@@ -19,7 +19,7 @@ class Coord(NamedTuple):
             assert isinstance(other[0], int) and isinstance(other[1], int)
 
             return Coord(self[0] + other[0], self[1] + other[1])
-    
+
     def __sub__(self, other: Union[int, List[int], Tuple[int, int]]) -> Coord:
         assert other is not None
 
@@ -30,7 +30,7 @@ class Coord(NamedTuple):
             assert isinstance(other[0], int) and isinstance(other[1], int)
 
             return Coord(self[0] - other[0], self[1] - other[1])
-    
+
     def __mul__(self, other: Union[int, List[int], Tuple[int, int]]) -> Coord:
         assert other is not None
 
@@ -41,7 +41,7 @@ class Coord(NamedTuple):
             assert isinstance(other[0], int) and isinstance(other[1], int)
 
             return Coord(self[0] * other[0], self[1] * other[1])
-    
+
     # Integer division.
     def __floordiv__(self, other: Union[int, List[int], Tuple[int, int]]) -> Coord:
         assert other is not None

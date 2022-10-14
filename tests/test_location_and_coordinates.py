@@ -64,7 +64,7 @@ class TestLocationAndCoordinates(TestCase):
         r: Coord = c.right(orientation=a1.get_orientation())
         fl: Coord = c.forwardleft(orientation=a1.get_orientation())
         fr: Coord = c.forwardright(orientation=a1.get_orientation())
-        
+
         # TODO: use non-trivial walls.
         sample_wall: Dict[Orientation, bool] = {Orientation.north: False, Orientation.south: False, Orientation.west: False, Orientation.east: False}
 
@@ -99,7 +99,7 @@ class TestLocationAndCoordinates(TestCase):
         self.assertEqual(forwardright.get_coord(), fr)
         self.assertEqual(forwardright.get_actor_appearance(), u2)
         self.assertEqual(forwardright.get_dirt_appearance(), d3)
-        
+
         # TODO: check for walls.
 
 

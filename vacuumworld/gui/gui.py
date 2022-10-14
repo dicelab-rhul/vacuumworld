@@ -47,7 +47,7 @@ class VWGUI(Process):
             assert minds
 
             self.__minds: Dict[Colour, ActorMindSurrogate] = minds
-            
+
             VWGUI.__validate_arguments(play=play, file_to_load=load, speed=speed, scale=scale)
 
             self.__override_default_config(skip=skip, play=play, speed=speed, file_to_load=load, scale=scale, tooltips=tooltips)
@@ -75,7 +75,7 @@ class VWGUI(Process):
         self.__config["skip"] |= skip
         self.__config["play"] |= play
         self.__config["time_step_modifier"] = 1 - speed
-        
+
         if file_to_load:
             self.__config["file_to_load"] = file_to_load
 
@@ -102,7 +102,7 @@ class VWGUI(Process):
                 from signal import SIGTSTP
 
                 signal(SIGTSTP, SIG_IGN)
-            
+
             self.__root: Tk = Tk()
             self.__root.title("VacuumWorld v{}".format(self.__config["version_number"]))
             self.__root.protocol("WM_DELETE_WINDOW", self.kill)
@@ -197,7 +197,7 @@ class VWGUI(Process):
 
     def __load(self, saveloadmenu: AutocompleteEntry) -> VWEnvironment:
         filename: str = saveloadmenu.var.get()
-        
+
         data: dict = self.__save_state_manager.load_state(filename=filename)
 
         return VWEnvironment.from_json(data=data, config=self.__config)

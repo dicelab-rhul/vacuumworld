@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 class MoveExecutor(ActionExecutor):
     def is_possible(self, env: VWEnvironment, action: VWMoveAction) -> bool:
         ignore(self)
-        
+
         actor_id: str = action.get_actor_id()
         actor_position: Coord = env.get_actor_position(actor_id=actor_id)
         actor_orientation: Orientation = env.get_actor_orientation(actor_id=actor_id)
@@ -29,7 +29,7 @@ class MoveExecutor(ActionExecutor):
 
     def attempt(self, env: VWEnvironment, action: VWMoveAction) -> ActionResult:
         ignore(self)
-        
+
         try:
             actor_id: str = action.get_actor_id()
             actor_position: Coord = env.get_actor_position(actor_id=actor_id)
@@ -57,7 +57,7 @@ class MoveExecutor(ActionExecutor):
 
         if not env.get_ambient().get_grid()[actor_position_after_move].has_actor():
             return False
-        
+
         if env.get_ambient().get_grid()[actor_position_after_move].get_actor_appearance().get_id() != actor_id:
             return False
 

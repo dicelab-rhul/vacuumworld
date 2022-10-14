@@ -13,20 +13,20 @@ import os
 class VWInitialWindow(Frame):
     def __init__(self, parent: Tk, config: dict, buttons: dict, env: VWEnvironment, _start: Callable, _exit: Callable, _guide: Callable) -> None:
         super(VWInitialWindow,self).__init__(parent)
-        
+
         self.__config: dict = config
         self.__button_data: dict = buttons
 
         self.__button_data["start"]["action"] = lambda: _start(env)
         self.__button_data["guide"]["action"] = _guide
         self.__button_data["exit"]["action"] = _exit
-        
+
         self.configure(background=self.__config["bg_colour"])
         self.__canvas: Canvas = Canvas(self, width = self.__config["grid_size"] + 1, height = self.__config["grid_size"] + 1, bd=0, highlightthickness=0)
 
         self.__img_tk: PhotoImage = PhotoImage(Image.open(self.__config["main_menu_image_path"]).resize((int(self.__config["grid_size"]), int(self.__config["grid_size"])), Image.BICUBIC))
         self.__image: Img = self.__canvas.create_image(self.__config["grid_size"]/2,self.__config["grid_size"]/2,image=self.__img_tk)
-        
+
         self.__button_frame: Frame = Frame(self)
 
         self.__canvas.pack()
@@ -39,7 +39,7 @@ class VWInitialWindow(Frame):
         self.__button_frame.pack()
 
         # Note: pack() for VWInitialWindow needs to be called by the caller.
-    
+
     def get_image(self) -> Img:
         return self.__image
 

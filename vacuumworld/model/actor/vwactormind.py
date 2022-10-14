@@ -15,7 +15,7 @@ class VWMind(Mind):
     REVISE_METHOD_NAME: str = "revise"
     DECIDE_METHOD_NAME: str = "decide"
     EXECUTE_METHOD_NAME: str = "execute"
-    
+
     def __init__(self, surrogate: ActorMindSurrogate) -> None:
         super(VWMind, self).__init__()
 
@@ -24,12 +24,12 @@ class VWMind(Mind):
         # This is to prevent that, when the simulation is stopped and the grid is cleared, the surrogates retain the values of their attributes.
         self.__surrogate: ActorMindSurrogate = self._clone_surrogate(surrogate=surrogate)
         del surrogate
-        
+
         self.__next_actions: Tuple[VWAction] = None
 
     def get_surrogate(self) -> ActorMindSurrogate:
         return self.__surrogate
-    
+
     # This method needs to be overridden by sub-classes.
     def _clone_surrogate(self, surrogate: ActorMindSurrogate) -> ActorMindSurrogate:
         return type(surrogate)()
@@ -52,7 +52,7 @@ class VWMind(Mind):
     def revise(self, observation: Observation, messages: Iterable[BccMessage]) -> None:
         assert hasattr(self.__surrogate, VWMind.REVISE_METHOD_NAME)
         assert callable(getattr(self.__surrogate, VWMind.REVISE_METHOD_NAME))
-        
+
         if not observation:
             observation = Observation.create_empty_observation()
 
@@ -89,6 +89,5 @@ class VWMind(Mind):
 
     def execute(self) -> Tuple[VWAction]:
         assert len(self.__next_actions) > 0
-        
 
         return self.__next_actions

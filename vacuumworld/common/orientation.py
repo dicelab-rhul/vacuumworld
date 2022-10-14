@@ -13,7 +13,7 @@ class Orientation(Enum):
 
     def __str__(self) -> str:
         return self.value
-    
+
     def __repr__(self) -> str:
         return str(self)
 
@@ -36,7 +36,7 @@ class Orientation(Enum):
             return Orientation.north
         else:
             return Orientation.south
-        
+
     def get_opposite(self) -> Orientation:
         if self == Orientation.north:
             return Orientation.south

@@ -13,7 +13,7 @@ class TestDirt(TestCase):
         for colour in [Colour.green, Colour.orange]:
             dirt: Dirt = Dirt(colour=colour)
             dirt_appearance: VWDirtAppearance = VWDirtAppearance(dirt_id=dirt.get_id(), progressive_id=dirt.get_progressive_id(), colour=colour)
-            
+
             self.assertEqual(dirt.get_id(), dirt_appearance.get_id())
             self.assertEqual(dirt.get_progressive_id(), dirt_appearance.get_progressive_id())
             self.assertEqual(dirt.get_colour(), colour)

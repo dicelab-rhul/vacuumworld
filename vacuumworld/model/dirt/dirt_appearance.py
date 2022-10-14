@@ -43,4 +43,3 @@ class VWDirtAppearance(Identifiable):
         result = prime * result + self.__colour.__hash__()
 
         return result
-

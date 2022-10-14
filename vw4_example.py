@@ -27,10 +27,9 @@ class MyMind(ActorMindSurrogate):
 
     def decide(self) -> Union[VWAction, Tuple[VWAction]]:
         return VWIdleAction(), VWBroadcastAction(message="Hello!", sender_id="HIDDEN")
-    
+
         # Replace this trivial decision process with something meaningful.
-        
-        
-        
+
+
 if __name__ == "__main__":
     run(default_mind=MyMind())

@@ -59,7 +59,7 @@ class VWSimulationWindow(Frame):
         self.__create_and_display()
 
         # Note: pack() for VWSimulationWindow needs to be called by the caller.
-    
+
     def __create_and_display(self) -> None:
         self.configure(background=self.__config["bg_colour"])
 
@@ -111,7 +111,7 @@ class VWSimulationWindow(Frame):
     def __build_difficulty_button(self, parent: Frame) -> VWDifficultyButton:
         image: Img = self.__load_button_image(button_name="difficulty")
         tip_text: str = self.__button_data["difficulty"]["tip_text"]
-        
+
         return VWDifficultyButton(parent=parent, config=self.__config, img=image, fun=self.__difficulty, tip_text=tip_text)
 
     def __init_bottom_left_frame(self, bg: str) -> None:
@@ -126,10 +126,10 @@ class VWSimulationWindow(Frame):
         self.__buttons["difficulty"] = self.__build_difficulty_button(parent=control_buttons_frame)
 
         self.__pack_buttons("play", "reset", "fast", "difficulty", "guide_bis", forget=False)
-        
+
         # Init the slider.
         self.__init_size_slider(slider_frame)
-        
+
         slider_frame.grid(row=0, column=0)
         control_buttons_frame.grid(row=1, column=0, sticky=W)
 
@@ -139,7 +139,7 @@ class VWSimulationWindow(Frame):
         # Middle contains save and load.
         self.__mid_frame: Frame = Frame(self.__button_frame, bg=bg)
         saveload_frame: Frame = Frame(self.__mid_frame, bg=bg)
-    
+
         # Buttons.
         for button_name in ("save", "load"):
             self.__buttons[button_name] = self.__build_textless_button(button_name=button_name, parent=saveload_frame)
@@ -149,7 +149,7 @@ class VWSimulationWindow(Frame):
         self.__load_menu: AutocompleteEntry = AutocompleteEntry(files, 3, self.__mid_frame, font=self.__config["root_font"], bg=self.__config["autocomplete_entry_bg_colour"], fg=self.__config["fg_colour"])
         self.__load_menu.bind("<Button-1>", lambda _: self.__deselect())
         self.__load_menu.pack(side="top")
-    
+
         self.__pack_buttons("save", "load", forget=False)
         saveload_frame.pack(side="bottom")
         self.__mid_frame.pack(side="left")
@@ -157,19 +157,19 @@ class VWSimulationWindow(Frame):
     def __init_info_frame(self, bg: str) -> None:
         # Init information frame.
         self.__info_frame: Frame = Frame(self.__button_frame, bg=bg)
-        
+
         _size_frame: Frame = Frame(self.__info_frame, bg=bg)
         self.__size_text: StringVar = StringVar()
         self.__size_text.set(str(self.__config["initial_environment_dim"]))
         size_label: Label = Label(_size_frame, textvariable=self.__size_text, width=2, font=self.__config["root_font"], bg=bg, fg=self.__config["fg_colour"])
         size_label.grid(row=0, column=1, sticky=E)
-        
+
         _size: StringVar = StringVar()
         _size.set("size:")
         _size_label: Label = Label(_size_frame, textvariable=_size, font=self.__config["root_font"], bg=bg, fg=self.__config["fg_colour"])
         _size_label.grid(row=0, column=0, sticky=W)
         _size_frame.grid(row=0, column=0, stick=W)
-        
+
         self.__coordinate_text: StringVar = StringVar()
         self.__coordinate_text.set(self.__empty_location_coordinates_text)
         coordinate_label: Label = Label(self.__info_frame, textvariable=self.__coordinate_text, font=self.__config["root_font"], bg=bg, fg=self.__config["fg_colour"])
@@ -190,7 +190,7 @@ class VWSimulationWindow(Frame):
         self.__init_bottom_left_frame(bg=bg)
         self.__init_saveload_frame(bg=bg)
         self.__init_info_frame(bg=bg)
-    
+
     def __init_size_slider(self, parent, length=250) -> None:
         increments: int = self.__config["max_environment_dim"] - self.__config["min_environment_dim"]
         self.__grid_scale_slider: Slider = Slider(parent, self.__config, self.__on_resize, self.__on_resize_slide, length * self.__config["scale"],
@@ -199,7 +199,7 @@ class VWSimulationWindow(Frame):
                                         start=self.__config["grid_size"]/self.__config["location_size"] - self.__config["min_environment_dim"])
 
         self.__grid_scale_slider.pack(side="top")
-        
+
     def __init_dragables(self) -> None:
         # Load all images.
         keys: List[Tuple[str, str]] = [("white", "north"), ("orange", "north"), ("green", "north"), ("user", "north"), ("orange", "dirt"), ("green", "dirt")]
@@ -287,7 +287,7 @@ class VWSimulationWindow(Frame):
             tk_img: PhotoImage = self.__all_images_tk_scaled[(actor_colour.value, new_orientation.value)]
             item: Img = self.__canvas.create_image(self.__selected.x * inc + inc/2, self.__selected.y * inc + inc/2, image=tk_img)
             self.__canvas_agents[self.__selected] = item
-            
+
             self.__env.turn_actor(coord=self.__selected, direction=direction)
             self.__lines_to_front()
 
@@ -304,7 +304,7 @@ class VWSimulationWindow(Frame):
         for i in range(len(buttons)):
             self.__buttons[buttons[i]].get_button().grid(row=0, column=i, sticky=W)
 
-    def __reset_canvas(self, lines: bool=True, dirts: bool=True, agents: bool=True, select: bool=True) -> None:      
+    def __reset_canvas(self, lines: bool=True, dirts: bool=True, agents: bool=True, select: bool=True) -> None:
         if lines:
             for line in self.__grid_lines:
                 self.__canvas.delete(line)
@@ -370,7 +370,7 @@ class VWSimulationWindow(Frame):
                     tk_img: PhotoImage = self.__all_images_tk_scaled[(location.get_dirt_appearance().get_colour().value, "dirt")]
                     item: Img = self.__canvas.create_image(coord.x * inc + inc/2, coord.y * inc + inc/2, image=tk_img)
                     self.__canvas_dirts[coord] = item
-                    
+
                     self.__canvas.tag_lower(item) # Keep dirt behind agents and grid lines.
 
     def __draw_grid(self) -> None:
@@ -450,13 +450,13 @@ class VWSimulationWindow(Frame):
             self.__reset_canvas()
             self.__scaled_tk()
             self.__draw_grid()
-            
+
     def __on_resize_slide(self, value: int) -> None:
         self.__size_text.set(str(value + self.__config["min_environment_dim"]))
 
     def __on_leave_canvas(self, _) -> None:
         self.__coordinate_text.set(self.__empty_location_coordinates_text)
-    
+
     def __on_mouse_move(self, event: Event) -> None:
         if self.__bounds_manager.in_bounds(event.x, event.y):
             inc: int = self.__config["grid_size"] / self.__env.get_ambient().get_grid_dim()
@@ -513,7 +513,7 @@ class VWSimulationWindow(Frame):
 
     def __drop_dirt(self, coord: Coord, colour: Colour, drag_manager:  CanvasDragManager) -> None:
         message: str = ""
-        
+
         if self.__env.get_ambient().is_dirt_at(coord=coord):
             dirt_colour: Colour = self.__env.get_ambient().get_location_interface(coord=coord).get_dirt_appearance().get_colour()
 
@@ -535,7 +535,7 @@ class VWSimulationWindow(Frame):
 
     def __drop_actor_facing_north(self, coord: Coord, colour: Colour, drag_manager: CanvasDragManager) -> None:
         message: str = ""
-        
+
         actor, actor_appearance = VWActorsFactory.create_actor(colour=colour, orientation=Orientation.north, mind_surrogate=self.__agent_minds[colour])
 
         if self.__env.get_ambient().is_actor_at(coord=coord):
@@ -611,16 +611,15 @@ class VWSimulationWindow(Frame):
         self.__after_hook = self.__parent.after(time, self.__simulate)
 
     def __simulate(self) -> None:
-        try: 
+        try:
             if self.__running:
                 print("------------ Cycle {} ------------ ".format(self.__env.get_current_cycle_number()))
-  
+
                 self.__env.evolve()
                 self.__parent.after(0, self.redraw)
 
                 time: int = int(self.__config["time_step"]*1000)
                 self.__after_hook = self.__parent.after(time, self.__simulate)
-            
         except Exception:
             print("INFO: SIMULATION ERROR!")
 
@@ -642,9 +641,9 @@ class VWSimulationWindow(Frame):
 
         self.__pack_buttons("stop", "pause", "fast")
         self.redraw()
-        
+
         self.__running = True
-        
+
         if self.__after_hook: # Prevent button spam.
             self.__parent.after_cancel(self.__after_hook)
 
@@ -657,7 +656,7 @@ class VWSimulationWindow(Frame):
         self.__reset_time_step()
         self.__pack_buttons("stop", "resume", "fast", "guide_bis")
         self.redraw()
-        
+
         self.__running = False
 
     def __fast(self) -> None:

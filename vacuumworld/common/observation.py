@@ -28,22 +28,22 @@ class Observation(Perception):
 
     def get_latest_actions_results(self) -> List[Tuple[Type[VWAction], ActionResult]]:
         return self.__action_results
-    
+
     def __format_latest_action_results(self) -> str:
         return ", ".join(["{}: {}".format(action_type.__name__, action_result.get_outcome()) for action_type, action_result in self.__action_results])
 
     def merge_action_result_with_previous_observations(self, observations: Iterable[Observation]) -> None:
         assert len(self.__action_results) == 1
-        
+
         previous_results: List[Tuple[Type[VWAction], ActionResult]] = []
-        
+
         for observation in observations:
             assert len(observation.get_latest_actions_results()) == 1
-            
+
             previous_results += observation.get_latest_actions_results()
-        
+
         self.__action_results = previous_results + self.__action_results
-    
+
     def is_empty(self) -> bool:
         return not self.__locations
 
@@ -87,63 +87,63 @@ class Observation(Perception):
 
     def is_wall_immediately_ahead(self) -> bool:
         actor_orientation: Orientation = self.get_center().get_actor_appearance().get_orientation()
-        
+
         return self.get_center().has_wall_on(orientation=actor_orientation)
 
     def is_wall_immediately_behind(self) -> bool:
         actor_orientation: Orientation = self.get_center().get_actor_appearance().get_orientation()
-        
+
         return self.get_center().has_wall_on(orientation=actor_orientation.get_opposite())
 
     def is_wall_immediately_to_the_left(self) -> bool:
         actor_orientation: Orientation = self.get_center().get_actor_appearance().get_orientation()
-        
+
         return self.get_center().has_wall_on(orientation=actor_orientation.get_left())
 
     def is_wall_immediately_to_the_right(self) -> bool:
         actor_orientation: Orientation = self.get_center().get_actor_appearance().get_orientation()
-        
+
         return self.get_center().has_wall_on(orientation=actor_orientation.get_right())
 
     def is_wall_one_step_ahead(self) -> bool:
         if self.is_wall_immediately_ahead():
             return False
-        
+
         assert self.get_forward() is not None
-        
+
         actor_orientation: Orientation = self.get_center().get_actor_appearance().get_orientation()
-        
+
         return self.get_forward().has_wall_on(orientation=actor_orientation)
 
     def is_wall_one_step_to_the_left(self) -> bool:
         if self.is_wall_immediately_to_the_left():
             return False
-        
+
         assert self.get_left() is not None
-        
+
         actor_orientation: Orientation = self.get_center().get_actor_appearance().get_orientation()
-        
+
         return self.get_left().has_wall_on(orientation=actor_orientation.get_left())
 
     def is_wall_one_step_to_the_right(self) -> bool:
         if self.is_wall_immediately_to_the_right():
             return False
-        
+
         assert self.get_right() is not None
-        
+
         actor_orientation: Orientation = self.get_center().get_actor_appearance().get_orientation()
-        
+
         return self.get_right().has_wall_on(orientation=actor_orientation.get_right())
 
     def is_wall_visible_somewhere_ahead(self) -> bool:
         return self.is_wall_immediately_ahead() or self.is_wall_one_step_ahead()
-    
+
     def is_wall_visible_somewhere_to_the_left(self) -> bool:
         return self.is_wall_immediately_to_the_left() or self.is_wall_one_step_to_the_left()
-    
+
     def is_wall_visible_somewhere_to_the_right(self) -> bool:
         return self.is_wall_immediately_to_the_right() or self.is_wall_one_step_to_the_right()
-    
+
     def is_wall_visible_ahead(self, immediately_ahead: bool) -> bool:
         if immediately_ahead:
             return self.is_wall_immediately_ahead()
@@ -151,7 +151,7 @@ class Observation(Perception):
             return False # If the wall is immediately ahead, it is not one step ahead.
         else:
             return self.is_wall_one_step_ahead()
-    
+
     def is_wall_visible_to_the_left(self, immediately_to_the_left: bool) -> bool:
         if immediately_to_the_left:
             return self.is_wall_immediately_to_the_left()
@@ -159,7 +159,7 @@ class Observation(Perception):
             return False # If the wall is immediately to the left, it is not one step to the left.
         else:
             return self.is_wall_one_step_to_the_left()
-    
+
     def is_wall_visible_to_the_right(self, immediately_to_the_right: bool) -> bool:
         if immediately_to_the_right:
             return self.is_wall_immediately_to_the_right()
@@ -167,7 +167,7 @@ class Observation(Perception):
             return False # If the wall is immediately to the right, it is not one step to the right.
         else:
             return self.is_wall_one_step_to_the_right()
-    
+
     ##### END EXPERIMENTAL WALL API #####
 
     @staticmethod
@@ -183,11 +183,11 @@ class Observation(Perception):
 
     def __format_perceived_locations(self) -> List[str]:
         return ["{}: {}".format(pos.name, loc) for pos, loc in self.__locations.items()]
-    
+
     def pretty_format(self) -> str:
         observation_dict: dict = {
             "Action outcomes": [{action_type.__name__: action_result.get_outcome().name} for action_type, action_result in self.__action_results],
             "Perceived locations": {pos.name: loc.pretty_format() for pos, loc in self.__locations.items()}
         }
-        
+
         return dumps(observation_dict, indent=4)

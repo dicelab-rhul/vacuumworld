@@ -66,7 +66,7 @@ class VWEnvironment(Environment):
             raise VWActionAttemptException("Too many physical actions were attempted. There is a hard limit of 1 physical action, and 1 communicative action per actor per cycle.")
         elif len(actions) == n and isinstance(actions[0], VWCommunicativeAction) and isinstance(actions[1], VWCommunicativeAction):
             raise VWActionAttemptException("Too many communicative actions were attempted. There is a hard limit of 1 physical action, and 1 communicative action per actor per cycle.")
-        
+
         for action in actions:
             if not isinstance(action, VWPhysicalAction) and not isinstance(action, VWCommunicativeAction):
                 raise VWMalformedActionException("Unrecognised action: {}.".format(type(action)))
@@ -79,13 +79,13 @@ class VWEnvironment(Environment):
             self.__force_initial_perception_to_actors() # For back compatibility with 4.1.8.
         else:
             self.execute_cycle_actions()
-        
+
         self.__cycle += 1
 
     def __force_initial_perception_to_actors(self) -> None:
         for actor_id in self.get_actors():
             observation: Observation = self.generate_perception_for_actor(actor_id=actor_id, action_type=VWAction, action_result=ActionResult(outcome=ActionOutcome.impossible))
-            
+
             self.send_perception_to_actor(perception=observation, actor_id=actor_id)
 
     def get_ambient(self) -> VWAmbient:
@@ -99,7 +99,7 @@ class VWEnvironment(Environment):
 
     def remove_dirt(self, coord: Coord) -> None:
         assert self.get_ambient().is_dirt_at(coord=coord)
-        
+
         dirt_id: str = self.get_ambient().get_grid()[coord].get_dirt_appearance().get_id()
 
         # Removing the dirt from the list of passive bodies.
@@ -129,7 +129,7 @@ class VWEnvironment(Environment):
         assert actor_id in self.get_actors()
 
         return self.__get_actor_position_and_location(actor_id=actor_id)[0]
- 
+
     def get_actor_location(self, actor_id) -> VWLocation:
         assert actor_id in self.get_actors()
 
@@ -173,7 +173,7 @@ class VWEnvironment(Environment):
 
         for l in self.get_ambient().get_grid().values():
             location: dict = l.to_json()
-            
+
             if l.has_cleaning_agent():
                 actor_id: str = l.get_actor_appearance().get_id()
 
@@ -212,7 +212,7 @@ class VWEnvironment(Environment):
                 dirt = Dirt(colour=Colour(location_data["dirt"]["colour"]))
                 dirt_appearance = VWDirtAppearance(dirt_id=dirt.get_id(), progressive_id=dirt.get_progressive_id(), colour=dirt.get_colour())
                 dirts.append(dirt)
-                
+
             wall: Dict[Orientation, bool] = {Orientation.north: location_data["wall"][str(Orientation.north)], Orientation.south: location_data["wall"][str(Orientation.south)], Orientation.west: location_data["wall"][str(Orientation.west)], Orientation.east: location_data["wall"][str(Orientation.east)]}
 
             grid[coord] = VWLocation(coord=coord, actor_appearance=actor_appearance, dirt_appearance=dirt_appearance, wall=wall)
@@ -229,7 +229,7 @@ class VWEnvironment(Environment):
             if forced_line_dim != -1:
                 assert forced_line_dim >= config["min_environment_dim"] and forced_line_dim <= config["max_environment_dim"]
                 line_dim = forced_line_dim
-            
+
             grid: Dict[Coord, VWLocation] = {Coord(x, y): VWLocation(coord=Coord(x, y), actor_appearance=None, dirt_appearance=None, wall=VWEnvironment.__generate_wall_from_coordinates(coord=Coord(x, y), grid_size=line_dim)) for x, y in product(range(line_dim), range(line_dim))}     
 
             VWEnvironment.__validate_grid(grid=grid, config=config, candidate_grid_line_dim=line_dim)
@@ -239,7 +239,7 @@ class VWEnvironment(Environment):
             raise e
         except Exception:
             raise IOError("Could not construct the environment from the given config.")
-    
+
     @staticmethod
     def __generate_wall_from_coordinates(coord: Coord, grid_size: int) -> Dict[Orientation, bool]:
         default_wall: Dict[Orientation, bool] = {Orientation.north: False, Orientation.south: False, Orientation.west: False, Orientation.east: False}
@@ -252,9 +252,8 @@ class VWEnvironment(Environment):
             default_wall[Orientation.north] = True
         if coord.y == grid_size - 1:
             default_wall[Orientation.south] = True
-            
+
         return default_wall
-        
 
     @staticmethod
     def __validate_grid(grid: Dict[Coord, VWLocation], config: dict, candidate_grid_line_dim: int=-1) -> None:

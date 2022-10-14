@@ -28,7 +28,7 @@ class DropExecutor(ActionExecutor):
 
     def attempt(self, env: VWEnvironment, action: VWDropAction) -> ActionResult:
         ignore(self)
-        
+
         try:
             actor_id: str = action.get_actor_id()
             actor_position: Coord = env.get_actor_position(actor_id=actor_id)
@@ -45,7 +45,7 @@ class DropExecutor(ActionExecutor):
 
     def succeeded(self, env: VWEnvironment, action: VWDropAction) -> bool:
         ignore(self)
-        
+
         actor_id: str = action.get_actor_id()
         actor_location: VWLocation = env.get_actor_location(actor_id=actor_id)
 

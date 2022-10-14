@@ -37,9 +37,9 @@ class VWGuilessRunner():
 
             print("Initial environment:\n\n{}\n".format(env))
 
-            while True:        
+            while True:
                 print("------------ Cycle {} ------------ ".format(env.get_current_cycle_number()))
-    
+
                 env.evolve()
 
                 print("\nEnvironment at the end of cycle {}:\n\n{}\n".format(env.get_current_cycle_number() - 1, env))

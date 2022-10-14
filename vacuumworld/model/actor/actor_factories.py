@@ -96,7 +96,7 @@ class VWActorsFactory():
             assert type(mind_surrogate) == UserMindSurrogate
 
             difficulty_level: UserDifficulty = mind_surrogate.get_difficulty_level()
-            
+
             return VWUsersFactory.create_user(difficulty_level=difficulty_level, orientation=orientation)
         else:
             assert isinstance(mind_surrogate, ActorMindSurrogate) and not isinstance(mind_surrogate, UserMindSurrogate)

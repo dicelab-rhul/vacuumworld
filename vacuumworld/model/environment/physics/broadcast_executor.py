@@ -23,7 +23,7 @@ class BroadcastExecutor(ActionExecutor):
 
     def attempt(self, env: VWEnvironment, action: VWBroadcastAction) -> ActionResult:
         ignore(self)
-        
+
         try:
             env.send_message_to_actors(message=action.get_message())
 
@@ -35,5 +35,5 @@ class BroadcastExecutor(ActionExecutor):
         ignore(env)
         ignore(self)
         ignore(action)
-        
+
         return True
