@@ -25,6 +25,15 @@ class VWDirtAppearance(Identifiable):
             "colour": str(self.__colour)
         }
 
+    def equals_except_ids(self, obj: VWDirtAppearance) -> bool:
+        if self is obj:
+            return True
+
+        if type(obj) != VWDirtAppearance:
+            return False
+
+        return self.__colour == obj.get_colour()
+
     def __str__(self) -> str:
         return "dirt(colour: {})".format(self.__colour)
 

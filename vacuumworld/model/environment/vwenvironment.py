@@ -170,11 +170,11 @@ class VWEnvironment(Environment):
             "locations": []
         }
 
-        for location in self.get_ambient().get_grid().values():
-            location: dict = location.to_json()
+        for loc in self.get_ambient().get_grid().values():
+            location: dict = loc.to_json()
 
-            if location.has_cleaning_agent():
-                actor_id: str = location.get_actor_appearance().get_id()
+            if loc.has_cleaning_agent():
+                actor_id: str = loc.get_actor_appearance().get_id()
 
                 location["actor"]["surrogate_mind_file"] = self.__get_actor_surrogate_mind_file(actor_id=actor_id)
                 location["actor"]["surrogate_mind_class_name"] = self.get_actor(actor_id=actor_id).get_mind().get_surrogate().__class__.__name__

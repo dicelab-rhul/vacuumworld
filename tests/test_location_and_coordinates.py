@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 from unittest import main, TestCase
-from typing import Dict
 
 from vacuumworld.common.coordinates import Coord
 from vacuumworld.common.colour import Colour

@@ -48,7 +48,7 @@ class SaveStateManager():
         assert filename
 
         try:
-            with open(os.path.join(self.__files_dir, os.path.basename(filename)), "wb") as f:
+            with open(os.path.join(self.__files_dir, os.path.basename(filename)), "w") as f:
                 dump(obj=state, fp=f, indent=4)
                 return True
         except Exception:
@@ -109,3 +109,11 @@ class SaveStateManager():
             return f
         except Exception:
             return []
+
+    def remove_saved_state(self, filename: str) -> None:
+        assert self.__file_exists(os.path.join(self.__files_dir, os.path.basename(filename))) and match(self.__vw_file_regex, os.path.basename(filename))
+
+        try:
+            os.remove(os.path.join(self.__files_dir, os.path.basename(filename)))
+        except Exception:
+            pass
