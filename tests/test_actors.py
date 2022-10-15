@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 
 from unittest import main, TestCase
-from typing import Iterable, Tuple, Union
 
 from pystarworldsturbo.common.message import BccMessage
-from pystarworldsturbo.utils.utils import ignore
 
 from vacuumworld.model.actor.user_difficulty import UserDifficulty
 from vacuumworld.model.actor.actor_factories import VWCleaningAgentsFactory, VWUsersFactory
@@ -14,11 +12,10 @@ from vacuumworld.common.colour import Colour
 from vacuumworld.common.observation import Observation
 from vacuumworld.model.actor.vwactormind import VWMind
 from vacuumworld.model.actor.vwusermind import VWUserMind
-from vacuumworld.model.actor.actor_mind_surrogate import ActorMindSurrogate
+from vacuumworld.model.actor.hystereticmindsurrogate import VWHystereticMindSurrogate
 from vacuumworld.model.actor.user_mind_surrogate import UserMindSurrogate
 from vacuumworld.model.actor.vwagent import VWCleaningAgent
 from vacuumworld.model.actor.vwuser import VWUser
-from vacuumworld.model.actions.vwactions import VWAction
 from vacuumworld.model.actions.idle_action import VWIdleAction
 from vacuumworld.model.actions.speak_action import VWSpeakAction
 from vacuumworld.model.actions.broadcast_action import VWBroadcastAction
@@ -28,23 +25,9 @@ from vacuumworld.model.actions.clean_action import VWCleanAction
 from vacuumworld.model.actions.drop_action import VWDropAction
 
 
-class HystereticMind(ActorMindSurrogate):
-    def revise(self, observation: Observation, messages: Iterable[BccMessage]) -> None:
-        ignore(self)
-        ignore(observation)
-
-        for m in messages:
-            ignore(m)
-
-    def decide(self) -> Union[VWAction, Tuple[VWAction]]:
-        ignore(self)
-
-        return VWIdleAction()
-
-
 class TestActors(TestCase):
     def test_agent_mind_creation(self) -> None:
-        surrogate: HystereticMind = HystereticMind()
+        surrogate: VWHystereticMindSurrogate = VWHystereticMindSurrogate()
         mind: VWMind = VWMind(surrogate=surrogate)
 
         self.assertEqual(surrogate.__class__, mind.get_surrogate().__class__)
@@ -61,7 +44,7 @@ class TestActors(TestCase):
         self.assertEqual(hard_mind.get_surrogate().get_difficulty_level(), UserDifficulty.hard)
 
     def test_cleaning_agent_creation(self) -> None:
-        surrogate: HystereticMind = HystereticMind()
+        surrogate: VWHystereticMindSurrogate = VWHystereticMindSurrogate()
         mind: VWMind = VWMind(surrogate=surrogate)
 
         for colour in [Colour.white, Colour.green, Colour.orange]:
@@ -103,8 +86,8 @@ class TestActors(TestCase):
                     self.assertNotEqual(a.get_communicative_actuator(), a.get_physical_actuator())
 
     def test_user_creation(self) -> None:
-        easy_surrogate: HystereticMind = UserMindSurrogate(difficulty_level=UserDifficulty.easy)
-        hard_surrogate: HystereticMind = UserMindSurrogate(difficulty_level=UserDifficulty.hard)
+        easy_surrogate: VWHystereticMindSurrogate = UserMindSurrogate(difficulty_level=UserDifficulty.easy)
+        hard_surrogate: VWHystereticMindSurrogate = UserMindSurrogate(difficulty_level=UserDifficulty.hard)
         easy_mind: VWMind = VWMind(surrogate=easy_surrogate)
         hard_mind: VWMind = VWMind(surrogate=hard_surrogate)
 

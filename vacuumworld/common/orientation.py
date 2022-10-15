@@ -1,5 +1,6 @@
 from __future__ import annotations
 from enum import Enum
+from random import choice
 
 from .direction import Direction
 
@@ -51,6 +52,10 @@ class Orientation(Enum):
             return self.get_left()
         else:
             return self.get_right()
+
+    @staticmethod
+    def random() -> Orientation:
+        return choice(list(Orientation))
 
     left: Orientation = get_left
     right: Orientation = get_right

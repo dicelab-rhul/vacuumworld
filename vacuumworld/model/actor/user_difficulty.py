@@ -1,5 +1,6 @@
 from __future__ import annotations
 from enum import Enum
+from random import choice
 
 
 class UserDifficulty(Enum):
@@ -17,3 +18,7 @@ class UserDifficulty(Enum):
             return UserDifficulty.hard
         else:
             return UserDifficulty.easy
+
+    @staticmethod
+    def random() -> UserDifficulty:
+        return choice(list(UserDifficulty))

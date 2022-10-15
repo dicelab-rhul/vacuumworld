@@ -229,7 +229,7 @@ class VWEnvironment(Environment):
                 assert forced_line_dim >= config["min_environment_dim"] and forced_line_dim <= config["max_environment_dim"]
                 line_dim = forced_line_dim
 
-            grid: Dict[Coord, VWLocation] = {Coord(x, y): VWLocation(coord=Coord(x, y), actor_appearance=None, dirt_appearance=None, wall=VWEnvironment.__generate_wall_from_coordinates(coord=Coord(x, y), grid_size=line_dim)) for x, y in product(range(line_dim), range(line_dim))}
+            grid: Dict[Coord, VWLocation] = {Coord(x, y): VWLocation(coord=Coord(x, y), actor_appearance=None, dirt_appearance=None, wall=VWEnvironment.generate_wall_from_coordinates(coord=Coord(x, y), grid_size=line_dim)) for x, y in product(range(line_dim), range(line_dim))}
 
             VWEnvironment.__validate_grid(grid=grid, config=config, candidate_grid_line_dim=line_dim)
 
@@ -240,7 +240,7 @@ class VWEnvironment(Environment):
             raise IOError("Could not construct the environment from the given config.")
 
     @staticmethod
-    def __generate_wall_from_coordinates(coord: Coord, grid_size: int) -> Dict[Orientation, bool]:
+    def generate_wall_from_coordinates(coord: Coord, grid_size: int) -> Dict[Orientation, bool]:
         default_wall: Dict[Orientation, bool] = {Orientation.north: False, Orientation.south: False, Orientation.west: False, Orientation.east: False}
 
         if coord.x == 0:

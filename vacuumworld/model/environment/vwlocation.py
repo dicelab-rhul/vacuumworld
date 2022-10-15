@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import cast, Dict
+from random import randint
 
 from pystarworldsturbo.environment.location_appearance import LocationAppearance
 
@@ -11,7 +12,7 @@ from ..actor.vwactor_appearance import VWActorAppearance
 
 
 class VWLocation(LocationAppearance):
-    def __init__(self, coord: Coord, actor_appearance: VWActorAppearance, dirt_appearance: VWDirtAppearance, wall: Dict[Orientation, bool]) -> None:
+    def __init__(self, coord: Coord, actor_appearance: VWActorAppearance=None, dirt_appearance: VWDirtAppearance=None, wall: Dict[Orientation, bool]={orientation: False for orientation in Orientation}) -> None:
         assert coord is not None
 
         self.__coord: Coord = coord
@@ -121,7 +122,7 @@ class VWLocation(LocationAppearance):
         return location_dict
 
     def __str__(self) -> str:
-        return "(actor: {}, dirt: {}, wall: {})".format(str(self.__actor_appearance), str(self.__dirt_appearance), str(self.__wall))
+        return "(coord: {}, actor: {}, dirt: {}, wall: {})".format(str(self.__coord), str(self.__actor_appearance), str(self.__dirt_appearance), str(self.__wall))
 
     def __eq__(self, o: object) -> bool:
         if not o or type(o) != VWLocation:
@@ -174,3 +175,31 @@ class VWLocation(LocationAppearance):
             s += f"{chr(164)} " + str(self.__actor_appearance.get_colour())[0].upper() + "+" + str(self.__dirt_appearance.get_colour())[0] + f" {chr(164)}\n"
 
         return s + chr(164) * 7
+
+    @staticmethod
+    def random_wall() -> Dict[Orientation, bool]:
+        wall: Dict[Orientation, bool] = {orientation: False for orientation in Orientation}
+        roll: int = randint(1, 8)
+
+        if roll == 1:
+            wall[Orientation.north] = True
+        elif roll == 2:
+            wall[Orientation.south] = True
+        elif roll == 3:
+            wall[Orientation.east] = True
+        elif roll == 4:
+            wall[Orientation.west] = True
+        elif roll == 5:
+            wall[Orientation.north] = True
+            wall[Orientation.east] = True
+        elif roll == 6:
+            wall[Orientation.north] = True
+            wall[Orientation.west] = True
+        elif roll == 7:
+            wall[Orientation.south] = True
+            wall[Orientation.east] = True
+        elif roll == 8:
+            wall[Orientation.south] = True
+            wall[Orientation.west] = True
+
+        return wall

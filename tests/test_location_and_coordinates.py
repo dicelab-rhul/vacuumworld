@@ -7,13 +7,14 @@ from vacuumworld.common.coordinates import Coord
 from vacuumworld.common.colour import Colour
 from vacuumworld.common.orientation import Orientation
 from vacuumworld.model.environment.vwlocation import VWLocation
+from vacuumworld.model.environment.vwenvironment import VWEnvironment
 from vacuumworld.model.actor.vwactor_appearance import VWActorAppearance
 from vacuumworld.model.dirt.dirt_appearance import VWDirtAppearance
 
 
 class TestLocationAndCoordinates(TestCase):
     def test_coord(self) -> None:
-        c: Coord = Coord(4, 5)
+        c: Coord = Coord(4, 5)  # TODO: use random coordinates.
 
         self.assertEqual(c.x, 4)
         self.assertEqual(c.y, 5)
@@ -56,49 +57,50 @@ class TestLocationAndCoordinates(TestCase):
         d1: VWDirtAppearance = VWDirtAppearance(dirt_id="running", progressive_id="5", colour=Colour.green)
         d2: VWDirtAppearance = VWDirtAppearance(dirt_id="out_of", progressive_id="6", colour=Colour.orange)
         d3: VWDirtAppearance = VWDirtAppearance(dirt_id="ideas", progressive_id="7", colour=Colour.orange)
-        c: Coord = Coord(4, 4)
+        c: Coord = Coord(4, 4)  # TODO: use random coordinates.
         f: Coord = c.forward(orientation=a1.get_orientation())
         l: Coord = c.left(orientation=a1.get_orientation())
         r: Coord = c.right(orientation=a1.get_orientation())
         fl: Coord = c.forwardleft(orientation=a1.get_orientation())
         fr: Coord = c.forwardright(orientation=a1.get_orientation())
+        grid_size: int = 10  # TODO: use a random grid size.
 
-        # TODO: use non-trivial walls.
-        sample_wall: Dict[Orientation, bool] = {Orientation.north: False, Orientation.south: False, Orientation.west: False, Orientation.east: False}
-
-        # TODO: customise the wall depending on the coordinates.
-        center: VWLocation = VWLocation(coord=c, actor_appearance=a1, dirt_appearance=None, wall=sample_wall)
-        left: VWLocation = VWLocation(coord=l, actor_appearance=None, dirt_appearance=None, wall=sample_wall)
-        right: VWLocation = VWLocation(coord=r, actor_appearance=a2, dirt_appearance=d1, wall=sample_wall)
-        forward: VWLocation = VWLocation(coord=f, actor_appearance=None, dirt_appearance=d2, wall=sample_wall)
-        forwardleft: VWLocation = VWLocation(coord=fl, actor_appearance=u1, dirt_appearance=None, wall=sample_wall)
-        forwardright: VWLocation = VWLocation(coord=fr, actor_appearance=u2, dirt_appearance=d3, wall=sample_wall)
+        center: VWLocation = VWLocation(coord=c, actor_appearance=a1, dirt_appearance=None, wall=VWEnvironment.generate_wall_from_coordinates(coord=c, grid_size=grid_size))
+        left: VWLocation = VWLocation(coord=l, actor_appearance=None, dirt_appearance=None, wall=VWEnvironment.generate_wall_from_coordinates(coord=l, grid_size=grid_size))
+        right: VWLocation = VWLocation(coord=r, actor_appearance=a2, dirt_appearance=d1, wall=VWEnvironment.generate_wall_from_coordinates(coord=r, grid_size=grid_size))
+        forward: VWLocation = VWLocation(coord=f, actor_appearance=None, dirt_appearance=d2, wall=VWEnvironment.generate_wall_from_coordinates(coord=f, grid_size=grid_size))
+        forwardleft: VWLocation = VWLocation(coord=fl, actor_appearance=u1, dirt_appearance=None, wall=VWEnvironment.generate_wall_from_coordinates(coord=fl, grid_size=grid_size))
+        forwardright: VWLocation = VWLocation(coord=fr, actor_appearance=u2, dirt_appearance=d3, wall=VWEnvironment.generate_wall_from_coordinates(coord=fr, grid_size=grid_size))
 
         self.assertEqual(center.get_coord(), c)
         self.assertEqual(center.get_actor_appearance(), a1)
         self.assertIsNone(center.get_dirt_appearance())
+        self.assertEqual(center.get_wall_info(), VWEnvironment.generate_wall_from_coordinates(coord=c, grid_size=grid_size))
 
         self.assertEqual(left.get_coord(), l)
         self.assertIsNone(left.get_actor_appearance())
         self.assertIsNone(left.get_dirt_appearance())
+        self.assertEqual(center.get_wall_info(), VWEnvironment.generate_wall_from_coordinates(coord=l, grid_size=grid_size))
 
         self.assertEqual(right.get_coord(), r)
         self.assertEqual(right.get_actor_appearance(), a2)
         self.assertEqual(right.get_dirt_appearance(), d1)
+        self.assertEqual(center.get_wall_info(), VWEnvironment.generate_wall_from_coordinates(coord=r, grid_size=grid_size))
 
         self.assertEqual(forward.get_coord(), f)
         self.assertIsNone(forward.get_actor_appearance())
         self.assertEqual(forward.get_dirt_appearance(), d2)
+        self.assertEqual(center.get_wall_info(), VWEnvironment.generate_wall_from_coordinates(coord=f, grid_size=grid_size))
 
         self.assertEqual(forwardleft.get_coord(), fl)
         self.assertEqual(forwardleft.get_actor_appearance(), u1)
         self.assertIsNone(forwardleft.get_dirt_appearance())
+        self.assertEqual(center.get_wall_info(), VWEnvironment.generate_wall_from_coordinates(coord=fl, grid_size=grid_size))
 
         self.assertEqual(forwardright.get_coord(), fr)
         self.assertEqual(forwardright.get_actor_appearance(), u2)
         self.assertEqual(forwardright.get_dirt_appearance(), d3)
-
-        # TODO: check for walls.
+        self.assertEqual(center.get_wall_info(), VWEnvironment.generate_wall_from_coordinates(coord=fr, grid_size=grid_size))
 
 
 if __name__ == "__main__":
