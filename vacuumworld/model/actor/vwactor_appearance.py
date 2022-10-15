@@ -42,6 +42,15 @@ class VWActorAppearance(ActorAppearance):
             "orientation": str(self.__orientation)
         }
 
+    def equals_except_ids(self, obj: VWActorAppearance) -> bool:
+        if self is obj:
+            return True
+
+        if type(obj) != VWActorAppearance:
+            return False
+
+        return self.__colour == obj.get_colour() and self.__orientation == obj.get_orientation() and self.__previous_orientation == obj.get_previous_orientation()
+
     def __str__(self) -> str:
         return "actor(ID: {}, progressive ID: {}, colour: {}, orientation: {})".format(self.get_id(), self.get_progressive_id(), self.__colour, self.__orientation)
 
