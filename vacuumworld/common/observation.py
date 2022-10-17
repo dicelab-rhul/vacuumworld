@@ -46,6 +46,15 @@ class Observation(Perception):
     def is_empty(self) -> bool:
         return not self.__locations
 
+    def get_locations(self) -> Dict[PositionNames, VWLocation]:
+        return self.__locations
+
+    def get_location_at(self, position_name: PositionNames) -> Optional[VWLocation]:
+        if position_name in self.__locations:
+            return self.__locations[position_name]
+        else:
+            return None
+
     def get_center(self) -> Optional[VWLocation]:
         if PositionNames.center in self.__locations:
             return self.__locations[PositionNames.center]
