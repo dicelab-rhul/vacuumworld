@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import Dict, NamedTuple, List, Union, Tuple, cast
+from random import randint
 
 from .orientation import Orientation
 
@@ -164,3 +165,10 @@ class Coord(NamedTuple):
         result = prime * result + self.y
 
         return result
+
+    @staticmethod
+    def random_between_inclusive(min_x: int, max_x: int, min_y: int, max_y: int) -> Coord:
+        assert min_x <= max_x
+        assert min_y <= max_y
+
+        return Coord(x=randint(min_x, max_x), y=randint(min_y, max_y))

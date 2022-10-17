@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from unittest import main, TestCase
-from typing import List, Tuple
+from typing import List, Tuple, Union
 from random import randint
 
 from pystarworldsturbo.common.action_result import ActionResult
@@ -71,42 +71,70 @@ class TestExecutors(TestCase):
         speak_executor: SpeakExecutor = SpeakExecutor()
         env, _ = self.__generate_random_environment(custom_grid_size=True)
 
-        for actor_id in env.get_actors():
-            action: VWSpeakAction = VWSpeakAction("Hello", sender_id=actor_id, recipients=[a_id for a_id in env.get_actors() if a_id != actor_id])  # TODO: test all the possible types of messages.
-            action.set_actor_id(actor_id=actor_id)
+        messages: List[Union[int, float, str, list, tuple, dict]] = [
+            "Hello World!",
+            ["Hello", "World", "!"],
+            {
+                "Hello": 5,
+                "World": 5,
+                "!": 1
+            },
+            1337,
+            0.1337,
+            ("Hello", "World", "!")
+        ]
 
-            self.assertTrue(speak_executor.is_possible(env=env, action=action))
+        for message in messages:
+            for actor_id in env.get_actors():
+                action: VWSpeakAction = VWSpeakAction(message=message, sender_id=actor_id, recipients=[a_id for a_id in env.get_actors() if a_id != actor_id])  # TODO: test all the possible types of messages.
+                action.set_actor_id(actor_id=actor_id)
 
-            result: ActionResult = speak_executor.execute(env=env, action=action)
+                self.assertTrue(speak_executor.is_possible(env=env, action=action))
 
-            self.assertTrue(result.get_outcome() == ActionOutcome.success)
-            self.assertTrue(speak_executor.succeeded(env=env, action=action))
+                result: ActionResult = speak_executor.execute(env=env, action=action)
 
-        for actor_id in env.get_actors():
-            action: VWSpeakAction = VWSpeakAction(["Hello", "World", "!"], sender_id=actor_id, recipients=[])  # TODO: test all the possible types of messages.
-            action.set_actor_id(actor_id=actor_id)
+                self.assertTrue(result.get_outcome() == ActionOutcome.success)
+                self.assertTrue(speak_executor.succeeded(env=env, action=action))
 
-            self.assertTrue(speak_executor.is_possible(env=env, action=action))
+            for actor_id in env.get_actors():
+                action: VWSpeakAction = VWSpeakAction(message=message, sender_id=actor_id, recipients=[])
+                action.set_actor_id(actor_id=actor_id)
 
-            result: ActionResult = speak_executor.execute(env=env, action=action)
+                self.assertTrue(speak_executor.is_possible(env=env, action=action))
 
-            self.assertTrue(result.get_outcome() == ActionOutcome.success)
-            self.assertTrue(speak_executor.succeeded(env=env, action=action))
+                result: ActionResult = speak_executor.execute(env=env, action=action)
+
+                self.assertTrue(result.get_outcome() == ActionOutcome.success)
+                self.assertTrue(speak_executor.succeeded(env=env, action=action))
 
     def test_broadcast_action(self) -> None:
         broadcast_executor: BroadcastExecutor = BroadcastExecutor()
         env, _ = self.__generate_random_environment(custom_grid_size=True)
 
-        for actor_id in env.get_actors():
-            action: VWBroadcastAction = VWBroadcastAction("Hello", sender_id=actor_id)  # TODO: test all the possible types of messages.
-            action.set_actor_id(actor_id=actor_id)
+        messages: List[Union[int, float, str, list, tuple, dict]] = [
+            "Hello World!",
+            ["Hello", "World", "!"],
+            {
+                "Hello": 5,
+                "World": 5,
+                "!": 1
+            },
+            1337,
+            0.1337,
+            ("Hello", "World", "!")
+        ]
 
-            self.assertTrue(broadcast_executor.is_possible(env=env, action=action))
+        for message in messages:
+            for actor_id in env.get_actors():
+                action: VWBroadcastAction = VWBroadcastAction(message=message, sender_id=actor_id)
+                action.set_actor_id(actor_id=actor_id)
 
-            result: ActionResult = broadcast_executor.execute(env=env, action=action)
+                self.assertTrue(broadcast_executor.is_possible(env=env, action=action))
 
-            self.assertTrue(result.get_outcome() == ActionOutcome.success)
-            self.assertTrue(broadcast_executor.succeeded(env=env, action=action))
+                result: ActionResult = broadcast_executor.execute(env=env, action=action)
+
+                self.assertTrue(result.get_outcome() == ActionOutcome.success)
+                self.assertTrue(broadcast_executor.succeeded(env=env, action=action))
 
     def test_move_action(self) -> None:
         action: VWMoveAction = VWMoveAction()
