@@ -29,7 +29,6 @@ from vacuumworld.model.environment.physics.move_executor import MoveExecutor
 from vacuumworld.model.environment.physics.speak_executor import SpeakExecutor
 from vacuumworld.model.environment.physics.turn_executor import TurnExecutor
 from vacuumworld.model.actor.hystereticmindsurrogate import VWHystereticMindSurrogate
-from vacuumworld.model.actor.actor_factories import VWCleaningAgentsFactory, VWUsersFactory
 from vacuumworld.model.dirt.dirt_appearance import VWDirtAppearance
 from vacuumworld.model.dirt.dirt import Dirt
 from vacuumworld.model.environment.vwlocation import VWLocation
@@ -331,6 +330,7 @@ class TestExecutors(TestCase):
             coords.append(tmp)
 
         return coords
+
 
 if __name__ == '__main__':
     main()

@@ -12,7 +12,7 @@ class TestIllegalRunInputs(TestCase):
     All the arguments of `run()` that are not tested are simply ignored if they are not valid.
     '''
 
-    def test_illegal_speed_value(self) -> None:      
+    def test_illegal_speed_value(self) -> None:
         for value in [-1, -0.3, 1.1, 2, 3, 100, 1000]:
             self.assertRaises(ValueError, VWGUI._VWGUI__validate_arguments, play=False, file_to_load="", scale=1, speed=value)
 
