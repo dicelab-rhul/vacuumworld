@@ -56,14 +56,14 @@ def __look_for_todos(path: str) -> List[str]:
 
 
 def __get_relative_path(absolute_path: str) -> str:
-    tokens: List[str] = absolute_path.split("/")
+    tokens: List[str] = absolute_path.split(os.path.sep)
     vw_top_dir: str = os.path.basename(os.getcwd())
 
     while tokens[0] != vw_top_dir:
         tokens = tokens[1:]
 
         if len(tokens) < 2:
-            return "N/A"
+            raise ValueError("Malformed path: {}".format(absolute_path))
 
     tokens = tokens[1:]
 
