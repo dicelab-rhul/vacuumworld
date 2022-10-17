@@ -34,9 +34,24 @@ from vacuumworld.model.dirt.dirt_appearance import VWDirtAppearance
 from vacuumworld.model.dirt.dirt import Dirt
 from vacuumworld.model.environment.vwlocation import VWLocation
 from vacuumworld.model.environment.vwenvironment import VWEnvironment
+from vacuumworld.config_manager import ConfigManager
+
+import os
 
 
 class TestExecutors(TestCase):
+    def __init__(self, args) -> None:
+        super(TestExecutors, self).__init__(args)
+
+        self.__config_file_name: str = "config.json"
+        self.__vw_dir_name: str = "vacuumworld"
+        self.__config_file_path: str = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), self.__vw_dir_name, self.__config_file_name)
+        self.__config_manager: ConfigManager = ConfigManager(config_file_path=self.__config_file_path)
+        self.__config: dict = self.__config_manager.load_config()
+        self.__default_grid_size: int = self.__config["initial_environment_dim"]
+        self.__min_grid_size: int = self.__config["min_environment_dim"]
+        self.__max_grid_size: int = self.__config["max_environment_dim"]
+
     def test_idle_action(self) -> None:
         action: VWIdleAction = VWIdleAction()
         idle_executor: IdleExecutor = IdleExecutor()
