@@ -20,10 +20,11 @@ class MyMind(ActorMindSurrogate):
         # Add here all the attributes you need/want.
 
     def revise(self, observation: Observation, messages: Iterable[BccMessage]) -> None:
-        # Do something with the observation and the messages, instead of printing them.
+        # Do something with the observation, the messages, and the effort instead of simply printing them.
 
         print("Observation:", observation.pretty_format())
         print("Messages: {}".format([str(m) for m in messages]))
+        print("Current effort from the beginning of the simulation: {}.".format(self.get_effort()))
 
     def decide(self) -> Union[VWAction, Tuple[VWAction]]:
         return VWIdleAction(), VWBroadcastAction(message="Hello!", sender_id="HIDDEN")
