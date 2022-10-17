@@ -12,6 +12,16 @@ class ActionEffort():
         "VWTurnAction": 1
     }
 
+    REASONABLE_EFFORTS: Dict[str, int] = {
+        "VWBroadcastAction": 5,  # Broadcasting is a costly operation, and needs to be used strategically.
+        "VWCleanAction": 1, # Not 0, because we want to discourage any unnecessary attempt.
+        "VWDropAction": 1,  # Does not really matter for cleaning agents.
+        "VWIdleAction": 1,  # Not 0, because we want to discourage any unnecessary loss of time.
+        "VWMoveAction": 3,  # Moving is a somewhat costly operation, and needs to be used strategically.
+        "VWSpeakAction": 2,  # Speaking is a mildly costly operation, and must not be abused. If the speech is broadcasted, the effort becomes higher.
+        "VWTurnAction": 5  # We want to discourage any unnecessary turns.
+    }
+
     EFFORTS: Dict[str, int] = __DEFAULT_EFFORTS
     DEFAULT_EFFORT_FOR_OTHER_ACTIONS: int = 1
 

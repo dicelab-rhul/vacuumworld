@@ -86,8 +86,16 @@ class TestPerception(TestCase):
             location: VWLocation = o.get_location_at(position_name=position)
 
             self.assertEqual(location.get_coord(), coord)
-            self.assertEqual(location.get_actor_appearance(), actor_appearance)
-            self.assertEqual(location.get_dirt_appearance(), dirt_appearance)
+
+            if actor_appearance is not None:
+                self.assertEqual(location.get_actor_appearance(), actor_appearance)
+            else:
+                self.assertIsNone(location.get_actor_appearance())
+
+            if dirt_appearance is not None:
+                self.assertEqual(location.get_dirt_appearance(), dirt_appearance)
+            else:
+                self.assertIsNone(location.get_dirt_appearance())
 
     def test_message(self) -> None:
         for content in (1, 1.32343, "foo", ["foo", 1, 1.234, [], (), {}], ("foo", 1, 1.234, [], (), {}), {1: ["", None], 1.2343: (3, 4.5)}):
