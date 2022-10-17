@@ -55,9 +55,11 @@ class TestExecutors(TestCase):
     def test_idle_action(self) -> None:
         action: VWIdleAction = VWIdleAction()
         idle_executor: IdleExecutor = IdleExecutor()
-        env: VWEnvironment = self.__generate_random_environment(custom_grid_size=True)
+        env, _ = self.__generate_random_environment(custom_grid_size=True)
 
-        for _ in env.get_actors():
+        for actor_id in env.get_actors():
+            action.set_actor_id(actor_id=actor_id)
+
             self.assertTrue(idle_executor.is_possible(env=env, action=action))
 
             result: ActionResult = idle_executor.execute(env=env, action=action)
@@ -67,10 +69,23 @@ class TestExecutors(TestCase):
 
     def test_speak_action(self) -> None:
         speak_executor: SpeakExecutor = SpeakExecutor()
-        env: VWEnvironment = self.__generate_random_environment(custom_grid_size=True)
+        env, _ = self.__generate_random_environment(custom_grid_size=True)
 
         for actor_id in env.get_actors():
-            action: VWSpeakAction = VWSpeakAction("Hello", sender_id=actor_id)  # TODO: test all the possible types of messages.
+            action: VWSpeakAction = VWSpeakAction("Hello", sender_id=actor_id, recipients=[a_id for a_id in env.get_actors() if a_id != actor_id])  # TODO: test all the possible types of messages.
+            action.set_actor_id(actor_id=actor_id)
+
+            self.assertTrue(speak_executor.is_possible(env=env, action=action))
+
+            result: ActionResult = speak_executor.execute(env=env, action=action)
+
+            self.assertTrue(result.get_outcome() == ActionOutcome.success)
+            self.assertTrue(speak_executor.succeeded(env=env, action=action))
+
+        for actor_id in env.get_actors():
+            action: VWSpeakAction = VWSpeakAction(["Hello", "World", "!"], sender_id=actor_id, recipients=[])  # TODO: test all the possible types of messages.
+            action.set_actor_id(actor_id=actor_id)
+
             self.assertTrue(speak_executor.is_possible(env=env, action=action))
 
             result: ActionResult = speak_executor.execute(env=env, action=action)
@@ -80,10 +95,12 @@ class TestExecutors(TestCase):
 
     def test_broadcast_action(self) -> None:
         broadcast_executor: BroadcastExecutor = BroadcastExecutor()
-        env: VWEnvironment = self.__generate_random_environment(custom_grid_size=True)
+        env, _ = self.__generate_random_environment(custom_grid_size=True)
 
         for actor_id in env.get_actors():
             action: VWBroadcastAction = VWBroadcastAction("Hello", sender_id=actor_id)  # TODO: test all the possible types of messages.
+            action.set_actor_id(actor_id=actor_id)
+
             self.assertTrue(broadcast_executor.is_possible(env=env, action=action))
 
             result: ActionResult = broadcast_executor.execute(env=env, action=action)
@@ -94,9 +111,11 @@ class TestExecutors(TestCase):
     def test_move_action(self) -> None:
         action: VWMoveAction = VWMoveAction()
         move_executor: MoveExecutor = MoveExecutor()
-        env: VWEnvironment = self.__generate_random_environment(custom_grid_size=True)
+        env, _ = self.__generate_random_environment(custom_grid_size=True)
 
         for actor_id in env.get_actors():
+            action.set_actor_id(actor_id=actor_id)
+
             actor_position: Coord = env.get_actor_position(actor_id=actor_id)
             orientation: Orientation = env.get_actor_location(actor_id=actor_id).get_actor_appearance().get_orientation()
             forward_position: Coord = actor_position.forward(orientation=orientation)
@@ -130,9 +149,11 @@ class TestExecutors(TestCase):
         left_turn_action: VWTurnAction = VWTurnAction(Direction.left)
         right_turn_action: VWTurnAction = VWTurnAction(Direction.right)
         turn_executor: TurnExecutor = TurnExecutor()
-        env: VWEnvironment = self.__generate_random_environment(custom_grid_size=True)
+        env, _ = self.__generate_random_environment(custom_grid_size=True)
 
         for actor_id, actor in env.get_actors().items():
+            left_turn_action.set_actor_id(actor_id=actor_id)
+
             old_orientation: Orientation = env.get_actor_location(actor_id=actor_id).get_actor_appearance().get_orientation()
 
             self.assertTrue(turn_executor.is_possible(env=env, action=left_turn_action))
@@ -145,6 +166,8 @@ class TestExecutors(TestCase):
             self.assertEqual(env.get_actor_location(actor_id=actor_id).get_actor_appearance().get_previous_orientation(), old_orientation)
 
         for actor_id in env.get_actors():
+            right_turn_action.set_actor_id(actor_id=actor_id)
+
             old_orientation: Orientation = env.get_actor_location(actor_id=actor_id).get_actor_appearance().get_orientation()
 
             self.assertTrue(turn_executor.is_possible(env=env, action=right_turn_action))
@@ -159,9 +182,11 @@ class TestExecutors(TestCase):
     def test_clean_action(self) -> None:
         action: VWCleanAction = VWCleanAction()
         clean_executor: CleanExecutor = CleanExecutor()
-        env: VWEnvironment = self.__generate_random_environment(custom_grid_size=True)
+        env, _ = self.__generate_random_environment(custom_grid_size=True)
 
         for actor_id in env.get_actors():
+            action.set_actor_id(actor_id=actor_id)
+
             dirt_appearance: VWDirtAppearance = env.get_actor_location(actor_id=actor_id).get_dirt_appearance()
             actor_colour: Colour = env.get_actor_location(actor_id=actor_id).get_actor_appearance().get_colour()
 
@@ -179,9 +204,11 @@ class TestExecutors(TestCase):
         drop_green_dirt_action: VWDropAction = VWDropAction(dirt_colour=Colour.green)
         drop_orange_dirt_action: VWDropAction = VWDropAction(dirt_colour=Colour.orange)
         drop_executor: DropExecutor = DropExecutor()
-        env: VWEnvironment = self.__generate_random_environment(custom_grid_size=True)
+        env, _ = self.__generate_random_environment(custom_grid_size=True)
 
         for actor_id, actor in env.get_actors().items():
+            drop_green_dirt_action.set_actor_id(actor_id=actor_id)
+
             if isinstance(actor, VWUser) and not env.get_actor_location(actor_id=actor_id).has_dirt():
                 self.assertTrue(drop_executor.is_possible(env=env, action=drop_green_dirt_action))
 
@@ -192,9 +219,11 @@ class TestExecutors(TestCase):
             else:
                 self.assertFalse(drop_executor.is_possible(env=env, action=drop_green_dirt_action))
 
-        env: VWEnvironment = self.__generate_random_environment(custom_grid_size=True)
+        env, _ = self.__generate_random_environment(custom_grid_size=True)
 
         for actor_id, actor in env.get_actors().items():
+            drop_orange_dirt_action.set_actor_id(actor_id=actor_id)
+
             if isinstance(actor, VWUser) and not env.get_actor_location(actor_id=actor_id).has_dirt():
                 self.assertTrue(drop_executor.is_possible(env=env, action=drop_orange_dirt_action))
 
