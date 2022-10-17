@@ -86,7 +86,7 @@ class TestExecutors(TestCase):
 
         for message in messages:
             for actor_id in env.get_actors():
-                action: VWSpeakAction = VWSpeakAction(message=message, sender_id=actor_id, recipients=[a_id for a_id in env.get_actors() if a_id != actor_id])  # TODO: test all the possible types of messages.
+                action: VWSpeakAction = VWSpeakAction(message=message, sender_id=actor_id, recipients=[a_id for a_id in env.get_actors() if a_id != actor_id])
                 action.set_actor_id(actor_id=actor_id)
 
                 self.assertTrue(speak_executor.is_possible(env=env, action=action))

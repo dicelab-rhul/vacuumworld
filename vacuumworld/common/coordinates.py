@@ -69,6 +69,9 @@ class Coord(NamedTuple):
     def __str__(self) -> str:
         return "({}, {})".format(self.x, self.y)
 
+    def in_bounds(self, min_x: int, max_x: int, min_y: int, max_y: int) -> bool:
+        return min_x <= self.x <= max_x and min_y <= self.y <= max_y
+
     def forward(self, orientation: Orientation) -> Coord:
         assert orientation in [Orientation.north, Orientation.south, Orientation.west, Orientation.east]
 
