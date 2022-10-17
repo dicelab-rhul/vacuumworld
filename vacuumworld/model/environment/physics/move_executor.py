@@ -57,6 +57,9 @@ class MoveExecutor(ActionExecutor):
         if not env.get_ambient().get_grid()[actor_position_after_move].has_actor():
             return False
 
+        if env.get_ambient().get_grid()[actor_position_after_move].get_actor_appearance().get_orientation() != actor_orientation:
+            return False
+
         if env.get_ambient().get_grid()[actor_position_after_move].get_actor_appearance().get_id() != actor_id:
             return False
 
