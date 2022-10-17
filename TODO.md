@@ -3,10 +3,11 @@
 * File tests/test_location_and_coordinates.py - line 16: `c: Coord = Coord(4, 5)  # TODO: use random coordinates.`
 * File tests/test_location_and_coordinates.py - line 59: `c: Coord = Coord(4, 4)  # TODO: use random coordinates.`
 * File tests/test_location_and_coordinates.py - line 65: `grid_size: int = 10  # TODO: use a random grid size.`
+* File tests/test_actions.py - line 58: `action: VWSpeakAction = VWSpeakAction("Hello", sender_id=actor_id)  # TODO: test all the possible types of messages.`
+* File tests/test_actions.py - line 71: `action: VWBroadcastAction = VWBroadcastAction("Hello", sender_id=actor_id)  # TODO: test all the possible types of messages.`
 * File tests/test_perception.py - line 37: `# TODO: use non-trivial walls.`
 * File tests/test_perception.py - line 40: `# TODO: customise the wall depending on the coordinates.`
 * File tests/test_perception.py - line 86: `# TODO: check for walls.`
 * File tests/test_tbd.py - line 1: `# TODO: test the GUI. (How?)`
-* File tests/test_tbd.py - line 2: `# TODO: test the action executors.`
-* File tests/test_tbd.py - line 3: `# TODO: integration testing (how?).`
-* File tests/test_tbd.py - line 4: `# TODO: test the intended crashes (i.e., where we want VW to crash immediately on non-compliant (human) user input).`
+* File tests/test_tbd.py - line 2: `# TODO: integration testing (how?).`
+* File tests/test_tbd.py - line 3: `# TODO: test the intended crashes (i.e., where we want VW to crash immediately on non-compliant (human) user input).`
