@@ -1,4 +1,4 @@
-pystarworldsturbo>=1.0.6
+pystarworldsturbo>=1.0.7
 pillow
 wheel
 ipython
