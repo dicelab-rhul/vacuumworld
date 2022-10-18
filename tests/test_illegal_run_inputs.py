@@ -93,7 +93,7 @@ class TestIllegalRunInputs(TestCase):
             self.assertRaises(ValueError, VWGUI._VWGUI__validate_arguments, play=False, file_to_load="", scale=1, speed=value)
 
     def test_illegal_scale_value(self) -> None:
-        for value in [-1, -0.3, 0, 2.6, 3, 100, 1000]:
+        for value in [-1, -0.3, 2.6, 3, 100, 1000]:
             self.assertRaises(ValueError, VWGUI._VWGUI__validate_arguments, play=False, file_to_load="", scale=value, speed=0)
 
     def test_play_without_load(self) -> None:
