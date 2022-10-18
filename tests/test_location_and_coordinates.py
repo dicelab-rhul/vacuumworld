@@ -19,11 +19,8 @@ class TestLocationAndCoordinates(TestCase):
     def __init__(self, args) -> None:
         super(TestLocationAndCoordinates, self).__init__(args)
 
-        self.__config_file_name: str = "config.json"
-        self.__vw_dir_name: str = "vacuumworld"
-        self.__config_file_path: str = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), self.__vw_dir_name, self.__config_file_name)
-        self.__config_manager: ConfigManager = ConfigManager(config_file_path=self.__config_file_path)
-        self.__config: dict = self.__config_manager.load_config()
+        self.__config_file_path: str = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "vacuumworld", "config.json")
+        self.__config: dict = ConfigManager(config_file_path=self.__config_file_path).load_config()
         self.__min_grid_size: int = self.__config["min_environment_dim"]
         self.__max_grid_size: int = self.__config["max_environment_dim"]
 

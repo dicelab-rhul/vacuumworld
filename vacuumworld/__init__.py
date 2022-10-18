@@ -1,6 +1,4 @@
 from signal import signal, SIG_IGN
-from json import load
-from screeninfo import get_monitors
 from typing import List, Tuple
 
 from .config_manager import ConfigManager
@@ -83,17 +81,14 @@ def __run_with_gui(config: dict, white_mind: ActorMindSurrogate, green_mind: Act
 def __process_minds(default_mind: ActorMindSurrogate=None, white_mind: ActorMindSurrogate=None, green_mind: ActorMindSurrogate=None, orange_mind: ActorMindSurrogate=None) -> Tuple[ActorMindSurrogate, ActorMindSurrogate, ActorMindSurrogate]:
     assert default_mind is not None or white_mind is not None and green_mind is not None and orange_mind is not None
 
-    if white_mind is None:
-        white_mind = default_mind
+    minds: Tuple[ActorMindSurrogate, ActorMindSurrogate, ActorMindSurrogate] = (
+        white_mind if white_mind is not None else default_mind,
+        green_mind if green_mind is not None else default_mind,
+        orange_mind if orange_mind is not None else default_mind
+    )
 
-    if green_mind is None:
-        green_mind = default_mind
+    ActorMindSurrogate.validate(mind=minds[0], colour=Colour.white)
+    ActorMindSurrogate.validate(mind=minds[1], colour=Colour.green)
+    ActorMindSurrogate.validate(mind=minds[2], colour=Colour.orange)
 
-    if orange_mind is None:
-        orange_mind = default_mind
-
-    ActorMindSurrogate.validate(white_mind, Colour.white)
-    ActorMindSurrogate.validate(green_mind, Colour.green)
-    ActorMindSurrogate.validate(orange_mind, Colour.orange)
-
-    return white_mind, green_mind, orange_mind
+    return minds

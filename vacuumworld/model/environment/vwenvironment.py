@@ -3,6 +3,7 @@ from typing import List, Tuple, Dict, Type
 from inspect import getfile
 from itertools import product
 from math import floor, sqrt
+from random import randint
 
 from pystarworldsturbo.common.action import Action
 from pystarworldsturbo.common.action_outcome import ActionOutcome
@@ -18,6 +19,8 @@ from ..actor.vwactor import VWActor
 from ..actor.vwuser import VWUser
 from ..actor.vwactor_appearance import VWActorAppearance
 from ..actor.actor_factories import VWCleaningAgentsFactory, VWUsersFactory
+from ..actor.user_difficulty import UserDifficulty
+from ..actor.hystereticmindsurrogate import VWHystereticMindSurrogate
 from ..dirt.dirt import Dirt
 from ..dirt.dirt_appearance import VWDirtAppearance
 from ...common.coordinates import Coord
@@ -268,3 +271,80 @@ class VWEnvironment(Environment):
 
     def __str__(self) -> str:
         return str(self.get_ambient())
+
+    @staticmethod
+    def generate_random_env_for_testing(config: dict, custom_grid_size: int) -> Tuple[VWEnvironment, int]:
+        green_agent_orientation: Orientation = Orientation.random()
+        orange_agent_orientation: Orientation = Orientation.random()
+        white_agent_orientation: Orientation = Orientation.random()
+        user_orientation: Orientation = Orientation.random()
+        difficutly_level: UserDifficulty = UserDifficulty.random()
+
+        green_agent, green_agent_appearance = VWCleaningAgentsFactory.create_cleaning_agent(colour=Colour.green, orientation=green_agent_orientation, mind_surrogate=VWHystereticMindSurrogate())
+        orange_agent, orange_agent_appearance = VWCleaningAgentsFactory.create_cleaning_agent(colour=Colour.orange, orientation=orange_agent_orientation, mind_surrogate=VWHystereticMindSurrogate())
+        white_agent, white_agent_appearance = VWCleaningAgentsFactory.create_cleaning_agent(colour=Colour.white, orientation=white_agent_orientation, mind_surrogate=VWHystereticMindSurrogate())
+        user, user_appearance = VWUsersFactory.create_user(difficulty_level=difficutly_level, orientation=user_orientation)
+
+        green_dirt: Dirt = Dirt(colour=Colour.green)
+        green_dirt_appearance: VWDirtAppearance = VWDirtAppearance(dirt_id=green_dirt.get_id(), progressive_id=green_dirt.get_progressive_id(), colour=Colour.green)
+
+        orange_dirt: Dirt = Dirt(colour=Colour.orange)
+        orange_dirt_appearance: VWDirtAppearance = VWDirtAppearance(dirt_id=orange_dirt.get_id(), progressive_id=orange_dirt.get_progressive_id(), colour=Colour.orange)
+
+        env, grid_size = VWEnvironment.generate_empty_env_for_testing(custom_grid_size=custom_grid_size, config=config)
+
+        env.add_actor(actor=green_agent)
+        env.add_actor(actor=orange_agent)
+        env.add_actor(actor=white_agent)
+        env.add_actor(actor=user)
+        env.add_passive_body(passive_body=green_dirt)
+        env.add_passive_body(passive_body=orange_dirt)
+
+        green_agent_coord, orange_agent_coord, white_agent_coord, user_coord = VWEnvironment.generate_mutually_exclusive_coordinates_for_testing(amount=4, grid_size=grid_size)
+        green_dirt_coord, orange_dirt_coord = VWEnvironment.generate_mutually_exclusive_coordinates_for_testing(amount=2, grid_size=grid_size)
+
+        env.get_ambient().get_grid()[green_agent_coord] = VWLocation(coord=green_agent_coord, actor_appearance=green_agent_appearance, wall=VWEnvironment.generate_wall_from_coordinates(coord=green_agent_coord, grid_size=grid_size))
+        env.get_ambient().get_grid()[orange_agent_coord] = VWLocation(coord=orange_agent_coord, actor_appearance=orange_agent_appearance, wall=VWEnvironment.generate_wall_from_coordinates(coord=orange_agent_coord, grid_size=grid_size))
+        env.get_ambient().get_grid()[white_agent_coord] = VWLocation(coord=white_agent_coord, actor_appearance=white_agent_appearance, wall=VWEnvironment.generate_wall_from_coordinates(coord=white_agent_coord, grid_size=grid_size))
+        env.get_ambient().get_grid()[user_coord] = VWLocation(coord=user_coord, actor_appearance=user_appearance, wall=VWEnvironment.generate_wall_from_coordinates(coord=user_coord, grid_size=grid_size))
+
+        if green_dirt_coord in env.get_ambient().get_grid():
+            env.get_ambient().get_grid()[green_dirt_coord].add_dirt(dirt_appearance=green_dirt_appearance)
+        else:
+            env.get_ambient().get_grid()[green_dirt_coord] = VWLocation(coord=green_dirt_coord, dirt_appearance=green_dirt_appearance, wall=VWEnvironment.generate_wall_from_coordinates(coord=green_dirt_coord, grid_size=grid_size))
+
+        if orange_dirt_coord in env.get_ambient().get_grid():
+            env.get_ambient().get_grid()[orange_dirt_coord].add_dirt(dirt_appearance=orange_dirt_appearance)
+        else:
+            env.get_ambient().get_grid()[orange_dirt_coord] = VWLocation(coord=orange_dirt_coord, dirt_appearance=orange_dirt_appearance, wall=VWEnvironment.generate_wall_from_coordinates(coord=orange_dirt_coord, grid_size=grid_size))
+
+        return env, grid_size
+
+    @staticmethod
+    def generate_empty_env_for_testing(custom_grid_size: bool, config: dict) -> Tuple[VWEnvironment, int]:
+        default_grid_size: int = config["initial_environment_dim"]
+        min_grid_size: int = config["min_environment_dim"]
+        max_grid_size: int = config["max_environment_dim"]
+
+        if custom_grid_size:
+            grid_size: int = randint(min_grid_size, max_grid_size)
+            return VWEnvironment.generate_empty_env(config=config, forced_line_dim=grid_size), grid_size
+        else:
+            grid_size: int = default_grid_size
+            return VWEnvironment.generate_empty_env(config=config), grid_size
+
+    @staticmethod
+    def generate_mutually_exclusive_coordinates_for_testing(amount: int, grid_size: int) -> List[Coord]:
+        assert amount > 1
+
+        coords: List[Coord] = [Coord(x=randint(0, grid_size - 1), y=randint(0, grid_size - 1))]
+
+        for _ in range(amount - 1):
+            tmp: Coord = Coord(x=randint(0, grid_size - 1), y=randint(0, grid_size - 1))
+
+            while tmp in coords:
+                tmp = Coord(x=randint(0, grid_size - 1), y=randint(0, grid_size - 1))
+
+            coords.append(tmp)
+
+        return coords

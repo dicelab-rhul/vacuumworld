@@ -27,11 +27,8 @@ class TestPerception(TestCase):
     def __init__(self, args) -> None:
         super(TestPerception, self).__init__(args)
 
-        self.__config_file_name: str = "config.json"
-        self.__vw_dir_name: str = "vacuumworld"
-        self.__config_file_path: str = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), self.__vw_dir_name, self.__config_file_name)
-        self.__config_manager: ConfigManager = ConfigManager(config_file_path=self.__config_file_path)
-        self.__config: dict = self.__config_manager.load_config()
+        self.__config_file_path: str = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "vacuumworld", "config.json")
+        self.__config: dict = ConfigManager(config_file_path=self.__config_file_path).load_config()
         self.__min_grid_size: int = self.__config["min_environment_dim"]
         self.__max_grid_size: int = self.__config["max_environment_dim"]
 
@@ -97,7 +94,7 @@ class TestPerception(TestCase):
             else:
                 self.assertIsNone(location.get_dirt_appearance())
 
-    def test_message(self) -> None:
+    def test_messages(self) -> None:
         for content in (1, 1.32343, "foo", ["foo", 1, 1.234, [], (), {}], ("foo", 1, 1.234, [], (), {}), {1: ["", None], 1.2343: (3, 4.5)}):
             for sender in ("U", "N", "OWEN"):
                 for recipient in ("Cloud", "Barret", "Red XIII", "Cid", "Vincent", "Tifa", "Yuffie", "Cait Sith", "Aerith"):
