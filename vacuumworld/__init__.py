@@ -3,6 +3,7 @@ from json import load
 from screeninfo import get_monitors
 from typing import List, Tuple
 
+from .config_manager import ConfigManager
 from .model.actions.vwactions import VWAction
 from .model.actions.effort import ActionEffort
 from .model.actor.actor_mind_surrogate import ActorMindSurrogate
@@ -36,7 +37,7 @@ def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, *
 
     white_mind, green_mind, orange_mind = __process_minds(default_mind, white_mind, green_mind, orange_mind)
 
-    config: dict = __load_config()
+    config: dict = ConfigManager(config_file_path=CONFIG_FILE_PATH).load_config()
 
     user_mind: UserMindSurrogate = UserMindSurrogate(difficulty_level=UserDifficulty(config["default_user_mind_level"]))
 
@@ -77,33 +78,6 @@ def __run_with_gui(config: dict, white_mind: ActorMindSurrogate, green_mind: Act
         vwgui.join()
     except Exception as e:
         print("Fatal error: {}. Bye".format(e))
-
-
-def __load_config() -> dict:
-    with open(CONFIG_FILE_PATH, "r") as f:
-        config: dict = load(fp=f)
-
-    # Assuming the first monitor is the one where VW is running.
-    config["screen_width"] = get_monitors()[config["default_monitor_number"]].width
-    config["screen_height"] = get_monitors()[config["default_monitor_number"]].height
-    config["x_scale"] = float(config["screen_width"] / config["base_screen_width"])
-    config["y_scale"] = float(config["screen_height"] / config["base_screen_height"])
-
-    if config["screen_height"] < config["screen_width"]:
-        config["scale"] = config["y_scale"]
-    else:
-        config["scale"] = config["x_scale"]
-
-    top_directory_path: str = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), config["top_directory_name"])
-    config["button_data_path"] = os.path.join(top_directory_path, config["res_directory_name"])
-    config["location_agent_images_path"] = os.path.join(top_directory_path, config["res_directory_name"], config["locations_directory_name"], config["agent_images_directory_name"])
-    config["location_dirt_images_path"] = os.path.join(top_directory_path, config["res_directory_name"], config["locations_directory_name"], config["dirt_images_directory_name"])
-    config["main_menu_image_path"] = os.path.join(top_directory_path, config["res_directory_name"], "start_menu.png")
-
-    for entry in config["to_compute_programmatically_at_boot"]:
-        assert entry and entry != -1
-
-    return config
 
 
 def __process_minds(default_mind: ActorMindSurrogate=None, white_mind: ActorMindSurrogate=None, green_mind: ActorMindSurrogate=None, orange_mind: ActorMindSurrogate=None) -> Tuple[ActorMindSurrogate, ActorMindSurrogate, ActorMindSurrogate]:
