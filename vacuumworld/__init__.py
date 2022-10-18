@@ -26,7 +26,7 @@ CONFIG_FILE_NAME: str = "config.json"
 CONFIG_FILE_PATH: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), CONFIG_FILE_NAME)
 
 
-def version() -> str:
+def version_check() -> None:
     config: dict = ConfigManager(config_file_path=CONFIG_FILE_PATH).load_config()
     version_number: str = config["version_number"]
 
@@ -47,7 +47,7 @@ def version() -> str:
 
 
 def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, **kwargs) -> None:
-    version()
+    version_check()
 
     # Safeguard against crashes on Windows and every other OS without SIGTSTP.
     if hasattr(signal, "SIGTSTP"):
