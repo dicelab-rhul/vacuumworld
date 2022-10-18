@@ -63,7 +63,7 @@ class VWGUI(Process):
         if speed < 0 or speed >= 1:
             raise ValueError("Argument \"speed\" must be >=0 and < 1.")
 
-        if scale < 0 or scale >= 2.5:
+        if scale <= 0 or scale >= 2.5:
             raise ValueError("Argument \"scale\" must be > 0 and <= 2.5.")
 
     def __override_default_config(self, skip: bool=False, play: bool=False, speed: float=0.0, file_to_load: str=None, scale: float=1.0, tooltips: bool=True) -> None:
