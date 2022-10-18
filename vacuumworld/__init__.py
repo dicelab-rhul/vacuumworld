@@ -1,5 +1,6 @@
 from signal import signal, SIG_IGN
 from typing import List, Tuple
+from subprocess import call, DEVNULL
 
 from .config_manager import ConfigManager
 from .model.actions.vwactions import VWAction
@@ -21,10 +22,33 @@ import os
 
 __all__: List[str] = [vacuumworld.common, vacuumworld.gui, vacuumworld.model, vacuumworld.res]
 
-CONFIG_FILE_PATH: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
+CONFIG_FILE_NAME: str = "config.json"
+CONFIG_FILE_PATH: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), CONFIG_FILE_NAME)
+
+
+def version() -> str:
+    config: dict = ConfigManager(config_file_path=CONFIG_FILE_PATH).load_config()
+    version_number: str = config["version_number"]
+
+    print("VacuumWorld version: {}.\n".format(version_number))
+
+    call(["wget", "https://raw.githubusercontent.com/dicelab-rhul/vacuumworld/main/vacuumworld/{}".format(CONFIG_FILE_NAME)], stdout=DEVNULL, stderr=DEVNULL)
+
+    remote_config: dict = ConfigManager(config_file_path=CONFIG_FILE_NAME).load_config()
+    latest_version_number: str = remote_config["version_number"]
+
+    if version_number != latest_version_number:
+        print("WARNING: Your version of VacuumWorld is outdated. The latest version is {}.".format(latest_version_number))
+        print("Please update VacuumWorld by running `./update_vw.sh` from a terminal, after navigating to the cloned directory.\n")
+    else:
+        print("Your version of VacuumWorld is up-to-date.\n")
+
+    os.remove(CONFIG_FILE_NAME)
 
 
 def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, **kwargs) -> None:
+    version()
+
     # Safeguard against crashes on Windows and every other OS without SIGTSTP.
     if hasattr(signal, "SIGTSTP"):
         from signal import SIGTSTP
