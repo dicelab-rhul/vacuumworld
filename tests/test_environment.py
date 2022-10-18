@@ -2,7 +2,6 @@
 
 from unittest import main, TestCase
 from random import randint
-from typing import List, Tuple
 
 from vacuumworld.common.coordinates import Coord
 from vacuumworld.common.colour import Colour
@@ -23,14 +22,8 @@ class TestEnvironment(TestCase):
     def __init__(self, args) -> None:
         super(TestEnvironment, self).__init__(args)
 
-        self.__config_file_name: str = "config.json"
-        self.__vw_dir_name: str = "vacuumworld"
-        self.__config_file_path: str = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), self.__vw_dir_name, self.__config_file_name)
-        self.__config_manager: ConfigManager = ConfigManager(config_file_path=self.__config_file_path)
-        self.__config: dict = self.__config_manager.load_config()
-        self.__default_grid_size: int = self.__config["initial_environment_dim"]
-        self.__min_grid_size: int = self.__config["min_environment_dim"]
-        self.__max_grid_size: int = self.__config["max_environment_dim"]
+        self.__config_file_path: str = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "vacuumworld", "config.json")
+        self.__config: dict = ConfigManager(config_file_path=self.__config_file_path).load_config()
 
     def test_default_sized_empty_env(self) -> None:
         self.__test_empty_env(custom_grid_size=False)
@@ -39,7 +32,7 @@ class TestEnvironment(TestCase):
         self.__test_empty_env(custom_grid_size=True)
 
     def __test_empty_env(self, custom_grid_size: bool) -> None:
-        env, grid_size = self.__generate_empty_env(custom_grid_size=custom_grid_size)
+        env, grid_size = VWEnvironment.generate_empty_env_for_testing(custom_grid_size=custom_grid_size, config=self.__config)
 
         self.assertEqual(env.get_ambient().get_grid_dim(), grid_size)
         self.assertEqual(len(env.get_ambient().get_grid()), grid_size ** 2)
@@ -47,14 +40,6 @@ class TestEnvironment(TestCase):
         self.assertEqual(len(env.get_actors_list()), 0)
         self.assertEqual(len(env.get_passive_bodies()), 0)
         self.assertEqual(len(env.get_passive_bodies_list()), 0)
-
-    def __generate_empty_env(self, custom_grid_size: bool) -> Tuple[VWEnvironment, int]:
-        if custom_grid_size:
-            grid_size: int = randint(self.__min_grid_size, self.__max_grid_size)
-            return VWEnvironment.generate_empty_env(config=self.__config, forced_line_dim=grid_size), grid_size
-        else:
-            grid_size: int = self.__default_grid_size
-            return VWEnvironment.generate_empty_env(config=self.__config), grid_size
 
     def test_default_sized_env_with_agents(self) -> None:
         self.__test_env_with_cleaning_agents(custom_grid_size=False)
@@ -71,7 +56,7 @@ class TestEnvironment(TestCase):
         orange_agent, orange_agent_appearance = VWCleaningAgentsFactory.create_cleaning_agent(colour=Colour.orange, orientation=orange_agent_orientation, mind_surrogate=VWHystereticMindSurrogate())
         white_agent, white_agent_appearance = VWCleaningAgentsFactory.create_cleaning_agent(colour=Colour.white, orientation=white_agent_orientation, mind_surrogate=VWHystereticMindSurrogate())
 
-        env, grid_size = self.__generate_empty_env(custom_grid_size=custom_grid_size)
+        env, grid_size = VWEnvironment.generate_empty_env_for_testing(custom_grid_size=custom_grid_size, config=self.__config)
 
         self.assertEqual(env.get_ambient().get_grid_dim(), grid_size)
         self.assertEqual(len(env.get_ambient().get_grid()), grid_size ** 2)
@@ -80,7 +65,7 @@ class TestEnvironment(TestCase):
         env.add_actor(actor=orange_agent)
         env.add_actor(actor=white_agent)
 
-        green_agent_coord, orange_agent_coord, white_agent_coord = TestEnvironment.__generate_mutually_exclusive_coordinates(amount=3, grid_size=grid_size)
+        green_agent_coord, orange_agent_coord, white_agent_coord = VWEnvironment.generate_mutually_exclusive_coordinates_for_testing(amount=3, grid_size=grid_size)
 
         env.get_ambient().get_grid()[green_agent_coord] = VWLocation(coord=green_agent_coord, actor_appearance=green_agent_appearance, wall=VWEnvironment.generate_wall_from_coordinates(coord=green_agent_coord, grid_size=grid_size))
         env.get_ambient().get_grid()[orange_agent_coord] = VWLocation(coord=orange_agent_coord, actor_appearance=orange_agent_appearance, wall=VWEnvironment.generate_wall_from_coordinates(coord=orange_agent_coord, grid_size=grid_size))
@@ -107,7 +92,7 @@ class TestEnvironment(TestCase):
         orange_dirt: Dirt = Dirt(colour=Colour.orange)
         orange_dirt_appearance: VWDirtAppearance = VWDirtAppearance(dirt_id=orange_dirt.get_id(), progressive_id=orange_dirt.get_progressive_id(), colour=Colour.orange)
 
-        env, grid_size = self.__generate_empty_env(custom_grid_size=custom_grid_size)
+        env, grid_size = VWEnvironment.generate_empty_env_for_testing(custom_grid_size=custom_grid_size, config=self.__config)
 
         self.assertEqual(env.get_ambient().get_grid_dim(), grid_size)
         self.assertEqual(len(env.get_ambient().get_grid()), grid_size ** 2)
@@ -115,7 +100,7 @@ class TestEnvironment(TestCase):
         env.add_passive_body(passive_body=green_dirt)
         env.add_passive_body(passive_body=orange_dirt)
 
-        green_dirt_coord, orange_dirt_coord = TestEnvironment.__generate_mutually_exclusive_coordinates(amount=2, grid_size=grid_size)
+        green_dirt_coord, orange_dirt_coord = VWEnvironment.generate_mutually_exclusive_coordinates_for_testing(amount=2, grid_size=grid_size)
 
         env.get_ambient().get_grid()[green_dirt_coord] = VWLocation(coord=green_dirt_coord, dirt_appearance=green_dirt_appearance, wall=VWEnvironment.generate_wall_from_coordinates(coord=green_dirt_coord, grid_size=grid_size))
         env.get_ambient().get_grid()[orange_dirt_coord] = VWLocation(coord=orange_dirt_coord, dirt_appearance=orange_dirt_appearance, wall=VWEnvironment.generate_wall_from_coordinates(coord=orange_dirt_coord, grid_size=grid_size))
@@ -139,7 +124,7 @@ class TestEnvironment(TestCase):
 
         user, user_appearance = VWUsersFactory.create_user(difficulty_level=difficutly_level, orientation=user_orientation)
 
-        env, grid_size = self.__generate_empty_env(custom_grid_size=custom_grid_size)
+        env, grid_size = VWEnvironment.generate_empty_env_for_testing(custom_grid_size=custom_grid_size, config=self.__config)
 
         self.assertEqual(env.get_ambient().get_grid_dim(), grid_size)
         self.assertEqual(len(env.get_ambient().get_grid()), grid_size ** 2)
@@ -180,7 +165,7 @@ class TestEnvironment(TestCase):
         orange_dirt: Dirt = Dirt(colour=Colour.orange)
         orange_dirt_appearance: VWDirtAppearance = VWDirtAppearance(dirt_id=orange_dirt.get_id(), progressive_id=orange_dirt.get_progressive_id(), colour=Colour.orange)
 
-        env, grid_size = self.__generate_empty_env(custom_grid_size=custom_grid_size)
+        env, grid_size = VWEnvironment.generate_empty_env_for_testing(custom_grid_size=custom_grid_size, config=self.__config)
 
         self.assertEqual(env.get_ambient().get_grid_dim(), grid_size)
         self.assertEqual(len(env.get_ambient().get_grid()), grid_size ** 2)
@@ -192,8 +177,8 @@ class TestEnvironment(TestCase):
         env.add_passive_body(passive_body=green_dirt)
         env.add_passive_body(passive_body=orange_dirt)
 
-        green_agent_coord, orange_agent_coord, white_agent_coord, user_coord = TestEnvironment.__generate_mutually_exclusive_coordinates(amount=4, grid_size=grid_size)
-        green_dirt_coord, orange_dirt_coord = TestEnvironment.__generate_mutually_exclusive_coordinates(amount=2, grid_size=grid_size)
+        green_agent_coord, orange_agent_coord, white_agent_coord, user_coord = VWEnvironment.generate_mutually_exclusive_coordinates_for_testing(amount=4, grid_size=grid_size)
+        green_dirt_coord, orange_dirt_coord = VWEnvironment.generate_mutually_exclusive_coordinates_for_testing(amount=2, grid_size=grid_size)
 
         env.get_ambient().get_grid()[green_agent_coord] = VWLocation(coord=green_agent_coord, actor_appearance=green_agent_appearance, wall=VWEnvironment.generate_wall_from_coordinates(coord=green_agent_coord, grid_size=grid_size))
         env.get_ambient().get_grid()[orange_agent_coord] = VWLocation(coord=orange_agent_coord, actor_appearance=orange_agent_appearance, wall=VWEnvironment.generate_wall_from_coordinates(coord=orange_agent_coord, grid_size=grid_size))
@@ -222,22 +207,6 @@ class TestEnvironment(TestCase):
         self.assertTrue(env.get_ambient().get_grid()[orange_dirt_coord].has_dirt())
 
         # For the tests on the actor appearance, go to test_location_and_coordinates.py, test_actors.py, and test_dirt.py.
-
-    @staticmethod
-    def __generate_mutually_exclusive_coordinates(amount: int, grid_size: int) -> List[Coord]:
-        assert amount > 1
-
-        coords: List[Coord] = [Coord(x=randint(0, grid_size - 1), y=randint(0, grid_size - 1))]
-
-        for _ in range(amount - 1):
-            tmp: Coord = Coord(x=randint(0, grid_size - 1), y=randint(0, grid_size - 1))
-
-            while tmp in coords:
-                tmp = Coord(x=randint(0, grid_size - 1), y=randint(0, grid_size - 1))
-
-            coords.append(tmp)
-
-        return coords
 
 
 if __name__ == "__main__":
