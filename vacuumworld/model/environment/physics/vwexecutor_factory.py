@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Type, Optional
 
 from pystarworldsturbo.environment.physics.executor_factory import ExecutorFactory
 from pystarworldsturbo.environment.physics.action_executor import ActionExecutor
@@ -22,7 +22,7 @@ from ...actions.broadcast_action import VWBroadcastAction
 
 class VWExecutorFactory(ExecutorFactory):
     @staticmethod
-    def get_executor_for(action: VWAction) -> ActionExecutor:
+    def get_executor_for(action: VWAction) -> Optional[ActionExecutor]:
         assert isinstance(action, VWAction)
 
         action_type: Type = type(action)

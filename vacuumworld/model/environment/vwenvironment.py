@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import List, Tuple, Dict, Type
+from typing import List, Tuple, Dict, Type, Optional
 from inspect import getfile
 from itertools import product
 from math import floor, sqrt
@@ -73,7 +73,7 @@ class VWEnvironment(Environment):
             if not isinstance(action, VWPhysicalAction) and not isinstance(action, VWCommunicativeAction):
                 raise VWMalformedActionException("Unrecognised action: {}.".format(type(action)))
 
-    def get_executor_for(_, action: Action) -> ActionExecutor:
+    def get_executor_for(_, action: Action) -> Optional[ActionExecutor]:
         return VWExecutorFactory.get_executor_for(action=action)
 
     def evolve(self) -> None:
