@@ -10,14 +10,16 @@ from .gui.saveload import SaveStateManager
 
 
 class VWGuilessRunner():
-    def __init__(self, config: dict, minds: Dict[Colour, ActorMindSurrogate], load: str=None, speed: float=0.0) -> None:
+    def __init__(self, config: dict, minds: Dict[Colour, ActorMindSurrogate], load: str=None, speed: float=0.0, total_cycles: int=0) -> None:
         assert config
         assert minds
         assert load
         assert speed >= 0 and speed < 1
+        assert type(total_cycles) == int and total_cycles >= 0
 
         self.__config: dict = config
         self.__minds: Dict[Colour, ActorMindSurrogate] = minds
+        self.__config["total_cycles"] = total_cycles
         self.__config["white_mind_filename"] = getsourcefile(self.__minds[Colour.white].__class__)
         self.__config["orange_mind_filename"] = getsourcefile(self.__minds[Colour.orange].__class__)
         self.__config["green_mind_filename"] = getsourcefile(self.__minds[Colour.green].__class__)
@@ -44,6 +46,11 @@ class VWGuilessRunner():
                 print("\nEnvironment at the end of cycle {}:\n\n{}\n".format(env.get_current_cycle_number() - 1, env))
 
                 sleep(int(self.__config["time_step"]))
+
+                if self.__config["total_cycles"] > 0 and env.get_current_cycle_number() == self.__config["total_cycles"]:
+                    print("INFO: end of cycles.")
+
+                    break
         except KeyboardInterrupt:
             print("Received a SIGINT (possibly via CTRL+C). Stopping...")
         except Exception:

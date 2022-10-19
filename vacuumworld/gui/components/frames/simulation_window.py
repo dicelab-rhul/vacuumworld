@@ -16,6 +16,7 @@ from ....common.coordinates import Coord
 from ....common.orientation import Orientation
 from ....common.direction import Direction
 from ....common.colour import Colour
+from ....common.exceptions import VWEndOfCyclesException
 from ....model.actor.vwactor_appearance import VWActorAppearance
 from ....model.actor.actor_mind_surrogate import ActorMindSurrogate
 from ....model.actor.user_mind_surrogate import UserMindSurrogate
@@ -28,7 +29,7 @@ import os
 
 
 class VWSimulationWindow(Frame):
-    def __init__(self, parent: Tk, config: dict, buttons: dict, minds: Dict[Colour, ActorMindSurrogate], env: VWEnvironment, _guide: Callable, _save: Callable, _load: Callable, _error: Callable) -> None:
+    def __init__(self, parent: Tk, config: dict, buttons: dict, minds: Dict[Colour, ActorMindSurrogate], env: VWEnvironment, _guide: Callable, _save: Callable, _load: Callable, _exit: Callable, _error: Callable) -> None:
         super(VWSimulationWindow, self).__init__(parent)
 
         self.__parent: Tk = parent
@@ -39,6 +40,7 @@ class VWSimulationWindow(Frame):
         self.__guide: Callable = _guide
         self.__save: Callable = _save
         self.__load: Callable = _load
+        self.__exit: Callable = _exit
         self.__error: Callable = _error
         self.__after_hook: Callable = None
         self.__save_state_manager: SaveStateManager = SaveStateManager()
@@ -612,7 +614,18 @@ class VWSimulationWindow(Frame):
                 self.__parent.after(0, self.redraw)
 
                 time: int = int(self.__config["time_step"]*1000)
-                self.__after_hook = self.__parent.after(time, self.__simulate)
+
+                if self.__env.can_evolve():
+                    self.__after_hook = self.__parent.after(time, self.__simulate)
+                else:
+                    self.__stop()
+                    self.__reset()
+
+                    raise VWEndOfCyclesException("INFO: end of cycles.")
+        except VWEndOfCyclesException as e:
+            print(e.args[0])
+
+            self.__exit()
         except Exception:
             print("INFO: SIMULATION ERROR!")
 

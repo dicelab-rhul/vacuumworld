@@ -41,22 +41,22 @@ class VWGUI(Process):
     def kill(self) -> None:
         self.__forceful_stop = True
 
-    def init_gui_conf(self, minds: Dict[Colour, ActorMindSurrogate], skip: bool=False, play: bool=False, speed: float=0.0, load: str=None, scale: float=0.0, tooltips: bool=True, **_) -> None:
+    def init_gui_conf(self, minds: Dict[Colour, ActorMindSurrogate], skip: bool=False, play: bool=False, speed: float=0.0, load: str=None, scale: float=0.0, tooltips: bool=True, total_cycles: int=0, **_) -> None:
         try:
             assert minds
 
             self.__minds: Dict[Colour, ActorMindSurrogate] = minds
 
-            VWGUI.__validate_arguments(play=play, file_to_load=load, speed=speed, scale=scale)
+            VWGUI.__validate_arguments(play=play, file_to_load=load, speed=speed, scale=scale, total_cycles=total_cycles)
 
-            self.__override_default_config(skip=skip, play=play, speed=speed, file_to_load=load, scale=scale, tooltips=tooltips)
+            self.__override_default_config(skip=skip, play=play, speed=speed, file_to_load=load, scale=scale, tooltips=tooltips, total_cycles=total_cycles)
             self.__scale_config_parameters()
             self.__button_data = self.__load_button_data()
         except Exception:
             self.__clean_exit()
 
     @staticmethod
-    def __validate_arguments(play: bool, speed: float, file_to_load: str, scale: str) -> None:
+    def __validate_arguments(play: bool, speed: float, file_to_load: str, scale: str, total_cycles: int) -> None:
         if play and not file_to_load:
             raise ValueError("Argument \"load\" must be specified if argument \"play\" = True")
 
@@ -67,7 +67,11 @@ class VWGUI(Process):
         if scale < 0 or scale >= 2.5:
             raise ValueError("Argument \"scale\" must be >= 0 and <= 2.5.")
 
-    def __override_default_config(self, skip: bool=False, play: bool=False, speed: float=0.0, file_to_load: str=None, scale: float=1.0, tooltips: bool=True) -> None:
+        # A 0 value means an infinite number of cycles.
+        if type(total_cycles) != int or total_cycles < 0:
+            raise ValueError("Argument \"total_cycles\" must be an integer >= 0.")
+
+    def __override_default_config(self, skip: bool=False, play: bool=False, speed: float=0.0, file_to_load: str=None, scale: float=1.0, tooltips: bool=True, total_cycles: int=0) -> None:
         self.__config["white_mind_filename"] = getsourcefile(self.__minds[Colour.white].__class__)
         self.__config["orange_mind_filename"] = getsourcefile(self.__minds[Colour.orange].__class__)
         self.__config["green_mind_filename"] = getsourcefile(self.__minds[Colour.green].__class__)
@@ -83,6 +87,9 @@ class VWGUI(Process):
             self.__config["scale"] = scale
             self.__config["x_scale"] = scale
             self.__config["y_scale"] = scale
+
+        if total_cycles > 0:
+            self.__config["total_cycles"] = total_cycles
 
         self.__config["tooltips"] &= tooltips
 
@@ -152,7 +159,7 @@ class VWGUI(Process):
         self.__center_and_adapt_to_resolution()
 
     def __show_simulation_window(self, env: VWEnvironment) -> None:
-        self.__simulation_window: VWSimulationWindow = VWSimulationWindow(parent=self.__root, config=self.__config, buttons=self.__button_data, minds=self.__minds, env=env, _guide=self.__guide, _save=self.__save, _load=self.__load, _error=self.__clean_exit)
+        self.__simulation_window: VWSimulationWindow = VWSimulationWindow(parent=self.__root, config=self.__config, buttons=self.__button_data, minds=self.__minds, env=env, _guide=self.__guide, _save=self.__save, _load=self.__load, _exit=self.__finish, _error=self.__clean_exit)
 
         self.__simulation_window.pack()
         self.__center_and_adapt_to_resolution()

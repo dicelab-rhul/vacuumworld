@@ -83,7 +83,8 @@ def __run_guiless(config: dict, white_mind: ActorMindSurrogate, green_mind: Acto
         print("VacuumWorld cannot run GUI-less if no savestate file is provided.")
     else:
         print("RunningGUI-less...")
-        vw_runner: VWGuilessRunner = VWGuilessRunner(config=config, minds={Colour.white: white_mind, Colour.green: green_mind, Colour.orange: orange_mind, Colour.user: user_mind}, load=kwargs.get("load"))
+
+        vw_runner: VWGuilessRunner = VWGuilessRunner(config=config, minds={Colour.white: white_mind, Colour.green: green_mind, Colour.orange: orange_mind, Colour.user: user_mind}, load=kwargs.get("load"), total_cycles=kwargs.get("total_cycles"))
         vw_runner.start()
 
 
