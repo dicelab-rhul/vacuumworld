@@ -34,6 +34,11 @@ class VWInternalError(Exception):
         super(VWInternalError, self).__init__(message)
 
 
+class VWEndOfCyclesException(Exception):
+    def __init__(self, message) -> None:
+        super(VWEndOfCyclesException, self).__init__(message)
+
+
 class VWExceptionManager():
     @staticmethod
     def manage_exception(e: Exception, context: Type) -> None:

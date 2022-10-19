@@ -40,6 +40,12 @@ class VWEnvironment(Environment):
         self.__surrogate_minds_metadata: Dict[str, str] = {}
         self.__config: dict = config
 
+    def can_evolve(self) -> bool:
+        if self.__config["total_cycles"] == 0:
+            return True
+        else:
+            return self.__cycle < self.__config["total_cycles"]
+
     def get_surrogate_minds_metadata(self) -> Dict[str, str]:
         return self.__surrogate_minds_metadata()
 
