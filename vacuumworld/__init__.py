@@ -1,5 +1,5 @@
 from signal import signal, SIG_IGN
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 from subprocess import call, DEVNULL
 
 from .config_manager import ConfigManager
@@ -84,7 +84,12 @@ def __run_guiless(config: dict, white_mind: ActorMindSurrogate, green_mind: Acto
     else:
         print("RunningGUI-less...")
 
-        vw_runner: VWGuilessRunner = VWGuilessRunner(config=config, minds={Colour.white: white_mind, Colour.green: green_mind, Colour.orange: orange_mind, Colour.user: user_mind}, load=kwargs.get("load"), total_cycles=kwargs.get("total_cycles"))
+        minds: Dict[Colour, ActorMindSurrogate] = {Colour.white: white_mind, Colour.green: green_mind, Colour.orange: orange_mind, Colour.user: user_mind}
+        speed: float = kwargs.get("speed") if "speed" in kwargs else 0.0
+        load: str = kwargs.get("load") if "load" in kwargs else None
+        total_cycles: int = kwargs.get("total_cycles") if "total_cycles" in kwargs else 0
+
+        vw_runner: VWGuilessRunner = VWGuilessRunner(config=config, minds=minds, speed=speed, load=load, total_cycles=total_cycles)
         vw_runner.start()
 
 

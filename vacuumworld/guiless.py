@@ -44,7 +44,7 @@ class VWGuilessRunner():
                 env.evolve()
 
                 print("\nEnvironment at the end of cycle {}:\n\n{}\n".format(env.get_current_cycle_number() - 1, env))
-
+                print(self.__config["time_step"])
                 sleep(int(self.__config["time_step"]))
 
                 if self.__config["total_cycles"] > 0 and env.get_current_cycle_number() == self.__config["total_cycles"]:
