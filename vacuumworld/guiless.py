@@ -15,7 +15,7 @@ class VWGuilessRunner():
         assert minds
         assert load
         assert speed >= 0 and speed < 1
-        assert total_cycles >= 0
+        assert type(total_cycles) == int and total_cycles >= 0
 
         self.__config: dict = config
         self.__minds: Dict[Colour, ActorMindSurrogate] = minds

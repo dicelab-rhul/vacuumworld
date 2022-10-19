@@ -68,8 +68,8 @@ class VWGUI(Process):
             raise ValueError("Argument \"scale\" must be >= 0 and <= 2.5.")
 
         # A 0 value means an infinite number of cycles.
-        if total_cycles < 0:
-            raise ValueError("Argument \"total_cycles\" must be >= 0.")
+        if type(total_cycles) != int or total_cycles < 0:
+            raise ValueError("Argument \"total_cycles\" must be an integer >= 0.")
 
     def __override_default_config(self, skip: bool=False, play: bool=False, speed: float=0.0, file_to_load: str=None, scale: float=1.0, tooltips: bool=True, total_cycles: int=0) -> None:
         self.__config["white_mind_filename"] = getsourcefile(self.__minds[Colour.white].__class__)

@@ -90,14 +90,18 @@ class TestIllegalRunInputs(TestCase):
 
     def test_illegal_speed_value(self) -> None:
         for value in [-1, -0.3, 1.1, 2, 3, 100, 1000]:
-            self.assertRaises(ValueError, VWGUI._VWGUI__validate_arguments, play=False, file_to_load="", scale=1, speed=value)
+            self.assertRaises(ValueError, VWGUI._VWGUI__validate_arguments, play=False, file_to_load="", scale=1, speed=value, total_cycles=0)
 
     def test_illegal_scale_value(self) -> None:
         for value in [-1, -0.3, 2.6, 3, 100, 1000]:
-            self.assertRaises(ValueError, VWGUI._VWGUI__validate_arguments, play=False, file_to_load="", scale=value, speed=0)
+            self.assertRaises(ValueError, VWGUI._VWGUI__validate_arguments, play=False, file_to_load="", scale=value, speed=0, total_cycles=0)
 
     def test_play_without_load(self) -> None:
-        self.assertRaises(ValueError, VWGUI._VWGUI__validate_arguments, play=True, file_to_load="", scale=1, speed=0)
+        self.assertRaises(ValueError, VWGUI._VWGUI__validate_arguments, play=True, file_to_load="", scale=1, speed=0, total_cycles=0)
+
+    def test_illegal_total_cycles_value(self) -> None:
+        for value in [-1, -0.3, 0.1, 1.1]:
+            self.assertRaises(ValueError, VWGUI._VWGUI__validate_arguments, play=False, file_to_load="", scale=1, speed=0, total_cycles=value)
 
     def test_illegal_minds_combination(self) -> None:
         self.assertRaises(AssertionError, run)
