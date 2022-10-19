@@ -86,6 +86,8 @@ class MalformedDecideSurrogateMind():
 class TestIllegalRunInputs(TestCase):
     '''
     All the arguments of `run()` that are not tested are simply ignored if they are not valid.
+
+    All unknown arguments of `run()` are ignored by the system.
     '''
 
     def test_illegal_speed_value(self) -> None:
