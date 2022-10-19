@@ -1,4 +1,4 @@
-from typing import Iterable, Union, List
+from typing import Iterable, Union, List, Type
 
 from pystarworldsturbo.elements.sensor import Sensor
 from pystarworldsturbo.common.message import BccMessage
@@ -6,7 +6,12 @@ from pystarworldsturbo.common.message import BccMessage
 from ...common.observation import Observation
 
 
-class VWObservationSensor(Sensor):
+class VWSensor(Sensor):
+    def __init__(self, subscribed_events: List[Type]) -> None:
+        super(VWSensor, self).__init__(subscribed_events=subscribed_events)
+
+
+class VWObservationSensor(VWSensor):
     def __init__(self) -> None:
         super(VWObservationSensor, self).__init__(subscribed_events=[Observation])
 
@@ -14,7 +19,7 @@ class VWObservationSensor(Sensor):
         return super(VWObservationSensor, self).source()
 
 
-class VWListeningSensor(Sensor):
+class VWListeningSensor(VWSensor):
     def __init__(self) -> None:
         super(VWListeningSensor, self).__init__(subscribed_events=[BccMessage])
 
