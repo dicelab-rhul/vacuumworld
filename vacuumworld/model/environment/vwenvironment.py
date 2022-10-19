@@ -49,10 +49,10 @@ class VWEnvironment(Environment):
     def get_actors(self) -> Dict[str, VWActor]:
         return super(VWEnvironment, self).get_actors()
 
-    def get_actor(self, actor_id: str) -> VWActor:
+    def get_actor(self, actor_id: str) -> Optional[VWActor]:
         return super(VWEnvironment, self).get_actor(actor_id=actor_id)
 
-    def get_user(self, user_id) -> VWUser:
+    def get_user(self, user_id) -> Optional[VWUser]:
         assert self.get_actor_colour(actor_id=user_id) == Colour.user
 
         return self.get_actor(actor_id=user_id)

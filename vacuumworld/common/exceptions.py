@@ -19,6 +19,11 @@ class VWActionAttemptException(Exception):
         super(VWActionAttemptException, self).__init__(message)
 
 
+class VWPerceptionException(Exception):
+    def __init__(self, message) -> None:
+        super(VWPerceptionException, self).__init__(message)
+
+
 class VWLoadException(Exception):
     def __init__(self, message) -> None:
         super(VWLoadException, self).__init__(message)

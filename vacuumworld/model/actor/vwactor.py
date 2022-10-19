@@ -1,43 +1,46 @@
-from typing import List, Tuple, Iterable, Union
+from typing import List, Tuple, Iterable, Union, Optional
 
 from pystarworldsturbo.common.message import BccMessage
-from pystarworldsturbo.elements.sensor import Sensor
-from pystarworldsturbo.elements.actuator import Actuator
 from pystarworldsturbo.elements.actor import Actor
 
 from .actor_behaviour_debugger import ActorBehaviourDebugger
 from .vwactormind import VWMind
-from .vwsensors import VWListeningSensor, VWObservationSensor
+from .vwsensors import VWSensor, VWListeningSensor, VWObservationSensor
+from .vwactuators import VWActuator, VWCommunicativeActuator
 from ..actions.vwactions import VWAction, VWPhysicalAction, VWCommunicativeAction
 from ..actions.speak_action import VWSpeakAction
 from ..actions.broadcast_action import VWBroadcastAction
 from ...common.observation import Observation
-from ...common.exceptions import VWActionAttemptException
+from ...common.exceptions import VWActionAttemptException, VWPerceptionException
 
 
 class VWActor(Actor):
-    def __init__(self, mind: VWMind, sensors: List[Sensor], actuators: List[Actuator]) -> None:
+    def __init__(self, mind: VWMind, sensors: List[VWSensor], actuators: List[VWActuator]) -> None:
         super(VWActor, self).__init__(mind=mind, sensors=sensors, actuators=actuators)
 
     def get_mind(self) -> VWMind:
         return super(VWActor, self).get_mind()
 
-    def get_listening_sensor(self) -> VWListeningSensor:
+    def get_listening_sensor(self) -> Optional[VWListeningSensor]:
         return super(VWActor, self).get_listening_sensor()
 
-    def get_observation_sensor(self) -> VWObservationSensor:
+    def get_observation_sensor(self) -> Optional[VWObservationSensor]:
         return super(VWActor, self).get_sensor_for(event_type=Observation)
 
-    def get_physical_actuator(_) -> Actuator:
+    def get_physical_actuator(_) -> Optional[VWActuator]:
         # Abstract.
-        pass
 
-    def get_communicative_actuator(self) -> Actuator:
-        candidate: Actuator = super(VWActor, self).get_actuator_for(event_type=VWSpeakAction)
+        return None
 
-        assert candidate.is_subscribed_to(event_type=VWBroadcastAction)
+    def get_communicative_actuator(self) -> Optional[VWCommunicativeActuator]:
+        candidate: VWCommunicativeActuator = super(VWActor, self).get_actuator_for(event_type=VWSpeakAction)
 
-        return candidate
+        if candidate:
+            assert candidate.is_subscribed_to(event_type=VWBroadcastAction)
+
+            return candidate
+        else:
+            return None
 
     def perceive(self) -> Tuple[Observation, Iterable[BccMessage]]:
         observations: List[Observation] = self.__fetch_observations()
@@ -52,6 +55,10 @@ class VWActor(Actor):
 
     def __fetch_observations(self) -> List[Observation]:
         observations: List[Observation] = []
+        observation_sensor: VWObservationSensor = self.get_observation_sensor()
+
+        if not observation_sensor:
+            raise VWPerceptionException("No sensor found for {}.".format(Observation))
 
         # There can be more than one `Observation` if more than one `VWAction` has been attempted.
         while self.get_observation_sensor().has_perception():
@@ -98,7 +105,7 @@ class VWActor(Actor):
 
             action.set_actor_id(self.get_id())
 
-            actuator: Actuator = None
+            actuator: VWActuator = None
 
             if isinstance(action, VWPhysicalAction):
                 actuator = self.get_physical_actuator()
