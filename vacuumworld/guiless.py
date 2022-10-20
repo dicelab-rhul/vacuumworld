@@ -39,13 +39,14 @@ class VWGuilessRunner():
             print("Initial environment:\n\n{}\n".format(env))
 
             while True:
-                if self.__env.get_current_cycle_number() >= 0:
+                if env.get_current_cycle_number() >= 0:
                     print("------------ Cycle {} ------------ ".format(env.get_current_cycle_number()))
 
                 env.evolve()
 
-                print("\nEnvironment at the end of cycle {}:\n\n{}\n".format(env.get_current_cycle_number() - 1, env))
-                print(self.__config["time_step"])
+                if env.get_current_cycle_number() >= 0:
+                    print("\nEnvironment at the end of cycle {}:\n\n{}\n".format(env.get_current_cycle_number(), env))
+
                 sleep(int(self.__config["time_step"]))
 
                 if self.__config["total_cycles"] > 0 and env.get_current_cycle_number() == self.__config["total_cycles"]:
