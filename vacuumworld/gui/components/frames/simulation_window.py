@@ -608,7 +608,8 @@ class VWSimulationWindow(Frame):
     def __simulate(self) -> None:
         try:
             if self.__running:
-                print("------------ Cycle {} ------------ ".format(self.__env.get_current_cycle_number()))
+                if self.__env.get_current_cycle_number() >= 0:
+                    print("------------ Cycle {} ------------ ".format(self.__env.get_current_cycle_number()))
 
                 self.__env.evolve()
                 self.__parent.after(0, self.redraw)
@@ -640,6 +641,10 @@ class VWSimulationWindow(Frame):
         self.__running = False
         self.__pack_buttons("play", "reset", "fast", "difficulty", "guide_bis", "save", "load")
         self.__show_hide_side("normal")
+
+        for _, actor in self.__env.get_actors().items():
+            actor.get_mind().reset_surrogate()
+
         self.redraw()
 
     def __resume(self) -> None:

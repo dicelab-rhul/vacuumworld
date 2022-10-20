@@ -36,7 +36,7 @@ class VWEnvironment(Environment):
     def __init__(self, config: dict, ambient: VWAmbient, initial_actors: List[VWActor]=[], initial_dirts: List[Dirt]=[]) -> None:
         super(VWEnvironment, self).__init__(ambient=ambient, initial_actors=initial_actors, initial_passive_bodies=initial_dirts)
 
-        self.__cycle: int = 0
+        self.__cycle: int = -1
         self.__surrogate_minds_metadata: Dict[str, str] = {}
         self.__config: dict = config
 
@@ -83,7 +83,7 @@ class VWEnvironment(Environment):
         return VWExecutorFactory.get_executor_for(action=action)
 
     def evolve(self) -> None:
-        if self.__cycle == 0:
+        if self.__cycle == -1:
             self.__force_initial_perception_to_actors()  # For back compatibility with 4.1.8.
         else:
             self.execute_cycle_actions()
