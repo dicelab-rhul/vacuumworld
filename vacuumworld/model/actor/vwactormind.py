@@ -44,6 +44,9 @@ class VWMind(Mind):
         if not hasattr(surrogate, VWMind.DECIDE_METHOD_NAME) or not callable(getattr(surrogate, VWMind.DECIDE_METHOD_NAME)):
             raise ValueError("Invalid surrogate mind: no callable {}() method found.".format(VWMind.DECIDE_METHOD_NAME))
 
+    def reset_surrogate(self) -> None:
+        self.__surrogate = self._clone_surrogate(surrogate=self.__surrogate)
+
     def perceive(*_) -> None:
         # Not implemented, as the perception is initiated by the body.
         return

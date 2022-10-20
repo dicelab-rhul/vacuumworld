@@ -33,4 +33,4 @@ class MyMind(ActorMindSurrogate):
 
 
 if __name__ == "__main__":
-    run(default_mind=MyMind(), efforts=ActionEffort.REASONABLE_EFFORTS, total_cycles=10)
+    run(default_mind=MyMind(), efforts=ActionEffort.REASONABLE_EFFORTS)

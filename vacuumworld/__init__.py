@@ -76,6 +76,12 @@ def __assign_efforts_to_actions(**kwargs) -> None:
                 ActionEffort.override_default_effort_for_action(action_name=k.__name__, new_effort=v)
 
                 print("The effort of {} is now {}.".format(k.__name__, ActionEffort.EFFORTS[k.__name__]))
+            elif type(k) == str and type(v) == int:
+                ActionEffort.override_default_effort_for_action(action_name=k, new_effort=v)
+
+                print("The effort of {} is now {}.".format(k, ActionEffort.EFFORTS[k]))
+
+        print()
 
 
 def __run_guiless(config: dict, white_mind: ActorMindSurrogate, green_mind: ActorMindSurrogate, orange_mind: ActorMindSurrogate, user_mind: UserMindSurrogate, **kwargs) -> None:
