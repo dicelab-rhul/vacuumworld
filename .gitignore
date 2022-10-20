@@ -1,7 +1,5 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
-__pycache__/*
-__pycache__/**
 *.py[cod]
 *$py.class
 *.pyc
@@ -133,13 +131,9 @@ dmypy.json
 
 # VSCode settings files
 .vscode/
-.vscode/*
-.vscode/**
 
-# Test entry point
+# Examples not to be included in the repo
 examples/
-examples/*
-examples/**
 vw4_test.py
 cw1.py
 cw2.py
@@ -148,7 +142,5 @@ part1.py
 part2.py
 part3.py
 
-# VW save states
+# VW saved states
 files/
-files/*
-files/**

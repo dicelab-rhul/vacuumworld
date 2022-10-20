@@ -27,13 +27,13 @@ class VWPhysicalAction(VWAction):
 class VWCommunicativeAction(VWAction):
     ALLOWED_MESSAGE_TYPES: List[Type] = [int, float, str, list, tuple, dict]
 
-    def __init__(self, message: Union[int, float, str, list, tuple, dict], recipients: Iterable, sender_id: str) -> None:
+    def __init__(self, message: Union[int, float, str, list, tuple, dict], recipients: Iterable[str], sender_id: str) -> None:
         super(VWCommunicativeAction, self).__init__()
 
         VWCommunicativeAction.__validate_message(message=message)
         VWCommunicativeAction.__validate_recipients(recipients=recipients)
 
-        self.__message: Message = Message(content=message, recipient_ids=recipients, sender_id=sender_id)
+        self.__message: Message = Message(content=message, recipient_ids=[recipient for recipient in recipients], sender_id=sender_id)
 
     @staticmethod
     def __validate_message(message: Union[int, float, str, list, tuple, dict]) -> None:
@@ -49,3 +49,6 @@ class VWCommunicativeAction(VWAction):
 
     def get_message(self) -> Message:
         return self.__message
+
+    def get_recipients(self) -> List[str]:
+        return self.__message.get_recipients_ids()
