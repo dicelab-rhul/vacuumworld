@@ -10,7 +10,6 @@ from pystarworldsturbo.common.action_outcome import ActionOutcome
 from pystarworldsturbo.common.action_result import ActionResult
 from pystarworldsturbo.environment.environment import Environment
 from pystarworldsturbo.environment.physics.action_executor import ActionExecutor
-from pystarworldsturbo.utils.utils import ignore
 
 from .physics.vwexecutor_factory import VWExecutorFactory
 from .vwambient import VWAmbient
@@ -64,20 +63,39 @@ class VWEnvironment(Environment):
         return self.get_actor(actor_id=user_id)
 
     def validate_actions(self, actions: List[Action]) -> None:
-        ignore(self)
+        self.__validate_number_of_actions(actions=actions)
+        VWEnvironment.__validate_action_types(actions=actions)
+        self.__validate_pool_of_actions(actions=actions)
 
+    def __validate_number_of_actions(self, actions: List[Action]) -> None:
         n: int = self.__config["max_number_of_actions_per_actor_per_cycle"]
 
-        if len(actions) > n:
-            raise VWActionAttemptException("Too many actions were attempted. There is a hard limit of 1 physical action, and 1 communicative action per actor per cycle.")
-        elif len(actions) == n and isinstance(actions[0], VWPhysicalAction) and isinstance(actions[1], VWPhysicalAction):
-            raise VWActionAttemptException("Too many physical actions were attempted. There is a hard limit of 1 physical action, and 1 communicative action per actor per cycle.")
-        elif len(actions) == n and isinstance(actions[0], VWCommunicativeAction) and isinstance(actions[1], VWCommunicativeAction):
-            raise VWActionAttemptException("Too many communicative actions were attempted. There is a hard limit of 1 physical action, and 1 communicative action per actor per cycle.")
+        assert n > 0
 
+        if len(actions) == 0:
+            raise VWActionAttemptException("No actions were attempted. At least 1 action must be attempted per cycle.")
+        elif len(actions) > n:
+            raise VWActionAttemptException("Too many actions were attempted. There is a hard limit of {} actions per actor per cycle.".format(n))
+
+    @staticmethod
+    def __validate_action_types(actions: List[Action]) -> None:
         for action in actions:
             if not isinstance(action, VWPhysicalAction) and not isinstance(action, VWCommunicativeAction):
                 raise VWMalformedActionException("Unrecognised action: {}.".format(type(action)))
+
+    def __validate_pool_of_actions(self, actions: List[Action]) -> None:
+        n: int = self.__config["max_number_of_actions_per_actor_per_cycle"]
+        n_physical: int = self.__config["max_number_of_physical_actions_per_actor_per_cycle"]
+        n_communicative: int = self.__config["max_number_of_communicative_actions_per_actor_per_cycle"]
+
+        assert 0 < len(actions) <= n
+        assert n_physical + n_communicative == n
+
+        if sum(map(lambda action: isinstance(action, VWPhysicalAction), actions)) > n_physical:
+            raise VWActionAttemptException("Too many physical actions were attempted. There is a hard limit of {} physical action, and {} communicative action per actor per cycle.".format(n_physical, n_communicative))
+
+        if sum(map(lambda action: isinstance(action, VWCommunicativeAction), actions)) > n_communicative:
+            raise VWActionAttemptException("Too many communicative actions were attempted. There is a hard limit of {} physical action, and {} communicative action per actor per cycle.".format(n_physical, n_communicative))
 
     def get_executor_for(_, action: Action) -> Optional[ActionExecutor]:
         return VWExecutorFactory.get_executor_for(action=action)

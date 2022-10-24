@@ -10,7 +10,7 @@ name: str = "vacuumworld"
 version: str = "TO_OVERRIDE_PROGRAMMATICALLY"
 description: str = "VacuumWorld: an agent platform for cleaning robots."
 author: list = ["Emanuele Uliana", "Benedict Wilkins", "Nausheen Saba", "Joel Clarke", "Kostas Stathis"]
-author_email: str = "vw@[R.E.M.O.V.E.T.H.I.S]dicelab-rhul.org"
+author_email: str = "vw@dicelab-rhul.org"
 license: str = "GNU3"
 classifiers: list = [
     "Programming Language :: Python :: 3",
@@ -22,7 +22,7 @@ classifiers: list = [
     "Operating System :: OS Independent",
 ]
 url: str = "https://github.com/dicelab-rhul/vacuumworld"
-dependencies: list = ["pystarworldsturbo>=1.0.8", "pillow", "wheel", "ipython", "screeninfo", "tk"]
+dependencies: list = ["pystarworldsturbo>=1.0.9", "pillow", "wheel", "ipython", "screeninfo", "tk"]
 
 # End of static metadata
 
