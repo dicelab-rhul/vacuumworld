@@ -206,7 +206,8 @@ class Observation(Perception):
 
     def pretty_format(self) -> str:
         observation_dict: dict = {
-            "Action outcomes": [{action_type.__name__: action_result.get_outcome()} for action_type, action_result in self.__action_results],
+            # The `.name` is necessary because the `ActionType` is an `Enum` and `Enum` objects are not JSON serializable.
+            "Action outcomes": [{action_type.__name__: action_result.get_outcome().name} for action_type, action_result in self.__action_results],
             "Perceived locations": {pos.name: loc.pretty_format() for pos, loc in self.__locations.items()}
         }
 
