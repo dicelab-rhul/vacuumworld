@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Dict, Iterable, List, Optional, Type, Tuple
+from typing import Dict, Iterable, List, Optional, Type, Tuple, Union
 from json import dumps
 
 from pystarworldsturbo.common.action_outcome import ActionOutcome
@@ -28,8 +28,21 @@ class Observation(Perception):
     def get_latest_actions_results(self) -> List[Tuple[Type[VWAction], ActionResult]]:
         return self.__action_results
 
-    def get_latest_actions_results_as_dict(self) -> Dict[Type[VWAction], ActionResult]:
-        return {action_type.__name__: action_result.get_outcome() for action_type, action_result in self.__action_results}
+    def get_latest_actions_results_as_dict(self) -> Dict[Type[VWAction], Union[ActionResult, List[ActionResult]]]:
+        to_return: Dict[Type[VWAction], Union[ActionResult, List[ActionResult]]] = {}
+
+        for elm in self.__action_results:
+            action_type: Type[VWAction] = elm[0]
+            action_result: ActionResult = elm[1]
+
+            if action_type not in to_return:
+                to_return[action_type.__name__] = action_result.get_outcome()
+            elif isinstance(to_return[action_type.__name__], list):
+                    to_return[action_type.__name__].append(action_result.get_outcome())
+            else:
+                to_return[action_type.__name__] = [to_return[action_type.__name__], action_result.get_outcome()]
+
+        return to_return
 
     def __format_latest_action_results(self) -> str:
         return ", ".join(["{}: {}".format(action_type.__name__, action_result.get_outcome()) for action_type, action_result in self.__action_results])
@@ -193,7 +206,7 @@ class Observation(Perception):
 
     def pretty_format(self) -> str:
         observation_dict: dict = {
-            "Action outcomes": [{action_type.__name__: action_result.get_outcome().name} for action_type, action_result in self.__action_results],
+            "Action outcomes": [{action_type.__name__: action_result.get_outcome()} for action_type, action_result in self.__action_results],
             "Perceived locations": {pos.name: loc.pretty_format() for pos, loc in self.__locations.items()}
         }
 
