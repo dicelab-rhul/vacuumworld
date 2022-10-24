@@ -28,7 +28,7 @@ class MyMind(ActorMindSurrogate):
 
         print("Observation:", self.__observation.pretty_format())
         print("Messages: {}".format([str(m) for m in self.__latest_messages]))
-        print("Current effort from the beginning of the simulation: {}.".format(self.get_effort()))
+        print("Current effort since the beginning of the simulation: {}.".format(self.get_effort()))
 
     def decide(self) -> Union[VWAction, Tuple[VWAction]]:
         # VWSpeakAction and VWBroadcastAction will result in a failure if `sender_id` is not the same as the actor ID.
