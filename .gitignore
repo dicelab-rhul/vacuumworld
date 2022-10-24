@@ -144,3 +144,6 @@ part3.py
 
 # VW saved states
 files/
+
+# Git scripts
+pull.sh
