@@ -20,14 +20,19 @@ class MyMind(ActorMindSurrogate):
         # Add here all the attributes you need/want.
 
     def revise(self, observation: Observation, messages: Iterable[BccMessage]) -> None:
-        # Do something with the observation, the messages, and the effort instead of simply printing them.
+        # Do something with the observation, the messages, and the effort instead of simply storing/printing them.
 
-        print("Observation:", observation.pretty_format())
-        print("Messages: {}".format([str(m) for m in messages]))
+        self.__observation: Observation = observation
+        self.__latest_messages: Iterable[BccMessage] = messages
+        self.__my_id: str = self.__observation.get_center().get_actor_appearance().get_id()
+
+        print("Observation:", self.__observation.pretty_format())
+        print("Messages: {}".format([str(m) for m in self.__latest_messages]))
         print("Current effort from the beginning of the simulation: {}.".format(self.get_effort()))
 
     def decide(self) -> Union[VWAction, Tuple[VWAction]]:
-        return VWIdleAction(), VWBroadcastAction(message="Hello!", sender_id="HIDDEN")
+        # VWSpeakAction and VWBroadcastAction will result in a failure if `sender_id` is not the same as the ID of the actor.
+        return VWIdleAction(), VWBroadcastAction(message="Hello!", sender_id=self.__my_id)
 
         # Replace this trivial decision process with something meaningful.
 

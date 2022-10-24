@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 from pystarworldsturbo.environment.physics.action_executor import ActionExecutor
 from pystarworldsturbo.common.action_result import ActionResult
 from pystarworldsturbo.common.action_outcome import ActionOutcome
+from pystarworldsturbo.common.exceptions import IdentityException
 from pystarworldsturbo.utils.utils import ignore
 
 from ...actions.broadcast_action import VWBroadcastAction
@@ -24,9 +25,12 @@ class BroadcastExecutor(ActionExecutor):
         ignore(self)
 
         try:
-            env.send_message_to_actors(message=action.get_message())
+            if action.get_message().get_sender_id() != action.get_actor_id():
+                raise IdentityException("Sender ID spoofing detected: it should be {}, not {}.".format(action.get_actor_id(), action.get_message().get_sender_id()))
+            else:
+                env.send_message_to_recipients(message=action.get_message())
 
-            return ActionResult(ActionOutcome.success)
+                return ActionResult(ActionOutcome.success)
         except Exception:
             return ActionResult(ActionOutcome.failure)
 
