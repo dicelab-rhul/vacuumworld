@@ -28,8 +28,8 @@ class Observation(Perception):
     def get_latest_actions_results(self) -> List[Tuple[Type[VWAction], ActionResult]]:
         return self.__action_results
 
-    def get_latest_actions_results_as_dict(self) -> Dict[Type[VWAction], Union[ActionResult, List[ActionResult]]]:
-        to_return: Dict[Type[VWAction], Union[ActionResult, List[ActionResult]]] = {}
+    def get_latest_actions_outcomes_as_dict(self) -> Dict[Type[VWAction], Union[ActionOutcome, List[ActionOutcome]]]:
+        to_return: Dict[Type[VWAction], Union[ActionOutcome, List[ActionOutcome]]] = {}
 
         for elm in self.__action_results:
             action_type: Type[VWAction] = elm[0]
@@ -38,7 +38,7 @@ class Observation(Perception):
             if action_type not in to_return:
                 to_return[action_type.__name__] = action_result.get_outcome()
             elif isinstance(to_return[action_type.__name__], list):
-                    to_return[action_type.__name__].append(action_result.get_outcome())
+                to_return[action_type.__name__].append(action_result.get_outcome())
             else:
                 to_return[action_type.__name__] = [to_return[action_type.__name__], action_result.get_outcome()]
 
