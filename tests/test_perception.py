@@ -69,6 +69,7 @@ class TestPerception(TestCase):
 
             for action_outcome in (ActionOutcome.impossible, ActionOutcome.success, ActionOutcome.failure):
                 result: ActionResult = ActionResult(outcome=action_outcome)
+                # TODO: include all kinds and combinations of actions.
                 o: Observation = Observation(action_type=VWIdleAction, action_result=result, locations_dict=perceived_locations)
 
                 self.__check_location(o=o, position=PositionNames.center, coord=c, actor_appearance=a1, dirt_appearance=None)
