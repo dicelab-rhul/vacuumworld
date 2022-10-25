@@ -5,6 +5,7 @@ from sys import version_info
 
 from .config_manager import ConfigManager
 from .model.actions.vwactions import VWAction
+from .model.actions.vwactions import VWCommunicativeAction
 from .model.actions.effort import ActionEffort
 from .model.actor.actor_mind_surrogate import ActorMindSurrogate
 from .model.actor.user_mind_surrogate import UserMindSurrogate
@@ -34,8 +35,7 @@ def python_version_check() -> None:
         exit(1)
 
 
-def version_check() -> None:
-    config: dict = ConfigManager(config_file_path=CONFIG_FILE_PATH).load_config()
+def version_check(config: dict) -> None:
     version_number: str = config["version_number"]
 
     print("VacuumWorld version: {}.\n".format(version_number))
@@ -56,7 +56,11 @@ def version_check() -> None:
 
 def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, **kwargs) -> None:
     python_version_check()
-    version_check()
+
+    config: dict = ConfigManager(config_file_path=CONFIG_FILE_PATH).load_config()
+    VWCommunicativeAction.SENDER_ID_SPOOFING_ALLOWED = config["sender_id_spoofing_allowed"]
+
+    version_check(config=config)
 
     # Safeguard against crashes on Windows and every other OS without SIGTSTP.
     if hasattr(signal, "SIGTSTP"):
@@ -67,9 +71,6 @@ def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, *
     __assign_efforts_to_actions(**kwargs)
 
     white_mind, green_mind, orange_mind = __process_minds(default_mind, white_mind, green_mind, orange_mind)
-
-    config: dict = ConfigManager(config_file_path=CONFIG_FILE_PATH).load_config()
-
     user_mind: UserMindSurrogate = UserMindSurrogate(difficulty_level=UserDifficulty(config["default_user_mind_level"]))
 
     if "gui" in kwargs and not kwargs.get("gui"):

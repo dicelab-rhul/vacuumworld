@@ -25,10 +25,10 @@ class SpeakExecutor(ActionExecutor):
         ignore(self)
 
         try:
-            if action.get_message().get_sender_id() != action.get_actor_id():
+            if not VWSpeakAction.SENDER_ID_SPOOFING_ALLOWED and action.get_message().get_sender_id() != action.get_actor_id():
                 raise IdentityException("Sender ID spoofing detected: it should be {}, not {}.".format(action.get_actor_id(), action.get_message().get_sender_id()))
             else:
-                env.send_message_to_recipients(message=action.get_message())
+                env.send_message_to_recipients(message=action.get_message(), check_sender_identity=not VWSpeakAction.SENDER_ID_SPOOFING_ALLOWED)
 
                 return ActionResult(ActionOutcome.success)
         except Exception:
