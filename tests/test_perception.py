@@ -37,6 +37,8 @@ if sys.version_info.major == 3 and sys.version_info.minor > 8:
     from random import randbytes
 elif sys.version_info.major == 3 and sys.version_info.minor == 8:
     randbytes: Callable = os.urandom
+else:
+    raise RuntimeError("Python version not supported.")
 
 
 class TestPerception(TestCase):
