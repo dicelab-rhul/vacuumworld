@@ -42,16 +42,18 @@ def version_check(config: dict) -> None:
 
     call(["wget", "https://raw.githubusercontent.com/dicelab-rhul/vacuumworld/main/vacuumworld/{}".format(CONFIG_FILE_NAME)], stdout=DEVNULL, stderr=DEVNULL)
 
-    remote_config: dict = ConfigManager(config_file_path=CONFIG_FILE_NAME).load_config()
-    latest_version_number: str = remote_config["version_number"]
+    try:
+        remote_config: dict = ConfigManager(config_file_path=CONFIG_FILE_NAME).load_config()
+        latest_version_number: str = remote_config["version_number"]
 
-    if version_number != latest_version_number:
-        print("WARNING: Your version of VacuumWorld is outdated. The latest version is {}.".format(latest_version_number))
-        print("Please update VacuumWorld by running `./update_vw.sh` from a terminal, after navigating to the cloned directory.\n")
-    else:
-        print("Your version of VacuumWorld is up-to-date.\n")
-
-    os.remove(CONFIG_FILE_NAME)
+        if version_number != latest_version_number:
+            print("WARNING: Your version of VacuumWorld is outdated. The latest version is {}.".format(latest_version_number))
+            print("Please update VacuumWorld by running `./update_vw.sh` from a terminal, after navigating to the cloned directory.\n")
+        else:
+            print("Your version of VacuumWorld is up-to-date.\n")
+    finally:
+        if os.path.exists(CONFIG_FILE_NAME):
+            os.remove(CONFIG_FILE_NAME)
 
 
 def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, **kwargs) -> None:
