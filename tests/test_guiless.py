@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from unittest import main, TestCase
+from typing import List
 from random import choice
 from string import ascii_letters, digits
 
@@ -19,9 +20,10 @@ class TestGUIless(TestCase):
 
         self.__config_file_path: str = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "vacuumworld", "config.json")
         self.__config: dict = ConfigManager(config_file_path=self.__config_file_path).load_config()
+        self.__list_of_max_cycles_per_run: List[int] = [1, 5, 10, 20, 50, 100]
 
     def test_guiless(self) -> None:
-        for total_cycles in [1, 5, 10, 20, 50, 100]:
+        for total_cycles in self.__list_of_max_cycles_per_run:
             try:
                 env, _ = VWEnvironment.generate_random_env_for_testing(config=self.__config, custom_grid_size=True)
                 test_file: str = "".join([choice(ascii_letters + digits) for _ in range(10)]) + ".json"

@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
 from unittest import main, TestCase
-from typing import Dict, Optional, List, Union, Type
-from random import randint
+from typing import Dict, Optional, List, Union, Type, Callable, Tuple
+from random import choice, randint, random, randbytes
+from uuid import uuid4
+from sys import maxsize, float_info
 
 from pystarworldsturbo.common.message import BccMessage
 from pystarworldsturbo.common.action_outcome import ActionOutcome
@@ -38,48 +40,39 @@ class TestPerception(TestCase):
         self.__config: dict = ConfigManager(config_file_path=self.__config_file_path).load_config()
         self.__min_grid_size: int = self.__config["min_environment_dim"]
         self.__max_grid_size: int = self.__config["max_environment_dim"]
+        self.__number_of_locations: int = len(PositionNames)
+        self.__progressive_id: int = 0
+        self.__number_of_runs: int = 100
+        self.__collection_size: int = 100
 
-    def test_observation(self) -> None:
-        for _ in range(100):
-            self.__test_observation()
+    def test_observation_coming_from_physical_action(self) -> None:
+        test_function: Callable = self.__test_observation_coming_from_physical_action
 
-    def __test_observation(self) -> None:
+        for _ in range(self.__number_of_runs):
+            self.__test_observation(test_function=test_function)
+
+    def test_observation_coming_from_communicative_action(self) -> None:
+        test_function: Callable = self.__test_observation_coming_from_communicative_action
+
+        for _ in range(self.__number_of_runs):
+            self.__test_observation(test_function=test_function)
+
+    def test_observation_coming_from_multiple_actions(self) -> None:
+        test_function: Callable = self.__test_observation_coming_from_multiple_actions
+
+        for _ in range(self.__number_of_runs):
+            self.__test_observation(test_function=test_function)
+
+    def __test_observation(self, test_function: Callable) -> None:
         grid_size: int = randint(self.__min_grid_size, self.__max_grid_size)
+        coords: List[Coord] = self.__generate_random_coords(grid_size=grid_size)
+        actors: List[Optional[VWActorAppearance]] = self.__generate_random_actor_appearances()
+        dirts: List[Optional[VWDirtAppearance]] = self.__generate_random_dirt_appearances()
+        perceived_locations: Dict[PositionNames, VWLocation] = self.__generate_locations_dict(grid_size=grid_size, coords=coords, actors=actors, dirts=dirts)
 
-        a1: VWActorAppearance = VWActorAppearance(actor_id="foo", progressive_id="1", colour=Colour.green, orientation=Orientation.east)
-        a2: VWActorAppearance = VWActorAppearance(actor_id="bar", progressive_id="2", colour=Colour.orange, orientation=Orientation.north)
-        u1: VWActorAppearance = VWActorAppearance(actor_id="foobar", progressive_id="3", colour=Colour.user, orientation=Orientation.west)
-        u2: VWActorAppearance = VWActorAppearance(actor_id="barfoo", progressive_id="4", colour=Colour.user, orientation=Orientation.south)
-        d1: VWDirtAppearance = VWDirtAppearance(dirt_id="running", progressive_id="5", colour=Colour.green)
-        d2: VWDirtAppearance = VWDirtAppearance(dirt_id="out_of", progressive_id="6", colour=Colour.orange)
-        d3: VWDirtAppearance = VWDirtAppearance(dirt_id="ideas", progressive_id="7", colour=Colour.orange)
+        test_function(perceived_locations=perceived_locations, coords=coords, actors=actors, dirts=dirts)
 
-        c: Coord = Coord(x=randint(0, self.__max_grid_size-1), y=randint(0, self.__max_grid_size-1))
-        l: Coord = c.left(orientation=a1.get_orientation())
-        r: Coord = c.right(orientation=a1.get_orientation())
-        f: Coord = c.forward(orientation=a1.get_orientation())
-        fl: Coord = c.forwardleft(orientation=a1.get_orientation())
-        fr: Coord = c.forwardright(orientation=a1.get_orientation())
-
-        center: VWLocation = VWLocation(coord=c, actor_appearance=a1, dirt_appearance=None, wall=VWEnvironment.generate_wall_from_coordinates(coord=c, grid_size=grid_size))
-        left: VWLocation = VWLocation(coord=l, actor_appearance=None, dirt_appearance=None, wall=VWEnvironment.generate_wall_from_coordinates(coord=l, grid_size=grid_size))
-        right: VWLocation = VWLocation(coord=r, actor_appearance=a2, dirt_appearance=d1, wall=VWEnvironment.generate_wall_from_coordinates(coord=r, grid_size=grid_size))
-        forward: VWLocation = VWLocation(coord=f, actor_appearance=None, dirt_appearance=d2, wall=VWEnvironment.generate_wall_from_coordinates(coord=f, grid_size=grid_size))
-        forwardleft: VWLocation = VWLocation(coord=fl, actor_appearance=u1, dirt_appearance=None, wall=VWEnvironment.generate_wall_from_coordinates(coord=fl, grid_size=grid_size))
-        forwardright: VWLocation = VWLocation(coord=fr, actor_appearance=u2, dirt_appearance=d3, wall=VWEnvironment.generate_wall_from_coordinates(coord=fr, grid_size=grid_size))
-
-        perceived_locations: Dict[PositionNames, VWLocation] = {
-            PositionNames.center: center.deep_copy() if c.in_bounds(min_x=0, max_x=grid_size-1, min_y=0, max_y=grid_size-1) else None,
-            PositionNames.left: left.deep_copy() if l.in_bounds(min_x=0, max_x=grid_size-1, min_y=0, max_y=grid_size-1) else None,
-            PositionNames.right: right.deep_copy() if r.in_bounds(min_x=0, max_x=grid_size-1, min_y=0, max_y=grid_size-1) else None,
-            PositionNames.forward: forward.deep_copy() if f.in_bounds(min_x=0, max_x=grid_size-1, min_y=0, max_y=grid_size-1) else None,
-            PositionNames.forwardleft: forwardleft.deep_copy() if fl.in_bounds(min_x=0, max_x=grid_size-1, min_y=0, max_y=grid_size-1) else None,
-            PositionNames.forwardright: forwardright.deep_copy() if fr.in_bounds(min_x=0, max_x=grid_size-1, min_y=0, max_y=grid_size-1) else None
-        }
-
-        self.__test_observation_coming_from_physical_action(perceived_locations=perceived_locations, coords=[c, l, r, f, fl, fr], actors=[a1, None, a2, None, u1, u2], dirts=[None, None, d1, d2, None, d3])
-        self.__test_observation_coming_from_communicative_action(perceived_locations=perceived_locations, coords=[c, l, r, f, fl, fr], actors=[a1, None, a2, None, u1, u2], dirts=[None, None, d1, d2, None, d3])
-        self.__test_observation_coming_from_multiple_actions(perceived_locations=perceived_locations, coords=[c, l, r, f, fl, fr], actors=[a1, None, a2, None, u1, u2], dirts=[None, None, d1, d2, None, d3])
+        self.__progressive_id = 0
 
     def __test_observation_coming_from_physical_action(self, perceived_locations: Dict[PositionNames, VWLocation], coords: List[Coord], actors: List[Optional[VWActorAppearance]], dirts: List[Optional[VWDirtAppearance]]) -> None:
         for action_type in [VWCleanAction, VWDropAction, VWIdleAction, VWMoveAction, VWTurnAction]:
@@ -150,16 +143,145 @@ class TestPerception(TestCase):
             else:
                 self.assertIsNone(location.get_dirt_appearance())
 
-    def test_messages(self) -> None:
-        for content in (1, 1.32343, "foo", ["foo", 1, 1.234, [], (), {}], ("foo", 1, 1.234, [], (), {}), {1: ["", None], 1.2343: (3, 4.5)}):
-            for sender in ("U", "N", "OWEN"):
-                for recipient in ("Cloud", "Barret", "Red XIII", "Cid", "Vincent", "Tifa", "Yuffie", "Cait Sith", "Aerith"):
-                    message: BccMessage = BccMessage(content=content, sender_id=sender, recipient_id=recipient)
+    def __generate_random_coords(self, grid_size: int) -> List[Coord]:
+        return [Coord(x=randint(0, grid_size - 1), y=randint(0, grid_size - 1)) for _ in range(self.__number_of_locations)]
 
-                    self.assertEqual(content, message.get_content())
-                    self.assertEqual(sender, message.get_sender_id())
-                    self.assertEqual(len(message.get_recipients_ids()), 1)
-                    self.assertIn(recipient, message.get_recipients_ids())
+    def __generate_random_actor_appearances(self) -> List[Optional[VWActorAppearance]]:
+        return [None if random() < 0.5 else self.__generate_random_actor_appearance() for _ in range(self.__number_of_locations)]
+
+    def __generate_random_actor_appearance(self) -> VWActorAppearance:
+        actor_id: str = str(uuid4())
+        colour: Colour = choice(list(Colour))
+        orientation: Orientation = choice(list(Orientation))
+        self.__progressive_id += 1
+
+        return VWActorAppearance(actor_id=actor_id, progressive_id=self.__progressive_id, colour=colour, orientation=orientation)
+
+    def __generate_random_dirt_appearances(self) -> List[Optional[VWDirtAppearance]]:
+        return [None if random() < 0.5 else self.__generate_random_dirt_appearance() for _ in range(self.__number_of_locations)]
+
+    def __generate_random_dirt_appearance(self) -> VWDirtAppearance:
+        dirt_id: str = str(uuid4())
+        colour: Colour = choice(list(Colour))
+        self.__progressive_id += 1
+
+        return VWDirtAppearance(dirt_id=dirt_id, progressive_id=self.__progressive_id, colour=colour)
+
+    def __generate_locations_dict(self, grid_size: int, coords: List[Coord], actors: List[Optional[VWActorAppearance]], dirts: List[Optional[VWDirtAppearance]]) -> Dict[PositionNames, VWLocation]:
+        locations_dict: Dict[PositionNames, VWLocation] = {}
+
+        for i in range(len(coords)):
+            coord: Coord = coords[i]
+            locations_dict[PositionNames.values()[i]] = VWLocation(coord=coord, actor_appearance=actors[i], dirt_appearance=dirts[i], wall=VWEnvironment.generate_wall_from_coordinates(coord=coord, grid_size=grid_size)) if coord.in_bounds(min_x=0, max_x=grid_size-1, min_y=0, max_y=grid_size-1) else None
+
+        return locations_dict
+
+    def test_message_with_int_content(self) -> None:
+        contents: List[int] = [randint(-maxsize + 1, maxsize) for _ in range(self.__number_of_runs)]
+
+        for content in contents:
+            sender_id: str = str(uuid4())
+            recipient_id: str = str(uuid4())
+
+            self.__test_message(content=content, sender_id=sender_id, recipient_id=recipient_id)
+
+    def test_message_with_float_content(self) -> None:
+        contents: List[float] = [random() * float_info.max for _ in range(self.__number_of_runs)]
+
+        for content in contents:
+            sender_id: str = str(uuid4())
+            recipient_id: str = str(uuid4())
+
+            self.__test_message(content=content, sender_id=sender_id, recipient_id=recipient_id)
+
+    def test_message_with_str_content(self) -> None:
+        contents: List[str] = [str(randbytes(n=randint(0, 2**16 - 1))) for _ in range(self.__number_of_runs)]
+
+        for content in contents:
+            sender_id: str = str(uuid4())
+            recipient_id: str = str(uuid4())
+
+            self.__test_message(content=content, sender_id=sender_id, recipient_id=recipient_id)
+
+    def test_message_with_list_content(self) -> None:
+        contents: List[List[Union[int, float, str, list, tuple, dict]]] = [self.__generate_random_list() for _ in range(self.__number_of_runs)]
+
+        for content in contents:
+            sender_id: str = str(uuid4())
+            recipient_id: str = str(uuid4())
+
+            self.__test_message(content=content, sender_id=sender_id, recipient_id=recipient_id)
+
+    def test_message_with_tuple_content(self) -> None:
+        contents: List[Tuple[Union[int, float, str, list, tuple, dict]]] = [self.__generate_random_tuple() for _ in range(self.__number_of_runs)]
+
+        for content in contents:
+            sender_id: str = str(uuid4())
+            recipient_id: str = str(uuid4())
+
+            self.__test_message(content=content, sender_id=sender_id, recipient_id=recipient_id)
+
+    def test_message_with_dict_content(self) -> None:
+        contents: List[Dict[Union[int, float, str], Union[int, float, str, list, tuple, dict]]] = [self.__generate_random_dict() for _ in range(self.__number_of_runs)]
+
+        for content in contents:
+            sender_id: str = str(uuid4())
+            recipient_id: str = str(uuid4())
+
+            self.__test_message(content=content, sender_id=sender_id, recipient_id=recipient_id)
+
+    def test_messages_with_recursion(self) -> None:
+        for content in (1, 1.32343, "foo", ["foo", 1, 1.234, [], (), {"foo": "bar"}], ("foo", 1, 1.234, [], (), {}), {1: ["", None], 1.2343: (3, 4.5, {})}):
+            for sender_id in ("Sephiroth", "Jenova", "Hojo", "Rufus"):
+                for recipient_id in ("Cloud", "Barret", "Red XIII", "Cid", "Vincent", "Tifa", "Yuffie", "Cait Sith", "Aerith"):
+                    self.__test_message(content=content, sender_id=sender_id, recipient_id=recipient_id)
+
+    def __test_message(self, content: Union[int, float, str, list, tuple, dict], sender_id: str, recipient_id: str) -> None:
+        message: BccMessage = BccMessage(content=content, sender_id=sender_id, recipient_id=recipient_id)
+
+        self.assertEqual(content, message.get_content())
+        self.assertEqual(sender_id, message.get_sender_id())
+        self.assertEqual(len(message.get_recipients_ids()), 1)
+        self.assertIn(recipient_id, message.get_recipients_ids())
+
+    def __generate_random_list(self) -> List[Union[int, float, str, list, tuple, dict]]:
+        return [self.__generate_random_element() for _ in range(randint(0, self.__collection_size))]
+
+    def __generate_random_tuple(self) -> Tuple[Union[int, float, str, list, tuple, dict]]:
+        return tuple(self.__generate_random_element() for _ in range(randint(0, self.__collection_size)))
+
+    def __generate_random_dict(self) -> Dict[Union[int, float, str], Union[int, float, str, list, tuple, dict]]:
+        return {self.__generate_random_key(): self.__generate_random_element() for _ in range(randint(0, self.__collection_size))}
+
+    def __generate_random_element(self) -> Union[int, float, str, list, tuple, dict]:
+        roll: float = random() * 6
+
+        if roll < 1:
+            return randint(-maxsize + 1, maxsize)
+        elif roll < 2:
+            return random() * float_info.max
+        elif roll < 3:
+            return str(randbytes(n=randint(0, 2**16 - 1)))
+        elif roll < 4:
+            return []  # We want to avoid infinite recursion.
+        elif roll < 5:
+            return tuple()  # We want to avoid infinite recursion.
+        elif roll < 6:
+            return {}  # We want to avoid infinite recursion.
+        else:
+            raise ValueError("Invalid roll")
+
+    def __generate_random_key(self) -> Union[int, float, str]:
+        roll: float = random() * 3
+
+        if roll < 1:
+            return randint(-maxsize + 1, maxsize)
+        elif roll < 2:
+            return random() * float_info.max
+        elif roll < 3:
+            return str(randbytes(n=randint(0, 2**16 - 1)))
+        else:
+            raise ValueError("Invalid roll")
 
 
 if __name__ == "__main__":
