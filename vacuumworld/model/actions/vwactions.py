@@ -26,6 +26,7 @@ class VWPhysicalAction(VWAction):
 
 class VWCommunicativeAction(VWAction):
     ALLOWED_MESSAGE_TYPES: List[Type] = [int, float, str, list, tuple, dict]
+    SENDER_ID_SPOOFING_ALLOWED: bool = False
 
     def __init__(self, message: Union[int, float, str, list, tuple, dict], recipients: Iterable[str], sender_id: str) -> None:
         super(VWCommunicativeAction, self).__init__()
