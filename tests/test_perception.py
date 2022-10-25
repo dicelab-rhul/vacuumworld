@@ -2,7 +2,7 @@
 
 from unittest import main, TestCase
 from typing import Dict, Optional, List, Union, Type, Callable, Tuple
-from random import choice, randint, random, randbytes
+from random import choice, randint, random as randfloat, randbytes
 from uuid import uuid4
 from sys import maxsize, float_info
 
@@ -147,7 +147,7 @@ class TestPerception(TestCase):
         return [Coord(x=randint(0, grid_size - 1), y=randint(0, grid_size - 1)) for _ in range(self.__number_of_locations)]
 
     def __generate_random_actor_appearances(self) -> List[Optional[VWActorAppearance]]:
-        return [None if random() < 0.5 else self.__generate_random_actor_appearance() for _ in range(self.__number_of_locations)]
+        return [None if randfloat() < 0.5 else self.__generate_random_actor_appearance() for _ in range(self.__number_of_locations)]
 
     def __generate_random_actor_appearance(self) -> VWActorAppearance:
         actor_id: str = str(uuid4())
@@ -158,7 +158,7 @@ class TestPerception(TestCase):
         return VWActorAppearance(actor_id=actor_id, progressive_id=self.__progressive_id, colour=colour, orientation=orientation)
 
     def __generate_random_dirt_appearances(self) -> List[Optional[VWDirtAppearance]]:
-        return [None if random() < 0.5 else self.__generate_random_dirt_appearance() for _ in range(self.__number_of_locations)]
+        return [None if randfloat() < 0.5 else self.__generate_random_dirt_appearance() for _ in range(self.__number_of_locations)]
 
     def __generate_random_dirt_appearance(self) -> VWDirtAppearance:
         dirt_id: str = str(uuid4())
@@ -186,7 +186,7 @@ class TestPerception(TestCase):
             self.__test_message(content=content, sender_id=sender_id, recipient_id=recipient_id)
 
     def test_message_with_float_content(self) -> None:
-        contents: List[float] = [random() * float_info.max for _ in range(self.__number_of_runs)]
+        contents: List[float] = [randfloat() * float_info.max for _ in range(self.__number_of_runs)]
 
         for content in contents:
             sender_id: str = str(uuid4())
@@ -254,12 +254,12 @@ class TestPerception(TestCase):
         return {self.__generate_random_key(): self.__generate_random_element() for _ in range(randint(0, self.__collection_size))}
 
     def __generate_random_element(self) -> Union[int, float, str, list, tuple, dict]:
-        roll: float = random() * 6
+        roll: float = randfloat() * 6
 
         if roll < 1:
             return randint(-maxsize + 1, maxsize)
         elif roll < 2:
-            return random() * float_info.max
+            return randfloat() * float_info.max
         elif roll < 3:
             return str(randbytes(n=randint(0, 2**16 - 1)))
         elif roll < 4:
@@ -272,12 +272,12 @@ class TestPerception(TestCase):
             raise ValueError("Invalid roll")
 
     def __generate_random_key(self) -> Union[int, float, str]:
-        roll: float = random() * 3
+        roll: float = randfloat() * 3
 
         if roll < 1:
             return randint(-maxsize + 1, maxsize)
         elif roll < 2:
-            return random() * float_info.max
+            return randfloat() * float_info.max
         elif roll < 3:
             return str(randbytes(n=randint(0, 2**16 - 1)))
         else:
