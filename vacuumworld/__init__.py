@@ -1,6 +1,7 @@
 from signal import signal, SIG_IGN
 from typing import List, Tuple, Dict
 from subprocess import call, DEVNULL
+from sys import version_info
 
 from .config_manager import ConfigManager
 from .model.actions.vwactions import VWAction
@@ -24,6 +25,13 @@ __all__: List[str] = [vacuumworld.common, vacuumworld.gui, vacuumworld.model, va
 
 CONFIG_FILE_NAME: str = "config.json"
 CONFIG_FILE_PATH: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), CONFIG_FILE_NAME)
+MIN_PYTHON_VERSION: Tuple[int, int] = (3, 8)
+
+
+def python_version_check() -> None:
+    if version_info.major < MIN_PYTHON_VERSION[0] or version_info.minor < MIN_PYTHON_VERSION[1]:
+        print("VacuumWorld requires Python {}.{} or later. Please install Python {}.{} or later and try again.".format(MIN_PYTHON_VERSION[0], MIN_PYTHON_VERSION[1], MIN_PYTHON_VERSION[0], MIN_PYTHON_VERSION[1]))
+        exit(1)
 
 
 def version_check() -> None:
@@ -47,6 +55,7 @@ def version_check() -> None:
 
 
 def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, **kwargs) -> None:
+    python_version_check()
     version_check()
 
     # Safeguard against crashes on Windows and every other OS without SIGTSTP.

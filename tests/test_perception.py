@@ -36,9 +36,9 @@ import sys
 if sys.version_info.major == 3 and sys.version_info.minor > 8:
     from random import randbytes
 elif sys.version_info.major == 3 and sys.version_info.minor == 8:
-    randbytes: Callable = os.urandom
+    randbytes = os.urandom
 else:
-    raise RuntimeError("Python version not supported.")
+    raise RuntimeError("Python version not supported (too old): {}.{}.{}.".format(sys.version_info.major, sys.version_info.minor, sys.version_info.micro))
 
 
 class TestPerception(TestCase):
@@ -204,7 +204,7 @@ class TestPerception(TestCase):
             self.__test_message(content=content, sender_id=sender_id, recipient_id=recipient_id)
 
     def test_message_with_str_content(self) -> None:
-        contents: List[str] = [str(randbytes(randint(0, 2**16 - 1))) for _ in range(self.__number_of_runs)]
+        contents: List[str] = [randbytes(randint(0, 2**16 - 1)).hex() for _ in range(self.__number_of_runs)]
 
         for content in contents:
             sender_id: str = str(uuid4())
@@ -270,7 +270,7 @@ class TestPerception(TestCase):
         elif roll < 2:
             return randfloat() * float_info.max
         elif roll < 3:
-            return str(randbytes(randint(0, 2**16 - 1)))
+            return randbytes(randint(0, 2**16 - 1)).hex()
         elif roll < 4:
             return []  # We want to avoid infinite recursion.
         elif roll < 5:
@@ -288,7 +288,7 @@ class TestPerception(TestCase):
         elif roll < 2:
             return randfloat() * float_info.max
         elif roll < 3:
-            return str(randbytes(randint(0, 2**16 - 1)))
+            return randbytes(randint(0, 2**16 - 1)).hex()
         else:
             raise ValueError("Invalid roll")
 
