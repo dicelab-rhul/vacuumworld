@@ -2,7 +2,7 @@
 
 from unittest import main, TestCase
 from typing import Dict, Optional, List, Union, Type, Callable, Tuple
-from random import choice, randint, random as randfloat, randbytes
+from random import choice, randint, random as randfloat
 from uuid import uuid4
 from sys import maxsize, float_info
 
@@ -30,6 +30,13 @@ from vacuumworld.common.observation import Observation
 from vacuumworld.config_manager import ConfigManager
 
 import os
+import sys
+
+
+if sys.version_info.major == 3 and sys.version_info.minor > 8:
+    from random import randbytes
+elif sys.version_info.major == 3 and sys.version_info.minor == 8:
+    randbytes: Callable = os.urandom
 
 
 class TestPerception(TestCase):
@@ -195,7 +202,7 @@ class TestPerception(TestCase):
             self.__test_message(content=content, sender_id=sender_id, recipient_id=recipient_id)
 
     def test_message_with_str_content(self) -> None:
-        contents: List[str] = [str(randbytes(n=randint(0, 2**16 - 1))) for _ in range(self.__number_of_runs)]
+        contents: List[str] = [str(randbytes(randint(0, 2**16 - 1))) for _ in range(self.__number_of_runs)]
 
         for content in contents:
             sender_id: str = str(uuid4())
@@ -261,7 +268,7 @@ class TestPerception(TestCase):
         elif roll < 2:
             return randfloat() * float_info.max
         elif roll < 3:
-            return str(randbytes(n=randint(0, 2**16 - 1)))
+            return str(randbytes(randint(0, 2**16 - 1)))
         elif roll < 4:
             return []  # We want to avoid infinite recursion.
         elif roll < 5:
@@ -279,7 +286,7 @@ class TestPerception(TestCase):
         elif roll < 2:
             return randfloat() * float_info.max
         elif roll < 3:
-            return str(randbytes(n=randint(0, 2**16 - 1)))
+            return str(randbytes(randint(0, 2**16 - 1)))
         else:
             raise ValueError("Invalid roll")
 
