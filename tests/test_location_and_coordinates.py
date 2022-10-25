@@ -23,9 +23,10 @@ class TestLocationAndCoordinates(TestCase):
         self.__config: dict = ConfigManager(config_file_path=self.__config_file_path).load_config()
         self.__min_grid_size: int = self.__config["min_environment_dim"]
         self.__max_grid_size: int = self.__config["max_environment_dim"]
+        self.__number_of_runs: int = 100
 
     def test_coord(self) -> None:
-        for _ in range(100):
+        for _ in range(self.__number_of_runs):
             c: Coord = Coord.random_between_inclusive(min_x=0, max_x=self.__max_grid_size-1, min_y=0, max_y=self.__max_grid_size-1)
 
             self.assertIn(c.x, range(0, self.__max_grid_size))

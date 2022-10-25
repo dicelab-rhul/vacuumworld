@@ -167,7 +167,7 @@ class TestExecutors(TestCase):
         turn_executor: TurnExecutor = TurnExecutor()
         env, _ = VWEnvironment.generate_random_env_for_testing(custom_grid_size=True, config=self.__config)
 
-        for actor_id, actor in env.get_actors().items():
+        for actor_id in env.get_actors():
             left_turn_action.set_actor_id(actor_id=actor_id)
 
             old_orientation: Orientation = env.get_actor_location(actor_id=actor_id).get_actor_appearance().get_orientation()
