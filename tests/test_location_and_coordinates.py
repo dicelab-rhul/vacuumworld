@@ -3,6 +3,7 @@
 from unittest import main, TestCase
 from random import randint
 
+from vacuumworld import VacuumWorld
 from vacuumworld.common.coordinates import Coord
 from vacuumworld.common.colour import Colour
 from vacuumworld.common.orientation import Orientation
@@ -12,15 +13,12 @@ from vacuumworld.model.actor.vwactor_appearance import VWActorAppearance
 from vacuumworld.model.dirt.dirt_appearance import VWDirtAppearance
 from vacuumworld.config_manager import ConfigManager
 
-import os
-
 
 class TestLocationAndCoordinates(TestCase):
     def __init__(self, args) -> None:
         super(TestLocationAndCoordinates, self).__init__(args)
 
-        self.__config_file_path: str = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "vacuumworld", "config.json")
-        self.__config: dict = ConfigManager(config_file_path=self.__config_file_path).load_config()
+        self.__config: dict = ConfigManager(config_file_path=VacuumWorld.CONFIG_FILE_PATH).load_config()
         self.__min_grid_size: int = self.__config["min_environment_dim"]
         self.__max_grid_size: int = self.__config["max_environment_dim"]
         self.__number_of_runs: int = 100
