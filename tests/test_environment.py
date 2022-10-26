@@ -3,6 +3,7 @@
 from unittest import main, TestCase
 from random import randint
 
+from vacuumworld import VacuumWorld
 from vacuumworld.common.coordinates import Coord
 from vacuumworld.common.colour import Colour
 from vacuumworld.common.orientation import Orientation
@@ -15,15 +16,12 @@ from vacuumworld.model.environment.vwlocation import VWLocation
 from vacuumworld.model.environment.vwenvironment import VWEnvironment
 from vacuumworld.config_manager import ConfigManager
 
-import os
-
 
 class TestEnvironment(TestCase):
     def __init__(self, args) -> None:
         super(TestEnvironment, self).__init__(args)
 
-        self.__config_file_path: str = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "vacuumworld", "config.json")
-        self.__config: dict = ConfigManager(config_file_path=self.__config_file_path).load_config()
+        self.__config: dict = ConfigManager(config_file_path=VacuumWorld.CONFIG_FILE_PATH).load_config()
 
     def test_default_sized_empty_env(self) -> None:
         self.__test_empty_env(custom_grid_size=False)

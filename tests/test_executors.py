@@ -2,10 +2,12 @@
 
 from unittest import main, TestCase
 from typing import List, Union
+from random import randint
 
 from pystarworldsturbo.common.action_result import ActionResult
 from pystarworldsturbo.common.action_outcome import ActionOutcome
 
+from vacuumworld import VacuumWorld
 from vacuumworld.common.coordinates import Coord
 from vacuumworld.common.colour import Colour
 from vacuumworld.common.direction import Direction
@@ -17,6 +19,7 @@ from vacuumworld.model.actions.clean_action import VWCleanAction
 from vacuumworld.model.actions.drop_action import VWDropAction
 from vacuumworld.model.actions.move_action import VWMoveAction
 from vacuumworld.model.actions.broadcast_action import VWBroadcastAction
+from vacuumworld.model.actions.vwactions import VWCommunicativeAction
 from vacuumworld.model.actor.vwuser import VWUser
 from vacuumworld.model.environment.physics.broadcast_executor import BroadcastExecutor
 from vacuumworld.model.environment.physics.clean_executor import CleanExecutor
@@ -31,14 +34,24 @@ from vacuumworld.model.environment.vwenvironment import VWEnvironment
 from vacuumworld.config_manager import ConfigManager
 
 import os
+import sys
+
+
+if sys.version_info.major == 3 and sys.version_info.minor > 8:
+    from random import randbytes
+elif sys.version_info.major == 3 and sys.version_info.minor == 8:
+    randbytes = os.urandom
+else:
+    raise RuntimeError("Python version not supported (too old): {}.{}.{}.".format(sys.version_info.major, sys.version_info.minor, sys.version_info.micro))
 
 
 class TestExecutors(TestCase):
     def __init__(self, args) -> None:
         super(TestExecutors, self).__init__(args)
 
-        self.__config_file_path: str = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "vacuumworld", "config.json")
-        self.__config: dict = ConfigManager(config_file_path=self.__config_file_path).load_config()
+        self.__config: dict = ConfigManager(config_file_path=VacuumWorld.CONFIG_FILE_PATH).load_config()
+
+        VWCommunicativeAction.SENDER_ID_SPOOFING_ALLOWED = self.__config["sender_id_spoofing_allowed"]
 
     def test_idle_action(self) -> None:
         action: VWIdleAction = VWIdleAction()
@@ -56,6 +69,13 @@ class TestExecutors(TestCase):
             self.assertTrue(idle_executor.succeeded(env=env, action=action))
 
     def test_speak_action(self) -> None:
+        self.__test_speak_action()
+
+    def test_speak_action_with_sender_id_spoofing(self) -> None:
+        custom_sender_id: str = randbytes(randint(1, 16)).hex()
+        self.__test_speak_action(custom_sender_id=custom_sender_id)
+
+    def __test_speak_action(self, custom_sender_id: str=None) -> None:
         speak_executor: SpeakExecutor = SpeakExecutor()
         env, _ = VWEnvironment.generate_random_env_for_testing(custom_grid_size=True, config=self.__config)
 
@@ -74,28 +94,32 @@ class TestExecutors(TestCase):
 
         for message in messages:
             for actor_id in env.get_actors():
-                action: VWSpeakAction = VWSpeakAction(message=message, sender_id=actor_id, recipients=[a_id for a_id in env.get_actors() if a_id != actor_id])
-                action.set_actor_id(actor_id=actor_id)
+                self.__test_with_recipients(speak_executor=speak_executor, env=env, message=message, actor_id=actor_id, custom_sender_id=custom_sender_id, recipients=[a_id for a_id in env.get_actors() if a_id != actor_id])
+                self.__test_with_recipients(speak_executor=speak_executor, env=env, message=message, actor_id=actor_id, custom_sender_id=custom_sender_id, recipients=[])
 
-                self.assertTrue(speak_executor.is_possible(env=env, action=action))
+    def __test_with_recipients(self, speak_executor: SpeakExecutor, env: VWEnvironment, message: Union[int, float, str, list, tuple, dict], actor_id: str, custom_sender_id: str=None, recipients: List[str]=None) -> None:
+        sender_id: str = actor_id if custom_sender_id is None else custom_sender_id
+        action: VWSpeakAction = VWSpeakAction(message=message, sender_id=sender_id, recipients=recipients)
+        action.set_actor_id(actor_id=actor_id)
 
-                result: ActionResult = speak_executor.execute(env=env, action=action)
+        self.assertTrue(speak_executor.is_possible(env=env, action=action))
 
-                self.assertTrue(result.get_outcome() == ActionOutcome.success)
-                self.assertTrue(speak_executor.succeeded(env=env, action=action))
+        result: ActionResult = speak_executor.execute(env=env, action=action)
 
-            for actor_id in env.get_actors():
-                action: VWSpeakAction = VWSpeakAction(message=message, sender_id=actor_id, recipients=[])
-                action.set_actor_id(actor_id=actor_id)
-
-                self.assertTrue(speak_executor.is_possible(env=env, action=action))
-
-                result: ActionResult = speak_executor.execute(env=env, action=action)
-
-                self.assertTrue(result.get_outcome() == ActionOutcome.success)
-                self.assertTrue(speak_executor.succeeded(env=env, action=action))
+        if sender_id == actor_id or VWCommunicativeAction.SENDER_ID_SPOOFING_ALLOWED:
+            self.assertTrue(speak_executor.succeeded(env=env, action=action))
+            self.assertTrue(result.get_outcome() == ActionOutcome.success)
+        else:
+            self.assertTrue(result.get_outcome() == ActionOutcome.failure)
 
     def test_broadcast_action(self) -> None:
+        self.__test_broadcast_action()
+
+    def test_broadcast_action_with_sender_id_spoofing(self) -> None:
+        custom_sender_id: str = randbytes(randint(1, 16)).hex()
+        self.__test_broadcast_action(custom_sender_id=custom_sender_id)
+
+    def __test_broadcast_action(self, custom_sender_id: str=None) -> None:
         broadcast_executor: BroadcastExecutor = BroadcastExecutor()
         env, _ = VWEnvironment.generate_random_env_for_testing(custom_grid_size=True, config=self.__config)
 
@@ -114,15 +138,19 @@ class TestExecutors(TestCase):
 
         for message in messages:
             for actor_id in env.get_actors():
-                action: VWBroadcastAction = VWBroadcastAction(message=message, sender_id=actor_id)
+                sender_id: str = actor_id if custom_sender_id is None else custom_sender_id
+                action: VWBroadcastAction = VWBroadcastAction(message=message, sender_id=sender_id)
                 action.set_actor_id(actor_id=actor_id)
 
                 self.assertTrue(broadcast_executor.is_possible(env=env, action=action))
 
                 result: ActionResult = broadcast_executor.execute(env=env, action=action)
 
-                self.assertTrue(result.get_outcome() == ActionOutcome.success)
-                self.assertTrue(broadcast_executor.succeeded(env=env, action=action))
+                if sender_id == actor_id or VWCommunicativeAction.SENDER_ID_SPOOFING_ALLOWED:
+                    self.assertTrue(broadcast_executor.succeeded(env=env, action=action))
+                    self.assertTrue(result.get_outcome() == ActionOutcome.success)
+                else:
+                    self.assertTrue(result.get_outcome() == ActionOutcome.failure)
 
     def test_move_action(self) -> None:
         action: VWMoveAction = VWMoveAction()

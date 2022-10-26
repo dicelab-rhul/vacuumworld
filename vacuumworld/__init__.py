@@ -139,6 +139,7 @@ class VacuumWorld():
         return minds
 
 
+# For back-compatibility with 4.2.5.
 def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, **kwargs) -> None:
     vw: VacuumWorld = VacuumWorld()
     vw.run(default_mind=default_mind, white_mind=white_mind, green_mind=green_mind, orange_mind=orange_mind, **kwargs)
