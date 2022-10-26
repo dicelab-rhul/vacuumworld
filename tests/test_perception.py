@@ -10,6 +10,7 @@ from pystarworldsturbo.common.message import BccMessage
 from pystarworldsturbo.common.action_outcome import ActionOutcome
 from pystarworldsturbo.common.action_result import ActionResult
 
+from vacuumworld import VacuumWorld
 from vacuumworld.common.position_names import PositionNames
 from vacuumworld.model.actions.vwactions import VWAction
 from vacuumworld.model.actions.broadcast_action import VWBroadcastAction
@@ -45,8 +46,7 @@ class TestPerception(TestCase):
     def __init__(self, args) -> None:
         super(TestPerception, self).__init__(args)
 
-        self.__config_file_path: str = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "vacuumworld", "config.json")
-        self.__config: dict = ConfigManager(config_file_path=self.__config_file_path).load_config()
+        self.__config: dict = ConfigManager(config_file_path=VacuumWorld.CONFIG_FILE_PATH).load_config()
         self.__min_grid_size: int = self.__config["min_environment_dim"]
         self.__max_grid_size: int = self.__config["max_environment_dim"]
         self.__number_of_locations: int = len(PositionNames)

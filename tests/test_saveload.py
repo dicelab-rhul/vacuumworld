@@ -4,13 +4,12 @@ from unittest import main, TestCase
 from random import choice
 from string import ascii_letters, digits
 
+from vacuumworld import VacuumWorld
 from vacuumworld.common.coordinates import Coord
 from vacuumworld.model.environment.vwlocation import VWLocation
 from vacuumworld.model.environment.vwenvironment import VWEnvironment
 from vacuumworld.config_manager import ConfigManager
 from vacuumworld.gui.saveload import SaveStateManager
-
-import os
 
 
 class TestSaveLoad(TestCase):
@@ -18,17 +17,17 @@ class TestSaveLoad(TestCase):
         super(TestSaveLoad, self).__init__(args)
 
         self.__save_state_manager = SaveStateManager()
-        self.__config_file_path: str = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "vacuumworld", "config.json")
-        self.__config: dict = ConfigManager(config_file_path=self.__config_file_path).load_config()
+        self.__config: dict = ConfigManager(config_file_path=VacuumWorld.CONFIG_FILE_PATH).load_config()
+        self.__temp_file_deletion_after_error_message: str = "We are still deleting the temporary saved state."
 
     def test_save_to_file(self):
         env, _ = VWEnvironment.generate_random_env_for_testing(custom_grid_size=True, config=self.__config)
-        filename: str = "".join([choice(ascii_letters + digits) for _ in range(10)]) + ".json"
+        filename: str = "".join([choice(ascii_letters + digits) for _ in range(10)]) + self.__save_state_manager.get_vw_saved_state_extension()
 
         try:
             self.assertTrue(self.__save_state_manager.save_state(env=env, filename=filename))
         except AssertionError as e:
-            e.args += ("We are still deleting the temporary saved state.",)
+            e.args += (self.__temp_file_deletion_after_error_message,)
 
             # We rethrow the Exception, and we delete the file in the `finally` block.
             raise e
@@ -37,7 +36,7 @@ class TestSaveLoad(TestCase):
 
     def test_load_from_file(self):
         env, _ = VWEnvironment.generate_random_env_for_testing(custom_grid_size=True, config=self.__config)
-        filename: str = "".join([choice(ascii_letters + digits) for _ in range(10)]) + ".json"
+        filename: str = "".join([choice(ascii_letters + digits) for _ in range(10)]) + self.__save_state_manager.get_vw_saved_state_extension()
 
         try:
             self.assertTrue(self.__save_state_manager.save_state(env=env, filename=filename))
@@ -47,7 +46,7 @@ class TestSaveLoad(TestCase):
 
             self.assertTrue(TestSaveLoad.__env_match(env, loaded_env))
         except AssertionError as e:
-            e.args += ("We are still deleting the temporary saved state.",)
+            e.args += (self.__temp_file_deletion_after_error_message,)
 
             # We rethrow the Exception, and we delete the file in the `finally` block.
             raise e

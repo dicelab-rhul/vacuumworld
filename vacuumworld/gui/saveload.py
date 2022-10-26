@@ -13,11 +13,14 @@ import os
 class SaveStateManager():
     def __init__(self) -> None:
         self.__files_dir: str = os.path.join(os.getcwd(), "files")
-        self.__vw_extension: str = ".json"
-        self.__vw_file_regex: str = "^[a-zA-Z0-9]+{}$".format(self.__vw_extension)
+        self.__vw_saved_state_extension: str = ".json"
+        self.__vw_file_regex: str = "^[a-zA-Z0-9]+{}$".format(self.__vw_saved_state_extension)
         self.__random_file_name_length: int = 10
 
         self.__prepare_files_dir()
+
+    def get_vw_saved_state_extension(self) -> str:
+        return self.__vw_saved_state_extension
 
     def __prepare_files_dir(self) -> None:
         if not os.path.exists(self.__files_dir):
@@ -57,11 +60,11 @@ class SaveStateManager():
     def __save_dialog(self, state: dict, filename: str) -> bool:
         try:
             if not filename:
-                filename = "".join(choice(ascii_letters) for _ in range(self.__random_file_name_length)) + self.__vw_extension
-            elif not filename.endswith(self.__vw_extension):
-                filename += self.__vw_extension
+                filename = "".join(choice(ascii_letters) for _ in range(self.__random_file_name_length)) + self.__vw_saved_state_extension
+            elif not filename.endswith(self.__vw_saved_state_extension):
+                filename += self.__vw_saved_state_extension
 
-            with asksaveasfile(mode="w", initialdir=self.__files_dir, initialfile=filename, defaultextension=self.__vw_extension) as f:
+            with asksaveasfile(mode="w", initialdir=self.__files_dir, initialfile=filename, defaultextension=self.__vw_saved_state_extension) as f:
                 dump(obj=state, fp=f, indent=4)
                 return True
         except AttributeError:
@@ -98,13 +101,13 @@ class SaveStateManager():
     def add_vw_extension_to_filename_string_if_missing(self, filename: str) -> str:
         assert filename
 
-        if not filename.endswith(self.__vw_extension):
-            filename += self.__vw_extension
+        if not filename.endswith(self.__vw_saved_state_extension):
+            filename += self.__vw_saved_state_extension
         return filename
 
     def get_ordered_list_of_filenames_in_save_directory(self) -> List[str]:
         try:
-            f: List[str] = [file for file in os.listdir(self.__files_dir) if file.endswith(self.__vw_extension)]
+            f: List[str] = [file for file in os.listdir(self.__files_dir) if file.endswith(self.__vw_saved_state_extension)]
             f.sort()
             return f
         except Exception:
