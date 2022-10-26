@@ -11,6 +11,7 @@ from vacuumworld import VacuumWorld
 from vacuumworld.common.coordinates import Coord
 from vacuumworld.common.colour import Colour
 from vacuumworld.common.direction import Direction
+from vacuumworld.common.observation import Observation
 from vacuumworld.common.orientation import Orientation
 from vacuumworld.model.actions.idle_action import VWIdleAction
 from vacuumworld.model.actions.speak_action import VWSpeakAction
@@ -20,6 +21,8 @@ from vacuumworld.model.actions.drop_action import VWDropAction
 from vacuumworld.model.actions.move_action import VWMoveAction
 from vacuumworld.model.actions.broadcast_action import VWBroadcastAction
 from vacuumworld.model.actions.vwactions import VWCommunicativeAction
+from vacuumworld.model.actor.vwactor import VWActor
+from vacuumworld.model.actor.vwsensors import VWSensor
 from vacuumworld.model.actor.vwuser import VWUser
 from vacuumworld.model.environment.physics.broadcast_executor import BroadcastExecutor
 from vacuumworld.model.environment.physics.clean_executor import CleanExecutor
@@ -92,25 +95,54 @@ class TestExecutors(TestCase):
             ("Hello", "World", "!")
         ]
 
-        for message in messages:
-            for actor_id in env.get_actors():
-                self.__test_with_recipients(speak_executor=speak_executor, env=env, message=message, actor_id=actor_id, custom_sender_id=custom_sender_id, recipients=[a_id for a_id in env.get_actors() if a_id != actor_id])
-                self.__test_with_recipients(speak_executor=speak_executor, env=env, message=message, actor_id=actor_id, custom_sender_id=custom_sender_id, recipients=[])
+        self.__test_messages_delivery(messages=messages, speak_executor=speak_executor, env=env, custom_sender_id=custom_sender_id, recipients=[a_id for a_id in env.get_actors()])
+        self.__test_messages_delivery(messages=messages, speak_executor=speak_executor, env=env, custom_sender_id=custom_sender_id, recipients=[])
 
-    def __test_with_recipients(self, speak_executor: SpeakExecutor, env: VWEnvironment, message: Union[int, float, str, list, tuple, dict], actor_id: str, custom_sender_id: str=None, recipients: List[str]=None) -> None:
-        sender_id: str = actor_id if custom_sender_id is None else custom_sender_id
+    def __test_messages_delivery(self, messages: List[Union[int, float, str, list, tuple, dict]], speak_executor: SpeakExecutor, env: VWEnvironment, custom_sender_id: str, recipients: List[str]) -> None:
+        for message in messages:
+            for real_sender_id in env.get_actors():
+                self.__test_message_delivery(speak_executor=speak_executor, env=env, message=message, real_sender_id=real_sender_id, custom_sender_id=custom_sender_id, recipients=[r_id for r_id in recipients if r_id != real_sender_id])
+
+    def __test_message_delivery(self, speak_executor: SpeakExecutor, env: VWEnvironment, message: Union[int, float, str, list, tuple, dict], real_sender_id: str, custom_sender_id: str=None, recipients: List[str]=[]) -> None:
+        sender_id: str = real_sender_id if custom_sender_id is None else custom_sender_id
         action: VWSpeakAction = VWSpeakAction(message=message, sender_id=sender_id, recipients=recipients)
-        action.set_actor_id(actor_id=actor_id)
+        action.set_actor_id(actor_id=real_sender_id)
 
         self.assertTrue(speak_executor.is_possible(env=env, action=action))
 
         result: ActionResult = speak_executor.execute(env=env, action=action)
 
-        if sender_id == actor_id or VWCommunicativeAction.SENDER_ID_SPOOFING_ALLOWED:
+        if sender_id == real_sender_id or VWCommunicativeAction.SENDER_ID_SPOOFING_ALLOWED:
             self.assertTrue(speak_executor.succeeded(env=env, action=action))
             self.assertTrue(result.get_outcome() == ActionOutcome.success)
+
+            self.__test_message_received(env=env, message=message, recipients=recipients, sender_id=sender_id)
         else:
             self.assertTrue(result.get_outcome() == ActionOutcome.failure)
+
+    def __test_message_received(self, env: VWEnvironment, message: Union[int, float, str, list, tuple, dict], sender_id: str, recipients: List[str]) -> None:
+        for recipient_id in recipients:
+            fake_observation: Observation = Observation(action_type=None, action_result=None, locations_dict={})
+            recipient_actor: VWActor = env.get_actor(actor_id=recipient_id)
+
+            # We just want the physical sensor.
+            sensor: VWSensor = recipient_actor.get_observation_sensor()
+
+            self.assertIsNotNone(sensor)
+
+            sensor.sink(perception=fake_observation)
+
+            _, messages = recipient_actor.perceive()
+
+            self.assertTrue(sender_id in [m.get_sender_id() for m in messages])
+
+            received: bool = False
+
+            for m in messages:
+                if m.get_sender_id() == sender_id and m.get_content() == message:
+                    received = True
+
+            self.assertTrue(received)
 
     def test_broadcast_action(self) -> None:
         self.__test_broadcast_action()
@@ -137,20 +169,25 @@ class TestExecutors(TestCase):
         ]
 
         for message in messages:
-            for actor_id in env.get_actors():
-                sender_id: str = actor_id if custom_sender_id is None else custom_sender_id
-                action: VWBroadcastAction = VWBroadcastAction(message=message, sender_id=sender_id)
-                action.set_actor_id(actor_id=actor_id)
+            for real_sender_id in env.get_actors():
+                self.__test_broadcast_delivery(broadcast_executor=broadcast_executor, env=env, message=message, real_sender_id=real_sender_id, custom_sender_id=custom_sender_id)
 
-                self.assertTrue(broadcast_executor.is_possible(env=env, action=action))
+    def __test_broadcast_delivery(self, broadcast_executor: BroadcastExecutor, env: VWEnvironment, message: Union[int, float, str, list, tuple, dict], real_sender_id: str, custom_sender_id: str) -> None:
+        sender_id: str = real_sender_id if custom_sender_id is None else custom_sender_id
+        action: VWBroadcastAction = VWBroadcastAction(message=message, sender_id=sender_id)
+        action.set_actor_id(actor_id=real_sender_id)
 
-                result: ActionResult = broadcast_executor.execute(env=env, action=action)
+        self.assertTrue(broadcast_executor.is_possible(env=env, action=action))
 
-                if sender_id == actor_id or VWCommunicativeAction.SENDER_ID_SPOOFING_ALLOWED:
-                    self.assertTrue(broadcast_executor.succeeded(env=env, action=action))
-                    self.assertTrue(result.get_outcome() == ActionOutcome.success)
-                else:
-                    self.assertTrue(result.get_outcome() == ActionOutcome.failure)
+        result: ActionResult = broadcast_executor.execute(env=env, action=action)
+
+        if sender_id == real_sender_id or VWCommunicativeAction.SENDER_ID_SPOOFING_ALLOWED:
+            self.assertTrue(broadcast_executor.succeeded(env=env, action=action))
+            self.assertTrue(result.get_outcome() == ActionOutcome.success)
+
+            self.__test_message_received(env=env, message=message, recipients=[a_id for a_id in env.get_actors() if a_id != real_sender_id], sender_id=sender_id)
+        else:
+            self.assertTrue(result.get_outcome() == ActionOutcome.failure)
 
     def test_move_action(self) -> None:
         action: VWMoveAction = VWMoveAction()
