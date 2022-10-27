@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
 from unittest import main, TestCase
-from typing import Iterable, Union, Tuple, List
+from typing import Iterable, Union, Tuple, List, Dict, Type
 
 from pystarworldsturbo.common.message import BccMessage
 from pystarworldsturbo.utils.utils import ignore
 
-from vacuumworld import run
+from vacuumworld import VacuumWorld, run
+from vacuumworld.common.colour import Colour
 from vacuumworld.common.observation import Observation
 from vacuumworld.common.exceptions import VWInternalError
 from vacuumworld.gui.gui import VWGUI
@@ -125,9 +126,18 @@ class TestIllegalRunInputs(TestCase):
             MalformedDecideSurrogateMind()
         ]
 
+        vw_allowed_run_args_backup: Dict[str, Type] = VacuumWorld.ALLOWED_RUN_ARGS
+
         for mind in malformed_minds:
+            for colour in Colour:
+                if colour != Colour.user:
+                    VacuumWorld.ALLOWED_RUN_ARGS["default_mind"] = type(mind)
+                    VacuumWorld.ALLOWED_RUN_ARGS[str(colour) + "_mind"] = type(mind)
+
             self.assertRaises(VWInternalError, run, default_mind=mind)
             self.assertRaises(VWInternalError, run, green_mind=mind, orange_mind=mind, white_mind=mind)
+
+        VacuumWorld.ALLOWED_RUN_ARGS = vw_allowed_run_args_backup
 
 
 if __name__ == "__main__":
