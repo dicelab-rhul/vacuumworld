@@ -169,9 +169,9 @@ class VacuumWorld():
             print("WARNING: You have specified a default mind surrogate and a mind surrogate for each of the agent colours. The default mind surrogate will be ignored.")
 
         minds: Dict[Colour, ActorMindSurrogate] = {
-            Colour.green: white_mind if white_mind is not None else default_mind,
-            Colour.orange: green_mind if green_mind is not None else default_mind,
-            Colour.white: orange_mind if orange_mind is not None else default_mind
+            Colour.white: white_mind if white_mind is not None else default_mind,
+            Colour.green: green_mind if green_mind is not None else default_mind,
+            Colour.orange: orange_mind if orange_mind is not None else default_mind
         }
 
         if not all(isinstance(minds[colour], VacuumWorld.ALLOWED_RUN_ARGS[str(colour) + "_mind"]) for colour in Colour if colour != Colour.user):
@@ -180,7 +180,7 @@ class VacuumWorld():
         for colour, mind in minds.items():
             ActorMindSurrogate.validate(mind=mind, colour=colour)
 
-        return minds
+        return minds[Colour.white], minds[Colour.green], minds[Colour.orange]
 
 
 # For back-compatibility with 4.2.5.
