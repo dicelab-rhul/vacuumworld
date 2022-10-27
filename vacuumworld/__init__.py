@@ -1,5 +1,5 @@
 from signal import signal, SIG_IGN
-from typing import Tuple, Dict
+from typing import Tuple, Dict, Type, Any
 from subprocess import call, DEVNULL
 from sys import version_info
 
@@ -21,6 +21,21 @@ class VacuumWorld():
     CONFIG_FILE_NAME: str = "config.json"
     CONFIG_FILE_PATH: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), CONFIG_FILE_NAME)
     MIN_PYTHON_VERSION: Tuple[int, int] = (3, 8)
+    ALLOWED_RUN_ARGS: Dict[str, Type] = {
+        "default_mind": ActorMindSurrogate,
+        "green_mind": ActorMindSurrogate,
+        "orange_mind": ActorMindSurrogate,
+        "white_mind": ActorMindSurrogate,
+        "gui": bool,
+        "skip": bool,
+        "play": bool,
+        "load": str,
+        "speed": float,
+        "scale": float,
+        "tooltips": bool,
+        "efforts": Dict[str, int],
+        "total_cycles": int
+    }
 
     def __init__(self) -> None:
         VacuumWorld.__python_version_check()
@@ -34,6 +49,7 @@ class VacuumWorld():
     def run(self, default_mind=None, white_mind=None, green_mind=None, orange_mind=None, **kwargs) -> None:
         self.__vw_version_check()
 
+        VacuumWorld.__check_kwargs_names_and_types(**kwargs)
         VacuumWorld.__assign_efforts_to_actions(**kwargs)
 
         white_mind, green_mind, orange_mind = VacuumWorld.__process_minds(default_mind, white_mind, green_mind, orange_mind)
@@ -43,6 +59,29 @@ class VacuumWorld():
             self.__run_guiless(white_mind=white_mind, green_mind=green_mind, orange_mind=orange_mind, user_mind=user_mind, **kwargs)
         else:
             self.__run_with_gui(white_mind=white_mind, green_mind=green_mind, orange_mind=orange_mind, user_mind=user_mind, **kwargs)
+
+    @staticmethod
+    def __check_kwargs_names_and_types(**kwargs) -> None:
+        for arg in kwargs:
+            if arg not in VacuumWorld.ALLOWED_RUN_ARGS:
+                raise ValueError("Invalid argument for `run()`: {}".format(arg))
+
+            # This needs to change in case we add another argument that is a `Dict`.
+            if VacuumWorld.ALLOWED_RUN_ARGS.get(arg) == Dict[str, int]:
+                VacuumWorld.__validate_efforts(kwargs.get(arg))
+            elif not isinstance(kwargs.get(arg), VacuumWorld.ALLOWED_RUN_ARGS.get(arg)):
+                raise ValueError("Invalid type for argument `{}`: it should be `{}`, but it is `{}`".format(arg, VacuumWorld.ALLOWED_RUN_ARGS[arg], type((kwargs.get(arg)))))
+
+    @staticmethod
+    def __validate_efforts(efforts: Any) -> None:
+        if not isinstance(efforts, dict):
+            raise ValueError("Invalid type for argument `efforts`: it should be `Dict[str, int]`, but it is `{}`".format(type(efforts)))
+        elif not all(isinstance(key, str) for key in efforts.keys()):
+            raise ValueError("Invalid type for argument `efforts`: it should be `Dict[str, int]`, but there is at least a key that is not a `str`")
+        elif not all(isinstance(value, int) for value in efforts.values()):
+            raise ValueError("Invalid type for argument `efforts`: it should be `Dict[str, int]`, but there is at least a value that is not an `int`")
+        elif not all(effort_name in ActionEffort.EFFORTS for effort_name in efforts):
+            raise ValueError("Invalid effort name: it should be one of {}, but it is `{}`".format([k for k in ActionEffort.EFFORTS], [e for e in efforts if e not in ActionEffort.EFFORTS][0]))
 
     @staticmethod
     def __python_version_check() -> None:
@@ -126,15 +165,20 @@ class VacuumWorld():
     def __process_minds(default_mind: ActorMindSurrogate=None, white_mind: ActorMindSurrogate=None, green_mind: ActorMindSurrogate=None, orange_mind: ActorMindSurrogate=None) -> Tuple[ActorMindSurrogate, ActorMindSurrogate, ActorMindSurrogate]:
         assert default_mind is not None or white_mind is not None and green_mind is not None and orange_mind is not None
 
-        minds: Tuple[ActorMindSurrogate, ActorMindSurrogate, ActorMindSurrogate] = (
-            white_mind if white_mind is not None else default_mind,
-            green_mind if green_mind is not None else default_mind,
-            orange_mind if orange_mind is not None else default_mind
-        )
+        if all(m is not None for m in [default_mind, white_mind, green_mind, orange_mind]):
+            print("WARNING: You have specified a default mind surrogate and a mind surrogate for each of the agent colours. The default mind surrogate will be ignored.")
 
-        ActorMindSurrogate.validate(mind=minds[0], colour=Colour.white)
-        ActorMindSurrogate.validate(mind=minds[1], colour=Colour.green)
-        ActorMindSurrogate.validate(mind=minds[2], colour=Colour.orange)
+        minds: Dict[Colour, ActorMindSurrogate] = {
+            Colour.green: white_mind if white_mind is not None else default_mind,
+            Colour.orange: green_mind if green_mind is not None else default_mind,
+            Colour.white: orange_mind if orange_mind is not None else default_mind
+        }
+
+        if not all(isinstance(minds[colour], VacuumWorld.ALLOWED_RUN_ARGS[str(colour) + "_mind"]) for colour in Colour if colour != Colour.user):
+            raise ValueError("One or more mind surrogates are not of the allowed type.")
+
+        for colour, mind in minds.items():
+            ActorMindSurrogate.validate(mind=mind, colour=colour)
 
         return minds
 
