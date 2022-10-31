@@ -16,7 +16,7 @@ import os
 
 class VWGUIRunner(VWRunner):
     def __init__(self, config: dict, minds: Dict[Colour, ActorMindSurrogate], allowed_args: Dict[str, Type], **kwargs) -> None:
-        super().__init__(config=config, minds=minds, allowed_args=allowed_args, **kwargs)
+        super(VWGUIRunner, self).__init__(config=config, minds=minds, allowed_args=allowed_args, **kwargs)
 
         self.__button_data: dict = self.__load_button_data()
         self.__already_centered: bool = False

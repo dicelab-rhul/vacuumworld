@@ -9,7 +9,7 @@ from ..model.environment.vwenvironment import VWEnvironment
 
 class VWGUIlessRunner(VWRunner):
     def __init__(self, config: dict, minds: Dict[Colour, ActorMindSurrogate], allowed_args: Dict[str, Type], **kwargs) -> None:
-        super().__init__(config=config, minds=minds, allowed_args=allowed_args, **kwargs)
+        super(VWGUIlessRunner, self).__init__(config=config, minds=minds, allowed_args=allowed_args, **kwargs)
 
         self.__validate_load()
 

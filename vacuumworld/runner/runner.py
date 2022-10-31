@@ -152,11 +152,11 @@ class VWRunner(Process):
 
     def __validate_efforts(self) -> None:
         if not isinstance(self.__args["efforts"], dict):
-            raise ValueError("Invalid type for argument `efforts`: it should be `Dict[str, int]`, but it is `{}`".format(type(self.__args["efforts"])))
+            raise TypeError("Invalid type for argument `efforts`: it should be `Dict[str, int]`, but it is `{}`".format(type(self.__args["efforts"])))
         elif not all(isinstance(key, str) for key in self.__args["efforts"].keys()):
-            raise ValueError("Invalid type for argument `efforts`: it should be `Dict[str, int]`, but there is at least a key that is not a `str`")
+            raise TypeError("Invalid type for argument `efforts`: it should be `Dict[str, int]`, but there is at least a key that is not a `str`")
         elif not all(isinstance(value, int) for value in self.__args["efforts"].values()):
-            raise ValueError("Invalid type for argument `efforts`: it should be `Dict[str, int]`, but there is at least a value that is not an `int`")
+            raise TypeError("Invalid type for argument `efforts`: it should be `Dict[str, int]`, but there is at least a value that is not an `int`")
         elif not all(effort_name in ActionEffort.EFFORTS for effort_name in self.__args["efforts"]):
             raise ValueError("Invalid effort name: it should be one of {}, but it is `{}`".format([k for k in ActionEffort.EFFORTS], [e for e in self.__args["efforts"] if e not in ActionEffort.EFFORTS][0]))
 
