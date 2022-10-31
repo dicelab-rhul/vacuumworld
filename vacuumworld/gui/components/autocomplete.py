@@ -8,6 +8,7 @@ from typing import List
 
 
 class AutocompleteEntry(Entry):
+    # TODO: refactor this class. It's a mess.
     def __init__(self, lista: List[str], height: int, *args, **kwargs) -> None:
         Entry.__init__(self, *args, **kwargs)
         self.dropdown_parent: Frame = args[0]

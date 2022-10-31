@@ -14,6 +14,7 @@ from vacuumworld.gui.saveload import SaveStateManager
 import os
 
 
+# TODO: this class needs to be rewritten, because of the new `VWGUIlessRunner` class.
 class TestGUIless(TestCase):
     def __init__(self, args) -> None:
         super(TestGUIless, self).__init__(args)
@@ -36,7 +37,8 @@ class TestGUIless(TestCase):
             except Exception as e:
                 self.fail(e.args[0])
             finally:
-                os.remove(os.path.join(os.getcwd(), "files", test_file))
+                if os.path.exists(os.path.join(os.getcwd(), "files", test_file)):
+                    os.remove(os.path.join(os.getcwd(), "files", test_file))
 
 
 if __name__ == '__main__':

@@ -9,6 +9,7 @@ from .model.environment.vwenvironment import VWEnvironment
 from .gui.saveload import SaveStateManager
 
 
+# TODO: this class is obsolete. Remove it.
 class VWGuilessRunner():
     def __init__(self, config: dict, minds: Dict[Colour, ActorMindSurrogate], load: str=None, speed: float=0.0, total_cycles: int=0) -> None:
         assert config

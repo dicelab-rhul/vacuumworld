@@ -20,6 +20,7 @@ from ..model.environment.vwenvironment import VWEnvironment
 import os
 
 
+# TODO: this class is obsolete. Remove it.
 class VWGUI(Process):
     def __init__(self, config: dict) -> None:
         super(VWGUI, self).__init__()
@@ -64,7 +65,7 @@ class VWGUI(Process):
             raise ValueError("Argument \"speed\" must be >=0 and < 1.")
 
         # A 0 value is equivalent to omitting the argument from `vacuumworld.run()`.
-        if scale < 0 or scale >= 2.5:
+        if scale < 0 or scale > 2.5:
             raise ValueError("Argument \"scale\" must be >= 0 and <= 2.5.")
 
         # A 0 value means an infinite number of cycles.
@@ -192,6 +193,7 @@ class VWGUI(Process):
 
         self.__show_simulation_window(env=env)
 
+    # TODO: Remember to refactor this mathod when `AutoCompleteEntry` is refactored.
     def __save(self, env: VWEnvironment, saveloadmenu: AutocompleteEntry) -> None:
         filename: str = saveloadmenu.var.get()
         result: bool = self.__save_state_manager.save_state(env=env, filename=filename)
@@ -202,6 +204,7 @@ class VWGUI(Process):
         else:
             print("The current grid was not saved.")
 
+    # TODO: Remember to refactor this mathod when `AutoCompleteEntry` is refactored.
     def __load(self, saveloadmenu: AutocompleteEntry) -> VWEnvironment:
         filename: str = saveloadmenu.var.get()
 
