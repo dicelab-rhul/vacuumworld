@@ -6,6 +6,7 @@ from tkinter import Frame, Image as Img
 from .vwbutton import VWButton
 
 
+# TODO: refactor this class.
 class VWDifficultyButton(VWButton):
     def __init__(self, parent: Frame, config: dict, img: Img, fun: Callable, tip_text: str) -> None:
         self.__imgs: List[PhotoImage] = [PhotoImage(img)]

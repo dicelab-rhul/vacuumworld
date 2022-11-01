@@ -17,6 +17,7 @@ from ....common.orientation import Orientation
 from ....common.direction import Direction
 from ....common.colour import Colour
 from ....common.exceptions import VWEndOfCyclesException
+from ....model.actor.vwuser import VWUser
 from ....model.actor.vwactor_appearance import VWActorAppearance
 from ....model.actor.actor_mind_surrogate import ActorMindSurrogate
 from ....model.actor.user_mind_surrogate import UserMindSurrogate
@@ -351,25 +352,35 @@ class VWSimulationWindow(Frame):
 
     def redraw(self) -> None:
         self.__reset_canvas(lines=False)
+
         inc: int = self.__config["grid_size"] / self.__env.get_ambient().get_grid_dim()
+
         for coord, location in self.__env.get_ambient().get_grid().items():
             if location:
-                if location.has_actor():
-                    actor_appearance: VWActorAppearance = location.get_actor_appearance()
-                    tk_img: PhotoImage = self.__all_images_tk_scaled[(actor_appearance.get_colour().value, actor_appearance.get_orientation().value)]
-                    item: Img = self.__canvas.create_image(coord.x * inc + inc/2, coord.y * inc + inc/2, image=tk_img)
-                    self.__canvas_agents[coord] = item
-                    self.__canvas.tag_lower(item)  # Keep the agent behind the grid lines.
+                self.__redraw_location(coord=coord, location=location, inc=inc)
 
-                    if coord in self.__canvas_dirts:  # Keep the dirt behind the agent.
-                        self.__canvas.tag_lower(self.__canvas_dirts[coord])
+    def __redraw_location(self, coord: Coord, location: VWLocation, inc: int) -> None:
+        assert location
 
-                if location.has_dirt():
-                    tk_img: PhotoImage = self.__all_images_tk_scaled[(location.get_dirt_appearance().get_colour().value, "dirt")]
-                    item: Img = self.__canvas.create_image(coord.x * inc + inc/2, coord.y * inc + inc/2, image=tk_img)
-                    self.__canvas_dirts[coord] = item
+        if location.has_actor():
+            actor_appearance: VWActorAppearance = location.get_actor_appearance()
+            tk_img: PhotoImage = self.__all_images_tk_scaled[(actor_appearance.get_colour().value, actor_appearance.get_orientation().value)]
+            item: Img = self.__canvas.create_image(coord.x * inc + inc/2, coord.y * inc + inc/2, image=tk_img)
 
-                    self.__canvas.tag_lower(item)  # Keep dirt behind agents and grid lines.
+            self.__canvas_agents[coord] = item
+
+            self.__canvas.tag_lower(item)  # Keep the agent behind the grid lines.
+
+            if coord in self.__canvas_dirts:  # Keep the dirt behind the agent.
+                self.__canvas.tag_lower(self.__canvas_dirts[coord])
+
+        if location.has_dirt():
+            tk_img: PhotoImage = self.__all_images_tk_scaled[(location.get_dirt_appearance().get_colour().value, "dirt")]
+            item: Img = self.__canvas.create_image(coord.x * inc + inc/2, coord.y * inc + inc/2, image=tk_img)
+
+            self.__canvas_dirts[coord] = item
+
+            self.__canvas.tag_lower(item)  # Keep dirt behind agents and grid lines.
 
     def __draw_grid(self) -> None:
         env_dim: int = self.__env.get_ambient().get_grid_dim()
@@ -382,6 +393,7 @@ class VWSimulationWindow(Frame):
         for _ in range(env_dim + 1):
             self.__grid_lines.append(self.__canvas.create_line(x, 0, x, size+1))
             self.__grid_lines.append(self.__canvas.create_line(0, y, size+1, y))
+
             y += inc
             x += inc
 
@@ -404,6 +416,7 @@ class VWSimulationWindow(Frame):
             for img_name, img in images.items():
                 img_key: Tuple[str, str] = VWSimulationWindow.__get_image_key(img_name)
                 tk_img: PhotoImage = PhotoImage(img)
+
                 self.__all_images[img_key] = img
                 self.__all_images_tk[img_key] = tk_img
 
@@ -416,6 +429,7 @@ class VWSimulationWindow(Frame):
             img: Img = VWSimulationWindow.__scale(Image.open(file_path), self.__config["location_size"])
             img_key: Tuple[str, str] = VWSimulationWindow.__get_image_key(name)
             tk_img: PhotoImage = PhotoImage(img)
+
             self.__all_images[img_key] = img
             self.__all_images_tk[img_key] = tk_img
 
@@ -455,6 +469,7 @@ class VWSimulationWindow(Frame):
     def __on_mouse_move(self, event: Event) -> None:
         if self.__bounds_manager.in_bounds(event.x, event.y):
             inc: int = self.__config["grid_size"] / self.__env.get_ambient().get_grid_dim()
+
             self.__coordinate_text.set("({},{})".format(int(event.x / inc), int(event.y / inc)))
         else:
             self.__coordinate_text.set(self.__empty_location_coordinates_text)
@@ -570,6 +585,8 @@ class VWSimulationWindow(Frame):
             self.__info_frame.pack(side="left", expand=True)
 
     def __get_selected_user_difficulty_level(self) -> int:
+        assert isinstance(self.__buttons["difficulty"], VWDifficultyButton)
+
         return self.__buttons["difficulty"].get_difficulty()
 
     # Resets the grid and enviroment to the default values (empty 8x8).
@@ -687,7 +704,8 @@ class VWSimulationWindow(Frame):
             difficulty_level: UserDifficulty = UserDifficulty(self.__get_selected_user_difficulty_level())
 
             if self.__env.get_actor_colour(actor_id=actor_id) == Colour.user:
-                assert type(actor.get_mind().get_surrogate()) == UserMindSurrogate
+                assert isinstance(actor, VWUser)
+                assert isinstance(actor.get_mind().get_surrogate(), UserMindSurrogate)
 
                 actor.get_mind().get_surrogate().set_difficulty_level(difficulty_level=difficulty_level)
 

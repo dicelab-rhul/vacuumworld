@@ -78,7 +78,7 @@ class VWGUIRunner(VWRunner):
         self.kill()
 
     def __guide(self) -> None:
-        open_new_tab(url=self.get_config()["project_repo_url"])
+        open_new_tab(url=self.get_config()["project_wiki_url"])
 
     def __start(self, env: VWEnvironment):
         if hasattr(self, "_{}__initial_window".format(type(self).__name__)) and self.__initial_window:
@@ -88,20 +88,19 @@ class VWGUIRunner(VWRunner):
 
         self.__show_simulation_window(env=env)
 
-    # TODO: Remember to refactor this mathod when `AutoCompleteEntry` is refactored.
     def __save(self, env: VWEnvironment, saveloadmenu: AutocompleteEntry) -> None:
-        filename: str = saveloadmenu.var.get()
+        filename: str = saveloadmenu.get_var().get()
         result: bool = self.get_save_state_manager().save_state(env=env, filename=filename)
 
         if result:
-            saveloadmenu.lista = self.get_save_state_manager().get_ordered_list_of_filenames_in_save_directory()
+            saveloadmenu.set_list_a(list_a=self.get_save_state_manager().get_ordered_list_of_filenames_in_save_directory())
+
             print("The current grid was successfully saved.")
         else:
             print("The current grid was not saved.")
 
-    # TODO: Remember to refactor this mathod when `AutoCompleteEntry` is refactored.
     def __load(self, saveloadmenu: AutocompleteEntry) -> VWEnvironment:
-        filename: str = saveloadmenu.var.get()
+        filename: str = saveloadmenu.get_var().get()
 
         data: dict = self.get_save_state_manager().load_state(filename=filename)
 
