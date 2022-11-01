@@ -21,7 +21,7 @@ class TestEnvironment(TestCase):
     def __init__(self, args) -> None:
         super(TestEnvironment, self).__init__(args)
 
-        self.__config: dict = ConfigManager(config_file_path=VacuumWorld.CONFIG_FILE_PATH).load_config()
+        self.__config: dict = ConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
 
     def test_default_sized_empty_env(self) -> None:
         self.__test_empty_env(custom_grid_size=False)

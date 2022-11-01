@@ -1,3 +1,4 @@
+from __future__ import annotations
 from enum import Enum
 from typing import List
 
@@ -17,5 +18,5 @@ class PositionNames(Enum):
         return str(self)
 
     @staticmethod
-    def values() -> List["PositionNames"]:
+    def values() -> List[PositionNames]:
         return [pn for pn in PositionNames]
