@@ -1,12 +1,10 @@
 from typing import Tuple, Dict, Type, List
-from subprocess import call, DEVNULL
 from sys import version_info
 from traceback import print_exc
 from signal import signal as handle_signal
 from requests import get, Response
 
 from .config_manager import ConfigManager
-from .model.actions.vwactions import VWCommunicativeAction
 from .model.actor.actor_mind_surrogate import ActorMindSurrogate
 from .model.actor.user_mind_surrogate import UserMindSurrogate
 from .model.actor.user_difficulty import UserDifficulty
@@ -47,9 +45,6 @@ class VacuumWorld():
         self.__config: dict = self.__config_manager.load_config()
 
         self.__vw_version_check()
-
-        # TODO: move this to somewhere else.
-        VWCommunicativeAction.SENDER_ID_SPOOFING_ALLOWED = self.__config["sender_id_spoofing_allowed"]
 
     def run(self, default_mind: ActorMindSurrogate=None, white_mind: ActorMindSurrogate=None, green_mind: ActorMindSurrogate=None, orange_mind: ActorMindSurrogate=None, **kwargs) -> None:
         minds: Dict[Colour, ActorMindSurrogate] = VacuumWorld.__process_minds(default_mind=default_mind, white_mind=white_mind, green_mind=green_mind, orange_mind=orange_mind)

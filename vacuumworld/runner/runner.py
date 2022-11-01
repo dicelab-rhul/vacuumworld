@@ -6,7 +6,7 @@ from inspect import getsourcefile
 from signal import signal as handle_signal
 
 from ..common.colour import Colour
-from ..model.actions.vwactions import VWAction
+from ..model.actions.vwactions import VWAction, VWCommunicativeAction
 from ..model.actions.effort import ActionEffort
 from ..model.actor.actor_mind_surrogate import ActorMindSurrogate
 from ..model.environment.vwenvironment import VWEnvironment
@@ -42,6 +42,7 @@ class VWRunner(Process):
         self.__override_default_config()
         self.__scale_config_parameters()
         self.__assign_efforts_to_actions()
+        self.__manage_sender_id_spoofing_rule()
 
         VWRunner.__set_sigtstp_handler()
 
@@ -210,6 +211,9 @@ class VWRunner(Process):
                 print("The effort of {} is now {}.".format(k, ActionEffort.EFFORTS[k]))
 
         print()
+
+    def __manage_sender_id_spoofing_rule(self) -> None:
+        VWCommunicativeAction.SENDER_ID_SPOOFING_ALLOWED = self.__config["sender_id_spoofing_allowed"]
 
     @staticmethod
     def __set_sigtstp_handler() -> None:
