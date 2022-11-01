@@ -1,15 +1,15 @@
-from typing import Tuple, Dict, Type, Union
-from subprocess import call, DEVNULL
+from typing import Tuple, Dict, Type, List
 from sys import version_info
 from traceback import print_exc
 from signal import signal as handle_signal
+from requests import get, Response
 
 from .config_manager import ConfigManager
-from .model.actions.vwactions import VWCommunicativeAction
 from .model.actor.actor_mind_surrogate import ActorMindSurrogate
 from .model.actor.user_mind_surrogate import UserMindSurrogate
 from .model.actor.user_difficulty import UserDifficulty
 from .common.colour import Colour
+from .runner.runner import VWRunner
 from .runner.gui_runner import VWGUIRunner
 from .runner.guiless_runner import VWGUIlessRunner
 
@@ -44,13 +44,10 @@ class VacuumWorld():
         self.__config_manager: ConfigManager = ConfigManager(self.CONFIG_FILE_PATH)
         self.__config: dict = self.__config_manager.load_config()
 
-        # TODO: move this to somewhere else.
-        VWCommunicativeAction.SENDER_ID_SPOOFING_ALLOWED = self.__config["sender_id_spoofing_allowed"]
-
-    def run(self, default_mind=None, white_mind=None, green_mind=None, orange_mind=None, **kwargs) -> None:
         self.__vw_version_check()
 
-        minds: Dict[Colour, ActorMindSurrogate] = VacuumWorld.__process_minds(default_mind, white_mind, green_mind, orange_mind)
+    def run(self, default_mind: ActorMindSurrogate=None, white_mind: ActorMindSurrogate=None, green_mind: ActorMindSurrogate=None, orange_mind: ActorMindSurrogate=None, **kwargs) -> None:
+        minds: Dict[Colour, ActorMindSurrogate] = VacuumWorld.__process_minds(default_mind=default_mind, white_mind=white_mind, green_mind=green_mind, orange_mind=orange_mind)
         minds[Colour.user] = UserMindSurrogate(difficulty_level=UserDifficulty(self.__config["default_user_mind_level"]))
 
         if "gui" in kwargs and type(kwargs.get("gui")) == VacuumWorld.ALLOWED_RUN_ARGS["gui"] and not kwargs.get("gui"):
@@ -66,28 +63,81 @@ class VacuumWorld():
             exit(1)
 
     def __vw_version_check(self) -> None:
+        version_number: str = self.__config["version_number"]
+        remote_version_number: str = VacuumWorld.__get_remote_version_number()
+
+        VacuumWorld.__compare_version_numbers_and_print_message(version_number, remote_version_number)
+
+    @staticmethod
+    def __download_remote_config() -> str:
         try:
-            version_number: str = self.__config["version_number"]
+            remote_config_url: str = "https://raw.githubusercontent.com/dicelab-rhul/vacuumworld/main/vacuumworld/{}".format(VacuumWorld.CONFIG_FILE_NAME)
+            remote_config_downloaded_name: str = "remote_{}".format(VacuumWorld.CONFIG_FILE_NAME)
 
-            print("VacuumWorld version: {}.\n".format(version_number))
+            response: Response = get(remote_config_url, allow_redirects=True, timeout=5)
 
-            call(["wget", "https://raw.githubusercontent.com/dicelab-rhul/vacuumworld/main/vacuumworld/{}".format(VacuumWorld.CONFIG_FILE_NAME)], stdout=DEVNULL, stderr=DEVNULL)
+            if response and response.status_code == 200:
+                with open(remote_config_downloaded_name, "w") as remote_config_file:
+                    remote_config_file.write(response.text)
 
-            remote_config: dict = ConfigManager(config_file_path=VacuumWorld.CONFIG_FILE_NAME).load_config()
-            latest_version_number: str = remote_config["version_number"]
-
-            if version_number != latest_version_number:
-                print("WARNING: Your version of VacuumWorld is outdated. The latest version is {}.".format(latest_version_number))
-                print("Please update VacuumWorld by running `./update_vw.sh` from a terminal, after navigating to the cloned directory.\n")
+                return remote_config_downloaded_name
             else:
-                print("Your version of VacuumWorld is up-to-date.\n")
-        finally:
-            if os.path.exists(VacuumWorld.CONFIG_FILE_NAME):
-                os.remove(VacuumWorld.CONFIG_FILE_NAME)
+                raise IOError("Could not download remote config file.")
+        except Exception:
+            return ""
 
-    def __run(self, runner_type: Type[Union[VWGUIRunner, VWGUIlessRunner]], minds: Dict[Colour, ActorMindSurrogate], **kwargs) -> None:
+    @staticmethod
+    def __get_remote_version_number() -> str:
+        remote_config_path: str = VacuumWorld.__download_remote_config()
+
+        if not remote_config_path:
+            return ""
+
         try:
-            runner: Union[VWGUIRunner, VWGUIlessRunner] = runner_type(config=self.__config, minds=minds, allowed_args=VacuumWorld.ALLOWED_RUN_ARGS, **kwargs)
+            remote_config: dict = ConfigManager(config_file_path=remote_config_path).load_config()
+
+            return remote_config["version_number"]
+        except Exception:
+            return ""
+        finally:
+            if os.path.exists(remote_config_path):
+                os.remove(remote_config_path)
+
+    @staticmethod
+    def __compare_version_numbers_and_print_message(version_number: str, remote_version_number: str) -> None:
+        if not version_number or "." not in version_number:
+            print("WARNING: Could not check whether or not your version of VacuumWorld is up-to-date because the version number is malformed.\n")
+
+            return
+
+        print("VacuumWorld version: {}.\n".format(version_number))
+
+        if not remote_version_number or "." not in remote_version_number:
+            print("WARNING: Could not check whether or not your version of VacuumWorld is up-to-date because it was not possible to get a well formed latest version number.\n")
+        elif VacuumWorld.__outdated(version_number=version_number, remote_version_number=remote_version_number):
+            print("WARNING: Your version of VacuumWorld is outdated. The latest version is {}.\n".format(remote_version_number))
+        else:
+            print("Your version of VacuumWorld is up-to-date.\n")
+
+    @staticmethod
+    def __outdated(version_number: str, remote_version_number: str) -> bool:
+        assert version_number and remote_version_number
+        assert "." in version_number and "." in remote_version_number
+
+        version_number_parts: List[str] = version_number.split(".")
+        remote_version_number_parts: List[str] = remote_version_number.split(".")
+
+        for i in range(len(version_number_parts)):
+            if int(version_number_parts[i]) < int(remote_version_number_parts[i]):
+                return True
+            elif int(version_number_parts[i]) > int(remote_version_number_parts[i]):
+                return False
+
+        return False
+
+    def __run(self, runner_type: Type[VWRunner], minds: Dict[Colour, ActorMindSurrogate], **kwargs) -> None:
+        try:
+            runner: VWRunner = runner_type(config=self.__config, minds=minds, allowed_args=VacuumWorld.ALLOWED_RUN_ARGS, **kwargs)
             runner.start()
             runner.join()
         except KeyboardInterrupt:
@@ -125,6 +175,6 @@ class VacuumWorld():
 
 
 # For back-compatibility with 4.2.5.
-def run(default_mind=None, white_mind=None, green_mind=None, orange_mind=None, **kwargs) -> None:
+def run(default_mind: ActorMindSurrogate=None, white_mind: ActorMindSurrogate=None, green_mind: ActorMindSurrogate=None, orange_mind: ActorMindSurrogate=None, **kwargs) -> None:
     vw: VacuumWorld = VacuumWorld()
     vw.run(default_mind=default_mind, white_mind=white_mind, green_mind=green_mind, orange_mind=orange_mind, **kwargs)

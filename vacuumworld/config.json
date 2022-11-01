@@ -63,6 +63,7 @@
         "normal"
     ],
     "project_repo_url": "https://github.com/dicelab-rhul/vacuumworld",
+    "project_wiki_url": "https://github.com/dicelab-rhul/vacuumworld/wiki",
     "initial_environment_dim": 8,
     "min_environment_dim": 3,
     "max_environment_dim": 13,

@@ -11,5 +11,8 @@ class VWUser(VWActor):
     def __init__(self, mind: VWUserMind) -> None:
         super(VWUser, self).__init__(mind=mind, sensors=[VWObservationSensor(), VWListeningSensor()], actuators=[VWUserPhysicalActuator(), VWCommunicativeActuator()])
 
+    def get_mind(self) -> VWUserMind:
+        return super(VWUser, self).get_mind()
+
     def get_physical_actuator(self) -> Optional[VWUserPhysicalActuator]:
         return super(VWUser, self).get_actuator_for(event_type=VWDropAction)
