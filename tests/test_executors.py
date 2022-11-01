@@ -52,7 +52,7 @@ class TestExecutors(TestCase):
     def __init__(self, args) -> None:
         super(TestExecutors, self).__init__(args)
 
-        self.__config: dict = ConfigManager(config_file_path=VacuumWorld.CONFIG_FILE_PATH).load_config()
+        self.__config: dict = ConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
 
         VWCommunicativeAction.SENDER_ID_SPOOFING_ALLOWED = self.__config["sender_id_spoofing_allowed"]
 

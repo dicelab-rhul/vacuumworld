@@ -96,7 +96,7 @@ class TestIllegalRunInputs(TestCase):
     def __init__(self, args) -> None:
         super(TestIllegalRunInputs, self).__init__(args)
 
-        self.__config: dict = ConfigManager(config_file_path=VacuumWorld.CONFIG_FILE_PATH).load_config()
+        self.__config: dict = ConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
         self.__minds: Dict[Colour, ActorMindSurrogate()] = {
             Colour.green: VWHystereticMindSurrogate(),
             Colour.orange: VWHystereticMindSurrogate(),

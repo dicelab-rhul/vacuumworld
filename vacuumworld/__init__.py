@@ -41,8 +41,7 @@ class VacuumWorld():
         VacuumWorld.__python_version_check()
         VacuumWorld.__set_sigtstp_handler()
 
-        self.__config_manager: ConfigManager = ConfigManager(self.CONFIG_FILE_PATH)
-        self.__config: dict = self.__config_manager.load_config()
+        self.__config: dict = ConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
 
         self.__vw_version_check()
 
@@ -94,7 +93,7 @@ class VacuumWorld():
             return ""
 
         try:
-            remote_config: dict = ConfigManager(config_file_path=remote_config_path).load_config()
+            remote_config: dict = ConfigManager.load_config_from_file(config_file_path=remote_config_path)
 
             return remote_config["version_number"]
         except Exception:

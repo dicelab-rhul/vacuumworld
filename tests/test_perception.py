@@ -46,7 +46,7 @@ class TestPerception(TestCase):
     def __init__(self, args) -> None:
         super(TestPerception, self).__init__(args)
 
-        self.__config: dict = ConfigManager(config_file_path=VacuumWorld.CONFIG_FILE_PATH).load_config()
+        self.__config: dict = ConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
         self.__min_grid_size: int = self.__config["min_environment_dim"]
         self.__max_grid_size: int = self.__config["max_environment_dim"]
         self.__number_of_locations: int = len(PositionNames)

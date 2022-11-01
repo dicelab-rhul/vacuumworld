@@ -5,11 +5,9 @@ import os
 
 
 class ConfigManager():
-    def __init__(self, config_file_path: str) -> None:
-        self.__config_file_path: str = config_file_path
-
-    def load_config(self) -> dict:
-        with open(file=self.__config_file_path, mode="r") as f:
+    @staticmethod
+    def load_config_from_file(config_file_path: str) -> dict:
+        with open(file=config_file_path, mode="r") as f:
             config: dict = load(fp=f)
 
         try:
