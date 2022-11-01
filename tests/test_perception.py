@@ -34,7 +34,7 @@ import os
 import sys
 
 
-if sys.version_info.major > VacuumWorld.MIN_PYTHON_VERSION[0] or sys.version_info.major == VacuumWorld.MIN_PYTHON_VERSION[0] and sys.version_info.minor >= VacuumWorld.MIN_PYTHON_VERSION[1]:
+if sys.version_info.major > VacuumWorld.MIN_PYTHON_VERSION[0] or sys.version_info.major == VacuumWorld.MIN_PYTHON_VERSION[0] and sys.version_info.minor > VacuumWorld.MIN_PYTHON_VERSION[1]:
     from random import randbytes
 elif sys.version_info.major == 3 and sys.version_info.minor == 8:  # For back-compatibility with Python 3.8.
     randbytes = os.urandom
