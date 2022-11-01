@@ -56,10 +56,21 @@ class VacuumWorld():
 
     @staticmethod
     def __python_version_check() -> None:
-        if version_info.major < VacuumWorld.MIN_PYTHON_VERSION[0] or version_info.minor < VacuumWorld.MIN_PYTHON_VERSION[1]:
+        if VacuumWorld.__unsupported_python_version():
             print("VacuumWorld requires Python {}.{} or later. Please install Python {}.{} or later and try again.".format(VacuumWorld.MIN_PYTHON_VERSION[0], VacuumWorld.MIN_PYTHON_VERSION[1], VacuumWorld.MIN_PYTHON_VERSION[0], VacuumWorld.MIN_PYTHON_VERSION[1]))
 
             exit(1)
+        else:
+            print("Python version: {}.{}.{}. Good!".format(version_info.major, version_info.minor, version_info.micro))
+
+    @staticmethod
+    def __unsupported_python_version() -> bool:
+        if version_info.major < VacuumWorld.MIN_PYTHON_VERSION[0]:
+            return True
+        elif version_info.major == VacuumWorld.MIN_PYTHON_VERSION[0] and version_info.minor < VacuumWorld.MIN_PYTHON_VERSION[1]:
+            return True
+        else:
+            return False
 
     def __vw_version_check(self) -> None:
         version_number: str = self.__config["version_number"]
