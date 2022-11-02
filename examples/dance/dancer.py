@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 from random import randint, choice
-from typing import Iterable, List, Tuple
+from typing import Iterable, List, Tuple, Union
+from keyword import softkwlist
 
 from pystarworldsturbo.utils.utils import ignore
 from pystarworldsturbo.common.message import BccMessage
@@ -37,14 +38,6 @@ class ColourMind(DanceMind):
         This function gets called after all of the basic state updates happen in DanceMind.
         The behaviour is quite simple, we just listen for messages and set attributes in
         response to specific messages.
-
-        For those working on Python 3.10+ the match/case structure and pattern matching are
-        a really effective way to implement a simple message protocol. The same thing can be
-        achieved with regular if/else selection for those on 3.9 however:
-
-        if message[0] == "goto":
-            self.target_loc = message[1]
-            etc...
         """
 
         ignore(observation)
@@ -52,6 +45,11 @@ class ColourMind(DanceMind):
         self.__leader: bool = self.get_colour() == Colour.orange  # Am I the orange agent? Orange is the leader.
 
         for message in map(lambda m: m.get_content(), messages):
+            if "match" not in softkwlist or "case" not in softkwlist:
+                self.__parse_message(message=message)
+
+                continue
+
             match message:
                 case ["goto", loc]:
                     assert isinstance(loc, Tuple)
@@ -67,6 +65,47 @@ class ColourMind(DanceMind):
                     self.__dance_time = dance_t
                 case unknown:
                     print(f"{'#'*30}\nWARNING: Bad message: {str(unknown)}\n{'#'*30}")
+
+    def __parse_message(self, message: Union[int, float, str, list, tuple, dict]) -> None:
+        """
+        This function is used to parse messages when pattern matching is not available.
+        """
+        error_message: str = f"{'#'*30}\nWARNING: Bad message: {str(message)}\n{'#'*30}"
+
+        if ColourMind.__well_formed(message=message):
+            assert isinstance(message, list)
+            assert len(message) == 2
+            assert isinstance(message[0], str)
+            assert isinstance(message[1], Tuple)
+            assert len(message[1]) == 2
+            assert all(isinstance(x, int) for x in message[1])
+
+            if message[0] == "goto":
+                self.__target_loc = Coord(message[1][0], message[1][1])
+            elif message[0] == "dance":
+                self.__dance_time = message[1]
+            else:
+                print(error_message)
+        else:
+            print(error_message)
+
+    @staticmethod
+    def __well_formed(message: Union[int, float, str, list, tuple, dict]) -> bool:
+        """ Is the message well formed? """
+        if not isinstance(message, list):
+            return False
+        elif len(message) != 2:
+            return False
+        elif not isinstance(message[0], str):
+            return False
+        elif not isinstance(message[1], tuple):
+            return False
+        elif len(message[1]) != 2:
+            return False
+        elif any(not isinstance(x, int) for x in message[1]):
+            return False
+        else:
+            return True
 
     def decide(self):
         """
