@@ -2,7 +2,6 @@
 
 from random import randint, choice
 from typing import Iterable, List, Tuple, Union
-from keyword import softkwlist
 
 from pystarworldsturbo.utils.utils import ignore
 from pystarworldsturbo.common.message import BccMessage
@@ -20,6 +19,8 @@ from vacuumworld.common.colour import Colour
 from vacuumworld.common.coordinates import Coord
 
 from dance_mind import DanceMind
+
+import keyword
 
 
 class ColourMind(DanceMind):
@@ -45,7 +46,7 @@ class ColourMind(DanceMind):
         self.__leader: bool = self.get_colour() == Colour.orange  # Am I the orange agent? Orange is the leader.
 
         for message in map(lambda m: m.get_content(), messages):
-            if "match" not in softkwlist or "case" not in softkwlist:
+            if not ColourMind.__is_pattern_matching_available():
                 self.__parse_message(message=message)
 
                 continue
@@ -65,6 +66,11 @@ class ColourMind(DanceMind):
                     self.__dance_time = dance_t
                 case unknown:
                     print(f"{'#'*30}\nWARNING: Bad message: {str(unknown)}\n{'#'*30}")
+
+    @staticmethod
+    def __is_pattern_matching_available() -> bool:
+        """ Is pattern matching available? """
+        return hasattr(keyword, "issoftkeyword") and keyword.issoftkeyword("match")
 
     def __parse_message(self, message: Union[int, float, str, list, tuple, dict]) -> None:
         """
