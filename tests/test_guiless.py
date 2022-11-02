@@ -18,7 +18,7 @@ class TestGUIless(TestCase):
     def __init__(self, args) -> None:
         super(TestGUIless, self).__init__(args)
 
-        self.__config: dict = ConfigManager(config_file_path=VacuumWorld.CONFIG_FILE_PATH).load_config()
+        self.__config: dict = ConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
         self.__min_number_of_cycles: int = 1
         self.__max_number_of_cycles: int = 100
         self.__number_of_runs: int = 10
@@ -36,7 +36,8 @@ class TestGUIless(TestCase):
             except Exception as e:
                 self.fail(e.args[0])
             finally:
-                os.remove(os.path.join(os.getcwd(), "files", test_file))
+                if os.path.exists(os.path.join(os.getcwd(), "files", test_file)):
+                    os.remove(os.path.join(os.getcwd(), "files", test_file))
 
 
 if __name__ == '__main__':

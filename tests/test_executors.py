@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from unittest import main, TestCase
-from typing import List, Union
+from typing import List, Union, Callable
 from random import randint
 
 from pystarworldsturbo.common.action_result import ActionResult
@@ -37,22 +37,15 @@ from vacuumworld.model.environment.vwenvironment import VWEnvironment
 from vacuumworld.config_manager import ConfigManager
 
 import os
-import sys
-
-
-if sys.version_info.major == 3 and sys.version_info.minor > 8:
-    from random import randbytes
-elif sys.version_info.major == 3 and sys.version_info.minor == 8:
-    randbytes = os.urandom
-else:
-    raise RuntimeError("Python version not supported (too old): {}.{}.{}.".format(sys.version_info.major, sys.version_info.minor, sys.version_info.micro))
+import random as random_module
 
 
 class TestExecutors(TestCase):
     def __init__(self, args) -> None:
         super(TestExecutors, self).__init__(args)
 
-        self.__config: dict = ConfigManager(config_file_path=VacuumWorld.CONFIG_FILE_PATH).load_config()
+        self.__config: dict = ConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
+        self.__randbytes: Callable[[int], bytes] = random_module.randbytes if hasattr(random_module, "randbytes") else os.urandom
 
         VWCommunicativeAction.SENDER_ID_SPOOFING_ALLOWED = self.__config["sender_id_spoofing_allowed"]
 
@@ -75,7 +68,7 @@ class TestExecutors(TestCase):
         self.__test_speak_action()
 
     def test_speak_action_with_sender_id_spoofing(self) -> None:
-        custom_sender_id: str = randbytes(randint(1, 16)).hex()
+        custom_sender_id: str = self.__randbytes(randint(1, 16)).hex()
         self.__test_speak_action(custom_sender_id=custom_sender_id)
 
     def __test_speak_action(self, custom_sender_id: str=None) -> None:
@@ -148,7 +141,7 @@ class TestExecutors(TestCase):
         self.__test_broadcast_action()
 
     def test_broadcast_action_with_sender_id_spoofing(self) -> None:
-        custom_sender_id: str = randbytes(randint(1, 16)).hex()
+        custom_sender_id: str = self.__randbytes(randint(1, 16)).hex()
         self.__test_broadcast_action(custom_sender_id=custom_sender_id)
 
     def __test_broadcast_action(self, custom_sender_id: str=None) -> None:

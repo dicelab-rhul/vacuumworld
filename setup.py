@@ -7,7 +7,6 @@ import os
 # All reusable metadata should go here.
 
 name: str = "vacuumworld"
-version: str = "TO_OVERRIDE_PROGRAMMATICALLY"
 description: str = "VacuumWorld: an agent platform for cleaning robots."
 author: list = ["Emanuele Uliana", "Benedict Wilkins", "Nausheen Saba", "Joel Clarke", "Kostas Stathis"]
 author_email: str = "vw@dicelab-rhul.org"
@@ -21,8 +20,7 @@ classifiers: list = [
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Operating System :: OS Independent",
 ]
-url: str = "https://github.com/dicelab-rhul/vacuumworld"
-dependencies: list = ["pystarworldsturbo>=1.1.0", "pillow", "wheel", "ipython", "screeninfo", "tk"]
+dependencies: list = ["pystarworldsturbo>=1.1.0", "pillow", "wheel", "ipython", "screeninfo", "tk", "requests"]
 
 # End of static metadata
 
@@ -30,7 +28,9 @@ CONFIG_FILE_PATH: str = os.path.join(os.path.dirname(os.path.abspath(__file__)),
 
 with open(CONFIG_FILE_PATH, "r") as f:
     config: dict = load(fp=f)
+
     version = config["version_number"]
+    url = config["project_repo_url"]
 
 # End of metadata
 

@@ -31,28 +31,21 @@ from vacuumworld.common.observation import Observation
 from vacuumworld.config_manager import ConfigManager
 
 import os
-import sys
-
-
-if sys.version_info.major == 3 and sys.version_info.minor > 8:
-    from random import randbytes
-elif sys.version_info.major == 3 and sys.version_info.minor == 8:
-    randbytes = os.urandom
-else:
-    raise RuntimeError("Python version not supported (too old): {}.{}.{}.".format(sys.version_info.major, sys.version_info.minor, sys.version_info.micro))
+import random as random_module
 
 
 class TestPerception(TestCase):
     def __init__(self, args) -> None:
         super(TestPerception, self).__init__(args)
 
-        self.__config: dict = ConfigManager(config_file_path=VacuumWorld.CONFIG_FILE_PATH).load_config()
+        self.__config: dict = ConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
         self.__min_grid_size: int = self.__config["min_environment_dim"]
         self.__max_grid_size: int = self.__config["max_environment_dim"]
         self.__number_of_locations: int = len(PositionNames)
         self.__progressive_id: int = 0
         self.__number_of_runs: int = 100
         self.__collection_size: int = 100
+        self.__randbytes: Callable[[int], bytes] = random_module.randbytes if hasattr(random_module, "randbytes") else os.urandom
 
     def test_observation_coming_from_physical_action(self) -> None:
         test_function: Callable = self.__test_observation_coming_from_physical_action
@@ -204,7 +197,7 @@ class TestPerception(TestCase):
             self.__test_message(content=content, sender_id=sender_id, recipient_id=recipient_id)
 
     def test_message_with_str_content(self) -> None:
-        contents: List[str] = [randbytes(randint(0, 2**16 - 1)).hex() for _ in range(self.__number_of_runs)]
+        contents: List[str] = [self.__randbytes(randint(0, 2**16 - 1)).hex() for _ in range(self.__number_of_runs)]
 
         for content in contents:
             sender_id: str = str(uuid4())
@@ -270,7 +263,7 @@ class TestPerception(TestCase):
         elif roll < 2:
             return randfloat() * float_info.max
         elif roll < 3:
-            return randbytes(randint(0, 2**16 - 1)).hex()
+            return self.__randbytes(randint(0, 2**16 - 1)).hex()
         elif roll < 4:
             return []  # We want to avoid infinite recursion.
         elif roll < 5:
@@ -288,7 +281,7 @@ class TestPerception(TestCase):
         elif roll < 2:
             return randfloat() * float_info.max
         elif roll < 3:
-            return randbytes(randint(0, 2**16 - 1)).hex()
+            return self.__randbytes(randint(0, 2**16 - 1)).hex()
         else:
             raise ValueError("Invalid roll")
 

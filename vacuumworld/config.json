@@ -63,6 +63,7 @@
         "normal"
     ],
     "project_repo_url": "https://github.com/dicelab-rhul/vacuumworld",
+    "project_wiki_url": "https://github.com/dicelab-rhul/vacuumworld/wiki",
     "initial_environment_dim": 8,
     "min_environment_dim": 3,
     "max_environment_dim": 13,
@@ -70,5 +71,5 @@
     "max_number_of_physical_actions_per_actor_per_cycle": 1,
     "max_number_of_communicative_actions_per_actor_per_cycle": 1,
     "sender_id_spoofing_allowed": true,
-    "version_number": "4.2.6"
+    "version_number": "4.2.7"
 }

@@ -82,6 +82,24 @@ class VWLocation(LocationAppearance):
     def has_wall_on(self, orientation: Orientation) -> bool:
         return self.__wall[orientation]
 
+    def has_wall_somewhere(self) -> bool:
+        return self.has_wall_on_north() or self.has_wall_on_south() or self.has_wall_on_west() or self.has_wall_on_east()
+
+    def is_corner(self) -> bool:
+        for orientation in Orientation:
+            if self.has_wall_on(orientation):
+                if self.has_wall_on(orientation=Orientation.get_left(orientation)) or self.has_wall_on(orientation=Orientation.get_right(orientation)):
+                    return True
+
+        return False
+
+    def is_edge(self) -> bool:
+        for orientation in Orientation:
+            if self.has_wall_on(orientation):
+                return all(not self.has_wall_on(o) for o in Orientation if o != orientation)
+
+        return False
+
     def deep_copy(self) -> VWLocation:
         if not self.__actor_appearance and not self.__dirt_appearance:
             return VWLocation(coord=self.__coord, actor_appearance=None, dirt_appearance=None, wall=self.__wall)
