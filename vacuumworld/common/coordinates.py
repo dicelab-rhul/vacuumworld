@@ -9,59 +9,69 @@ class Coord(NamedTuple):
     x: int
     y: int
 
-    def __add__(self, other: Union[int, List[int], Tuple[int, int]]) -> Coord:
+    def __add__(self, other: Union[int, Coord, List[int], Tuple[int, int]]) -> Coord:
         assert other is not None
 
         if isinstance(other, int):
             return Coord(self[0] + other, self[1] + other)
+        elif isinstance(other, Coord):
+            return Coord(self[0] + other[0], self[1] + other[1])
         else:
-            assert type(other) in [list, tuple] and len(other) == 2
+            assert type(other) in [list, tuple] and len(other) == len(self)
             assert isinstance(other[0], int) and isinstance(other[1], int)
 
             return Coord(self[0] + other[0], self[1] + other[1])
 
-    def __sub__(self, other: Union[int, List[int], Tuple[int, int]]) -> Coord:
+    def __sub__(self, other: Union[int, Coord, List[int], Tuple[int, int]]) -> Coord:
         assert other is not None
 
         if isinstance(other, int):
             return Coord(self[0] - other, self[1] - other)
+        elif isinstance(other, Coord):
+            return Coord(self[0] - other[0], self[1] - other[1])
         else:
-            assert type(other) in [list, tuple] and len(other) == 2
+            assert type(other) in [list, tuple] and len(other) == len(self)
             assert isinstance(other[0], int) and isinstance(other[1], int)
 
             return Coord(self[0] - other[0], self[1] - other[1])
 
-    def __mul__(self, other: Union[int, List[int], Tuple[int, int]]) -> Coord:
+    def __mul__(self, other: Union[int, Coord, List[int], Tuple[int, int]]) -> Coord:
         assert other is not None
 
         if isinstance(other, int):
             return Coord(self[0] * other, self[1] * other)
+        elif isinstance(other, Coord):
+            return Coord(self[0] * other[0], self[1] * other[1])
         else:
-            assert type(other) in [list, tuple] and len(other) == 2
+            assert type(other) in [list, tuple] and len(other) == len(self)
             assert isinstance(other[0], int) and isinstance(other[1], int)
 
             return Coord(self[0] * other[0], self[1] * other[1])
 
     # Integer division.
-    def __floordiv__(self, other: Union[int, List[int], Tuple[int, int]]) -> Coord:
+    def __floordiv__(self, other: Union[int, Coord, List[int], Tuple[int, int]]) -> Coord:
         assert other is not None
 
         if isinstance(other, int):
             return Coord(self[0] // other, self[1] // other)
+        elif isinstance(other, Coord):
+            return Coord(self[0] // other[0], self[1] // other[1])
         else:
-            assert type(other) in [list, tuple] and len(other) == 2
+            assert type(other) in [list, tuple] and len(other) == len(self)
             assert isinstance(other[0], int) and isinstance(other[1], int)
 
             return Coord(self[0] // other[0], self[1] // other[1])
 
     # We force `/` to work like `//`.
-    def __truediv__(self, other: Union[int, List[int], Tuple[int, int]]) -> Coord:
+    def __truediv__(self, other: Union[int, Coord, List[int], Tuple[int, int]]) -> Coord:
         assert other is not None
 
         if isinstance(other, int):
             return self // other
+        elif isinstance(other, Coord):
+            return self // other
         else:
-            assert type(other) in [list, tuple] and len(other) == 2
+            assert type(other) in [list, tuple] and len(other) == len(self)
             assert isinstance(other[0], int) and isinstance(other[1], int)
 
             return self // (int(other[0]), int(other[1]))
