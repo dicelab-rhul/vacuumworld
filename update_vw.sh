@@ -11,6 +11,10 @@ else
 
     git pull
     pip install .
+    ./pycache_cleaner.py
+    rm -rf build
+    rm -rf dist
+    rm -rf vacuumworld.egg-info
 
     echo
     echo "VacuumWorld version: $(pip list | grep vacuumworld | rev | cut -d' ' -f1)"

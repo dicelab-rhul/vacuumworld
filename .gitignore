@@ -133,7 +133,7 @@ dmypy.json
 .vscode/
 
 # Examples not to be included in the repo
-examples/
+examples_not_to_commit/
 vw4_test.py
 cw1.py
 cw2.py
