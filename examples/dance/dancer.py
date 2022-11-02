@@ -48,29 +48,32 @@ class ColourMind(DanceMind):
         for message in map(lambda m: m.get_content(), messages):
             if not ColourMind.__is_pattern_matching_available():
                 self.__parse_message(message=message)
+            else:
+                self.__parse_message_with_pattern_matching(message=message)
 
-                continue
+    def __parse_message_with_pattern_matching(self, message: Union[int, float, str, list, tuple, dict]) -> None:
+        assert ColourMind.__is_pattern_matching_available()
 
-            match message:
-                case ["goto", loc]:
-                    assert isinstance(loc, Tuple)
-                    assert len(loc) == 2
-                    assert all(isinstance(x, int) for x in loc)
+        match message:
+            case ["goto", loc]:
+                assert isinstance(loc, Tuple)
+                assert len(loc) == 2
+                assert all(isinstance(x, int) for x in loc)
 
-                    self.__target_loc = Coord(loc[0], loc[1])
-                case ["dance", dance_t]:
-                    assert isinstance(dance_t, Tuple)
-                    assert len(dance_t) == 2
-                    assert all(isinstance(x, int) for x in dance_t)
+                self.__target_loc = Coord(loc[0], loc[1])
+            case ["dance", dance_t]:
+                assert isinstance(dance_t, Tuple)
+                assert len(dance_t) == 2
+                assert all(isinstance(x, int) for x in dance_t)
 
-                    self.__dance_time = dance_t
-                case unknown:
-                    print(f"{'#'*30}\nWARNING: Bad message: {str(unknown)}\n{'#'*30}")
+                self.__dance_time = dance_t
+            case unknown:
+                print(f"{'#'*30}\nWARNING: Bad message: {str(unknown)}\n{'#'*30}")
 
     @staticmethod
     def __is_pattern_matching_available() -> bool:
         """ Is pattern matching available? """
-        return hasattr(keyword, "issoftkeyword") and keyword.issoftkeyword("match")
+        return hasattr(keyword, "issoftkeyword") and keyword.issoftkeyword("match") and keyword.issoftkeyword("case")
 
     def __parse_message(self, message: Union[int, float, str, list, tuple, dict]) -> None:
         """
