@@ -3,6 +3,8 @@ from sys import version_info
 from traceback import print_exc
 from signal import signal as handle_signal
 from requests import get, Response
+from time import sleep
+from screeninfo import get_monitors
 
 from .config_manager import ConfigManager
 from .model.actor.actor_mind_surrogate import ActorMindSurrogate
@@ -51,8 +53,21 @@ class VacuumWorld():
 
         if "gui" in kwargs and type(kwargs.get("gui")) == VacuumWorld.ALLOWED_RUN_ARGS["gui"] and not kwargs.get("gui"):
             self.__run(runner_type=VWGUIlessRunner, minds=minds, **kwargs)
-        else:
+        elif VacuumWorld.__display_available():
             self.__run(runner_type=VWGUIRunner, minds=minds, **kwargs)
+        else:
+            print("WARNING: no display available. Falling back to GUI-less mode.\n")
+
+            sleep(3)
+
+            self.__run(runner_type=VWGUIlessRunner, minds=minds, **kwargs)
+
+    @staticmethod
+    def __display_available() -> bool:
+        try:
+            return len(get_monitors()) > 0
+        except Exception:
+            return False
 
     @staticmethod
     def __python_version_check() -> None:
