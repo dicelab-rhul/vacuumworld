@@ -6,7 +6,7 @@ from .effort import ActionEffort
 
 
 class VWSpeakAction(VWCommunicativeAction):
-    def __init__(self, message: Union[int, float, str, list, tuple, dict], recipients: Iterable[str], sender_id: str) -> None:
+    def __init__(self, message: Union[int, float, str, bytes, list, tuple, dict], recipients: Iterable[str], sender_id: str) -> None:
         super(VWSpeakAction, self).__init__(message=message, recipients=recipients, sender_id=sender_id)
 
     def get_effort(self) -> ActionEffort:
