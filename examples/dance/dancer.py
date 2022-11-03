@@ -61,7 +61,7 @@ class ColourMind(DanceMind):
             assert all(isinstance(x, int) for x in message[1])
 
             if message[0] == "goto":
-                self.__target_loc = Coord(message[1][0], message[1][1])
+                self.__target_loc = Coord(x=message[1][0], y=message[1][1])
             elif message[0] == "dance":
                 self.__dance_time = message[1]
             else:
@@ -121,7 +121,7 @@ class ColourMind(DanceMind):
             loc1, loc2 = ColourMind.__gen_meeting_locs()
             self.__target_loc = loc1
 
-            return VWBroadcastAction(message=["goto", (loc2.x, loc2.y)], sender_id=self.get_id())
+            return VWBroadcastAction(message=["goto", (loc2.get_x(), loc2.get_y())], sender_id=self.get_id())
         # Rule 3:
         # no meeting point and not leader -> do nothing (wait for a meeting point)
         elif not self.__target_loc and not self.__leader:
@@ -161,7 +161,7 @@ class ColourMind(DanceMind):
         x2: int = x1 + offset[0]
         y2: int = y1 + offset[1]
 
-        return Coord(x1, y1), Coord(x2, y2)
+        return Coord(x=x1, y=y1), Coord(x=x2, y=y2)
 
     def __move_to_target(self) -> VWAction:
         """
@@ -172,17 +172,16 @@ class ColourMind(DanceMind):
         """
 
         # Starts by finding the x and y deltas
-        # diff: Coord = self.get_coord() - self.__target_loc
-        diff: Coord = Coord(self.get_coord().x - self.__target_loc.x, self.get_coord().y - self.__target_loc.y)
+        diff: Coord = Coord(x=self.get_coord().get_x() - self.__target_loc.get_x(), y=self.get_coord().get_y() - self.__target_loc.get_y())
 
         # infer desired orientation based on x and y deltas
-        if diff.y > 0:
+        if diff.get_y() > 0:
             desired_ori: Orientation = Orientation.north
-        elif diff.y < 0:
+        elif diff.get_y() < 0:
             desired_ori: Orientation = Orientation.south
-        elif diff.x > 0:
+        elif diff.get_x() > 0:
             desired_ori: Orientation = Orientation.west
-        elif diff.x < 0:
+        elif diff.get_x() < 0:
             desired_ori: Orientation = Orientation.east
         else:
             return VWIdleAction()

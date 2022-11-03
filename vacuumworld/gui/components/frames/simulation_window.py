@@ -220,27 +220,27 @@ class VWSimulationWindow(Frame):
         self.__rectangle_selected = None
 
     def __select(self, event: Event, print_message: bool=True) -> None:
-        if not self.__running and self.__bounds_manager.in_bounds(event.x, event.y):
+        if not self.__running and self.__bounds_manager.in_bounds(x=event.x, y=event.y):
             self.__deselect()
             self.focus()
             inc: int = self.__config["grid_size"] / self.__env.get_ambient().get_grid_dim()
-            coordinate: Coord = Coord(int(event.x / inc), int(event.y / inc))
+            coordinate: Coord = Coord(x=int(event.x / inc), y=int(event.y / inc))
 
             if print_message:
                 print("SELECT: selected location {}.".format(coordinate))
 
             self.__selected = coordinate
-            xx: int = coordinate.x * inc
-            yy: int = coordinate.y * inc
+            xx: int = coordinate.get_x() * inc
+            yy: int = coordinate.get_y() * inc
             self.__rectangle_selected = self.__canvas.create_rectangle((xx, yy, xx + inc, yy + inc), fill="", width=3)
 
     def __remove_top(self, event: Event) -> None:
-        if not self.__running and self.__bounds_manager.in_bounds(event.x, event.y):
+        if not self.__running and self.__bounds_manager.in_bounds(x=event.x, y=event.y):
 
             print("remove top")
 
             inc: int = self.__config["grid_size"] / self.__env.get_ambient().get_grid_dim()
-            coordinate: Coord = Coord(int(event.x / inc), int(event.y / inc))
+            coordinate: Coord = Coord(x=int(event.x / inc), y=int(event.y / inc))
 
             if coordinate in self.__env.get_ambient().get_grid():
                 location: VWLocation = self.__env.get_ambient().get_location_interface(coord=coordinate)
@@ -284,7 +284,7 @@ class VWSimulationWindow(Frame):
             actor_colour: Colour = working_location.get_actor_appearance().get_colour()
             inc: int = self.__config["grid_size"] / self.__env.get_ambient().get_grid_dim()
             tk_img: PhotoImage = self.__all_images_tk_scaled[(actor_colour.value, new_orientation.value)]
-            item: Img = self.__canvas.create_image(self.__selected.x * inc + inc/2, self.__selected.y * inc + inc/2, image=tk_img)
+            item: Img = self.__canvas.create_image(self.__selected.get_x() * inc + inc/2, self.__selected.get_y() * inc + inc/2, image=tk_img)
             self.__canvas_agents[self.__selected] = item
 
             self.__env.turn_actor(coord=self.__selected, direction=direction)
@@ -365,7 +365,7 @@ class VWSimulationWindow(Frame):
         if location.has_actor():
             actor_appearance: VWActorAppearance = location.get_actor_appearance()
             tk_img: PhotoImage = self.__all_images_tk_scaled[(actor_appearance.get_colour().value, actor_appearance.get_orientation().value)]
-            item: Img = self.__canvas.create_image(coord.x * inc + inc/2, coord.y * inc + inc/2, image=tk_img)
+            item: Img = self.__canvas.create_image(coord.get_x() * inc + inc/2, coord.get_y() * inc + inc/2, image=tk_img)
 
             self.__canvas_agents[coord] = item
 
@@ -376,7 +376,7 @@ class VWSimulationWindow(Frame):
 
         if location.has_dirt():
             tk_img: PhotoImage = self.__all_images_tk_scaled[(location.get_dirt_appearance().get_colour().value, "dirt")]
-            item: Img = self.__canvas.create_image(coord.x * inc + inc/2, coord.y * inc + inc/2, image=tk_img)
+            item: Img = self.__canvas.create_image(coord.get_x() * inc + inc/2, coord.get_y() * inc + inc/2, image=tk_img)
 
             self.__canvas_dirts[coord] = item
 
@@ -467,7 +467,7 @@ class VWSimulationWindow(Frame):
         self.__coordinate_text.set(self.__empty_location_coordinates_text)
 
     def __on_mouse_move(self, event: Event) -> None:
-        if self.__bounds_manager.in_bounds(event.x, event.y):
+        if self.__bounds_manager.in_bounds(x=event.x, y=event.y):
             inc: int = self.__config["grid_size"] / self.__env.get_ambient().get_grid_dim()
 
             self.__coordinate_text.set("({},{})".format(int(event.x / inc), int(event.y / inc)))
@@ -503,7 +503,7 @@ class VWSimulationWindow(Frame):
         inc: int = self.__config["grid_size"] / self.__env.get_ambient().get_grid_dim()
         x: int = int(event.x / inc)
         y: int = int(event.y / inc)
-        coord: Coord = Coord(x, y)
+        coord: Coord = Coord(x=x, y=y)
 
         # Update the environment state.
         col, obj = drag_manager.get_key()
