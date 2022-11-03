@@ -58,7 +58,7 @@ class VacuumWorld():
         else:
             print("\nWARNING: no display available. Falling back to GUI-less mode.\n")
 
-            sleep(secs=3)
+            sleep(3)
 
             self.__run(runner_type=VWGUIlessRunner, minds=minds, **kwargs)
 
