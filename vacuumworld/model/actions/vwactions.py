@@ -25,10 +25,10 @@ class VWPhysicalAction(VWAction):
 
 
 class VWCommunicativeAction(VWAction):
-    ALLOWED_MESSAGE_TYPES: List[Type] = [int, float, str, list, tuple, dict]
+    ALLOWED_MESSAGE_TYPES: List[Type] = [int, float, str, bytes, list, tuple, dict]
     SENDER_ID_SPOOFING_ALLOWED: bool = False
 
-    def __init__(self, message: Union[int, float, str, list, tuple, dict], recipients: Iterable[str], sender_id: str) -> None:
+    def __init__(self, message: Union[int, float, str, bytes, list, tuple, dict], recipients: Iterable[str], sender_id: str) -> None:
         super(VWCommunicativeAction, self).__init__()
 
         VWCommunicativeAction.__validate_message(message=message)
@@ -37,7 +37,7 @@ class VWCommunicativeAction(VWAction):
         self.__message: Message = Message(content=message, recipient_ids=[recipient for recipient in recipients], sender_id=sender_id)
 
     @staticmethod
-    def __validate_message(message: Union[int, float, str, list, tuple, dict]) -> None:
+    def __validate_message(message: Union[int, float, str, bytes, list, tuple, dict]) -> None:
         if not message:
             raise VWMalformedActionException("A message cannot be NoneType or empty.")
         elif type(message) not in VWCommunicativeAction.ALLOWED_MESSAGE_TYPES:

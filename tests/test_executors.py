@@ -46,6 +46,19 @@ class TestExecutors(TestCase):
 
         self.__config: dict = ConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
         self.__randbytes: Callable[[int], bytes] = random_module.randbytes if hasattr(random_module, "randbytes") else os.urandom
+        self.__message_content_list: List[Union[int, float, str, bytes, list, tuple, dict]] = [
+            "Hello World!",
+            ["Hello", "World", "!"],
+            {
+                "Hello": 5,
+                "World": 5,
+                "!": 1
+            },
+            bytes("foobar", "utf-8"),
+            1337,
+            0.1337,
+            ("Hello", "World", "!")
+        ]
 
         VWCommunicativeAction.SENDER_ID_SPOOFING_ALLOWED = self.__config["sender_id_spoofing_allowed"]
 
@@ -75,21 +88,8 @@ class TestExecutors(TestCase):
         speak_executor: SpeakExecutor = SpeakExecutor()
         env, _ = VWEnvironment.generate_random_env_for_testing(custom_grid_size=True, config=self.__config)
 
-        messages: List[Union[int, float, str, list, tuple, dict]] = [
-            "Hello World!",
-            ["Hello", "World", "!"],
-            {
-                "Hello": 5,
-                "World": 5,
-                "!": 1
-            },
-            1337,
-            0.1337,
-            ("Hello", "World", "!")
-        ]
-
-        self.__test_messages_delivery(messages=messages, speak_executor=speak_executor, env=env, custom_sender_id=custom_sender_id, recipients=[a_id for a_id in env.get_actors()])
-        self.__test_messages_delivery(messages=messages, speak_executor=speak_executor, env=env, custom_sender_id=custom_sender_id, recipients=[])
+        self.__test_messages_delivery(messages=self.__message_content_list, speak_executor=speak_executor, env=env, custom_sender_id=custom_sender_id, recipients=[a_id for a_id in env.get_actors()])
+        self.__test_messages_delivery(messages=self.__message_content_list, speak_executor=speak_executor, env=env, custom_sender_id=custom_sender_id, recipients=[])
 
     def __test_messages_delivery(self, messages: List[Union[int, float, str, list, tuple, dict]], speak_executor: SpeakExecutor, env: VWEnvironment, custom_sender_id: str, recipients: List[str]) -> None:
         for message in messages:
@@ -148,20 +148,7 @@ class TestExecutors(TestCase):
         broadcast_executor: BroadcastExecutor = BroadcastExecutor()
         env, _ = VWEnvironment.generate_random_env_for_testing(custom_grid_size=True, config=self.__config)
 
-        messages: List[Union[int, float, str, list, tuple, dict]] = [
-            "Hello World!",
-            ["Hello", "World", "!"],
-            {
-                "Hello": 5,
-                "World": 5,
-                "!": 1
-            },
-            1337,
-            0.1337,
-            ("Hello", "World", "!")
-        ]
-
-        for message in messages:
+        for message in self.__message_content_list:
             for real_sender_id in env.get_actors():
                 self.__test_broadcast_delivery(broadcast_executor=broadcast_executor, env=env, message=message, real_sender_id=real_sender_id, custom_sender_id=custom_sender_id)
 
