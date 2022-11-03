@@ -63,7 +63,7 @@ class TestSaveLoad(TestCase):
         if len(env1.get_passive_bodies_list()) != len(env2.get_passive_bodies_list()):
             return False
 
-        for coord in [Coord(x, y) for x in range(env1.get_ambient().get_grid_dim()) for y in range(env1.get_ambient().get_grid_dim())]:
+        for coord in [Coord(x=x, y=y) for x in range(env1.get_ambient().get_grid_dim()) for y in range(env1.get_ambient().get_grid_dim())]:
             if not TestSaveLoad.__compatible(loc1=env1.get_ambient().get_grid()[coord], loc2=env2.get_ambient().get_grid()[coord]):
                 return False
 
