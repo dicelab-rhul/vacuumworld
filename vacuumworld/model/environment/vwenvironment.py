@@ -256,7 +256,7 @@ class VWEnvironment(Environment):
                 assert forced_line_dim >= config["min_environment_dim"] and forced_line_dim <= config["max_environment_dim"]
                 line_dim = forced_line_dim
 
-            grid: Dict[Coord, VWLocation] = {Coord(x, y): VWLocation(coord=Coord(x, y), actor_appearance=None, dirt_appearance=None, wall=VWEnvironment.generate_wall_from_coordinates(coord=Coord(x, y), grid_size=line_dim)) for x, y in product(range(line_dim), range(line_dim))}
+            grid: Dict[Coord, VWLocation] = {Coord(x=x, y=y): VWLocation(coord=Coord(x=x, y=y), actor_appearance=None, dirt_appearance=None, wall=VWEnvironment.generate_wall_from_coordinates(coord=Coord(x=x, y=y), grid_size=line_dim)) for x, y in product(range(line_dim), range(line_dim))}
 
             VWEnvironment.__validate_grid(grid=grid, config=config, candidate_grid_line_dim=line_dim)
 
@@ -270,13 +270,13 @@ class VWEnvironment(Environment):
     def generate_wall_from_coordinates(coord: Coord, grid_size: int) -> Dict[Orientation, bool]:
         default_wall: Dict[Orientation, bool] = {Orientation.north: False, Orientation.south: False, Orientation.west: False, Orientation.east: False}
 
-        if coord.x == 0:
+        if coord.get_x() == 0:
             default_wall[Orientation.west] = True
-        if coord.x == grid_size - 1:
+        if coord.get_x() == grid_size - 1:
             default_wall[Orientation.east] = True
-        if coord.y == 0:
+        if coord.get_y() == 0:
             default_wall[Orientation.north] = True
-        if coord.y == grid_size - 1:
+        if coord.get_y() == grid_size - 1:
             default_wall[Orientation.south] = True
 
         return default_wall
