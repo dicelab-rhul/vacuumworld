@@ -2,6 +2,7 @@
 
 from unittest import main, TestCase
 from random import randint
+from typing import NamedTuple, Type
 
 from vacuumworld import VacuumWorld
 from vacuumworld.common.coordinates import Coord
@@ -36,6 +37,12 @@ class TestLocationAndCoordinates(TestCase):
             self.assertEqual(c.get_x(), c[0])
             self.assertEqual(c.get_y(), c[1])
 
+            other: Coord = Coord(x=c.get_x(), y=c.get_y())
+
+            self.assertEqual(c, other)
+            self.assertEqual(hash(c), hash(other))
+            self.assertEqual(str(c), str(other))
+
             self.assertEqual(c.forward(orientation=Orientation.north), Coord(x=c.get_x(), y=c.get_y()-1))
             self.assertEqual(c.forward(orientation=Orientation.south), Coord(x=c.get_x(), y=c.get_y()+1))
             self.assertEqual(c.forward(orientation=Orientation.west), Coord(x=c.get_x()-1, y=c.get_y()))
@@ -65,6 +72,36 @@ class TestLocationAndCoordinates(TestCase):
             self.assertEqual(c.forwardright(orientation=Orientation.south), Coord(x=c.get_x()-1, y=c.get_y()+1))
             self.assertEqual(c.forwardright(orientation=Orientation.west), Coord(x=c.get_x()-1, y=c.get_y()-1))
             self.assertEqual(c.forwardright(orientation=Orientation.east), Coord(x=c.get_x()+1, y=c.get_y()+1))
+
+    def test_coord_back_compatibility(self) -> None:
+        '''
+        This method tests that `Coord` works in the same way as the old `Coord` (child of `NamedTuple`) class.
+        '''
+        for _ in range(self.__number_of_runs):
+            x, y = randint(0, self.__max_grid_size-1), randint(0, self.__max_grid_size-1)
+            c: Coord = Coord(x=x, y=y)
+
+            self.assertEqual(c.get_x(), x)
+            self.assertEqual(c.get_y(), y)
+            self.assertEqual(c[0], x)
+            self.assertEqual(c[1], y)
+            self.assertEqual(c.x, x)
+            self.assertEqual(c.y, y)
+
+            self.assertIn(x, c)
+            self.assertIn(y, c)
+
+            other: Coord = Coord(x=x, y=y)
+
+            self.assertEqual(c, other)
+            self.assertEqual(hash(c), hash(other))
+            self.assertEqual(str(c), str(other))
+
+            old_coord: Type[NamedTuple] = NamedTuple("old_coord", x=int, y=int)
+            oc: old_coord = old_coord(x=x, y=y)
+
+            self.assertEqual(c.get_x(), oc.x)
+            self.assertEqual(c.get_y(), oc.y)
 
     def test_location(self) -> None:
         for _ in range(100):

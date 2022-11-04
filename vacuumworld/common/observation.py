@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Dict, Iterable, List, Optional, Type, Tuple, Union
+from typing import Dict, Iterable, List, Optional, Type, Tuple, Union, Iterator
 from json import dumps
 
 from pystarworldsturbo.common.action_outcome import ActionOutcome
@@ -194,7 +194,7 @@ class Observation(Perception):
     def create_empty_observation() -> Observation:
         return Observation(action_type=VWIdleAction, action_result=ActionResult(outcome=ActionOutcome.impossible), locations_dict={})
 
-    def __iter__(self) -> Iterable:
+    def __iter__(self) -> Iterator[VWLocation]:
         for location in self.__locations.values():
             yield location
 

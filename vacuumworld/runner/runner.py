@@ -33,7 +33,7 @@ class VWRunner(Process):
             "tooltips": kwargs.get("tooltips", True),
             "total_cycles": kwargs.get("total_cycles", 0),
             "efforts": kwargs.get("efforts", {}),
-            "debug_enabled": kwargs.get("debug_enabled", True)
+            "debug_enabled": kwargs.get("debug_enabled", False)
         }
         self.__save_state_manager: SaveStateManager = SaveStateManager()
         self.__forceful_stop: bool = False

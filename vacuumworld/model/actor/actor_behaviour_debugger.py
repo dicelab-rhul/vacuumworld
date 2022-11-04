@@ -8,7 +8,7 @@ import os
 
 
 class ActorBehaviourDebugger():
-    DEBUG_ENABLED: bool = True
+    DEBUG_ENABLED: bool = True  # This is just a default value that is always programmatically overridden.
 
     @staticmethod
     def debug() -> None:
