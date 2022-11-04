@@ -191,9 +191,10 @@ class Coord():
         return hash((self.__x, self.__y))
 
     def __iter__(self) -> Iterator[int]:
-        return iter((self.__x, self.__y))
+        for i in [self.__x, self.__y]:
+            yield i
 
-    def __get_item__(self, index: int) -> int:
+    def __getitem__(self, index: int) -> int:
         assert index in [0, 1]
 
         if index == 0:
