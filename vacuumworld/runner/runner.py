@@ -9,6 +9,7 @@ from ..common.colour import Colour
 from ..model.actions.vwactions import VWAction, VWCommunicativeAction
 from ..model.actions.effort import ActionEffort
 from ..model.actor.actor_mind_surrogate import ActorMindSurrogate
+from ..model.actor.actor_behaviour_debugger import ActorBehaviourDebugger
 from ..model.environment.vwenvironment import VWEnvironment
 from ..gui.saveload import SaveStateManager
 
@@ -31,7 +32,8 @@ class VWRunner(Process):
             "scale": kwargs.get("scale", 1.0),
             "tooltips": kwargs.get("tooltips", True),
             "total_cycles": kwargs.get("total_cycles", 0),
-            "efforts": kwargs.get("efforts", {})
+            "efforts": kwargs.get("efforts", {}),
+            "debug_enabled": kwargs.get("debug_enabled", True)
         }
         self.__save_state_manager: SaveStateManager = SaveStateManager()
         self.__forceful_stop: bool = False
@@ -43,6 +45,7 @@ class VWRunner(Process):
         self.__scale_config_parameters()
         self.__assign_efforts_to_actions()
         self.__manage_sender_id_spoofing_rule()
+        self.__manage_debug_flag()
 
         VWRunner.__set_sigtstp_handler()
 
@@ -109,6 +112,7 @@ class VWRunner(Process):
         self.__validate_tooltips()
         self.__validate_total_cycles()
         self.__validate_efforts()
+        self.__validate_debug_enabled_flag()
 
     def __validate_play_load(self) -> None:
         if not isinstance(self.__args["play"], self.__allowed_args["play"]):
@@ -160,6 +164,10 @@ class VWRunner(Process):
             raise TypeError("Invalid type for argument `efforts`: it should be `Dict[str, int]`, but there is at least a value that is not an `int`")
         elif not all(effort_name in ActionEffort.EFFORTS for effort_name in self.__args["efforts"]):
             raise ValueError("Invalid effort name: it should be one of {}, but it is `{}`".format([k for k in ActionEffort.EFFORTS], [e for e in self.__args["efforts"] if e not in ActionEffort.EFFORTS][0]))
+
+    def __validate_debug_enabled_flag(self) -> None:
+        if not isinstance(self.__args["debug_enabled"], self.__allowed_args["debug_enabled"]):
+            raise TypeError("Argument `debug_enabled` must be a boolean.")
 
     def __override_default_config(self) -> None:
         # The content of `self.__minds` has already been validated in `__validate_minds()`.
@@ -214,6 +222,11 @@ class VWRunner(Process):
 
     def __manage_sender_id_spoofing_rule(self) -> None:
         VWCommunicativeAction.SENDER_ID_SPOOFING_ALLOWED = self.__config["sender_id_spoofing_allowed"]
+
+    def __manage_debug_flag(self) -> None:
+        assert "debug_enabled" in self.__args and isinstance(self.__args["debug_enabled"], bool)
+
+        ActorBehaviourDebugger.DEBUG_ENABLED = self.__args["debug_enabled"]
 
     @staticmethod
     def __set_sigtstp_handler() -> None:
