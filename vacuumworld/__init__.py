@@ -36,7 +36,8 @@ class VacuumWorld():
         "scale": float,
         "tooltips": bool,
         "efforts": Dict[str, int],
-        "total_cycles": int
+        "total_cycles": int,
+        "debug_enabled": bool
     }
 
     def __init__(self) -> None:

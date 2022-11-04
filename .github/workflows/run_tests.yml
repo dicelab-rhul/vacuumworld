@@ -2,9 +2,9 @@ name: run_tests
 
 on:
   push:
-    branches: [ "main", "dev" ]
+    branches: [ "main", "dev", "experimental" ]
   pull_request:
-    branches: [ "main", "dev" ]
+    branches: [ "main", "dev", "experimental" ]
 
 permissions:
   contents: read
