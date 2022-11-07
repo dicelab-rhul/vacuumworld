@@ -7,6 +7,11 @@ from ...common.colour import Colour
 
 
 class VWDirtAppearance(Identifiable):
+    '''
+    This class specifies the appearance of a `VWDirt`.
+
+    A `VWDirt` (and, therefore, its `VWDirtAppearance`) is only characterised by its `Colour`.
+    '''
     def __init__(self, dirt_id: str, progressive_id: str, colour: Colour) -> None:
         super(VWDirtAppearance, self).__init__(identifiable_id=dirt_id, progressive_id=progressive_id)
 
@@ -15,17 +20,33 @@ class VWDirtAppearance(Identifiable):
         self.__colour: Colour = colour
 
     def get_colour(self) -> Colour:
+        '''
+        Returns the `Colour` of the `Dirt` this `VWDirtAppearance` refers to.
+        '''
         return self.__colour
 
     def deep_copy(self) -> VWDirtAppearance:
+        '''
+        WARNING: this method needs to be public, but is not part of the `VWDirtAppearance` API.
+
+        Returns a deep-copy of this `VWDirtAppearance`.
+        '''
         return VWDirtAppearance(dirt_id=self.get_id(), progressive_id=self.get_progressive_id(), colour=self.__colour)
 
     def to_json(self) -> Dict[str, str]:
+        '''
+        Returns a JSON representation of this `VWDirtAppearance`.
+        '''
         return {
             "colour": str(self.__colour)
         }
 
     def equals_except_ids(self, obj: VWDirtAppearance) -> bool:
+        '''
+        Returns whether or not this `VWDirtAppearance` is equal to the one (`obj`) passed as argument, without considering the IDs.
+
+        Two `VWDirtAppearance` instances are equal, according to this method, if the `Colour` of both instances is equal.
+        '''
         if self is obj:
             return True
 

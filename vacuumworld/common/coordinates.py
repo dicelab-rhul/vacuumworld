@@ -6,6 +6,11 @@ from .orientation import Orientation
 
 
 class Coord():
+    '''
+    This class specifies numerical coordinates.
+
+    Each `Coord` object is characterised by two integers named `x` and `y`.
+    '''
     def __init__(self, x: int, y: int) -> None:
         if not isinstance(x, int):
             raise TypeError("x must be an integer")
@@ -23,25 +28,25 @@ class Coord():
 
     def get_x(self) -> int:
         '''
-        Returns the `x` coordinate as an `int`.
+        Returns the `x` coordinate of this `Coord` as an `int`.
         '''
         return self.__x
 
     def get_y(self) -> int:
         '''
-        Returns the `y` coordinate as an `int`.
+        Returns the `y` coordinate of this `Coord` as an `int`.
         '''
         return self.__y
 
     def in_bounds(self, min_x: int, max_x: int, min_y: int, max_y: int) -> bool:
         '''
-        Returns whether or not the current `Coord` is within the given inclusive bounds.
+        Returns whether or not this `Coord` is within the given inclusive bounds.
         '''
         return min_x <= self.__x <= max_x and min_y <= self.__y <= max_y
 
     def forward(self, orientation: Orientation) -> Coord:
         '''
-        Returns a `Coord` that is one step forward from the current `Coord` in the given `Orientation`.
+        Returns a `Coord` that is one step forward from this `Coord` in the given `Orientation`.
         '''
         assert orientation in [Orientation.north, Orientation.south, Orientation.west, Orientation.east]
 
@@ -56,7 +61,7 @@ class Coord():
 
     def backward(self, orientation: Orientation) -> Coord:
         '''
-        Returns a `Coord` that is one step backward from the current `Coord` in the given `Orientation`.
+        Returns a `Coord` that is one step backward from this `Coord` in the given `Orientation`.
         '''
         assert orientation in [Orientation.north, Orientation.south, Orientation.west, Orientation.east]
 
@@ -71,7 +76,7 @@ class Coord():
 
     def left(self, orientation: Orientation) -> Coord:
         '''
-        Returns a `Coord` that is one step to the left from the current `Coord` in the given `Orientation`.
+        Returns a `Coord` that is one step to the left from this `Coord` in the given `Orientation`.
         '''
         assert orientation in [Orientation.north, Orientation.south, Orientation.west, Orientation.east]
 
@@ -86,7 +91,7 @@ class Coord():
 
     def right(self, orientation: Orientation) -> Coord:
         '''
-        Returns a `Coord` that is one step to the right from the current `Coord` in the given `Orientation`.
+        Returns a `Coord` that is one step to the right from this `Coord` in the given `Orientation`.
         '''
         assert orientation in [Orientation.north, Orientation.south, Orientation.west, Orientation.east]
 
@@ -101,7 +106,7 @@ class Coord():
 
     def forwardleft(self, orientation: Orientation) -> Coord:
         '''
-        Returns a `Coord` that is one step forward and one step to the left from the current `Coord` in the given `Orientation`.
+        Returns a `Coord` that is one step forward and one step to the left from this `Coord` in the given `Orientation`.
         '''
         assert orientation in [Orientation.north, Orientation.south, Orientation.west, Orientation.east]
 
@@ -116,7 +121,7 @@ class Coord():
 
     def forwardright(self, orientation: Orientation) -> Coord:
         '''
-        Returns a `Coord` that is one step forward and one step to the right from the current `Coord` in the given `Orientation`.
+        Returns a `Coord` that is one step forward and one step to the right from this `Coord` in the given `Orientation`.
         '''
         assert orientation in [Orientation.north, Orientation.south, Orientation.west, Orientation.east]
 
@@ -131,13 +136,13 @@ class Coord():
 
     def clone(self) -> Coord:
         '''
-        Returns a deep-copy of the current `Coord`.
+        Returns a deep-copy of this `Coord`.
         '''
         return Coord(x=self.__x, y=self.__y)
 
     def to_json(self) -> Dict[str, int]:
         '''
-        Returns a JSON representation of the current `Coord`.
+        Returns a JSON representation of this `Coord`.
         '''
         return {
             "x": self.__x,

@@ -14,6 +14,11 @@ from ..model.actions.idle_action import VWIdleAction
 
 
 class Observation(Perception):
+    '''
+    This class specifies the `Observation` API.
+
+    An `Observation` is a wrapper for a 3x2 (or 2x3, or 2x2, or 2x1, or 1x2, or 1x1, depending on the boundaries) slice of a `VWEnvironment`grid, and a `List` of `ActionResult` elements, each related to an attempted `VWAction` by a certain `VWActor` in the last environmental cycle.
+    '''
     def __init__(self, action_type: Type[VWAction], action_result: ActionResult, locations_dict: Dict[PositionNames, VWLocation]={}) -> None:
         super(Observation, self).__init__()
 
@@ -308,7 +313,7 @@ class Observation(Perception):
 
     def pretty_format(self) -> str:
         '''
-        Returns a pretty-formatted JSON string representation of the `Observation`, including each perceived `VWLocation`, and the `ActionOutcome` of each `VWAction` that was attempted by the `VWActor` during the last cycle.
+        Returns a pretty-formatted JSON string representation of this `Observation`, including each perceived `VWLocation`, and the `ActionOutcome` of each `VWAction` that was attempted by the `VWActor` during the last cycle.
         '''
         observation_dict: dict = {
             # The `.name` is necessary because `ActionOutcome` is an `Enum` and `Enum` objects are not JSON serialisable.

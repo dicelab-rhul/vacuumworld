@@ -4,6 +4,21 @@ from typing import List
 
 
 class PositionNames(Enum):
+    '''
+    This `Enum` specifies names for different positions in the context of an `Observation` received by by a `VWActor`.
+
+    * `center` refers to the `VWActor` positon.
+
+    * `left` refers to the position to the left of the `VWActor` positon.
+
+    * `right` refers to the position to the right of the `VWActor` positon.
+
+    * `forward` refers to the position in front of the `VWActor` positon.
+
+    * `forwardleft` refers to the position to the forward-left of the `VWActor` positon.
+
+    * `forwardright` refers to the position to the forward-right of the `VWActor` positon.
+    '''
     center = "center"
     left = "left"
     right = "right"
@@ -20,6 +35,6 @@ class PositionNames(Enum):
     @staticmethod
     def values() -> List[PositionNames]:
         '''
-        Returns an ordered `List` of all the values of the enum.
+        Returns an ordered `List` of all the values of the `Enum`.
         '''
         return [pn for pn in PositionNames]

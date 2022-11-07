@@ -2,6 +2,17 @@ from enum import Enum
 
 
 class Colour(Enum):
+    '''
+    This `Enum` specifies the colours for different kinds of `VWActor` and `Dirt`.
+
+    * `green` applies to each green `VWCleaningAgent` and to each green `Dirt`.
+
+    * `orange` applies to each orange `VWCleaningAgent` and to each orange `Dirt`.
+
+    * `white` applies to each white `VWCleaningAgent`.
+
+    * `user` applies to each `VWUser`.
+    '''
     green = "green"
     orange = "orange"
     white = "white"

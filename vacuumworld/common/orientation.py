@@ -6,10 +6,21 @@ from .direction import Direction
 
 
 class Orientation(Enum):
+    '''
+    This `Enum` specifies both cardinal points, and absolute orientations related to such points.
+
+    * `north` refers to the North cardinal point, and a northern orientation.
+
+    * `south` refers to the South cardinal point, and a southern orientation.
+
+    * `west` refers to the West cardinal point, and a western orientation.
+
+    * `east` refers to the East cardinal point, and a eastern orientation.
+    '''
     north = "north"
-    east = "east"
     south = "south"
     west = "west"
+    east = "east"
 
     def __str__(self) -> str:
         return self.value
