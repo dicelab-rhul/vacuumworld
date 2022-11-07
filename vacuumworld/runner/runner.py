@@ -1,4 +1,4 @@
-from typing import Dict, Union, Type
+from typing import Dict, Union, Type, List
 from traceback import print_exc
 from multiprocessing import Process, Event
 from multiprocessing.synchronize import Event as EventType
@@ -33,7 +33,7 @@ class VWRunner(Process):
             "tooltips": kwargs.get("tooltips", True),
             "total_cycles": kwargs.get("total_cycles", 0),
             "efforts": kwargs.get("efforts", {}),
-            "debug_enabled": kwargs.get("debug_enabled", False)
+            "debug_enabled": kwargs.get("debug_enabled", True)
         }
         self.__save_state_manager: SaveStateManager = SaveStateManager()
         self.__forceful_stop: bool = False
@@ -186,6 +186,7 @@ class VWRunner(Process):
         self.__config["y_scale"] = self.__args["scale"]
         self.__config["tooltips"] &= self.__args["tooltips"]
         self.__config["total_cycles"] = self.__args["total_cycles"]
+        self.__config["debug"] &= self.__args["debug_enabled"]
 
     def __scale_config_parameters(self) -> None:
         self.__config["grid_size"] *= self.__config["scale"]
@@ -224,9 +225,12 @@ class VWRunner(Process):
         VWCommunicativeAction.SENDER_ID_SPOOFING_ALLOWED = self.__config["sender_id_spoofing_allowed"]
 
     def __manage_debug_flag(self) -> None:
-        assert "debug_enabled" in self.__args and isinstance(self.__args["debug_enabled"], bool)
+        ActorBehaviourDebugger.DEBUG_ENABLED: bool = self.__config["debug"]
 
-        ActorBehaviourDebugger.DEBUG_ENABLED = self.__args["debug_enabled"]
+        if self.__config["debug_test"]:
+            ActorBehaviourDebugger.PRIMES: List[int] = self.__config["debug_primes_test"]
+        else:
+            ActorBehaviourDebugger.PRIMES: List[int] = self.__config["debug_primes"]
 
     @staticmethod
     def __set_sigtstp_handler() -> None:

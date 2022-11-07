@@ -32,7 +32,7 @@ class TestGUIless(TestCase):
                 manager: SaveStateManager = SaveStateManager()
                 manager.save_state(env=env, filename=test_file)
 
-                run(default_mind=VWHystereticMindSurrogate(), speed=0.999, load=test_file, total_cycles=total_cycles, gui=False)
+                run(default_mind=VWHystereticMindSurrogate(), speed=0.999, load=test_file, total_cycles=total_cycles, gui=False, debug_enabled=False)
             except Exception as e:
                 self.fail(e.args[0])
             finally:
