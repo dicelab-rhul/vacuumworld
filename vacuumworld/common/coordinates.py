@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Dict, List, Union, Tuple
+from typing import Dict, List, Union, Tuple, Iterator
 from random import randint
 
 from .orientation import Orientation
@@ -189,6 +189,18 @@ class Coord():
 
     def __hash__(self) -> int:
         return hash((self.__x, self.__y))
+
+    def __iter__(self) -> Iterator[int]:
+        for i in [self.__x, self.__y]:
+            yield i
+
+    def __getitem__(self, index: int) -> int:
+        assert index in [0, 1]
+
+        if index == 0:
+            return self.__x
+        else:
+            return self.__y
 
     @staticmethod
     def random_between_inclusive(min_x: int, max_x: int, min_y: int, max_y: int) -> Coord:

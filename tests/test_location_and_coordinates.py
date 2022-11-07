@@ -30,6 +30,12 @@ class TestLocationAndCoordinates(TestCase):
             self.assertIn(c.get_x(), range(0, self.__max_grid_size))
             self.assertIn(c.get_y(), range(0, self.__max_grid_size))
 
+            self.assertIn(c.get_x(), c)
+            self.assertIn(c.get_y(), c)
+
+            self.assertEqual(c.get_x(), c[0])
+            self.assertEqual(c.get_y(), c[1])
+
             self.assertEqual(c.forward(orientation=Orientation.north), Coord(x=c.get_x(), y=c.get_y()-1))
             self.assertEqual(c.forward(orientation=Orientation.south), Coord(x=c.get_x(), y=c.get_y()+1))
             self.assertEqual(c.forward(orientation=Orientation.west), Coord(x=c.get_x()-1, y=c.get_y()))
