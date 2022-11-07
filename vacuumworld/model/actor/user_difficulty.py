@@ -19,7 +19,14 @@ class UserDifficulty(Enum):
     def __repr__(self) -> str:
         return str(self)
 
-    def toggle(self) -> UserDifficulty:
+    def opposite(self) -> UserDifficulty:
+        '''
+        Returns the opposite of this `UserDifficulty`:
+
+        * If this is `UserDifficulty.easy`, it returns `UserDifficulty.hard`.
+
+        * If this is `UserDifficulty.hard`, it returns `UserDifficulty.easy`.
+        '''
         if self == UserDifficulty.easy:
             return UserDifficulty.hard
         else:
@@ -27,4 +34,7 @@ class UserDifficulty(Enum):
 
     @staticmethod
     def random() -> UserDifficulty:
+        '''
+        Returns a random `UserDifficulty` value.
+        '''
         return choice(list(UserDifficulty))

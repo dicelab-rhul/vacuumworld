@@ -10,7 +10,15 @@ from vacuumworld.model.actions.idle_action import VWIdleAction
 
 
 class VWHystereticMindSurrogate(ActorMindSurrogate):
+    '''
+    This class specifies the hysteretic mind surrogate. It is a subclass of `ActorMindSurrogate`.
+
+    The `VWHystereticMindSurrogate` does nothing in `revise()` and always returns `VWIdleAction` in `decide()`.
+    '''
     def revise(self, observation: Observation, messages: Iterable[BccMessage]) -> None:
+        '''
+        Does nothing, and ignores both `observation` and `messages`.
+        '''
         ignore(self)
         ignore(observation)
 
@@ -18,6 +26,9 @@ class VWHystereticMindSurrogate(ActorMindSurrogate):
             ignore(m)
 
     def decide(self) -> Union[VWAction, Tuple[VWAction]]:
+        '''
+        Always returns `VWIdleAction`.
+        '''
         ignore(self)
 
         return VWIdleAction()

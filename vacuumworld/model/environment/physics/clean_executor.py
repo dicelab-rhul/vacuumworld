@@ -16,7 +16,21 @@ if TYPE_CHECKING:
 
 
 class CleanExecutor(ActionExecutor):
+    '''
+    This class is an `ActionExecutor` for `VWCleanAction`.
+    '''
     def is_possible(self, env: VWEnvironment, action: VWCleanAction) -> bool:
+        '''
+        Returns whether or not `action` is possible in `env`.
+
+        In any `VWEnvironment` a `VWCleanAction` is possible if:
+
+        * The `VWLocation` that contains the `VWActor` whose ID matches the actor ID of `action` has a `Dirt` on it
+
+        * The `VWLocation` that contains the `VWActor` whose ID matches the actor ID of `action` has a `VWCleaningAgent` in it.
+
+        * The `Colour` of the aforementioned `Dirt` matches the `Colour` of the aforementioned `VWCleaningAgent`, or the `Colour` of the aforementioned `VWCleaningAgent` is `Colour.white`.
+        '''
         ignore(self)
 
         actor_id: str = action.get_actor_id()
@@ -33,6 +47,13 @@ class CleanExecutor(ActionExecutor):
             return actor_location.get_dirt_appearance().get_colour() == actor_colour
 
     def attempt(self, env: VWEnvironment, action: VWCleanAction) -> ActionResult:
+        '''
+        Attempts to execute `action` in `env`, returning a provisional `ActionResult`.
+
+        If an `Exception` is raised, the provisional `ActionResult` will have an `ActionOutcome` of `ActionOutcome.failure`.
+
+        Otherwise, the provisional `ActionResult` will have an `ActionOutcome` of `ActionOutcome.success`.
+        '''
         ignore(self)
 
         try:
@@ -51,6 +72,11 @@ class CleanExecutor(ActionExecutor):
             return ActionResult(ActionOutcome.failure)
 
     def succeeded(self, env: VWEnvironment, action: VWCleanAction) -> bool:
+        '''
+        Returns whether or not the post-conditions of `action` are satisfied in `env`.
+
+        The post-conditions of a `VWCleanAction` are satisfied if the `VWLocation` that contains the `VWActor` whose ID matches the actor ID of `action` has no `Dirt` on it.
+        '''
         ignore(self)
 
         actor_id: str = action.get_actor_id()

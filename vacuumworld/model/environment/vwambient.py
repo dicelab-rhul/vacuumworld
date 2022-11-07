@@ -16,13 +16,26 @@ from ...model.actions.vwactions import VWAction
 
 
 class VWAmbient(Ambient):
+    '''
+    This class acts as a wrapper for the grid, which is a `Dict[Coord, VWLocation]` mapping `Coord` objects to `VWLocation` objects.
+
+    An API is provided to query and modify the grid.
+    '''
     def __init__(self, grid: Dict[Coord, VWLocation]={}) -> None:
         self.__grid: Dict[Coord, VWLocation] = grid
 
     def get_grid(self) -> Dict[Coord, VWLocation]:
+        '''
+        Returns the grid as a `Dict[Coord, VWLocation]`, where each `Coord` is mapped to a `VWLocation`.
+        '''
         return self.__grid
 
     def get_grid_dim(self) -> int:
+        '''
+        Returns the dimension of the grid as an `int`.
+
+        The dimension of the grid is the square root of the number of `VWLocation` objects in the grid.
+        '''
         number_of_locations: int = len(self.__grid)
         grid_dim: int = sqrt(number_of_locations)
 
@@ -31,17 +44,43 @@ class VWAmbient(Ambient):
         return int(grid_dim)
 
     def get_location_interface(self, coord: Coord) -> VWLocation:
+        '''
+        Returns the appearance of the `VWLocation` whose coordinates match the `Coord` argument.
+
+        This method assumes (via assertion) that `coord` is in bounds.
+        '''
         assert coord in self.__grid
 
         return self.__grid[coord]
 
     def is_actor_at(self, coord: Coord) -> bool:
+        '''
+        Returns whether or not the `VWLocation` whose coordinates match the `Coord` argument has a `VWActor`.
+
+        If `coord` is not in bounds, this method returns `False`.
+        '''
         return coord in self.__grid and self.__grid[coord].has_actor()
 
     def is_dirt_at(self, coord: Coord) -> bool:
+        '''
+        Returns whether or not the `VWLocation` whose coordinates match the `Coord` argument has a `Dirt`.
+
+        If `coord` is not in bounds, this method returns `False`.
+        '''
         return coord in self.__grid and self.__grid[coord].has_dirt()
 
     def move_actor(self, from_coord: Coord, to_coord: Coord) -> None:
+        '''
+        Moves the `VWActor` from the `VWLocation` whose coordinates match the `Coord` argument `from_coord` to the `VWLocation` whose coordinates match the `Coord` argument `to_coord`.
+
+        This method assumes the following via assertions:
+
+        * A `VWActor` is at the `VWLocation` whose coordinates match the `Coord` argument `from_coord`.
+
+        * The `VWLocation` whose coordinates match the `Coord` argument `to_coord` has no `VWActor`.
+
+        * `from_coord` and `to_coord` are in bounds.
+        '''
         assert from_coord in self.__grid and to_coord in self.__grid
         assert self.__grid[from_coord].has_actor()
         assert not self.__grid[to_coord].has_actor()
@@ -52,21 +91,75 @@ class VWAmbient(Ambient):
         self.__grid[to_coord].add_actor(actor_appearance=actor)
 
     def turn_actor(self, coord: Coord, direction: Direction) -> None:
+        '''
+        Rotates the `Orientation` of the `VWActor` at the `VWLocation` whose coordinates match the `Coord` argument `coord` as specified by the `Direction` argument `direction`.
+
+        This method assumes the following via assertions:
+
+        * A `VWActor` is at the `VWLocation` whose coordinates match the `Coord` argument `coord`.
+
+        * `coord` is in bounds.
+        '''
         assert coord in self.__grid and self.__grid[coord].has_actor()
 
         self.__grid[coord].get_actor_appearance().turn(direction=direction)
 
     def drop_dirt(self, coord: Coord, dirt_appearance: VWDirtAppearance) -> None:
+        '''
+        Drops a `Dirt` at the `VWLocation` whose coordinates match the `Coord` argument `coord`.
+
+        The `VWDirtAppearance` of the `Dirt` to drop is given as the `dirt_appearance` argument.
+
+        This method assumes the following via assertions:
+
+        * The `VWLocation` whose coordinates match the `Coord` argument `coord` has no `Dirt`.
+
+        * `coord` is in bounds.
+        '''
         assert coord in self.__grid and not self.__grid[coord].has_dirt()
 
         self.__grid[coord].add_dirt(dirt_appearance=dirt_appearance)
 
     def remove_dirt(self, coord: Coord) -> None:
+        '''
+        Removes a `Dirt` from the `VWLocation` whose coordinates match the `Coord` argument `coord`.
+
+        This method assumes the following via assertions:
+
+        * The `VWLocation` whose coordinates match the `Coord` argument `coord` has a `Dirt`.
+
+        * `coord` is in bounds.
+        '''
         assert coord in self.__grid and self.__grid[coord].has_dirt()
 
         self.__grid[coord].remove_dirt()
 
     def generate_perception(self, actor_position: Coord, action_type: Type[VWAction], action_result:  ActionResult) -> Observation:
+        '''
+        Generates and returns an `Observation` perception for a `VWActor`.
+
+        The `Coord` argument `actor_position` specifies the position of the `VWActor` whose perception is being generated.
+
+        The `Type[VWAction]` argument `action_type` specifies the kind of the `VWAction` that the `VWActor` attempted.
+
+        The `ActionResult` argument `action_result` specifies the result of the aforementioned attempted.
+
+        The `Observation` returned by this method is generated as follows:
+
+        * `PositionNames.center` is mapped to the `VWLocation` whose coordinates match the `Coord` argument `actor_position`.
+
+        * For every other member of `PositionNames`, the corresponding `Coord` is calculated.
+
+        * If such `Coord` is in bounds, then it is mapped to the `VWLocation` whose `Coord` matches it. Otherwise, that particular member of `PositionNames` is skipped.
+
+        * Finally, `action_type` and `action_result` are added to the `Observation`, the former being mapped to the latter.
+
+        This method assumes the following via assertions:
+
+        * The `VWLocation` whose coordinates match the `Coord` argument `actor_position` has a `VWActor`.
+
+        * `actor_position` is in bounds.
+        '''
         assert actor_position in self.__grid and self.__grid[actor_position].has_actor()
 
         locations_dict: Dict[PositionNames, VWLocation] = {}

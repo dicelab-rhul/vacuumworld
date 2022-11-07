@@ -13,8 +13,14 @@ from ...common.orientation import Orientation
 
 
 class VWCleaningAgentsFactory():
+    '''
+    This class is a factory for `VWCleaningAgent` objects.
+    '''
     @staticmethod
     def create_cleaning_agent(colour: Colour, orientation: Orientation, mind_surrogate: ActorMindSurrogate) -> Tuple[VWCleaningAgent, VWActorAppearance]:
+        '''
+        Creates a `VWCleaningAgent` with the specified `Colour`, `Orientation` and `ActorMindSurrogate`, and returns it as a `Tuple[VWCleaningAgent, VWActorAppearance]` consisting of a `VWCleaningAgent` and its `VWActorAppearance`.
+        '''
         try:
             assert Colour != Colour.user
             assert isinstance(mind_surrogate, ActorMindSurrogate) and not isinstance(mind_surrogate, UserMindSurrogate)
@@ -30,6 +36,9 @@ class VWCleaningAgentsFactory():
 
     @staticmethod
     def create_cleaning_agent_from_json_data(data: Dict[str, str]) -> Tuple[VWCleaningAgent, VWActorAppearance]:
+        '''
+        Creates a `VWCleaningAgent` from JSON `data`, and returns it as a `Tuple[VWCleaningAgent, VWActorAppearance]` consisting of a `VWCleaningAgent` and its `VWActorAppearance`.
+        '''
         try:
             assert type(data) == dict and "colour" in data and "orientation" in data and "surrogate_mind_file" in data
 
@@ -48,6 +57,9 @@ class VWCleaningAgentsFactory():
 
 
 class VWUsersFactory():
+    '''
+    This class is a factory for `VWUser` objects.
+    '''
     @staticmethod
     def create_user(difficulty_level: UserDifficulty, orientation: Orientation) -> Tuple[VWUser, VWActorAppearance]:
         try:
@@ -62,6 +74,9 @@ class VWUsersFactory():
 
     @staticmethod
     def create_user_from_json_data(data: Dict[str, str], difficulty_level: UserDifficulty=UserDifficulty.easy) -> Tuple[VWUser, VWActorAppearance]:
+        '''
+        Creates a `VWUser` from JSON `data` and `difficulty_level`, and returns it as a `Tuple[VWUser, VWActorAppearance]` consisting of a `VWUser` and its `VWActorAppearance`.
+        '''
         try:
             assert type(data) == dict and "colour" in data and "orientation" in data
 
@@ -80,16 +95,29 @@ class VWUsersFactory():
 
     @staticmethod
     def create_easy_user_from_json_data(data: dict) -> Tuple[VWUser, VWActorAppearance]:
+        '''
+        Creates a `VWUser` whose `UserDifficulty` is `UserDifficulty.easy` from JSON `data`, and returns it as a `Tuple[VWUser, VWActorAppearance]` consisting of a `VWUser` and its `VWActorAppearance`.
+        '''
         return VWUsersFactory.create_user_from_json_data(data=data, difficulty_level=UserDifficulty.easy)
 
     @staticmethod
     def create_hard_user_from_json_data(data: dict) -> Tuple[VWUser, VWActorAppearance]:
+        '''
+        Creates a `VWUser` whose `UserDifficulty` is `UserDifficulty.hard` from JSON `data`, and returns it as a `Tuple[VWUser, VWActorAppearance]` consisting of a `VWUser` and its `VWActorAppearance`.
+        '''
         return VWUsersFactory.create_user_from_json_data(data=data, difficulty_level=UserDifficulty.hard)
 
 
 class VWActorsFactory():
+    '''
+    This class is a factory for `VWActor` objects.
+    '''
     @staticmethod
     def create_actor(colour: Colour, orientation: Orientation, mind_surrogate: Union[ActorMindSurrogate, UserMindSurrogate]) -> Union[Tuple[VWCleaningAgent, VWActorAppearance], Tuple[VWUser, VWActorAppearance]]:
+        '''
+        Creates a `VWActor` with the specified `Colour`, `Orientation` and `ActorMindSurrogate` (or `UserMindSurrogate`), and returns it as a `Union[Tuple[VWCleaningAgent, VWActorAppearance], Tuple[VWUser, VWActorAppearance]]`,
+        which is a `VWCleaningAgent` or `VWUser` together with its `VWActorAppearance` or `VWActorAppearance`.
+        '''
         assert type(colour) == Colour
 
         if colour == Colour.user:

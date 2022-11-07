@@ -18,6 +18,11 @@ from ...common.direction import Direction
 
 
 class UserMindSurrogate(ActorMindSurrogate):
+    '''
+    This class specifies the surrogate of a `VWUserMind` of a `VWUser`.
+
+    It is used to simulate the behaviour of a `VWUser` in the `VWEnvironment`.
+    '''
     def __init__(self, difficulty_level: UserDifficulty=UserDifficulty.easy) -> None:
         super(UserMindSurrogate, self).__init__()
 
@@ -26,9 +31,15 @@ class UserMindSurrogate(ActorMindSurrogate):
         self.__difficulty_level: UserDifficulty = difficulty_level
 
     def get_difficulty_level(self) -> UserDifficulty:
+        '''
+        Returns the `UserDifficulty` of this `UserMindSurrogate`.
+        '''
         return self.__difficulty_level
 
     def set_difficulty_level(self, difficulty_level: UserDifficulty) -> None:
+        '''
+        Sets the `UserDifficulty` of this `UserMindSurrogate`.
+        '''
         self.__difficulty_level = difficulty_level
 
     def __is_on_dirt(self) -> bool:
@@ -44,11 +55,23 @@ class UserMindSurrogate(ActorMindSurrogate):
         return not self.__observation.is_wall_immediately_to_the_right() and self.__observation.get_right().has_actor()
 
     def revise(self, observation: Observation, messages: Iterable[BccMessage]) -> None:
+        '''
+        Stores the given `Observation` for later use, and ignores each `BccMessage`.
+        '''
         self.__observation: Observation = observation
 
         ignore(messages)
 
     def decide(self) -> VWPhysicalAction:
+        '''
+        Decides the next `VWPhysicalAction` to be attempted by the `VWUser` associated with this `UserMindSurrogate`.
+
+        * If no `Observation` has been received yet, returns `VWIdleAction`.
+
+        * If the `UserDifficulty` of this `UserMindSurrogate` is `UserDifficulty.easy`, then the `VWUser` will not try to avoid any other `VWActor`.
+
+        * If the `UserDifficulty` of this `UserMindSurrogate` is `UserDifficulty.hard`, then the `VWUser` will try to avoid each `VWActor` that comes too close.
+        '''
         if not self.__observation:
             return VWIdleAction()
         elif self.__difficulty_level == UserDifficulty.easy:

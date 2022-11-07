@@ -15,7 +15,19 @@ if TYPE_CHECKING:
 
 
 class MoveExecutor(ActionExecutor):
+    '''
+    This class is an `ActionExecutor` for `VWMoveAction`.
+    '''
     def is_possible(self, env: VWEnvironment, action: VWMoveAction) -> bool:
+        '''
+        Returns whether or not `action` is possible in `env`.
+
+        In any `VWEnvironment` a `VWMoveAction` is possible if:
+
+        * The `forward` `VWLocation` w.r.t. the `VWLocation` that contains the `VWActor` whose ID matches the actor ID of `action` exists (i.e., is in bounds).
+
+        * The `forward` `VWLocation` w.r.t. the `VWLocation` that contains the `VWActor` whose ID matches the actor ID of `action` has no `VWActor` in it.
+        '''
         ignore(self)
 
         actor_id: str = action.get_actor_id()
@@ -27,6 +39,13 @@ class MoveExecutor(ActionExecutor):
         return forward_position in env.get_ambient().get_grid() and not env.get_ambient().get_grid()[forward_position].has_actor()
 
     def attempt(self, env: VWEnvironment, action: VWMoveAction) -> ActionResult:
+        '''
+        Attempts to execute `action` in `env`, returning a provisional `ActionResult`.
+
+        If an `Exception` is raised, the provisional `ActionResult` will have an `ActionOutcome` of `ActionOutcome.failure`.
+
+        Otherwise, the provisional `ActionResult` will have an `ActionOutcome` of `ActionOutcome.success`.
+        '''
         ignore(self)
 
         try:
@@ -44,6 +63,11 @@ class MoveExecutor(ActionExecutor):
             return ActionResult(ActionOutcome.failure)
 
     def succeeded(self, env: VWEnvironment, action: VWMoveAction) -> bool:
+        '''
+        Returns whether or not the post-conditions of `action` are satisfied in `env`.
+
+        The post-conditions of a `VWMoveAction` are satisfied if the `VWActor` that executed the `VWMoveAction` has moved forward one `VWLocation` w.r.t. its previous `VWLocation`.
+        '''
         # This only checks that the agent has not vanished and has not been duplicated.
         # The check for the move success is implicit at this point if not exception has been raised by attempt().
 
