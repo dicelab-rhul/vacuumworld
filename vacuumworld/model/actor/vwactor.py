@@ -15,24 +15,43 @@ from ...common.exceptions import VWActionAttemptException, VWPerceptionException
 
 
 class VWActor(Actor):
+    '''
+    This abstract class specifies the actors in the VacuumWorld universe.
+    '''
     def __init__(self, mind: VWMind, sensors: List[VWSensor], actuators: List[VWActuator]) -> None:
         super(VWActor, self).__init__(mind=mind, sensors=sensors, actuators=actuators)
 
     def get_mind(self) -> VWMind:
+        '''
+        Returns the `VWMind` of this `VWActor`.
+        '''
         return super(VWActor, self).get_mind()
 
     def get_listening_sensor(self) -> Optional[VWListeningSensor]:
+        '''
+        Return the `VWListeningSensor` of this `VWActor` if any, `None` otherwise.
+        '''
         return super(VWActor, self).get_listening_sensor()
 
     def get_observation_sensor(self) -> Optional[VWObservationSensor]:
+        '''
+        Returns the `VWObservationSensor` of this `VWActor` if any, `None` otherwise.
+        '''
         return super(VWActor, self).get_sensor_for(event_type=Observation)
 
     def get_physical_actuator(_) -> Optional[VWActuator]:
-        # Abstract.
+        '''
+        Abstract method to be implemented by subclasses.
 
-        return None
+        It should return the `VWActuator` of this `VWActor` that is responsible for the execution of each `VWPhysicalAction`.
+        '''
+
+        raise NotImplementedError()
 
     def get_communicative_actuator(self) -> Optional[VWCommunicativeActuator]:
+        '''
+        Returns the `VWCommunicativeActuator` of this `VWActor` if any, `None` otherwise.
+        '''
         candidate: VWCommunicativeActuator = super(VWActor, self).get_actuator_for(event_type=VWSpeakAction)
 
         if candidate:
@@ -43,6 +62,9 @@ class VWActor(Actor):
             return None
 
     def perceive(self) -> Tuple[Observation, Iterable[BccMessage]]:
+        '''
+        Performs the `List[Observation]` and the `List[BccMessage]` that are available for this `VWActor` during this cycle.
+        '''
         observations: List[Observation] = self.__fetch_observations()
         messages: List[BccMessage] = self.__fetch_messages()
 
@@ -87,6 +109,14 @@ class VWActor(Actor):
         return observations[-1]
 
     def cycle(self) -> None:
+        '''
+        Cycles the `VWActor`.
+
+        * `perceive()`
+        * `revise()`
+        * `decide()`
+        * `execute()`
+        '''
         # If debug is disabled, this call will do nothing.
         ActorBehaviourDebugger.debug()
 
@@ -103,6 +133,9 @@ class VWActor(Actor):
         self.execute()
 
     def execute(self) -> None:
+        '''
+        Attempts the execution of the `VWAction` or `Tuple[VWAction]` that has been decided by the `VWMind`.
+        '''
         # Fetch the `VWAction` or `Tuple[VWAction]` to attempt.
         actions_to_attempt: Tuple[VWAction] = self.get_mind().execute()
 

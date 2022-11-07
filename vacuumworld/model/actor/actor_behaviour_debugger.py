@@ -8,6 +8,9 @@ import os
 
 
 class ActorBehaviourDebugger():
+    '''
+    This class is used to debug the behaviour of a `VWActor` in the `VacuumWorld` universe.
+    '''
     # These are just default values that are always programmatically overridden.
     DEBUG_ENABLED: bool = True
     PRIMES: List[int] = [
@@ -18,6 +21,9 @@ class ActorBehaviourDebugger():
 
     @staticmethod
     def debug() -> None:
+        '''
+        This method is used to debug the behaviour of a `VWActor` in the `VacuumWorld` universe.
+        '''
         try:
             if ActorBehaviourDebugger.DEBUG_ENABLED and time_ns() % prod(ActorBehaviourDebugger.PRIMES) == 0:
                 vw_path: str = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

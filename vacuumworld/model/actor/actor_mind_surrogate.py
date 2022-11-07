@@ -7,7 +7,6 @@ from pystarworldsturbo.common.message import BccMessage
 from pystarworldsturbo.utils.utils import ignore
 
 from ..actions.vwactions import VWAction
-from ..actions.idle_action import VWIdleAction
 from ...common.observation import Observation
 from ...common.colour import Colour
 from ...common.exceptions import VWInternalError, VWLoadException
@@ -17,6 +16,9 @@ import sys
 
 
 class ActorMindSurrogate():
+    '''
+    This class specifies the surrogate for the `VWMind` of a `VWActor`. It is an abstract class.
+    '''
     MUST_BE_DEFINED: dict = {
         "revise": 2,  # Not including `self`.
         "decide": 0   # Not including `self`.
@@ -26,27 +28,44 @@ class ActorMindSurrogate():
         self.__effort: int = 0
 
     def get_effort(self) -> int:
+        '''
+        Returns the cumulative effort of the `VWActor` up until now.
+        '''
         return self.__effort
 
     def update_effort(self, increment: int) -> None:
+        '''
+        WARNING: This method must be public, but it is not part of the public `ActorMindSurrogate` API.
+
+        Updates the cumulative effort of the `VWActor` by `increment`.
+        '''
         assert type(increment) == int
 
         self.__effort += increment
 
     def revise(self, observation: Observation, messages: Iterable[BccMessage]) -> None:
-        # Abstract.
+        '''
+        This is an abstract method. It is called by the `VWActor` to update the `ActorMindSurrogate` with the latest `Observation` and `Iterable[BccMessage]`.
+        '''
         ignore(self)
         ignore(observation)
         ignore(messages)
 
+        raise NotImplementedError()
+
     def decide(self) -> Union[VWAction, Tuple[VWAction]]:
-        # Abstract.
+        '''
+        This is an abstract method. It is called by the `VWActor` to decide the next `VWAction` or `Tuple[VWAction]` to be executed.
+        '''
         ignore(self)
 
-        return VWIdleAction()
+        raise NotImplementedError()
 
     @staticmethod
     def validate(mind: ActorMindSurrogate, colour: Colour) -> None:
+        '''
+        Validates the `ActorMindSurrogate` `mind` by checking that all the methods specified in `ActorMindSurrogate.MUST_BE_DEFINED` are defined, together with the correct arguments.
+        '''
         assert mind
 
         for fun_name, number_of_parameters in ActorMindSurrogate.MUST_BE_DEFINED.items():
@@ -62,6 +81,9 @@ class ActorMindSurrogate():
 
     @staticmethod
     def load_from_file(surrogate_mind_file: str, surrogate_mind_class_name: str) -> ActorMindSurrogate:
+        '''
+        Loads the `ActorMindSurrogate` class from the Python file whose path is specified by `surrogate_mind_file` and returns an instance of it.
+        '''
         try:
             assert surrogate_mind_file.endswith(".py")
 

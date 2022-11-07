@@ -129,8 +129,8 @@ class TestEnums(TestCase):
         self.assertEqual("1", str(UserDifficulty.hard))
         self.assertEqual(UserDifficulty(1), UserDifficulty.hard)
 
-        self.assertEqual(UserDifficulty.easy.toggle(), UserDifficulty.hard)
-        self.assertEqual(UserDifficulty.hard.toggle(), UserDifficulty.easy)
+        self.assertEqual(UserDifficulty.easy.opposite(), UserDifficulty.hard)
+        self.assertEqual(UserDifficulty.hard.opposite(), UserDifficulty.easy)
 
 
 if __name__ == "__main__":

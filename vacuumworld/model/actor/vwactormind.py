@@ -10,6 +10,13 @@ from ...common.observation import Observation
 
 
 class VWMind(Mind):
+    '''
+    This class specifies the mind of a `VWActor`.
+
+    The mind has a surrogate, which is an instance of a class that extends `ActorMindSurrogate`. The surrogate is used to store the state of the mind, and to implement `revise()`, and `decide()`.
+
+    The mind implements the `perceive()` and `execute()` methods that are called by the body together with `revise()` and `decide()` during the `VWActor` cycle.
+    '''
     PERCEIVE_METHOD_NAME: str = "perceive"
     REVISE_METHOD_NAME: str = "revise"
     DECIDE_METHOD_NAME: str = "decide"
@@ -27,6 +34,9 @@ class VWMind(Mind):
         self.__next_actions: Tuple[VWAction] = None
 
     def get_surrogate(self) -> ActorMindSurrogate:
+        '''
+        Returns the `ActorMindSurrogate` of this `VWMind`.
+        '''
         return self.__surrogate
 
     # This method needs to be overridden by sub-classes.
@@ -45,13 +55,22 @@ class VWMind(Mind):
             raise ValueError("Invalid surrogate mind: no callable {}() method found.".format(VWMind.DECIDE_METHOD_NAME))
 
     def reset_surrogate(self) -> None:
+        '''
+        Resets the `ActorMindSurrogate` of this `VWMind`.
+        '''
         self.__surrogate = self._clone_surrogate(surrogate=self.__surrogate)
 
     def perceive(*_) -> None:
-        # Not implemented, as the perception is initiated by the body.
-        return
+        '''
+        Not implemented, as the perception is initiated by the body.
+        '''
 
     def revise(self, observation: Observation, messages: Iterable[BccMessage]) -> None:
+        '''
+        Calls the `revise()` method of the `ActorMindSurrogate`, passing the `observation` and `messages` arguments.
+
+        This method assumes (via assertions) that the `ActorMindSurrogate` has a callable `revise()` method which accepts the intended arguments.
+        '''
         assert hasattr(self.__surrogate, VWMind.REVISE_METHOD_NAME)
         assert callable(getattr(self.__surrogate, VWMind.REVISE_METHOD_NAME))
 
@@ -64,6 +83,11 @@ class VWMind(Mind):
         self.__surrogate.revise(observation=observation, messages=messages)
 
     def decide(self) -> None:
+        '''
+        Calls the `decide()` method of the `ActorMindSurrogate`, and propagates (returns) its return value.
+
+        This method assumes (via assertions) that the `ActorMindSurrogate` has a callable `decide()` method which returns an appropriate value.
+        '''
         assert hasattr(self.__surrogate, VWMind.DECIDE_METHOD_NAME)
         assert callable(getattr(self.__surrogate, VWMind.DECIDE_METHOD_NAME))
 
@@ -90,6 +114,11 @@ class VWMind(Mind):
         self.__next_actions = tuple(sanitised_actions)
 
     def execute(self) -> Tuple[VWAction]:
+        '''
+        Returns a Tuple[VWAction] consisting of each `VWAction` to be attempted.
+
+        This method assumes (via assertion) that at least one `VWAction` is returned.
+        '''
         assert len(self.__next_actions) > 0
 
         return self.__next_actions
