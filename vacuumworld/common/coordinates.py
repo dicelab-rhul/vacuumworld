@@ -22,15 +22,27 @@ class Coord():
         self.y: int = self.get_y()
 
     def get_x(self) -> int:
+        '''
+        Returns the `x` coordinate as an `int`.
+        '''
         return self.__x
 
     def get_y(self) -> int:
+        '''
+        Returns the `y` coordinate as an `int`.
+        '''
         return self.__y
 
     def in_bounds(self, min_x: int, max_x: int, min_y: int, max_y: int) -> bool:
+        '''
+        Returns whether or not the current `Coord` is within the given inclusive bounds.
+        '''
         return min_x <= self.__x <= max_x and min_y <= self.__y <= max_y
 
     def forward(self, orientation: Orientation) -> Coord:
+        '''
+        Returns a `Coord` that is one step forward from the current `Coord` in the given `Orientation`.
+        '''
         assert orientation in [Orientation.north, Orientation.south, Orientation.west, Orientation.east]
 
         if orientation == Orientation.north:
@@ -43,6 +55,9 @@ class Coord():
             return Coord(x=self.__x + 1, y=self.__y)
 
     def backward(self, orientation: Orientation) -> Coord:
+        '''
+        Returns a `Coord` that is one step backward from the current `Coord` in the given `Orientation`.
+        '''
         assert orientation in [Orientation.north, Orientation.south, Orientation.west, Orientation.east]
 
         if orientation == Orientation.north:
@@ -55,6 +70,9 @@ class Coord():
             return Coord(x=self.__x - 1, y=self.__y)
 
     def left(self, orientation: Orientation) -> Coord:
+        '''
+        Returns a `Coord` that is one step to the left from the current `Coord` in the given `Orientation`.
+        '''
         assert orientation in [Orientation.north, Orientation.south, Orientation.west, Orientation.east]
 
         if orientation == Orientation.north:
@@ -67,6 +85,9 @@ class Coord():
             return Coord(x=self.__x, y=self.__y - 1)
 
     def right(self, orientation: Orientation) -> Coord:
+        '''
+        Returns a `Coord` that is one step to the right from the current `Coord` in the given `Orientation`.
+        '''
         assert orientation in [Orientation.north, Orientation.south, Orientation.west, Orientation.east]
 
         if orientation == Orientation.north:
@@ -79,6 +100,9 @@ class Coord():
             return Coord(x=self.__x, y=self.__y + 1)
 
     def forwardleft(self, orientation: Orientation) -> Coord:
+        '''
+        Returns a `Coord` that is one step forward and one step to the left from the current `Coord` in the given `Orientation`.
+        '''
         assert orientation in [Orientation.north, Orientation.south, Orientation.west, Orientation.east]
 
         if orientation == Orientation.north:
@@ -91,6 +115,9 @@ class Coord():
             return Coord(x=self.__x + 1, y=self.__y - 1)
 
     def forwardright(self, orientation: Orientation) -> Coord:
+        '''
+        Returns a `Coord` that is one step forward and one step to the right from the current `Coord` in the given `Orientation`.
+        '''
         assert orientation in [Orientation.north, Orientation.south, Orientation.west, Orientation.east]
 
         if orientation == Orientation.north:
@@ -103,9 +130,15 @@ class Coord():
             return Coord(x=self.__x + 1, y=self.__y + 1)
 
     def clone(self) -> Coord:
+        '''
+        Returns a deep-copy of the current `Coord`.
+        '''
         return Coord(x=self.__x, y=self.__y)
 
     def to_json(self) -> Dict[str, int]:
+        '''
+        Returns a JSON representation of the current `Coord`.
+        '''
         return {
             "x": self.__x,
             "y": self.__y
@@ -204,6 +237,9 @@ class Coord():
 
     @staticmethod
     def random_between_inclusive(min_x: int, max_x: int, min_y: int, max_y: int) -> Coord:
+        '''
+        Returns a random `Coord` between the given inclusive bounds.
+        '''
         assert min_x <= max_x
         assert min_y <= max_y
 

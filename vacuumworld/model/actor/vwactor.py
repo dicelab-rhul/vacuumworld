@@ -87,16 +87,26 @@ class VWActor(Actor):
         return observations[-1]
 
     def cycle(self) -> None:
+        # If debug is disabled, this call will do nothing.
         ActorBehaviourDebugger.debug()
 
+        # Fetch the perceptions.
         observation, messages = self.perceive()
 
+        # Revise the internal state/beliefs based on the perceptions.
         self.get_mind().revise(observation=observation, messages=messages)
 
+        # Decide the next `VWAction` or `Tuple[VWAction]` to attempt.
         self.get_mind().decide()
 
+        # Attempt the execution of the `VWAction` or `Tuple[VWAction]`.
+        self.execute()
+
+    def execute(self) -> None:
+        # Fetch the `VWAction` or `Tuple[VWAction]` to attempt.
         actions_to_attempt: Tuple[VWAction] = self.get_mind().execute()
 
+        # Attempt the `VWAction` or `Tuple[VWAction]`.
         self.__attempt_actions(actions=actions_to_attempt)
 
     def __attempt_actions(self, actions: Tuple[VWAction]) -> None:
