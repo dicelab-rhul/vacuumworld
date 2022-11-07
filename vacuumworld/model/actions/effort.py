@@ -2,6 +2,11 @@ from typing import Dict
 
 
 class ActionEffort():
+    '''
+    This class specifies the effort of each kind of `VWAction`.
+
+    The effort of a kind `VWAction` is an `int` number that specifies how intensive such kind `VWAction` is to attempt.
+    '''
     __DEFAULT_EFFORTS: Dict[str, int] = {
         "VWBroadcastAction": 1,
         "VWCleanAction": 1,
@@ -27,6 +32,13 @@ class ActionEffort():
 
     @staticmethod
     def override_default_effort_for_action(action_name: str, new_effort: int) -> None:
+        '''
+        Overrides the default effort of the specified `action_name` with the specified `new_effort`.
+
+        If the specified `action_name` is not a valid `VWAction` name, then nothing happens.
+
+        This method assumes (via assertion) that `action_name` is a `str`, and `new_effort` is an `int`.
+        '''
         assert type(action_name) == str and type(new_effort) == int
 
         if action_name in ActionEffort.EFFORTS:

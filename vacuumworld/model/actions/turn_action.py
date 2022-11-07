@@ -4,6 +4,9 @@ from ...common.exceptions import VWMalformedActionException
 
 
 class VWTurnAction(VWPhysicalAction):
+    '''
+    This class is a `VWPhysicalAction` that turns the `VWActor` in the specified direction.
+    '''
     def __init__(self, direction: Direction) -> None:
         super(VWTurnAction, self).__init__()
 
@@ -15,4 +18,7 @@ class VWTurnAction(VWPhysicalAction):
             self.__direction: Direction = direction
 
     def get_turning_direction(self) -> Direction:
+        '''
+        Returns the turning direction of this `VWTurnAction` as a `Direction`.
+        '''
         return self.__direction
