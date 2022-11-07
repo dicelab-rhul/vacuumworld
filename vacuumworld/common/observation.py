@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Dict, Iterable, List, Optional, Type, Tuple, Union
+from typing import Dict, Iterable, List, Optional, Type, Tuple, Union, Iterator
 from json import dumps
 
 from pystarworldsturbo.common.action_outcome import ActionOutcome
@@ -194,7 +194,7 @@ class Observation(Perception):
     def create_empty_observation() -> Observation:
         return Observation(action_type=VWIdleAction, action_result=ActionResult(outcome=ActionOutcome.impossible), locations_dict={})
 
-    def __iter__(self) -> Iterable:
+    def __iter__(self) -> Iterator[VWLocation]:
         for location in self.__locations.values():
             yield location
 
@@ -206,7 +206,7 @@ class Observation(Perception):
 
     def pretty_format(self) -> str:
         observation_dict: dict = {
-            # The `.name` is necessary because the `ActionType` is an `Enum` and `Enum` objects are not JSON serialisable.
+            # The `.name` is necessary because `ActionOutcome` is an `Enum` and `Enum` objects are not JSON serialisable.
             "Action outcomes": [{action_type.__name__: action_result.get_outcome().name} for action_type, action_result in self.__action_results],
             "Perceived locations": {pos.name: loc.pretty_format() for pos, loc in self.__locations.items()}
         }

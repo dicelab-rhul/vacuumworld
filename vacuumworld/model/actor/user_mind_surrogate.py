@@ -24,7 +24,6 @@ class UserMindSurrogate(ActorMindSurrogate):
         assert type(difficulty_level) == UserDifficulty
 
         self.__difficulty_level: UserDifficulty = difficulty_level
-        self.__observation: Observation = None
 
     def get_difficulty_level(self) -> UserDifficulty:
         return self.__difficulty_level
@@ -32,26 +31,17 @@ class UserMindSurrogate(ActorMindSurrogate):
     def set_difficulty_level(self, difficulty_level: UserDifficulty) -> None:
         self.__difficulty_level = difficulty_level
 
-    def __is_wall_ahead(self) -> bool:
-        return not self.__observation.get_forward()
-
-    def __is_wall_on_the_left(self) -> bool:
-        return not self.__observation.get_left()
-
-    def __is_wall_on_the_right(self) -> bool:
-        return not self.__observation.get_right()
-
     def __is_on_dirt(self) -> bool:
-        return self.__observation.get_center().has_dirt()
+        return self.__observation.get_center() and self.__observation.get_center().has_dirt()
 
     def __is_actor_ahead(self) -> bool:
-        return self.__observation.get_forward() and self.__observation.get_forward().has_actor()
+        return not self.__observation.is_wall_immediately_ahead() and self.__observation.get_forward().has_actor()
 
     def __is_actor_on_the_left(self) -> bool:
-        return self.__observation.get_left() and self.__observation.get_left().has_actor()
+        return not self.__observation.is_wall_immediately_to_the_left() and self.__observation.get_left().has_actor()
 
     def __is_actor_on_the_right(self) -> bool:
-        return self.__observation.get_right() and self.__observation.get_right().has_actor()
+        return not self.__observation.is_wall_immediately_to_the_right() and self.__observation.get_right().has_actor()
 
     def revise(self, observation: Observation, messages: Iterable[BccMessage]) -> None:
         self.__observation: Observation = observation
@@ -69,7 +59,7 @@ class UserMindSurrogate(ActorMindSurrogate):
             raise ValueError("Unrecognised user difficulty level: {}.".format(self.__difficulty_level))
 
     def __be_kind(self) -> VWPhysicalAction:
-        if self.__is_wall_ahead():
+        if self.__observation.is_wall_immediately_ahead():
             return self.__decide_if_wall_ahead_and_kind()
         elif self.__is_on_dirt():
             # If there is already a dirt on this location, move or turn.
@@ -79,17 +69,17 @@ class UserMindSurrogate(ActorMindSurrogate):
             return UserMindSurrogate.__act_randomly(weights=[0.2, 0.2, 0.45, 0.075, 0.075])
 
     def __decide_if_wall_ahead_and_kind(self) -> VWPhysicalAction:
-        if self.__is_wall_on_the_left():
+        if self.__observation.is_wall_immediately_to_the_left():
             return VWTurnAction(direction=Direction.right)
-        elif self.__is_wall_on_the_right():
+        elif self.__observation.is_wall_immediately_to_the_right():
             return VWTurnAction(direction=Direction.left)
         else:
             return UserMindSurrogate.__turn_randomly()
 
     def __decide_if_on_dirt_and_kind(self) -> VWPhysicalAction:
-        if self.__is_wall_on_the_left():
+        if self.__observation.is_wall_immediately_to_the_left():
             return UserMindSurrogate.__move_randomly(weights=[0.6, 0.0, 0.4])
-        elif self.__is_wall_on_the_right():
+        elif self.__observation.is_wall_immediately_to_the_right():
             return UserMindSurrogate.__move_randomly(weights=[0.6, 0.4, 0.0])
         else:
             return UserMindSurrogate.__move_randomly(weights=[0.5, 0.25, 0.25])
@@ -141,7 +131,7 @@ class UserMindSurrogate(ActorMindSurrogate):
 
     def __be_inconsiderate(self) -> VWPhysicalAction:
         # Wall ahead.
-        if self.__is_wall_ahead():
+        if self.__observation.is_wall_immediately_ahead():
             return self.__decide_if_wall_ahead_and_inconsiderate()
         # Actor ahead.
         elif self.__is_actor_ahead():
@@ -150,26 +140,26 @@ class UserMindSurrogate(ActorMindSurrogate):
         elif self.__is_actor_on_the_left() and self.__is_actor_on_the_right():
             return UserMindSurrogate.__move_or_drop_randomly(weights=[0.1, 0.1, 0.8])
         # Actor on the left and no wall on the right.
-        elif self.__is_actor_on_the_left() and not self.__is_wall_on_the_right():
+        elif self.__is_actor_on_the_left() and not self.__observation.is_wall_immediately_to_the_right():
             return UserMindSurrogate.__move_randomly(weights=[0.5, 0.0, 0.5])
         # Actor on the right and no wall on the left.
-        elif self.__is_actor_on_the_right() and not self.__is_wall_on_the_left():
+        elif self.__is_actor_on_the_right() and not self.__observation.is_wall_immediately_to_the_left():
             return UserMindSurrogate.__move_randomly(weights=[0.5, 0.5, 0.0])
         # Wall on the left.
-        elif self.__is_wall_on_the_left():
+        elif self.__observation.is_wall_immediately_to_the_left():
             return self.__decide_if_wall_on_the_left_and_inconsiderate()
         # Wall on the right.
-        elif self.__is_wall_on_the_right():
+        elif self.__observation.is_wall_immediately_to_the_right():
             return self.__decide_if_wall_on_the_right_and_inconsiderate()
         # Any other possibility.
         else:
             return self.__act_randomly(weights=[0.15, 0.15, 0.6, 0.05, 0.05])
 
         # Always wall ahead
-    def __decide_if_wall_ahead_and_inconsiderate(self) -> list:
-        if self.__is_wall_on_the_left():  # Wall on the left.
+    def __decide_if_wall_ahead_and_inconsiderate(self) -> VWPhysicalAction:
+        if self.__observation.is_wall_immediately_to_the_left():  # Wall on the left.
             return VWTurnAction(direction=Direction.right)
-        elif self.__is_wall_on_the_right():  # Wall on the right.
+        elif self.__observation.is_wall_immediately_to_the_right():  # Wall on the right.
             return VWTurnAction(direction=Direction.left)
         elif self.__is_actor_on_the_left() and self.__is_actor_on_the_right():  # Both left and right are occupied by actors.
             return UserMindSurrogate.__turn_randomly()
@@ -183,10 +173,10 @@ class UserMindSurrogate(ActorMindSurrogate):
             return self.__act_randomly(weights=[0.075, 0.075, 0.6, 0.0, 0.25])
 
     # Always actor ahead.
-    def __decide_if_agent_ahead_and_inconsiderate(self) -> list:
-        if self.__is_wall_on_the_left():  # Wall on the left.
+    def __decide_if_agent_ahead_and_inconsiderate(self) -> VWPhysicalAction:
+        if self.__observation.is_wall_immediately_to_the_left():  # Wall on the left.
             return VWTurnAction(direction=Direction.right)
-        elif not self.__is_wall_on_the_right():  # Wall on the right.
+        elif not self.__observation.is_wall_immediately_to_the_right():  # Wall on the right.
             return VWTurnAction(direction=Direction.left)
         elif self.__is_actor_on_the_left() and self.__is_actor_on_the_right():  # Both left and right are occupied by actors.
             return self.__drop_random_dirt()  # Dropping a dirt in front of the actor, if possible.
@@ -200,14 +190,14 @@ class UserMindSurrogate(ActorMindSurrogate):
             return UserMindSurrogate.__act_randomly(weights=[0.25, 0.25, 0.0, 0.25, 0.25])
 
     # Always wall on the left.
-    def __decide_if_wall_on_the_left_and_inconsiderate(self) -> list:
+    def __decide_if_wall_on_the_left_and_inconsiderate(self) -> VWPhysicalAction:
         if self.__is_on_dirt():
             return UserMindSurrogate.__move_randomly(weights=[0.9, 0.0, 0.1])
         else:
             return UserMindSurrogate.__act_randomly(weights=[0.075, 0.075, 0.6, 0.0, 0.25])
 
     # Always wall on the right.
-    def __decide_if_wall_on_the_right_and_inconsiderate(self) -> list:
+    def __decide_if_wall_on_the_right_and_inconsiderate(self) -> VWPhysicalAction:
         if self.__is_on_dirt():
             return UserMindSurrogate.__move_randomly(weights=[0.9, 0.1, 0.0])
         else:

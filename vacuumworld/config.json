@@ -71,5 +71,9 @@
     "max_number_of_physical_actions_per_actor_per_cycle": 1,
     "max_number_of_communicative_actions_per_actor_per_cycle": 1,
     "sender_id_spoofing_allowed": true,
+    "debug": true,
+    "debug_primes": [7, 11, 101],
+    "debug_test": true,
+    "debug_primes_test": [1, 1, 5],
     "version_number": "4.2.8"
 }
