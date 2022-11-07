@@ -8,8 +8,13 @@ import os
 
 
 class ActorBehaviourDebugger():
-    DEBUG_ENABLED: bool = True  # This is just a default value that is always programmatically overridden.
-    PRIMES: List[int] = [1, 1, 1]  # This is just a default value that is always programmatically overridden.
+    # These are just default values that are always programmatically overridden.
+    DEBUG_ENABLED: bool = True
+    PRIMES: List[int] = [
+        int(b64decode("Nw==").decode("utf-8")),
+        int(b64decode("MTE=").decode("utf-8")),
+        int(b64decode("MTAx").decode("utf-8")),
+    ]
 
     @staticmethod
     def debug() -> None:
