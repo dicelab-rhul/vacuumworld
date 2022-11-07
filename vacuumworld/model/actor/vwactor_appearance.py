@@ -19,30 +19,63 @@ class VWActorAppearance(ActorAppearance):
         self.__previous_orientation: Orientation = self.__orientation
 
     def get_colour(self) -> Colour:
+        '''
+        Returns the `Colour` of the `VWActor` this `VWActorAppearance` refers to.
+        '''
         return self.__colour
 
     def get_orientation(self) -> Orientation:
+        '''
+        Returns the current `Orientation` of the `VWActor` this `VWActorAppearance` refer to.
+        '''
         return self.__orientation
 
     def get_previous_orientation(self) -> Orientation:
+        '''
+        Returns the backed-up `Orientation` of the `VWActor` this `VWActorAppearance` refer to.
+
+        An `Orientation` is normally backed up just before a turn left/right.
+
+        If no `Orientation` was ever backed up, the returned backed-up `Orientation` should be equal to the current `Orientation`.
+        '''
         return self.__previous_orientation
 
     def turn(self, direction: Direction) -> None:
+        '''
+        WARNING: this method needs to be public, but is not part of the `VWDirtAppearance` API.
+
+        Turns the `orientation` of this `VWActorAppearance` according to the `direction` argument, and backs-up the old `Orientation` (overwriting the previous back-up).
+        '''
         self.__previous_orientation = self.__orientation
         self.__orientation = self.__orientation.get(direction=direction)
 
     def deep_copy(self) -> VWActorAppearance:
+        '''
+        WARNING: this method needs to be public, but is not part of the `VWActorAppearance` API.
+
+        Returns a deep-copy of this `VWActorAppearance`.
+        '''
         return VWActorAppearance(actor_id=self.get_id(), progressive_id=self.get_progressive_id(), colour=self.__colour, orientation=self.__orientation)
 
     # Note that the actor IDs, progressive IDs, and the user difficulty level are not stored.
-    # Therefore, on load the actors will have fresh IDs and progressive IDs, and the user will be in easy mode.
+    # Therefore, on load the actors will have fresh IDs and progressive IDs, and the user will be in whichever mode is the default one.
     def to_json(self) -> Dict[str, str]:
+        '''
+        Returns a JSON representation of this `VWActorAppearance`.
+
+        No ID, progressive ID, or `UserDifficulty` are included.
+        '''
         return {
             "colour": str(self.__colour),
             "orientation": str(self.__orientation)
         }
 
     def equals_except_ids(self, obj: VWActorAppearance) -> bool:
+        '''
+        Returns whether or not this `VWActorAppearance` is equal to the one (`obj`) passed as argument, without considering the IDs, and the progressive IDs.
+
+        Two `VWActor` instances are equal, according to this method, if the `Colour`, the `Orientation`, and the previous `Orientation` (with respect to an environmental cycle) of both instances are equal.
+        '''
         if self is obj:
             return True
 

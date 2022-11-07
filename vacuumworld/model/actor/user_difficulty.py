@@ -4,6 +4,12 @@ from random import choice
 
 
 class UserDifficulty(Enum):
+    '''
+    This `Enum` specifies the behaviour of a `VWUser`.
+
+    * `easy` means that the `VWUser` will not try to avoid any `VWCleaningAgent`.
+    * `hard` means that the `VWUser` will try to avoid any `VWCleaningAgent` it sees.
+    '''
     easy = 0
     hard = 1
 

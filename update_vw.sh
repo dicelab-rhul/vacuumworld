@@ -17,5 +17,5 @@ else
     rm -rf vacuumworld.egg-info
 
     echo
-    echo "VacuumWorld version: $(pip list | grep vacuumworld | rev | cut -d' ' -f1)"
+    echo "VacuumWorld version: $(pip list | grep vacuumworld | rev | cut -d' ' -f1 | rev)"
 fi
