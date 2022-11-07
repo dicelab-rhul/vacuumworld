@@ -21,8 +21,14 @@ from ...actions.broadcast_action import VWBroadcastAction
 
 
 class VWExecutorFactory(ExecutorFactory):
+    '''
+    This class is a factory for creating `ActionExecutor` objects.
+    '''
     @staticmethod
     def get_executor_for(action: VWAction) -> Optional[ActionExecutor]:
+        '''
+        Returns an `ActionExecutor` object for the given `VWAction`, or `None` if `action` is incompatible with `VWEnvironment`.
+        '''
         assert isinstance(action, VWAction)
 
         action_type: Type = type(action)

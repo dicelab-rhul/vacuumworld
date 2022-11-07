@@ -15,7 +15,15 @@ if TYPE_CHECKING:
 
 
 class TurnExecutor(ActionExecutor):
+    '''
+    This class is an `ActionExecutor` for `VWTurnAction`.
+    '''
     def is_possible(self, env: VWEnvironment, action: VWTurnAction) -> bool:
+        '''
+        Returns whether or not `action` is possible in `env`.
+
+        In any `VWEnvironment` a `VWTurnAction` is always possible. Therefore `True` is always returned.
+        '''
         ignore(self)
         ignore(env)
         ignore(action)
@@ -23,6 +31,13 @@ class TurnExecutor(ActionExecutor):
         return True
 
     def attempt(self, env: VWEnvironment, action: VWTurnAction) -> ActionResult:
+        '''
+        Attempts to execute `action` in `env`, returning a provisional `ActionResult`.
+
+        If an `Exception` is raised, the provisional `ActionResult` will have an `ActionOutcome` of `ActionOutcome.failure`.
+
+        Otherwise, the provisional `ActionResult` will have an `ActionOutcome` of `ActionOutcome.success`.
+        '''
         ignore(self)
 
         try:
@@ -36,6 +51,11 @@ class TurnExecutor(ActionExecutor):
             return ActionResult(ActionOutcome.failure)
 
     def succeeded(self, env: VWEnvironment, action: VWTurnAction) -> bool:
+        '''
+        Returns whether or not the post-conditions of `action` are satisfied in `env`.
+
+        The post-conditions of a `VWTurnAction` are satisfied if the `Orientation` of the `VWActor` that executed the `VWTurnAction` has been rotated according to the `Direction` in `action`.
+        '''
         ignore(self)
 
         actor_id: str = action.get_actor_id()

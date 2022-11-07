@@ -16,7 +16,19 @@ if TYPE_CHECKING:
 
 
 class DropExecutor(ActionExecutor):
+    '''
+    This class is an `ActionExecutor` for `VWDropAction`.
+    '''
     def is_possible(self, env: VWEnvironment, action: VWDropAction) -> bool:
+        '''
+        Returns whether or not `action` is possible in `env`.
+
+        In any `VWEnvironment` a `VWDropAction` is possible if:
+
+        * The `VWLocation` that contains the `VWActor` whose ID matches the actor ID of `action` has no `Dirt` on it
+
+        * The `VWLocation` that contains the `VWActor` whose ID matches the actor ID of `action` has a `VWUser` in it.
+        '''
         ignore(self)
 
         actor_id: str = action.get_actor_id()
@@ -26,6 +38,13 @@ class DropExecutor(ActionExecutor):
         return not actor_location.has_dirt() and actor_colour == Colour.user
 
     def attempt(self, env: VWEnvironment, action: VWDropAction) -> ActionResult:
+        '''
+        Attempts to execute `action` in `env`, returning a provisional `ActionResult`.
+
+        If an `Exception` is raised, the provisional `ActionResult` will have an `ActionOutcome` of `ActionOutcome.failure`.
+
+        Otherwise, the provisional `ActionResult` will have an `ActionOutcome` of `ActionOutcome.success`.
+        '''
         ignore(self)
 
         try:
@@ -43,6 +62,15 @@ class DropExecutor(ActionExecutor):
             return ActionResult(ActionOutcome.failure)
 
     def succeeded(self, env: VWEnvironment, action: VWDropAction) -> bool:
+        '''
+        Returns whether or not the post-conditions of `action` are satisfied in `env`.
+
+        The post-conditions of a `VWDropAction` are satisfied if:
+
+        * The `VWLocation` that contains the `VWActor` whose ID matches the actor ID of `action` has a `Dirt` on it.
+
+        * The `Colour` of the aforementioned `Dirt` is the same as the `Colour` in `action`.
+        '''
         ignore(self)
 
         actor_id: str = action.get_actor_id()

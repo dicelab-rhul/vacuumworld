@@ -14,7 +14,15 @@ if TYPE_CHECKING:
 
 
 class SpeakExecutor(ActionExecutor):
+    '''
+    This class is an `ActionExecutor` for `VWSpeakAction`.
+    '''
     def is_possible(self, env: VWEnvironment, action: VWSpeakAction) -> bool:
+        '''
+        Returns whether or not `action` is possible in `env`.
+
+        In any `VWEnvironment` a `VWSpeakAction` is always possible. Therefore `True` is always returned.
+        '''
         ignore(self)
         ignore(env)
         ignore(action)
@@ -22,6 +30,13 @@ class SpeakExecutor(ActionExecutor):
         return True
 
     def attempt(self, env: VWEnvironment, action: VWSpeakAction) -> ActionResult:
+        '''
+        Attempts to execute `action` in `env`, returning a provisional `ActionResult`.
+
+        If an `Exception` is raised, the provisional `ActionResult` will have an `ActionOutcome` of `ActionOutcome.failure`.
+
+        Otherwise, the provisional `ActionResult` will have an `ActionOutcome` of `ActionOutcome.success`.
+        '''
         ignore(self)
 
         try:
@@ -35,6 +50,11 @@ class SpeakExecutor(ActionExecutor):
             return ActionResult(ActionOutcome.failure)
 
     def succeeded(self, env: VWEnvironment, action: VWSpeakAction) -> bool:
+        '''
+        Returns whether or not the post-conditions of `action` are satisfied in `env`.
+
+        There are no post-conditions for `VWSpeakAction` to check in `VWEnvironment`, so `True` is always returned.
+        '''
         ignore(env)
         ignore(self)
         ignore(action)
