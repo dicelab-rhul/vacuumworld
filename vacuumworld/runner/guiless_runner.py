@@ -8,12 +8,22 @@ from ..model.environment.vwenvironment import VWEnvironment
 
 
 class VWGUIlessRunner(VWRunner):
+    '''
+    This class is responsible for running VacuumWorld without a GUI.
+    '''
     def __init__(self, config: dict, minds: Dict[Colour, ActorMindSurrogate], allowed_args: Dict[str, Type], **kwargs) -> None:
         super(VWGUIlessRunner, self).__init__(config=config, minds=minds, allowed_args=allowed_args, **kwargs)
 
         self.__validate_load()
 
     def run(self) -> None:
+        '''
+        Runs the simulation.
+
+        If a `KeyboardInterrupt` is raised, the simulation is stopped.
+
+        If any other `Exception` is raised, the simulation is stopped, and the error message is passed to the user.
+        '''
         try:
             env: VWEnvironment = self.load_env()
 

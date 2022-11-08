@@ -10,6 +10,17 @@ import os
 
 
 class VWInitialWindow(Frame):
+    '''
+    This class specifies the initial window that is displayed when VacuumWorld is started.
+
+    The initial window contains a canvas with an image and three buttons: `start`, `guide` and `exit`:
+
+    * `start` opens the simulation window.
+
+    * `guide` opens the Wiki page in a new browser tab.
+
+    * `exit` closes the application.
+    '''
     def __init__(self, parent: Tk, config: dict, buttons: dict, env: VWEnvironment, _start: Callable, _exit: Callable, _guide: Callable) -> None:
         super(VWInitialWindow, self).__init__(parent)
 
@@ -40,6 +51,9 @@ class VWInitialWindow(Frame):
         # Note: pack() for VWInitialWindow needs to be called by the caller.
 
     def get_image(self) -> Img:
+        '''
+        Returns the image of the initial window as a tkinter `Image`.
+        '''
         return self.__image
 
     def __build_button(self, button_name: str, parent: Frame) -> VWButton:

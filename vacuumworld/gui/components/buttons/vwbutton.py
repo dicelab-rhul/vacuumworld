@@ -6,6 +6,11 @@ from .vwtooltips import create_tooltip
 
 
 class VWButton():
+    '''
+    This class is a wrapper around `Button` that specifies the buttons for the VacuumWorld GUI.
+
+    A `VWButton` has a text, an image, a function to be executed when it is clicked and a tooltip text.
+    '''
     def __init__(self, parent: Frame, config: dict, img: Image, fun: Callable, text: str=None, tip_text: str="") -> None:
         self.__img: PhotoImage = PhotoImage(img)
         self.__fun: Callable = fun
@@ -18,13 +23,25 @@ class VWButton():
             create_tooltip(widget=self.__button, text=self.__tip_text, config=config)
 
     def pack(self, side: str) -> None:
+        '''
+        Packs the wrapped `Button` into the parent `Frame`, according to the provided `side`.
+        '''
         self.__button.pack(side=side)
 
     def get_button(self) -> Button:
+        '''
+        Returns the proper `Button` object that this class wraps.
+        '''
         return self.__button
 
     def set_img(self, img: PhotoImage) -> None:
+        '''
+        Sets the image of the wrapped `Button` to the provided `PhotoImage`.
+        '''
         self.__img = img
 
     def get_img(self) -> PhotoImage:
+        '''
+        Returns the `PhotoImage` of the wrapped `Button`.
+        '''
         return self.__img

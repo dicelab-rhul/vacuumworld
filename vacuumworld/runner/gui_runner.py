@@ -15,6 +15,11 @@ import os
 
 
 class VWGUIRunner(VWRunner):
+    '''
+    This class is responsible for running VacuumWorld with a GUI.
+
+    The VacuumWorld GUI is built on the top of the `tkinter` library.
+    '''
     def __init__(self, config: dict, minds: Dict[Colour, ActorMindSurrogate], allowed_args: Dict[str, Type], **kwargs) -> None:
         super(VWGUIRunner, self).__init__(config=config, minds=minds, allowed_args=allowed_args, **kwargs)
 
@@ -22,6 +27,13 @@ class VWGUIRunner(VWRunner):
         self.__already_centered: bool = False
 
     def run(self) -> None:
+        '''
+        Constructs the GUI and runs the simulation.
+
+        If a `KeyboardInterrupt` is raised, the GUI is closed and the simulation is stopped.
+
+        If any other `Exception` is raised, the GUI is closed, the simulation is stopped, and the error message is passed to the user.
+        '''
         try:
             self.__root: Tk = Tk()
             self.__root.title("VacuumWorld v{}".format(self.get_config()["version_number"]))

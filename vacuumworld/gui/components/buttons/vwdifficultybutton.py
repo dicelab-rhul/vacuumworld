@@ -7,6 +7,11 @@ from .vwbutton import VWButton
 
 
 class VWDifficultyButton(VWButton):
+    '''
+    This class specifies the difficulty button that allows to dynamically switch between the `UserDifficulty` levels.
+
+    It extends the `VWButton` class.
+    '''
     def __init__(self, parent: Frame, config: dict, img: Img, fun: Callable, tip_text: str) -> None:
         super(VWDifficultyButton, self).__init__(parent=parent, config=config, img=img, fun=self.onclick, tip_text=tip_text)
 
@@ -21,6 +26,9 @@ class VWDifficultyButton(VWButton):
 
     @staticmethod
     def next_image(img, red) -> PhotoImage:
+        '''
+        Returns the appropriate `PhotoImage` for the selected `UserDifficulty`.
+        '''
         img_dif: Image.Image = Image.new("RGB", img.size)
         img_dif.paste(img)
 
@@ -32,9 +40,15 @@ class VWDifficultyButton(VWButton):
         return PhotoImage(img_dif)
 
     def get_difficulty(self) -> int:
+        '''
+        Returns the selected `UserDifficulty` level as an `int`.
+        '''
         return self.__difficulty
 
     def onclick(self) -> None:
+        '''
+        Specifies the behaviour of this `VWDifficultyButton` when it is clicked.
+        '''
         self.__difficulty = (self.__difficulty + 1) % len(self.__imgs)
 
         self.set_img(self.__imgs[self.__difficulty])
