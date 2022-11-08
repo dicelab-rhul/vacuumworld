@@ -5,8 +5,21 @@ import os
 
 
 class ConfigManager():
+    '''
+    This class is responsible for loading the configuration of the application.
+    '''
     @staticmethod
     def load_config_from_file(config_file_path: str) -> dict:
+        '''
+        Loads the configuration from the file identified by `config_file_path`, and returns it as a `dict`.
+
+        This method assumes (via assertions) that `config_file_path` points to an existing file.
+
+        If something goes wrong during the I/O operations, the resulting `IOError` is not caught (and thus automatically propagated).
+        '''
+        assert config_file_path and type(config_file_path) == str and os.path.exists(config_file_path) and os.path.isfile(config_file_path)
+
+        # We let the `IOError` propagate, if any.
         with open(file=config_file_path, mode="r") as f:
             config: dict = load(fp=f)
 

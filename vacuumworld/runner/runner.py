@@ -17,6 +17,13 @@ import signal as signal_module
 
 
 class VWRunner(Process):
+    '''
+    This abstract class is the base for all the VacuumWorld runners. It contains all the common methods and attributes.
+
+    All the runners must implement the `run()` method.
+
+    All the arguments passed to `VacuumWorld.run()`are stored and validated here, together with their default values.
+    '''
     def __init__(self, config: dict, minds: Dict[Colour, ActorMindSurrogate], allowed_args: Dict[str, Type], **kwargs) -> None:
         super(VWRunner, self).__init__()
 
@@ -50,35 +57,71 @@ class VWRunner(Process):
         VWRunner.__set_sigtstp_handler()
 
     def get_config(self) -> dict:
+        '''
+        Returns the configuration `dict`.
+        '''
         return self.__config
 
     def get_minds(self) -> Dict[Colour, ActorMindSurrogate]:
+        '''
+        Returns a `Dict[Colour, ActorMindSurrogate]` mapping each `Colour` to an `ActorMindSurrogate` that will be given to each `VWActor` exhibiting that particular `Colour`.
+        '''
         return self.__minds
 
     def get_arg(self, arg: str) -> Union[bool, int, float, str, Dict[str, int]]:
+        '''
+        Returns the value of the argument `arg` as a `Union[bool, int, float, Dict[str, int]]`.
+        '''
         return self.__args[arg]
 
     def get_save_state_manager(self) -> SaveStateManager:
+        '''
+        Returns the `SaveStateManager` used by this `VWRunner`.
+        '''
         return self.__save_state_manager
 
     def can_loop(self) -> bool:
+        '''
+        Returns whether or not this `VWRunner` can keep looping.
+
+        If a `VWRunner` cannot loop, it means that some internal error has been raised, and the `VWRunner` must stop as a consequence.
+        '''
         return not self.__forceful_stop
 
     def must_stop_now(self) -> bool:
+        '''
+        Returns whether or not this `VWRunner` must stop now.
+
+        If a `VWRunner` must stop now, it means that the user (or the Kernel) has requested to stop the execution of the `VWRunner` with something like a `KeyboardInterrupt`.
+        '''
         return self.__exit.is_set()
 
     def propagate_stop_signal(self) -> None:
+        '''
+        Sets the `Event` signalling an external interrupt to `True`, so that this `VWRunner` can stop.
+        '''
         self.__exit.set()
 
     def kill(self) -> None:
+        '''
+        Sets the `bool` signalling an internal interrupt to `True`, so that this `VWRunner` can stop.
+        '''
         self.__forceful_stop = True
 
     def clean_exit(self) -> None:
+        '''
+        Displays an internal error message and sets the `bool` signalling an internal interrupt to `True`, so that this `VWRunner` can stop.
+        '''
         print_exc()
 
         self.kill()
 
     def load_env(self) -> VWEnvironment:
+        '''
+        Attempts to load and return a `VWEnvironment` from the file specified by `config[\"file_to_load\"]` (which was set according to the `load` argument).
+
+        If an error occurs, an empty `VWEnvironment` with a default grid size is generated and returned instead.
+        '''
         try:
             data: dict = {}
 
@@ -95,6 +138,9 @@ class VWRunner(Process):
             return VWEnvironment.generate_empty_env(config=self.__config)
 
     def run(self) -> None:
+        '''
+        This abstract method must be implemented by all the `VWRunner` subclasses.
+        '''
         raise NotImplementedError()
 
     def __validate_minds(self) -> None:

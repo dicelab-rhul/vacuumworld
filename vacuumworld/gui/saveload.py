@@ -11,6 +11,13 @@ import os
 
 
 class SaveStateManager():
+    '''
+    This class is responsible for saving and loading the state of a `VWEnvironment`.
+
+    It supports saving and loading to and from a file, both with a saveload dialog and without it.
+
+    The format of the saved states is JSON.
+    '''
     def __init__(self) -> None:
         self.__files_dir: str = os.path.join(os.getcwd(), "files")
         self.__vw_saved_state_extension: str = ".json"
@@ -20,6 +27,9 @@ class SaveStateManager():
         self.__prepare_files_dir()
 
     def get_vw_saved_state_extension(self) -> str:
+        '''
+        Returns the extension of the saved states.
+        '''
         return self.__vw_saved_state_extension
 
     def __prepare_files_dir(self) -> None:
@@ -38,6 +48,11 @@ class SaveStateManager():
         return os.path.exists(filename) or os.path.exists(os.path.join(self.__files_dir, os.path.basename(filename)))
 
     def save_state(self, env: VWEnvironment, filename: str) -> bool:
+        '''
+        Saves the state of the given `VWEnvironment` to a file.
+
+        It supports saving to a file both with a saveload dialog and without it.
+        '''
         assert env
 
         state: dict = env.to_json()
@@ -73,6 +88,11 @@ class SaveStateManager():
             return False
 
     def load_state(self, filename: str="", no_gui: bool=False) -> dict:
+        '''
+        Loads the state of a `VWEnvironment` from a file.
+
+        It supports loading from a file both with a saveload dialog and without it.
+        '''
         if filename and self.__file_exists(filename) and match(self.__vw_file_regex, os.path.basename(filename)):
             return self.__quick_load(filename)
         elif no_gui:
@@ -99,6 +119,9 @@ class SaveStateManager():
             return {}
 
     def add_vw_extension_to_filename_string_if_missing(self, filename: str) -> str:
+        '''
+        Amends the given `filename` `str` with the extension of the saved states if it is missing, then returns the amented `str`.
+        '''
         assert filename
 
         if not filename.endswith(self.__vw_saved_state_extension):
@@ -106,14 +129,26 @@ class SaveStateManager():
         return filename
 
     def get_ordered_list_of_filenames_in_save_directory(self) -> List[str]:
+        '''
+        Returns a `List[str]` of the filenames in the save directory, sorted in ascending order.
+
+        If an error occurs, an empty `List` is returned.
+        '''
         try:
             f: List[str] = [file for file in os.listdir(self.__files_dir) if file.endswith(self.__vw_saved_state_extension)]
+
             f.sort()
+
             return f
         except Exception:
             return []
 
     def remove_saved_state(self, filename: str) -> None:
+        '''
+        Removes the saved state with the given `filename` from the save directory.
+
+        If an error occurs, nothing happens.
+        '''
         assert self.__file_exists(os.path.join(self.__files_dir, os.path.basename(filename))) and match(self.__vw_file_regex, os.path.basename(filename))
 
         try:
