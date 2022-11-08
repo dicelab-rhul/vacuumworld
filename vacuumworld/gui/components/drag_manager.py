@@ -3,6 +3,9 @@ from typing import Callable, Tuple
 
 
 class CanvasDragManager():
+    '''
+    This class speficies the behaviour of a drag manager for a `Canvas` object.
+    '''
     def __init__(self, config: dict, key: Tuple[str, str], grid_dim: int, canvas: Canvas, item: Image, on_start_callback: Callable, on_drop_callback: Callable) -> None:
         self.__config: dict = config
         self.__x: int = 0
@@ -23,6 +26,11 @@ class CanvasDragManager():
         self.__dragging: bool = False
 
     def on_start(self, event: Event) -> None:
+        '''
+        This method is called when the user starts dragging the `Image` object.
+
+        Starts the drag operation.
+        '''
         if not self.__dragging:
             self.__on_start_callback(event)
             self.__dragging = True
@@ -30,6 +38,11 @@ class CanvasDragManager():
             self.__y = event.y
 
     def on_drag(self, event: Event) -> None:
+        '''
+        This method is called when the user is dragging the `Image` object.
+
+        Moves the `Image` object across the canvas.
+        '''
         inc: int = self.__config["grid_size"] / self.__grid_dim
         x: int = int(event.x / inc) * inc + (inc / 2) + 1
         y: int = int(event.y / inc) * inc + (inc / 2) + 1
@@ -48,24 +61,51 @@ class CanvasDragManager():
             self.__y = y
 
     def on_drop(self, event: Event) -> None:
+        '''
+        This method is called when the user drops the `Image` object.
+
+        Calls the proper on drop callback method if the `Image` has been dropped in bounds.
+        '''
         if self.in_bounds(x=event.x, y=event.y):
             self.__on_drop_callback(event, self)
+
         self.__dragging = False
 
+    # TODO: merge this method with the one in `BoundsManager`.
     def in_bounds(self, x: int, y: int) -> bool:
+        '''
+        WARNING: this method must only be used by the GUI, as the lower bound is `1` (not `0`) and the upper bound is `grid_size - 1` (not `grid_size`), both inclusive.
+
+        Returns whether or not the provided `x` and `y` integers are within the bounds of the `grid_size` specified in the `config` argument.
+        '''
         return x < self.__config["grid_size"] and x > 0 and y < self.__config["grid_size"] and y > 0
 
     def get_key(self) -> Tuple[str, str]:
+        '''
+        Returns the key of the `Image` objectas a `Tuple[str, str]`.
+        '''
         return self.__key
 
     def get_drag(self) -> Image:
+        '''
+        Returns the `_CanvasItemId` object to be dragged as an `Image`.
+        '''
         return self.__drag
 
     def set_drag(self, drag: Image) -> None:
+        '''
+        Sets the `Image` object to be dragged as a `_CanvasItemId`.
+        '''
         self.__drag = drag
 
     def get_drag_image(self) -> Image:
+        '''
+        Returns the `PhotoImage` object to be dragged as an `Image`.
+        '''
         return self.__drag_image
 
     def set_drag_image(self, drag_image: Image) -> None:
+        '''
+        Sets the `Image` object to be dragged as a `PhotoImage`.
+        '''
         self.__drag_image = drag_image

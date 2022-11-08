@@ -30,6 +30,25 @@ import os
 
 
 class VWSimulationWindow(Frame):
+    '''
+    This class specifies the simulation window for the VacuumWorld GUI.
+
+    The simulation window is the main window of the GUI. It contains the grid, the buttons, and the dragables.
+
+    The simulation window is responsible for the following:
+
+    * Drawing and refreshing the (visual) grid.
+
+    * Interacting with the model (the `VWEnvironment`) to update the (visual) grid and the model itself.
+
+    * Drawing the dragables and the buttons.
+
+    * Handling button/dragable clicks and drags.
+
+    * Handling key presses.
+
+    * Handling mouse movements.
+    '''
     def __init__(self, parent: Tk, config: dict, buttons: dict, minds: Dict[Colour, ActorMindSurrogate], env: VWEnvironment, _guide: Callable, _save: Callable, _load: Callable, _exit: Callable, _error: Callable) -> None:
         super(VWSimulationWindow, self).__init__(parent)
 
@@ -351,6 +370,9 @@ class VWSimulationWindow(Frame):
             self.redraw()
 
     def redraw(self) -> None:
+        '''
+        This method resets and redraws the `Canvas` according to the wrapped `VWEnvironment`.
+        '''
         self.__reset_canvas(lines=False)
 
         inc: int = self.__config["grid_size"] / self.__env.get_ambient().get_grid_dim()
@@ -604,6 +626,9 @@ class VWSimulationWindow(Frame):
         self.__reset_time_step()
 
     def play(self) -> None:
+        '''
+        Starts the proper simulation loop, and redraws the `Canvas` accordingly.
+        '''
         self.__play()
 
     def __play(self) -> None:

@@ -5,6 +5,9 @@ from typing import List
 
 # Inspired by https://code.activestate.com/recipes/578253-an-entry-with-autocompletion-for-the-tkinter-gui/
 class AutocompleteEntry(Entry):
+    '''
+    This class specifies an `Entry` with autocomplete functionality.
+    '''
     def __init__(self, lista: List[str], height: int, *args, **kwargs) -> None:
         super(AutocompleteEntry, self).__init__(*args, **kwargs)
 
@@ -26,12 +29,20 @@ class AutocompleteEntry(Entry):
         self.__lb_up: bool = False
 
     def set_list_a(self, list_a: List[str]) -> None:
+        '''
+        Sets the list of words to be used for autocomplete from the `list_a` argument.
+
+        This method assumes (via assertions) that the `list_a` argument is a `List[str]`.
+        '''
         assert isinstance(list_a, list)
         assert all(isinstance(x, str) for x in list_a)
 
         self.__lista = list_a
 
     def get_var(self) -> StringVar:
+        '''
+        Returns the `StringVar` object associated with this `AutocompleteEntry` object.
+        '''
         return self.__var
 
     def __changed(self, *_) -> None:
