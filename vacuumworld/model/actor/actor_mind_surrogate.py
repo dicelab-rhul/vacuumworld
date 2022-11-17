@@ -47,18 +47,19 @@ class ActorMindSurrogate():
         '''
         This is an abstract method. It is called by the `VWActor` to update the `ActorMindSurrogate` with the latest `Observation` and `Iterable[BccMessage]`.
         '''
-        ignore(self)
         ignore(observation)
-        ignore(messages)
+
+        for message in messages:
+            ignore(message)
 
         raise NotImplementedError()
 
     def decide(self) -> Union[VWAction, Tuple[VWAction]]:
         '''
         This is an abstract method. It is called by the `VWActor` to decide the next `VWAction` or `Tuple[VWAction]` to be executed.
-        '''
-        ignore(self)
 
+        This method MUST NOT loop, as it is called by the `VWActor` every cycle after `revise()`.
+        '''
         raise NotImplementedError()
 
     @staticmethod
@@ -85,10 +86,12 @@ class ActorMindSurrogate():
         Loads the `ActorMindSurrogate` class from the Python file whose path is specified by `surrogate_mind_file` and returns an instance of it.
         '''
         try:
-            assert surrogate_mind_file.endswith(".py")
+            python_file_extension: str = ".py"
+
+            assert surrogate_mind_file.endswith(python_file_extension)
 
             parent_dir: str = os.path.dirname(surrogate_mind_file)
-            module_name: str = os.path.basename(surrogate_mind_file)[:-3]
+            module_name: str = os.path.basename(surrogate_mind_file)[:-len(python_file_extension)]
 
             if parent_dir not in sys.path:
                 sys.path.append(parent_dir)
