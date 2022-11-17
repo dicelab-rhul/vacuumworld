@@ -86,10 +86,12 @@ class ActorMindSurrogate():
         Loads the `ActorMindSurrogate` class from the Python file whose path is specified by `surrogate_mind_file` and returns an instance of it.
         '''
         try:
-            assert surrogate_mind_file.endswith(".py")
+            python_file_extension: str = ".py"
+
+            assert surrogate_mind_file.endswith(python_file_extension)
 
             parent_dir: str = os.path.dirname(surrogate_mind_file)
-            module_name: str = os.path.basename(surrogate_mind_file)[:-3]
+            module_name: str = os.path.basename(surrogate_mind_file)[:-len(python_file_extension)]
 
             if parent_dir not in sys.path:
                 sys.path.append(parent_dir)
