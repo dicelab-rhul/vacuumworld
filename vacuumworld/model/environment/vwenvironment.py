@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import List, Tuple, Dict, Type, Optional, Union
-from inspect import getfile
+from inspect import getsourcefile
 from itertools import product
 from math import floor, sqrt
 from random import randint
@@ -304,7 +304,7 @@ class VWEnvironment(Environment):
     def __get_actor_surrogate_mind_file(self, actor_id: str) -> str:
         assert actor_id in self.get_actors()
 
-        return getfile(self.get_actor(actor_id=actor_id).get_mind().get_surrogate().__class__)
+        return getsourcefile(self.get_actor(actor_id=actor_id).get_mind().get_surrogate().__class__)
 
     # Note that the actor IDs, progressive IDs, and the user difficulty level are not stored.
     # Therefore, on load the actors will have fresh IDs and progressive IDs, and the user will be in easy mode.

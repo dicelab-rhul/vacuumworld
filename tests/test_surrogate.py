@@ -2,6 +2,7 @@
 
 from unittest import main, TestCase
 from typing import Union, Tuple, Iterable
+from inspect import getsourcefile
 
 from pystarworldsturbo.common.message import BccMessage
 from pystarworldsturbo.utils.utils import ignore
@@ -33,8 +34,7 @@ class TestSurrogate(TestCase):
         super(TestSurrogate, self).__init__(args)
 
     def test_load_hysteretic_surrogate(self) -> None:
-        # TODO: remove this hardcoded path.
-        surrogate_file_path: str = os.path.join(os.path.dirname(os.path.dirname(__file__)), "vacuumworld", "model", "actor", "mind", "surrogate", "vwhysteretic_mind_surrogate.py")
+        surrogate_file_path: str = getsourcefile(VWHystereticMindSurrogate)
 
         self.assertTrue(os.path.isfile(surrogate_file_path))
 

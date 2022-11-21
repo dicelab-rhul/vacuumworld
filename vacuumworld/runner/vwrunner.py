@@ -9,7 +9,7 @@ from ..common.vwcolour import VWColour
 from ..model.actions.vwactions import VWAction, VWCommunicativeAction
 from ..model.actions.vweffort import VWActionEffort
 from ..model.actor.mind.surrogate.vwactor_mind_surrogate import VWActorMindSurrogate
-from ..model.actor.vwactor_behaviour_debugger import ActorBehaviourDebugger
+from ..model.actor.vwactor_behaviour_debugger import VWActorBehaviourDebugger
 from ..model.environment.vwenvironment import VWEnvironment
 from ..gui.vwsaveload import VWSaveStateManager
 
@@ -271,12 +271,12 @@ class VWRunner(Process):
         VWCommunicativeAction.SENDER_ID_SPOOFING_ALLOWED = self.__config["sender_id_spoofing_allowed"]
 
     def __manage_debug_flag(self) -> None:
-        ActorBehaviourDebugger.DEBUG_ENABLED: bool = self.__config["debug"]
+        VWActorBehaviourDebugger.DEBUG_ENABLED: bool = self.__config["debug"]
 
         if self.__config["debug_test"]:
-            ActorBehaviourDebugger.PRIMES: List[int] = self.__config["debug_primes_test"]
+            VWActorBehaviourDebugger.PRIMES: List[int] = self.__config["debug_primes_test"]
         else:
-            ActorBehaviourDebugger.PRIMES: List[int] = self.__config["debug_primes"]
+            VWActorBehaviourDebugger.PRIMES: List[int] = self.__config["debug_primes"]
 
     @staticmethod
     def __set_sigtstp_handler() -> None:

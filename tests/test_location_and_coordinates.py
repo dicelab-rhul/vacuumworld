@@ -85,8 +85,6 @@ class TestLocationAndCoordinates(TestCase):
             self.assertEqual(c.get_y(), y)
             self.assertEqual(c[0], x)
             self.assertEqual(c[1], y)
-            self.assertEqual(c.x, x)
-            self.assertEqual(c.y, y)
 
             self.assertIn(x, c)
             self.assertIn(y, c)

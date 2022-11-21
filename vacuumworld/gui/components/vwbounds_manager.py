@@ -1,4 +1,4 @@
-class BoundsManager():
+class VWBoundsManager():
     '''
     This class provides a quick way to check if two `int` numbers are within the bounds of the `grid_size` specified in the `config` argument.
     '''

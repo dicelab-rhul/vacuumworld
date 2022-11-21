@@ -7,7 +7,7 @@ from playsound import playsound
 import os
 
 
-class ActorBehaviourDebugger():
+class VWActorBehaviourDebugger():
     '''
     This class is used to debug the behaviour of a `VWActor` in the `VacuumWorld` universe.
     '''
@@ -25,7 +25,7 @@ class ActorBehaviourDebugger():
         This method is used to debug the behaviour of a `VWActor` in the `VacuumWorld` universe.
         '''
         try:
-            if ActorBehaviourDebugger.DEBUG_ENABLED and time_ns() % prod(ActorBehaviourDebugger.PRIMES) == 0:
+            if VWActorBehaviourDebugger.DEBUG_ENABLED and time_ns() % prod(VWActorBehaviourDebugger.PRIMES) == 0:
                 vw_path: str = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
                 path: str = os.path.join(vw_path, b64decode("cmVz").decode("utf-8"), b64decode("c291bmRz").decode("utf-8"), b64decode("ZGVidWcubXAz").decode("utf-8"))
 

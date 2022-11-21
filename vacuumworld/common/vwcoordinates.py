@@ -21,11 +21,6 @@ class VWCoord():
         self.__x: int = x
         self.__y: int = y
 
-        # Fallback for 4.2.7.
-        # TODO: remove when 4.2.7 is no longer supported.
-        self.x: int = self.get_x()
-        self.y: int = self.get_y()
-
     def get_x(self) -> int:
         '''
         Returns the `x` coordinate of this `VWCoord` as an `int`.

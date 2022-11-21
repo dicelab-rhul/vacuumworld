@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 from pystarworldsturbo.environment.physics.action_executor import ActionExecutor
 from pystarworldsturbo.common.action_result import ActionResult
 from pystarworldsturbo.common.action_outcome import ActionOutcome
-from pystarworldsturbo.utils.utils import ignore
 
 from ..vwlocation import VWLocation
 from ...actions.vwdrop_action import VWDropAction
@@ -29,8 +28,6 @@ class VWDropExecutor(ActionExecutor):
 
         * The `VWLocation` that contains the `VWActor` whose ID matches the actor ID of `action` has a `VWUser` in it.
         '''
-        ignore(self)
-
         actor_id: str = action.get_actor_id()
         actor_colour: VWColour = env.get_actor_colour(actor_id=actor_id)
         actor_location: VWLocation = env.get_actor_location(actor_id=actor_id)
@@ -45,8 +42,6 @@ class VWDropExecutor(ActionExecutor):
 
         Otherwise, the provisional `ActionResult` will have an `ActionOutcome` of `ActionOutcome.success`.
         '''
-        ignore(self)
-
         try:
             actor_id: str = action.get_actor_id()
             actor_position: VWCoord = env.get_actor_position(actor_id=actor_id)
@@ -71,8 +66,6 @@ class VWDropExecutor(ActionExecutor):
 
         * The `VWColour` of the aforementioned `VWDirt` is the same as the `VWColour` in `action`.
         '''
-        ignore(self)
-
         actor_id: str = action.get_actor_id()
         actor_location: VWLocation = env.get_actor_location(actor_id=actor_id)
 

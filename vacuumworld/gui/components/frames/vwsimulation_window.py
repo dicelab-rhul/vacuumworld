@@ -9,7 +9,7 @@ from ..buttons.vwbutton import VWButton
 from ..buttons.vwdifficultybutton import VWDifficultyButton
 from ..vwslider import Slider
 from ..vwdrag_manager import CanvasDragManager
-from ..vwbounds_manager import BoundsManager
+from ..vwbounds_manager import VWBoundsManager
 from ...vwsaveload import VWSaveStateManager
 
 from ....common.vwcoordinates import VWCoord
@@ -54,7 +54,7 @@ class VWSimulationWindow(Frame):
 
         self.__parent: Tk = parent
         self.__config: dict = config
-        self.__bounds_manager: BoundsManager = BoundsManager(config=self.__config)
+        self.__bounds_manager: VWBoundsManager = VWBoundsManager(config=self.__config)
         self.__button_data: dict = buttons
         self.__env: VWEnvironment = env
         self.__guide: Callable = _guide

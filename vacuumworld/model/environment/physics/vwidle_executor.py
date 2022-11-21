@@ -22,7 +22,6 @@ class VWIdleExecutor(ActionExecutor):
 
         In any `VWEnvironment` a `VWIdleAction` is always possible. Therefore `True` is always returned.
         '''
-        ignore(self)
         ignore(env)
         ignore(action)
 
@@ -34,7 +33,6 @@ class VWIdleExecutor(ActionExecutor):
 
         For every `VWIdleAction` in any `VWEnvironment` the provisional `ActionResult` will always have an `ActionOutcome` of `ActionOutcome.success`.
         '''
-        ignore(self)
         ignore(env)
         ignore(action)
 
@@ -47,7 +45,6 @@ class VWIdleExecutor(ActionExecutor):
         There are no post-conditions for `VWIdleAction` to check in `VWEnvironment`, so `True` is always returned.
         '''
         ignore(env)
-        ignore(self)
         ignore(action)
 
         return True
