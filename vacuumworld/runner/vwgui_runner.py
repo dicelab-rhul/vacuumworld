@@ -4,7 +4,7 @@ from webbrowser import open_new_tab
 from json import load
 
 from .vwrunner import VWRunner
-from ..gui.components.vwautocomplete import AutocompleteEntry
+from ..gui.components.vwautocomplete import VWAutocompleteEntry
 from ..gui.components.frames.vwinitial_window import VWInitialWindow
 from ..gui.components.frames.vwsimulation_window import VWSimulationWindow
 from ..common.vwcolour import VWColour
@@ -100,7 +100,7 @@ class VWGUIRunner(VWRunner):
 
         self.__show_simulation_window(env=env)
 
-    def __save(self, env: VWEnvironment, saveloadmenu: AutocompleteEntry) -> None:
+    def __save(self, env: VWEnvironment, saveloadmenu: VWAutocompleteEntry) -> None:
         filename: str = saveloadmenu.get_var().get()
         result: bool = self.get_save_state_manager().save_state(env=env, filename=filename)
 
@@ -111,7 +111,7 @@ class VWGUIRunner(VWRunner):
         else:
             print("The current grid was not saved.")
 
-    def __load(self, saveloadmenu: AutocompleteEntry) -> VWEnvironment:
+    def __load(self, saveloadmenu: VWAutocompleteEntry) -> VWEnvironment:
         filename: str = saveloadmenu.get_var().get()
 
         data: dict = self.get_save_state_manager().load_state(filename=filename)

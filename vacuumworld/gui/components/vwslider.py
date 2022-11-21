@@ -4,12 +4,12 @@ from typing import Callable
 from pystarworldsturbo.utils.utils import ignore
 
 
-class Slider(Canvas):
+class VWSlider(Canvas):
     '''
     This class specifies a slider widget for the VacuumWorld GUI.
     '''
     def __init__(self, parent: Frame, config: dict, release_callback: Callable, slide_callback: Callable, width: float, height: float, increments: float=0, slider_width: float=8, start: float=0, **kwargs) -> None:
-        super(Slider, self).__init__(parent, width=width, height=height, bd=0, highlightthickness=0, relief="ridge", bg=config["bg_colour"], **kwargs)
+        super(VWSlider, self).__init__(parent, width=width, height=height, bd=0, highlightthickness=0, relief="ridge", bg=config["bg_colour"], **kwargs)
 
         self.__release_callback: Callable = release_callback
         self.__slide_callback: Callable = slide_callback

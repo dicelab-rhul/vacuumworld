@@ -4,7 +4,7 @@ from typing import Callable, Tuple
 from .vwbounds_manager import VWBoundsManager
 
 
-class CanvasDragManager():
+class VWCanvasDragManager():
     '''
     This class speficies the behaviour of a drag manager for a `Canvas` object.
     '''
