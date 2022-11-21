@@ -20,7 +20,6 @@ class VWHystereticMindSurrogate(VWActorMindSurrogate):
         '''
         Does nothing, and ignores both `observation` and `messages`.
         '''
-        ignore(self)
         ignore(observation)
 
         for m in messages:
@@ -30,6 +29,4 @@ class VWHystereticMindSurrogate(VWActorMindSurrogate):
         '''
         Always returns `VWIdleAction`.
         '''
-        ignore(self)
-
         return VWIdleAction()

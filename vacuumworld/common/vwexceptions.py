@@ -1,14 +1,3 @@
-from __future__ import annotations
-from typing import Type, TYPE_CHECKING
-from traceback import print_exc
-
-if TYPE_CHECKING:
-    from ..model.environment.vwenvironment import VWEnvironment
-    from ..model.environment.vwambient import VWAmbient
-    from ..model.actor.mind.vwactor_mind import VWMind
-    from ..model.actor.vwagent import VWCleaningAgent
-
-
 class VWMalformedActionException(Exception):
     '''
     This class specifies the `Exception` that is raised when a malformed `VWAction` is attempted.
@@ -55,23 +44,3 @@ class VWEndOfCyclesException(Exception):
     '''
     def __init__(self, message) -> None:
         super(VWEndOfCyclesException, self).__init__(message)
-
-
-# TODO: this class is unused for now.
-class VWExceptionManager():
-    '''
-    This class provides a custom `Exception` handler for VacuumWorld.
-    '''
-    @staticmethod
-    def manage_exception(e: Exception, context: Type) -> None:
-        '''
-        Handles the given `Exception` by printing the traceback and the message of the `Exception` to the console.
-        '''
-        if type(e) == AssertionError:
-            raise e
-        elif context in [VWMind, VWCleaningAgent, VWEnvironment, VWAmbient]:
-            print_exc()
-
-            print("####################")
-            print("Error message: {}".format(e.args[0]))
-            print("####################")

@@ -24,7 +24,6 @@ class EmptySurrogateMind():
 
 class NoDecideSurrogateMind():
     def revise(self, observation: VWObservation, messages: Iterable[BccMessage]) -> None:
-        ignore(self)
         ignore(observation)
 
         for m in messages:
@@ -38,7 +37,6 @@ class NoReviseSurrogateMind():
 
 class MalformedReviseSurrogateMind():
     def revise(self, observation: VWObservation, messages: Iterable[BccMessage], nonsense: List[str]) -> None:
-        ignore(self)
         ignore(observation)
 
         for m in messages:
@@ -53,7 +51,6 @@ class MalformedReviseSurrogateMind():
 
 class NoMessagesMalformedReviseSurrogateMind():
     def revise(self, observation: VWObservation) -> None:
-        ignore(self)
         ignore(observation)
 
     def decide(self) -> Union[VWAction, Tuple[VWAction]]:
@@ -62,8 +59,6 @@ class NoMessagesMalformedReviseSurrogateMind():
 
 class NoObservationMalformedReviseSurrogateMind():
     def revise(self, messages: Iterable[BccMessage]) -> None:
-        ignore(self)
-
         for m in messages:
             ignore(m)
 
@@ -73,7 +68,6 @@ class NoObservationMalformedReviseSurrogateMind():
 
 class MalformedDecideSurrogateMind():
     def revise(self, observation: VWObservation, messages: Iterable[BccMessage]) -> None:
-        ignore(self)
         ignore(observation)
 
         for m in messages:

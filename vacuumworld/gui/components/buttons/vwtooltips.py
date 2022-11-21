@@ -1,7 +1,7 @@
 from tkinter import Button, Label, Toplevel, LEFT, SOLID
 
 
-class ToolTip():
+class VWToolTip():
     '''
     This class is used to create tooltips for each `VWButton`.
     '''
@@ -54,7 +54,7 @@ def create_tooltip(widget: Button, text: str, config: dict) -> None:
 
     It also binds the `showtip()` and `hidetip()` methods to the `<Enter>` and `<Leave>` events.
     '''
-    tooltip: ToolTip = ToolTip(widget=widget, config=config)
+    tooltip: VWToolTip = VWToolTip(widget=widget, config=config)
 
     widget.bind("<Enter>", lambda _: tooltip.showtip(text))
     widget.bind("<Leave>", lambda _: tooltip.hidetip())

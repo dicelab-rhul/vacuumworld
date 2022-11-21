@@ -1,13 +1,17 @@
 from tkinter import Canvas, Event, Image
 from typing import Callable, Tuple
 
+from .vwbounds_manager import VWBoundsManager
 
-class CanvasDragManager():
+
+class VWCanvasDragManager():
     '''
     This class speficies the behaviour of a drag manager for a `Canvas` object.
     '''
     def __init__(self, config: dict, key: Tuple[str, str], grid_dim: int, canvas: Canvas, item: Image, on_start_callback: Callable, on_drop_callback: Callable) -> None:
         self.__config: dict = config
+        self.__bounds_manager: VWBoundsManager = VWBoundsManager(config=config)
+
         self.__x: int = 0
         self.__y: int = 0
 
@@ -47,9 +51,9 @@ class CanvasDragManager():
         x: int = int(event.x / inc) * inc + (inc / 2) + 1
         y: int = int(event.y / inc) * inc + (inc / 2) + 1
 
-        if event.x < 0 or event.y < 0 or not self.in_bounds(x=x, y=y):
+        if event.x < 0 or event.y < 0 or not self.__bounds_manager.in_bounds(x=x, y=y):
             self.__canvas.itemconfigure(self.__drag, state="hidden")
-        elif x <= self.__config["grid_size"] and y <= self.__config["grid_size"] and self.in_bounds(x=x, y=y):
+        elif x <= self.__config["grid_size"] and y <= self.__config["grid_size"] and self.__bounds_manager.in_bounds(x=x, y=y):
             self.__canvas.itemconfigure(self.__drag, state="normal")
 
         # To prevent unnecessary re-renderings.
@@ -66,19 +70,10 @@ class CanvasDragManager():
 
         Calls the proper on drop callback method if the `Image` has been dropped in bounds.
         '''
-        if self.in_bounds(x=event.x, y=event.y):
+        if self.__bounds_manager.in_bounds(x=event.x, y=event.y):
             self.__on_drop_callback(event, self)
 
         self.__dragging = False
-
-    # TODO: merge this method with the one in `BoundsManager`.
-    def in_bounds(self, x: int, y: int) -> bool:
-        '''
-        WARNING: this method must only be used by the GUI, as the lower bound is `1` (not `0`) and the upper bound is `grid_size - 1` (not `grid_size`), both inclusive.
-
-        Returns whether or not the provided `x` and `y` integers are within the bounds of the `grid_size` specified in the `config` argument.
-        '''
-        return x < self.__config["grid_size"] and x > 0 and y < self.__config["grid_size"] and y > 0
 
     def get_key(self) -> Tuple[str, str]:
         '''

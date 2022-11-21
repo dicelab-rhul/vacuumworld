@@ -4,12 +4,12 @@ from typing import List
 
 
 # Inspired by https://code.activestate.com/recipes/578253-an-entry-with-autocompletion-for-the-tkinter-gui/
-class AutocompleteEntry(Entry):
+class VWAutocompleteEntry(Entry):
     '''
     This class specifies an `Entry` with autocomplete functionality.
     '''
     def __init__(self, lista: List[str], height: int, *args, **kwargs) -> None:
-        super(AutocompleteEntry, self).__init__(*args, **kwargs)
+        super(VWAutocompleteEntry, self).__init__(*args, **kwargs)
 
         self.__dropdown_parent: Frame = args[0]
         self.__lista: List[str] = lista
@@ -41,7 +41,7 @@ class AutocompleteEntry(Entry):
 
     def get_var(self) -> StringVar:
         '''
-        Returns the `StringVar` object associated with this `AutocompleteEntry` object.
+        Returns the `StringVar` object associated with this `VWAutocompleteEntry` object.
         '''
         return self.__var
 

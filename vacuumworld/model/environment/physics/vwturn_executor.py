@@ -24,7 +24,6 @@ class VWTurnExecutor(ActionExecutor):
 
         In any `VWEnvironment` a `VWTurnAction` is always possible. Therefore `True` is always returned.
         '''
-        ignore(self)
         ignore(env)
         ignore(action)
 
@@ -38,8 +37,6 @@ class VWTurnExecutor(ActionExecutor):
 
         Otherwise, the provisional `ActionResult` will have an `ActionOutcome` of `ActionOutcome.success`.
         '''
-        ignore(self)
-
         try:
             actor_id: str = action.get_actor_id()
             actor_position: VWCoord = env.get_actor_position(actor_id=actor_id)
@@ -56,8 +53,6 @@ class VWTurnExecutor(ActionExecutor):
 
         The post-conditions of a `VWTurnAction` are satisfied if the `VWOrientation` of the `VWActor` that executed the `VWTurnAction` has been rotated according to the `VWDirection` in `action`.
         '''
-        ignore(self)
-
         actor_id: str = action.get_actor_id()
         old_actor_orientation: VWOrientation = env.get_actor_previous_orientation(actor_id=actor_id)
         new_actor_orientation: VWOrientation = env.get_actor_orientation(actor_id=actor_id)

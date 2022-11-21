@@ -23,7 +23,6 @@ class VWBroadcastExecutor(ActionExecutor):
 
         In any `VWEnvironment` a `VWBroadcastAction` is always possible. Therefore `True` is always returned.
         '''
-        ignore(self)
         ignore(env)
         ignore(action)
 
@@ -37,8 +36,6 @@ class VWBroadcastExecutor(ActionExecutor):
 
         Otherwise, the provisional `ActionResult` will have an `ActionOutcome` of `ActionOutcome.success`.
         '''
-        ignore(self)
-
         try:
             if not VWBroadcastAction.SENDER_ID_SPOOFING_ALLOWED and action.get_message().get_sender_id() != action.get_actor_id():
                 raise IdentityException("Sender ID spoofing detected: it should be {}, not {}.".format(action.get_actor_id(), action.get_message().get_sender_id()))
@@ -56,7 +53,6 @@ class VWBroadcastExecutor(ActionExecutor):
         There are no post-conditions for `VWBroadcastAction` to check in `VWEnvironment`, so `True` is always returned.
         '''
         ignore(env)
-        ignore(self)
         ignore(action)
 
         return True

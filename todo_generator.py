@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 '''
-Please run this file as ./todo_generator from within its parent directory.
+Please run this file as ./todo_generator.py from within its parent directory.
 Otherwise, the paths will not be generated/printed correctly.
 '''
 

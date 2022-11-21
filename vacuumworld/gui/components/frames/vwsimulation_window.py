@@ -4,12 +4,12 @@ from PIL import Image
 from PIL.ImageTk import PhotoImage
 from collections import OrderedDict
 
-from ..vwautocomplete import AutocompleteEntry
+from ..vwautocomplete import VWAutocompleteEntry
 from ..buttons.vwbutton import VWButton
 from ..buttons.vwdifficultybutton import VWDifficultyButton
-from ..vwslider import Slider
-from ..vwdrag_manager import CanvasDragManager
-from ..vwbounds_manager import BoundsManager
+from ..vwslider import VWSlider
+from ..vwdrag_manager import VWCanvasDragManager
+from ..vwbounds_manager import VWBoundsManager
 from ...vwsaveload import VWSaveStateManager
 
 from ....common.vwcoordinates import VWCoord
@@ -54,7 +54,7 @@ class VWSimulationWindow(Frame):
 
         self.__parent: Tk = parent
         self.__config: dict = config
-        self.__bounds_manager: BoundsManager = BoundsManager(config=self.__config)
+        self.__bounds_manager: VWBoundsManager = VWBoundsManager(config=self.__config)
         self.__button_data: dict = buttons
         self.__env: VWEnvironment = env
         self.__guide: Callable = _guide
@@ -65,7 +65,7 @@ class VWSimulationWindow(Frame):
         self.__after_hook: Callable = None
         self.__save_state_manager: VWSaveStateManager = VWSaveStateManager()
         self.__empty_location_coordinates_text: str = "(-,-)"
-        self.__load_menu: AutocompleteEntry = None
+        self.__load_menu: VWAutocompleteEntry = None
         self.__agent_minds: Dict[VWColour, VWActorMindSurrogate] = minds
         self.__running: bool = False
         self.__rectangle_selected: Img = None
@@ -167,7 +167,7 @@ class VWSimulationWindow(Frame):
 
         # Entry box.
         files: List[str] = self.__save_state_manager.get_ordered_list_of_filenames_in_save_directory()
-        self.__load_menu: AutocompleteEntry = AutocompleteEntry(files, 3, self.__mid_frame, font=self.__config["root_font"], bg=self.__config["autocomplete_entry_bg_colour"], fg=self.__config["fg_colour"])
+        self.__load_menu: VWAutocompleteEntry = VWAutocompleteEntry(files, 3, self.__mid_frame, font=self.__config["root_font"], bg=self.__config["autocomplete_entry_bg_colour"], fg=self.__config["fg_colour"])
         self.__load_menu.bind("<Button-1>", lambda _: self.__deselect())
         self.__load_menu.pack(side="top")
 
@@ -214,7 +214,7 @@ class VWSimulationWindow(Frame):
 
     def __init_size_slider(self, parent, length=250) -> None:
         increments: int = self.__config["max_environment_dim"] - self.__config["min_environment_dim"]
-        self.__grid_scale_slider: Slider = Slider(parent, self.__config, self.__on_resize, self.__on_resize_slide, length * self.__config["scale"], 16 * self.__config["scale"], slider_width=length * self.__config["scale"]/(increments * 3), increments=increments, start=self.__config["grid_size"]/self.__config["location_size"] - self.__config["min_environment_dim"])
+        self.__grid_scale_slider: VWSlider = VWSlider(parent, self.__config, self.__on_resize, self.__on_resize_slide, length * self.__config["scale"], 16 * self.__config["scale"], slider_width=length * self.__config["scale"]/(increments * 3), increments=increments, start=self.__config["grid_size"]/self.__config["location_size"] - self.__config["min_environment_dim"])
 
         self.__grid_scale_slider.pack(side="top")
 
@@ -222,14 +222,14 @@ class VWSimulationWindow(Frame):
         # Load all images.
         keys: List[Tuple[str, str]] = [("white", "north"), ("orange", "north"), ("green", "north"), ("user", "north"), ("orange", "dirt"), ("green", "dirt")]
 
-        self.__dragables: Dict[Img, Tuple[CanvasDragManager, Tuple[str, str]]] = {}
+        self.__dragables: Dict[Img, Tuple[VWCanvasDragManager, Tuple[str, str]]] = {}
 
         ix: int = self.__config["grid_size"] + self.__config["location_size"] / 2 + 2
         iy: int = self.__config["location_size"] / 2 + 4
 
         for i, key in enumerate(keys):
             item: Img = self.__canvas.create_image(ix, iy + i * self.__config["location_size"], image=self.__all_images_tk[key])
-            drag_manager: CanvasDragManager = CanvasDragManager(self.__config, key, self.__env.get_ambient().get_grid_dim(), self.__canvas, item, self.__drag_on_start, self.__drag_on_drop)
+            drag_manager: VWCanvasDragManager = VWCanvasDragManager(self.__config, key, self.__env.get_ambient().get_grid_dim(), self.__canvas, item, self.__drag_on_start, self.__drag_on_drop)
             self.__dragables[item] = (drag_manager, key)
 
     def __deselect(self) -> None:
@@ -521,7 +521,7 @@ class VWSimulationWindow(Frame):
                 # If the draggable is not a valid argument for tag_lower, we ignore the error.
                 pass
 
-    def __drag_on_drop(self, event: Event, drag_manager: CanvasDragManager) -> None:
+    def __drag_on_drop(self, event: Event, drag_manager: VWCanvasDragManager) -> None:
         inc: int = self.__config["grid_size"] / self.__env.get_ambient().get_grid_dim()
         x: int = int(event.x / inc)
         y: int = int(event.y / inc)
@@ -535,7 +535,7 @@ class VWSimulationWindow(Frame):
         self.__select(event=event, print_message=False)
         self.redraw()
 
-    def __drop_element(self, obj: str, coord: VWCoord, colour: VWColour, drag_manager: CanvasDragManager) -> None:
+    def __drop_element(self, obj: str, coord: VWCoord, colour: VWColour, drag_manager: VWCanvasDragManager) -> None:
         if obj == "dirt":
             self.__drop_dirt(coord=coord, colour=colour, drag_manager=drag_manager)
         elif obj == "north":
@@ -543,7 +543,7 @@ class VWSimulationWindow(Frame):
         else:
             raise ValueError("Unknown obj: {}.".format(obj))
 
-    def __drop_dirt(self, coord: VWCoord, colour: VWColour, drag_manager:  CanvasDragManager) -> None:
+    def __drop_dirt(self, coord: VWCoord, colour: VWColour, drag_manager:  VWCanvasDragManager) -> None:
         message: str = ""
 
         if self.__env.get_ambient().is_dirt_at(coord=coord):
@@ -565,7 +565,7 @@ class VWSimulationWindow(Frame):
 
         print(message)
 
-    def __drop_actor_facing_north(self, coord: VWCoord, colour: VWColour, drag_manager: CanvasDragManager) -> None:
+    def __drop_actor_facing_north(self, coord: VWCoord, colour: VWColour, drag_manager: VWCanvasDragManager) -> None:
         message: str = ""
 
         actor, actor_appearance = VWActorsFactory.create_actor(colour=colour, orientation=VWOrientation.north, mind_surrogate=self.__agent_minds[colour])

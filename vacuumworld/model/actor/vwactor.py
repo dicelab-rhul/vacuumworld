@@ -3,7 +3,7 @@ from typing import List, Tuple, Iterable, Union, Optional
 from pystarworldsturbo.common.message import BccMessage
 from pystarworldsturbo.elements.actor import Actor
 
-from .vwactor_behaviour_debugger import ActorBehaviourDebugger
+from .vwactor_behaviour_debugger import VWActorBehaviourDebugger
 from .mind.vwactor_mind import VWMind
 from .appendices.vwsensors import VWSensor, VWListeningSensor, VWObservationSensor
 from .appendices.vwactuators import VWActuator, VWCommunicativeActuator
@@ -118,7 +118,7 @@ class VWActor(Actor):
         * `execute()`
         '''
         # If debug is disabled, this call will do nothing.
-        ActorBehaviourDebugger.debug()
+        VWActorBehaviourDebugger.debug()
 
         # Fetch the perceptions.
         observation, messages = self.perceive()
