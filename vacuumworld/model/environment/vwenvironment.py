@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import List, Tuple, Dict, Type, Optional
+from typing import List, Tuple, Dict, Type, Optional, Union
 from inspect import getfile
 from itertools import product
 from math import floor, sqrt
@@ -16,18 +16,18 @@ from .vwambient import VWAmbient
 from .vwlocation import VWLocation
 from ..actor.vwactor import VWActor
 from ..actor.vwuser import VWUser
-from ..actor.vwactor_appearance import VWActorAppearance
-from ..actor.actor_factories import VWCleaningAgentsFactory, VWUsersFactory
-from ..actor.user_difficulty import UserDifficulty
-from ..actor.hystereticmindsurrogate import VWHystereticMindSurrogate
-from ..dirt.dirt import Dirt
-from ..dirt.dirt_appearance import VWDirtAppearance
-from ...common.coordinates import Coord
-from ...common.direction import Direction
-from ...common.colour import Colour
-from ...common.observation import Observation
-from ...common.orientation import Orientation
-from ...common.exceptions import VWActionAttemptException, VWMalformedActionException
+from ..actor.appearance.vwactor_appearance import VWActorAppearance
+from ..actor.vwactor_factories import VWCleaningAgentsFactory, VWUsersFactory
+from ...common.vwuser_difficulty import VWUserDifficulty
+from ..actor.mind.surrogate.vwhysteretic_mind_surrogate import VWHystereticMindSurrogate
+from ..dirt.vwdirt import VWDirt
+from ..dirt.vwdirt_appearance import VWDirtAppearance
+from ...common.vwcoordinates import VWCoord
+from ...common.vwdirection import VWDirection
+from ...common.vwcolour import VWColour
+from ...common.vwobservation import VWObservation
+from ...common.vworientation import VWOrientation
+from ...common.vwexceptions import VWActionAttemptException, VWMalformedActionException
 from ...model.actions.vwactions import VWAction, VWPhysicalAction, VWCommunicativeAction
 
 
@@ -37,26 +37,25 @@ class VWEnvironment(Environment):
 
     A `VWEnvironment` is made of:
 
-    * A `VWAmbient` (itself a wrapper for a grid mapping `Coord` objects to `VWLocation` objects)
+    * A `VWAmbient` (itself a wrapper for a grid mapping `VWCoord` objects to `VWLocation` objects)
 
     * A collection of `VWActor` objects.
 
-    * A collection of `Dirt` objects.
+    * A collection of `VWDirt` objects.
 
-    An API is provided to interact with the `VWAmbient`, the `VWActor` objects, and the `Dirt` objects.
+    An API is provided to interact with the `VWAmbient`, the `VWActor` objects, and the `VWDirt` objects.
 
     A `VWEnvironment` evolves in cycles, starting at cycle `0`. Each environmental cycle is composed of:
 
-    * A feedback phase, in which the `VWEnvironment` sends to each `VWActor` an `Observation` of the surroundings of such `VWActor` and pending messages from other `VWActor` instances.
+    * A feedback phase, in which the `VWEnvironment` sends to each `VWActor` a `VWObservation` of the surroundings of such `VWActor` and pending messages from other `VWActor` instances.
 
     * A physical/communicative evolution phase, in which each `VWActor` potentially attempts to modify the `VWEnvironment` via a `VWPhysicalAction`, and potentially engages in communications via a `VWCommunicativeAction`.
     Only one `VWPhysicalAction` and one `VWCommunicativeAction` can be attempted per cycle per `VWActor`.
     '''
-    def __init__(self, config: dict, ambient: VWAmbient, initial_actors: List[VWActor]=[], initial_dirts: List[Dirt]=[]) -> None:
+    def __init__(self, config: dict, ambient: VWAmbient, initial_actors: List[VWActor]=[], initial_dirts: List[VWDirt]=[]) -> None:
         super(VWEnvironment, self).__init__(ambient=ambient, initial_actors=initial_actors, initial_passive_bodies=initial_dirts)
 
         self.__cycle: int = -1
-        self.__surrogate_minds_metadata: Dict[str, str] = {}  # TODO: is this ever used?
         self.__config: dict = config
 
     def can_evolve(self) -> bool:
@@ -69,12 +68,6 @@ class VWEnvironment(Environment):
             return True
         else:
             return self.__cycle < self.__config["total_cycles"]
-
-    def get_surrogate_minds_metadata(self) -> Dict[str, str]:
-        '''
-        Returns a `Dict[str, str]` mapping `VWActor` IDs to surrogate mind metadata.
-        '''
-        return self.__surrogate_minds_metadata()
 
     def get_current_cycle_number(self) -> int:
         '''
@@ -100,7 +93,7 @@ class VWEnvironment(Environment):
 
         This method assumes (via assertion) that the potential `VWActor` whose ID matches `user_id` is a `VWUser`.
         '''
-        assert self.get_actor_colour(actor_id=user_id) == Colour.user
+        assert self.get_actor_colour(actor_id=user_id) == VWColour.user
 
         return self.get_actor(actor_id=user_id)
 
@@ -143,8 +136,11 @@ class VWEnvironment(Environment):
         n_physical: int = self.__config["max_number_of_physical_actions_per_actor_per_cycle"]
         n_communicative: int = self.__config["max_number_of_communicative_actions_per_actor_per_cycle"]
 
-        assert 0 < len(actions) <= n
+        # Self-consistency assertion in the config data.
         assert n_physical + n_communicative == n
+
+        # The check that at least one `VWAction` (and no more than `n`) is attempted has already been done in `__validate_number_of_actions()`. Hence, this is an assertion, and not a conditional statement.
+        assert 0 < len(actions) <= n
 
         if sum(map(lambda action: isinstance(action, VWPhysicalAction), actions)) > n_physical:
             raise VWActionAttemptException("Too many physical actions were attempted. There is a hard limit of {} physical action, and {} communicative action per actor per cycle.".format(n_physical, n_communicative))
@@ -171,7 +167,7 @@ class VWEnvironment(Environment):
 
     def __force_initial_perception_to_actors(self) -> None:
         for actor_id in self.get_actors():
-            observation: Observation = self.generate_perception_for_actor(actor_id=actor_id, action_type=VWAction, action_result=ActionResult(outcome=ActionOutcome.impossible))
+            observation: VWObservation = self.generate_perception_for_actor(actor_id=actor_id, action_type=VWAction, action_result=ActionResult(outcome=ActionOutcome.impossible))
 
             self.send_perception_to_actor(perception=observation, actor_id=actor_id)
 
@@ -181,29 +177,29 @@ class VWEnvironment(Environment):
         '''
         return super(VWEnvironment, self).get_ambient()
 
-    def move_actor(self, from_coord: Coord, to_coord: Coord) -> None:
+    def move_actor(self, from_coord: VWCoord, to_coord: VWCoord) -> None:
         '''
-        Moves the `VWActor` curently at the `VWLocation` whose `Coord` matches `from_coord` to the `VWLocation` whose `Coord` matches `to_coord`, if possible.
+        Moves the `VWActor` curently at the `VWLocation` whose `VWCoord` matches `from_coord` to the `VWLocation` whose `VWCoord` matches `to_coord`, if possible.
 
         This method is a wrapper around the `move_actor()` method of `VWAmbient`.
         '''
         self.get_ambient().move_actor(from_coord=from_coord, to_coord=to_coord)
 
-    def turn_actor(self, coord: Coord, direction: Direction) -> None:
+    def turn_actor(self, coord: VWCoord, direction: VWDirection) -> None:
         '''
-        Turns the `VWActor` curently at the `VWLocation` whose `Coord` matches `coord` as specified by `direction`, if possible.
+        Turns the `VWActor` curently at the `VWLocation` whose `VWCoord` matches `coord` as specified by `direction`, if possible.
 
         This method is a wrapper around the `turn_actor()` method of `VWAmbient`.
         '''
         self.get_ambient().turn_actor(coord=coord, direction=direction)
 
-    def remove_dirt(self, coord: Coord) -> None:
+    def remove_dirt(self, coord: VWCoord) -> None:
         '''
-        Removes the dirt currently on the `VWLocation` whose `Coord` matches `coord`, if possible.
+        Removes the dirt currently on the `VWLocation` whose `VWCoord` matches `coord`, if possible.
 
         Both the `VWAmbient` grid, and the collection of `VWDirt` objects are updated.
 
-        This method assumes (via assertion) that there is a `Dirt` on the `VWLocation` whose `Coord` matches `coord`.
+        This method assumes (via assertion) that there is a `VWDirt` on the `VWLocation` whose `VWCoord` matches `coord`.
         '''
         assert self.get_ambient().is_dirt_at(coord=coord)
 
@@ -215,13 +211,13 @@ class VWEnvironment(Environment):
         # Removing the dirt from the grid.
         self.get_ambient().remove_dirt(coord=coord)
 
-    def drop_dirt(self, coord: Coord, dirt_colour: Colour) -> None:
+    def drop_dirt(self, coord: VWCoord, dirt_colour: VWColour) -> None:
         '''
-        Drops a `VWDirt` of the specified `dirt_colour` onto the `VWLocation` whose `Coord` matches `coord`, if possible.
+        Drops a `VWDirt` of the specified `dirt_colour` onto the `VWLocation` whose `VWCoord` matches `coord`, if possible.
 
         Both the `VWAmbient` grid, and the collection of `VWDirt` objects are updated.
         '''
-        dirt: Dirt = Dirt(colour=dirt_colour)
+        dirt: VWDirt = VWDirt(colour=dirt_colour)
         dirt_appearance: VWDirtAppearance = VWDirtAppearance(dirt_id=dirt.get_id(), progressive_id=dirt.get_progressive_id(), colour=dirt.get_colour())
 
         # Adding the dirt to the list of passive bodies.
@@ -230,9 +226,9 @@ class VWEnvironment(Environment):
         # Adding the dirt to the grid.
         self.get_ambient().drop_dirt(coord=coord, dirt_appearance=dirt_appearance)
 
-    def generate_perception_for_actor(self, actor_id: str, action_type: Type[VWAction], action_result: ActionResult) -> Observation:
+    def generate_perception_for_actor(self, actor_id: str, action_type: Type[VWAction], action_result: ActionResult) -> VWObservation:
         '''
-        Generates and returns an `Observation` perception for the `VWActor` with the specified `actor_id` as a result of the execution of the specified `action_type` with the specified `action_result`.
+        Generates and returns a `VWObservation` perception for the `VWActor` with the specified `actor_id` as a result of the execution of the specified `action_type` with the specified `action_result`.
 
         This method is a wrapper around the `generate_perception_for_actor()` method of `VWAmbient`.
 
@@ -240,13 +236,13 @@ class VWEnvironment(Environment):
         '''
         assert actor_id in self.get_actors()
 
-        coord: Coord = self.get_actor_position(actor_id=actor_id)
+        coord: VWCoord = self.get_actor_position(actor_id=actor_id)
 
         return self.get_ambient().generate_perception(actor_position=coord, action_type=action_type, action_result=action_result)
 
-    def get_actor_position(self, actor_id: str) -> Coord:
+    def get_actor_position(self, actor_id: str) -> VWCoord:
         '''
-        Returns the `Coord` of the `VWLocation` containing the `VWActor` with the specified `actor_id`.
+        Returns the `VWCoord` of the `VWLocation` containing the `VWActor` with the specified `actor_id`.
 
         This method assumes (via assertion) that the `VWActor` with the specified `actor_id` exists in the `VWEnvironment`.
         '''
@@ -264,7 +260,7 @@ class VWEnvironment(Environment):
 
         return self.__get_actor_position_and_location(actor_id=actor_id)[1]
 
-    def __get_actor_position_and_location(self, actor_id: str) -> Tuple[Coord, VWLocation]:
+    def __get_actor_position_and_location(self, actor_id: str) -> Tuple[VWCoord, VWLocation]:
         assert actor_id in self.get_actors()
 
         for c, l in self.get_ambient().get_grid().items():
@@ -273,9 +269,9 @@ class VWEnvironment(Environment):
 
         raise ValueError("Actor {} not found: there is an inconsistency between the grid and the list of actors.".format(actor_id))
 
-    def get_actor_orientation(self, actor_id: str) -> Orientation:
+    def get_actor_orientation(self, actor_id: str) -> VWOrientation:
         '''
-        Returns the `Orientation` of the `VWActor` with the specified `actor_id`.
+        Returns the `VWOrientation` of the `VWActor` with the specified `actor_id`.
 
         This method assumes (via assertion) that the `VWActor` with the specified `actor_id` exists in the `VWEnvironment`.
         '''
@@ -283,11 +279,11 @@ class VWEnvironment(Environment):
 
         return self.get_actor_location(actor_id=actor_id).get_actor_appearance().get_orientation()
 
-    def get_actor_previous_orientation(self, actor_id: str) -> Orientation:
+    def get_actor_previous_orientation(self, actor_id: str) -> VWOrientation:
         '''
-        Returns the backed-up (before a turn left/right) `Orientation` of the `VWActor` with the specified `actor_id`.
+        Returns the backed-up (before a turn left/right) `VWOrientation` of the `VWActor` with the specified `actor_id`.
 
-        If the `VWActor` with the specified `actor_id` has never turned left/right, then the returned `Orientation` should match the current `Orientation`.
+        If the `VWActor` with the specified `actor_id` has never turned left/right, then the returned `VWOrientation` should match the current `VWOrientation`.
 
         This method assumes (via assertion) that the `VWActor` with the specified `actor_id` exists in the `VWEnvironment`.
         '''
@@ -295,9 +291,9 @@ class VWEnvironment(Environment):
 
         return self.get_actor_location(actor_id=actor_id).get_actor_appearance().get_previous_orientation()
 
-    def get_actor_colour(self, actor_id: str) -> Colour:
+    def get_actor_colour(self, actor_id: str) -> VWColour:
         '''
-        Returns the `Colour` of the `VWActor` with the specified `actor_id`.
+        Returns the `VWColour` of the `VWActor` with the specified `actor_id`.
 
         This method assumes (via assertion) that the `VWActor` with the specified `actor_id` exists in the `VWEnvironment`.
         '''
@@ -316,7 +312,7 @@ class VWEnvironment(Environment):
         '''
         Returns a JSON representation of the `VWEnvironment`.
 
-        No `VWActor` IDs, `VWActor` progressive IDs, or `UserDifficulty` are stored.
+        No `VWActor` IDs, `VWActor` progressive IDs, or `VWUserDifficulty` are stored.
         '''
         state: Dict[str, List[Dict[str, Dict[str, str | int]]]] = {
             "locations": []
@@ -335,7 +331,7 @@ class VWEnvironment(Environment):
 
         return state
 
-    # This is meant to throw an exception if something goes wrong.
+    # This method is meant to throw an exception if something goes wrong.
     @staticmethod
     def from_json(data: Dict[str, List[Dict[str, Dict[str, str | int]]]], config: dict) -> VWEnvironment:
         '''
@@ -343,39 +339,47 @@ class VWEnvironment(Environment):
 
         Each `VWActor` will have a fresh ID and progressive ID, each `VWUser` will be in whatever mode is the default one.
         '''
-        grid: Dict[Coord, VWLocation] = {}
+        grid: Dict[VWCoord, VWLocation] = {}
         actors: List[VWActorAppearance] = []
-        dirts: List[Dirt] = []
+        dirts: List[VWDirt] = []
 
         if not data:
             return VWEnvironment.generate_empty_env(config=config)
 
         for location_data in data["locations"]:
-            coord: Coord = Coord(x=location_data["coords"]["x"], y=location_data["coords"]["y"])
-            actor: VWActor = None
-            actor_appearance: VWActorAppearance = None
-            dirt: Dirt = None
-            dirt_appearance: VWDirtAppearance = None
+            coord: VWCoord = VWCoord(x=location_data["coords"]["x"], y=location_data["coords"]["y"])
+            actor, actor_appearance = VWEnvironment.__load_actor(location_data=location_data)
+            dirt, dirt_appearance = VWEnvironment.__load_dirt(location_data=location_data)
 
-            if "actor" in location_data and location_data["actor"]["colour"] != str(Colour.user):
-                actor, actor_appearance = VWCleaningAgentsFactory.create_cleaning_agent_from_json_data(data=location_data["actor"])
-                actors.append(actor)
-            elif "actor" in location_data and location_data["actor"]["colour"] == str(Colour.user):
-                actor, actor_appearance = VWUsersFactory.create_user_from_json_data(data=location_data["actor"])
-                actors.append(actor)
+            assert actor and actor_appearance or not actor and not actor_appearance
+            assert dirt and dirt_appearance or not dirt and not dirt_appearance
 
-            if "dirt" in location_data:
-                dirt = Dirt(colour=Colour(location_data["dirt"]["colour"]))
-                dirt_appearance = VWDirtAppearance(dirt_id=dirt.get_id(), progressive_id=dirt.get_progressive_id(), colour=dirt.get_colour())
-                dirts.append(dirt)
-
-            wall: Dict[Orientation, bool] = {Orientation.north: location_data["wall"][str(Orientation.north)], Orientation.south: location_data["wall"][str(Orientation.south)], Orientation.west: location_data["wall"][str(Orientation.west)], Orientation.east: location_data["wall"][str(Orientation.east)]}
+            actors = actors + [actor] if actor else actors
+            dirts = dirts + [dirt] if dirt else dirts
+            wall: Dict[VWOrientation, bool] = {o: location_data["wall"][str(o)] for o in VWOrientation}
 
             grid[coord] = VWLocation(coord=coord, actor_appearance=actor_appearance, dirt_appearance=dirt_appearance, wall=wall)
 
         VWEnvironment.__validate_grid(grid=grid, config=config)
 
         return VWEnvironment(config=config, ambient=VWAmbient(grid=grid), initial_actors=actors, initial_dirts=dirts)
+
+    @staticmethod
+    def __load_actor(location_data: Dict[str, Dict[str, Union[str, int]]]) -> Tuple[Optional[VWActor], Optional[VWActorAppearance]]:
+        if "actor" in location_data:
+            return VWCleaningAgentsFactory.create_cleaning_agent_from_json_data(data=location_data["actor"]) if location_data["actor"]["colour"] != str(VWColour.user) else VWUsersFactory.create_user_from_json_data(data=location_data["actor"])
+        else:
+            return None, None
+
+    @staticmethod
+    def __load_dirt(location_data: Dict[str, Dict[str, Union[str, int]]]) -> Tuple[Optional[VWDirt], Optional[VWDirtAppearance]]:
+        if "dirt" in location_data:
+            dirt = VWDirt(colour=VWColour(location_data["dirt"]["colour"]))
+            dirt_appearance = VWDirtAppearance(dirt_id=dirt.get_id(), progressive_id=dirt.get_progressive_id(), colour=dirt.get_colour())
+
+            return dirt, dirt_appearance
+        else:
+            return None, None
 
     @staticmethod
     def generate_empty_env(config: dict, forced_line_dim: int=-1) -> VWEnvironment:
@@ -387,9 +391,10 @@ class VWEnvironment(Environment):
 
             if forced_line_dim != -1:
                 assert forced_line_dim >= config["min_environment_dim"] and forced_line_dim <= config["max_environment_dim"]
+
                 line_dim = forced_line_dim
 
-            grid: Dict[Coord, VWLocation] = {Coord(x=x, y=y): VWLocation(coord=Coord(x=x, y=y), actor_appearance=None, dirt_appearance=None, wall=VWEnvironment.generate_wall_from_coordinates(coord=Coord(x=x, y=y), grid_size=line_dim)) for x, y in product(range(line_dim), range(line_dim))}
+            grid: Dict[VWCoord, VWLocation] = {VWCoord(x=x, y=y): VWLocation(coord=VWCoord(x=x, y=y), actor_appearance=None, dirt_appearance=None, wall=VWEnvironment.generate_wall_from_coordinates(coord=VWCoord(x=x, y=y), grid_size=line_dim)) for x, y in product(range(line_dim), range(line_dim))}
 
             VWEnvironment.__validate_grid(grid=grid, config=config, candidate_grid_line_dim=line_dim)
 
@@ -400,25 +405,25 @@ class VWEnvironment(Environment):
             raise IOError("Could not construct the environment from the given config.")
 
     @staticmethod
-    def generate_wall_from_coordinates(coord: Coord, grid_size: int) -> Dict[Orientation, bool]:
+    def generate_wall_from_coordinates(coord: VWCoord, grid_size: int) -> Dict[VWOrientation, bool]:
         '''
         Generates and returns a `Dict[Orientation, bool]` wall for the specified `coord`, given `grid_size`.
         '''
-        default_wall: Dict[Orientation, bool] = {Orientation.north: False, Orientation.south: False, Orientation.west: False, Orientation.east: False}
+        default_wall: Dict[VWOrientation, bool] = {VWOrientation.north: False, VWOrientation.south: False, VWOrientation.west: False, VWOrientation.east: False}
 
         if coord.get_x() == 0:
-            default_wall[Orientation.west] = True
+            default_wall[VWOrientation.west] = True
         if coord.get_x() == grid_size - 1:
-            default_wall[Orientation.east] = True
+            default_wall[VWOrientation.east] = True
         if coord.get_y() == 0:
-            default_wall[Orientation.north] = True
+            default_wall[VWOrientation.north] = True
         if coord.get_y() == grid_size - 1:
-            default_wall[Orientation.south] = True
+            default_wall[VWOrientation.south] = True
 
         return default_wall
 
     @staticmethod
-    def __validate_grid(grid: Dict[Coord, VWLocation], config: dict, candidate_grid_line_dim: int=-1) -> None:
+    def __validate_grid(grid: Dict[VWCoord, VWLocation], config: dict, candidate_grid_line_dim: int=-1) -> None:
         assert grid is not None and type(grid) == dict
 
         grid_line_dim: int = sqrt(len(grid))
@@ -439,22 +444,22 @@ class VWEnvironment(Environment):
 
         If `custom_grid_size` is `True`, the grid size will be randomly generated between `config["min_environment_dim"]` and `config["max_environment_dim"]` (both inclusive).
         '''
-        green_agent_orientation: Orientation = Orientation.random()
-        orange_agent_orientation: Orientation = Orientation.random()
-        white_agent_orientation: Orientation = Orientation.random()
-        user_orientation: Orientation = Orientation.random()
-        difficutly_level: UserDifficulty = UserDifficulty.random()
+        green_agent_orientation: VWOrientation = VWOrientation.random()
+        orange_agent_orientation: VWOrientation = VWOrientation.random()
+        white_agent_orientation: VWOrientation = VWOrientation.random()
+        user_orientation: VWOrientation = VWOrientation.random()
+        difficutly_level: VWUserDifficulty = VWUserDifficulty.random()
 
-        green_agent, green_agent_appearance = VWCleaningAgentsFactory.create_cleaning_agent(colour=Colour.green, orientation=green_agent_orientation, mind_surrogate=VWHystereticMindSurrogate())
-        orange_agent, orange_agent_appearance = VWCleaningAgentsFactory.create_cleaning_agent(colour=Colour.orange, orientation=orange_agent_orientation, mind_surrogate=VWHystereticMindSurrogate())
-        white_agent, white_agent_appearance = VWCleaningAgentsFactory.create_cleaning_agent(colour=Colour.white, orientation=white_agent_orientation, mind_surrogate=VWHystereticMindSurrogate())
+        green_agent, green_agent_appearance = VWCleaningAgentsFactory.create_cleaning_agent(colour=VWColour.green, orientation=green_agent_orientation, mind_surrogate=VWHystereticMindSurrogate())
+        orange_agent, orange_agent_appearance = VWCleaningAgentsFactory.create_cleaning_agent(colour=VWColour.orange, orientation=orange_agent_orientation, mind_surrogate=VWHystereticMindSurrogate())
+        white_agent, white_agent_appearance = VWCleaningAgentsFactory.create_cleaning_agent(colour=VWColour.white, orientation=white_agent_orientation, mind_surrogate=VWHystereticMindSurrogate())
         user, user_appearance = VWUsersFactory.create_user(difficulty_level=difficutly_level, orientation=user_orientation)
 
-        green_dirt: Dirt = Dirt(colour=Colour.green)
-        green_dirt_appearance: VWDirtAppearance = VWDirtAppearance(dirt_id=green_dirt.get_id(), progressive_id=green_dirt.get_progressive_id(), colour=Colour.green)
+        green_dirt: VWDirt = VWDirt(colour=VWColour.green)
+        green_dirt_appearance: VWDirtAppearance = VWDirtAppearance(dirt_id=green_dirt.get_id(), progressive_id=green_dirt.get_progressive_id(), colour=VWColour.green)
 
-        orange_dirt: Dirt = Dirt(colour=Colour.orange)
-        orange_dirt_appearance: VWDirtAppearance = VWDirtAppearance(dirt_id=orange_dirt.get_id(), progressive_id=orange_dirt.get_progressive_id(), colour=Colour.orange)
+        orange_dirt: VWDirt = VWDirt(colour=VWColour.orange)
+        orange_dirt_appearance: VWDirtAppearance = VWDirtAppearance(dirt_id=orange_dirt.get_id(), progressive_id=orange_dirt.get_progressive_id(), colour=VWColour.orange)
 
         env, grid_size = VWEnvironment.generate_empty_env_for_testing(custom_grid_size=custom_grid_size, config=config)
 
@@ -504,19 +509,19 @@ class VWEnvironment(Environment):
             return VWEnvironment.generate_empty_env(config=config), grid_size
 
     @staticmethod
-    def generate_mutually_exclusive_coordinates_for_testing(amount: int, grid_size: int) -> List[Coord]:
+    def generate_mutually_exclusive_coordinates_for_testing(amount: int, grid_size: int) -> List[VWCoord]:
         '''
-        Generates and returns a list of `amount` mutually exclusive `Coord` for testing purposes, all compatible with `grid_size`.
+        Generates and returns a list of `amount` mutually exclusive `VWCoord` for testing purposes, all compatible with `grid_size`.
         '''
         assert amount > 1
 
-        coords: List[Coord] = [Coord(x=randint(0, grid_size - 1), y=randint(0, grid_size - 1))]
+        coords: List[VWCoord] = [VWCoord(x=randint(0, grid_size - 1), y=randint(0, grid_size - 1))]
 
         for _ in range(amount - 1):
-            tmp: Coord = Coord(x=randint(0, grid_size - 1), y=randint(0, grid_size - 1))
+            tmp: VWCoord = VWCoord(x=randint(0, grid_size - 1), y=randint(0, grid_size - 1))
 
             while tmp in coords:
-                tmp = Coord(x=randint(0, grid_size - 1), y=randint(0, grid_size - 1))
+                tmp = VWCoord(x=randint(0, grid_size - 1), y=randint(0, grid_size - 1))
 
             coords.append(tmp)
 

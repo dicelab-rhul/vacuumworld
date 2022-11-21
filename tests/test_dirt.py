@@ -2,15 +2,15 @@
 
 from unittest import main, TestCase
 
-from vacuumworld.common.colour import Colour
-from vacuumworld.model.dirt.dirt import Dirt
-from vacuumworld.model.dirt.dirt_appearance import VWDirtAppearance
+from vacuumworld.common.vwcolour import VWColour
+from vacuumworld.model.dirt.vwdirt import VWDirt
+from vacuumworld.model.dirt.vwdirt_appearance import VWDirtAppearance
 
 
 class TestDirt(TestCase):
     def test_dirt(self) -> None:
-        for colour in [Colour.green, Colour.orange]:
-            dirt: Dirt = Dirt(colour=colour)
+        for colour in [VWColour.green, VWColour.orange]:
+            dirt: VWDirt = VWDirt(colour=colour)
             dirt_appearance: VWDirtAppearance = VWDirtAppearance(dirt_id=dirt.get_id(), progressive_id=dirt.get_progressive_id(), colour=colour)
 
             self.assertEqual(dirt.get_id(), dirt_appearance.get_id())

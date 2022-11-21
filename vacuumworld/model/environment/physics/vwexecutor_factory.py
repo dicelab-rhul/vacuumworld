@@ -3,21 +3,21 @@ from typing import Type, Optional
 from pystarworldsturbo.environment.physics.executor_factory import ExecutorFactory
 from pystarworldsturbo.environment.physics.action_executor import ActionExecutor
 
-from .move_executor import MoveExecutor
-from .turn_executor import TurnExecutor
-from .clean_executor import CleanExecutor
-from .drop_executor import DropExecutor
-from .idle_executor import IdleExecutor
-from .speak_executor import SpeakExecutor
-from .broadcast_executor import BroadcastExecutor
+from .vwmove_executor import VWMoveExecutor
+from .vwturn_executor import VWTurnExecutor
+from .vwclean_executor import VWCleanExecutor
+from .vwdrop_executor import VWDropExecutor
+from .vwidle_executor import VWIdleExecutor
+from .vwspeak_executor import VWSpeakExecutor
+from .vwbroadcast_executor import VWBroadcastExecutor
 from ...actions.vwactions import VWAction
-from ...actions.move_action import VWMoveAction
-from ...actions.turn_action import VWTurnAction
-from ...actions.clean_action import VWCleanAction
-from ...actions.drop_action import VWDropAction
-from ...actions.idle_action import VWIdleAction
-from ...actions.speak_action import VWSpeakAction
-from ...actions.broadcast_action import VWBroadcastAction
+from ...actions.vwmove_action import VWMoveAction
+from ...actions.vwturn_action import VWTurnAction
+from ...actions.vwclean_action import VWCleanAction
+from ...actions.vwdrop_action import VWDropAction
+from ...actions.vwidle_action import VWIdleAction
+from ...actions.vwspeak_action import VWSpeakAction
+from ...actions.vwbroadcast_action import VWBroadcastAction
 
 
 class VWExecutorFactory(ExecutorFactory):
@@ -34,18 +34,18 @@ class VWExecutorFactory(ExecutorFactory):
         action_type: Type = type(action)
 
         if action_type == VWMoveAction:
-            return MoveExecutor()
+            return VWMoveExecutor()
         elif action_type == VWTurnAction:
-            return TurnExecutor()
+            return VWTurnExecutor()
         elif action_type == VWCleanAction:
-            return CleanExecutor()
+            return VWCleanExecutor()
         elif action_type == VWDropAction:
-            return DropExecutor()
+            return VWDropExecutor()
         elif action_type == VWIdleAction:
-            return IdleExecutor()
+            return VWIdleExecutor()
         elif action_type == VWSpeakAction:
-            return SpeakExecutor()
+            return VWSpeakExecutor()
         elif action_type == VWBroadcastAction:
-            return BroadcastExecutor()
+            return VWBroadcastExecutor()
         else:
             return None

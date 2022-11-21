@@ -5,19 +5,19 @@ from random import choice
 from string import ascii_letters, digits
 
 from vacuumworld import VacuumWorld
-from vacuumworld.common.coordinates import Coord
+from vacuumworld.common.vwcoordinates import VWCoord
 from vacuumworld.model.environment.vwlocation import VWLocation
 from vacuumworld.model.environment.vwenvironment import VWEnvironment
-from vacuumworld.config_manager import ConfigManager
-from vacuumworld.gui.saveload import SaveStateManager
+from vacuumworld.vwconfig_manager import VWConfigManager
+from vacuumworld.gui.vwsaveload import VWSaveStateManager
 
 
 class TestSaveLoad(TestCase):
     def __init__(self, args) -> None:
         super(TestSaveLoad, self).__init__(args)
 
-        self.__save_state_manager = SaveStateManager()
-        self.__config: dict = ConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
+        self.__save_state_manager = VWSaveStateManager()
+        self.__config: dict = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
         self.__temp_file_deletion_after_error_message: str = "We are still deleting the temporary saved state."
 
     def test_save_to_file(self):
@@ -63,7 +63,7 @@ class TestSaveLoad(TestCase):
         if len(env1.get_passive_bodies_list()) != len(env2.get_passive_bodies_list()):
             return False
 
-        for coord in [Coord(x=x, y=y) for x in range(env1.get_ambient().get_grid_dim()) for y in range(env1.get_ambient().get_grid_dim())]:
+        for coord in [VWCoord(x=x, y=y) for x in range(env1.get_ambient().get_grid_dim()) for y in range(env1.get_ambient().get_grid_dim())]:
             if not TestSaveLoad.__compatible(loc1=env1.get_ambient().get_grid()[coord], loc2=env2.get_ambient().get_grid()[coord]):
                 return False
 

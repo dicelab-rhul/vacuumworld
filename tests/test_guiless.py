@@ -7,9 +7,9 @@ from string import ascii_letters, digits
 
 from vacuumworld import VacuumWorld, run
 from vacuumworld.model.environment.vwenvironment import VWEnvironment
-from vacuumworld.model.actor.hystereticmindsurrogate import VWHystereticMindSurrogate
-from vacuumworld.config_manager import ConfigManager
-from vacuumworld.gui.saveload import SaveStateManager
+from vacuumworld.model.actor.mind.surrogate.vwhysteretic_mind_surrogate import VWHystereticMindSurrogate
+from vacuumworld.vwconfig_manager import VWConfigManager
+from vacuumworld.gui.vwsaveload import VWSaveStateManager
 
 import os
 
@@ -18,7 +18,7 @@ class TestGUIless(TestCase):
     def __init__(self, args) -> None:
         super(TestGUIless, self).__init__(args)
 
-        self.__config: dict = ConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
+        self.__config: dict = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
         self.__min_number_of_cycles: int = 1
         self.__max_number_of_cycles: int = 100
         self.__number_of_runs: int = 10
@@ -29,7 +29,7 @@ class TestGUIless(TestCase):
             try:
                 env, _ = VWEnvironment.generate_random_env_for_testing(config=self.__config, custom_grid_size=True)
                 test_file: str = "".join([choice(ascii_letters + digits) for _ in range(10)]) + ".json"
-                manager: SaveStateManager = SaveStateManager()
+                manager: VWSaveStateManager = VWSaveStateManager()
                 manager.save_state(env=env, filename=test_file)
 
                 run(default_mind=VWHystereticMindSurrogate(), speed=0.999, load=test_file, total_cycles=total_cycles, gui=False, debug_enabled=False)

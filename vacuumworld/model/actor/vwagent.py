@@ -1,10 +1,10 @@
 from typing import Optional
 
 from .vwactor import VWActor
-from .vwactormind import VWMind
-from .vwsensors import VWListeningSensor, VWObservationSensor
-from .vwactuators import VWPhysicalActuator, VWCommunicativeActuator
-from ..actions.clean_action import VWCleanAction
+from .mind.vwactor_mind import VWMind
+from .appendices.vwsensors import VWListeningSensor, VWObservationSensor
+from .appendices.vwactuators import VWPhysicalActuator, VWCommunicativeActuator
+from ..actions.vwclean_action import VWCleanAction
 
 
 class VWCleaningAgent(VWActor):

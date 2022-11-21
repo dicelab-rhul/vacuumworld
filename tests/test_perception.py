@@ -11,24 +11,24 @@ from pystarworldsturbo.common.action_outcome import ActionOutcome
 from pystarworldsturbo.common.action_result import ActionResult
 
 from vacuumworld import VacuumWorld
-from vacuumworld.common.position_names import PositionNames
+from vacuumworld.common.vwposition_names import VWPositionNames
 from vacuumworld.model.actions.vwactions import VWAction
-from vacuumworld.model.actions.broadcast_action import VWBroadcastAction
-from vacuumworld.model.actions.clean_action import VWCleanAction
-from vacuumworld.model.actions.drop_action import VWDropAction
-from vacuumworld.model.actions.idle_action import VWIdleAction
-from vacuumworld.model.actions.move_action import VWMoveAction
-from vacuumworld.model.actions.speak_action import VWSpeakAction
-from vacuumworld.model.actions.turn_action import VWTurnAction
-from vacuumworld.model.dirt.dirt_appearance import VWDirtAppearance
-from vacuumworld.common.orientation import Orientation
-from vacuumworld.common.colour import Colour
-from vacuumworld.model.actor.vwactor_appearance import VWActorAppearance
-from vacuumworld.common.coordinates import Coord
+from vacuumworld.model.actions.vwbroadcast_action import VWBroadcastAction
+from vacuumworld.model.actions.vwclean_action import VWCleanAction
+from vacuumworld.model.actions.vwdrop_action import VWDropAction
+from vacuumworld.model.actions.vwidle_action import VWIdleAction
+from vacuumworld.model.actions.vwmove_action import VWMoveAction
+from vacuumworld.model.actions.vwspeak_action import VWSpeakAction
+from vacuumworld.model.actions.vwturn_action import VWTurnAction
+from vacuumworld.model.dirt.vwdirt_appearance import VWDirtAppearance
+from vacuumworld.common.vworientation import VWOrientation
+from vacuumworld.common.vwcolour import VWColour
+from vacuumworld.model.actor.appearance.vwactor_appearance import VWActorAppearance
+from vacuumworld.common.vwcoordinates import VWCoord
 from vacuumworld.model.environment.vwenvironment import VWEnvironment
 from vacuumworld.model.environment.vwlocation import VWLocation
-from vacuumworld.common.observation import Observation
-from vacuumworld.config_manager import ConfigManager
+from vacuumworld.common.vwobservation import VWObservation
+from vacuumworld.vwconfig_manager import VWConfigManager
 
 import os
 import random as random_module
@@ -38,10 +38,10 @@ class TestPerception(TestCase):
     def __init__(self, args) -> None:
         super(TestPerception, self).__init__(args)
 
-        self.__config: dict = ConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
+        self.__config: dict = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
         self.__min_grid_size: int = self.__config["min_environment_dim"]
         self.__max_grid_size: int = self.__config["max_environment_dim"]
-        self.__number_of_locations: int = len(PositionNames)
+        self.__number_of_locations: int = len(VWPositionNames)
         self.__progressive_id: int = 0
         self.__number_of_runs: int = 100
         self.__collection_size: int = 100
@@ -67,37 +67,37 @@ class TestPerception(TestCase):
 
     def __test_observation(self, test_function: Callable) -> None:
         grid_size: int = randint(self.__min_grid_size, self.__max_grid_size)
-        coords: List[Coord] = self.__generate_random_coords(grid_size=grid_size)
+        coords: List[VWCoord] = self.__generate_random_coords(grid_size=grid_size)
         actors: List[Optional[VWActorAppearance]] = self.__generate_random_actor_appearances()
         dirts: List[Optional[VWDirtAppearance]] = self.__generate_random_dirt_appearances()
-        perceived_locations: Dict[PositionNames, VWLocation] = self.__generate_locations_dict(grid_size=grid_size, coords=coords, actors=actors, dirts=dirts)
+        perceived_locations: Dict[VWPositionNames, VWLocation] = self.__generate_locations_dict(grid_size=grid_size, coords=coords, actors=actors, dirts=dirts)
 
         test_function(perceived_locations=perceived_locations, coords=coords, actors=actors, dirts=dirts)
 
         self.__progressive_id = 0
 
-    def __test_observation_coming_from_physical_action(self, perceived_locations: Dict[PositionNames, VWLocation], coords: List[Coord], actors: List[Optional[VWActorAppearance]], dirts: List[Optional[VWDirtAppearance]]) -> None:
+    def __test_observation_coming_from_physical_action(self, perceived_locations: Dict[VWPositionNames, VWLocation], coords: List[VWCoord], actors: List[Optional[VWActorAppearance]], dirts: List[Optional[VWDirtAppearance]]) -> None:
         for action_type in [VWCleanAction, VWDropAction, VWIdleAction, VWMoveAction, VWTurnAction]:
             for action_outcome in (ActionOutcome.impossible, ActionOutcome.success, ActionOutcome.failure):
                 self.__test_observation_coming_from_single_action(perceived_locations=perceived_locations, coords=coords, actors=actors, dirts=dirts, action_type=action_type, action_outcome=action_outcome)
 
-    def __test_observation_coming_from_communicative_action(self, perceived_locations: Dict[PositionNames, VWLocation], coords: List[Coord], actors: List[Optional[VWActorAppearance]], dirts: List[Optional[VWDirtAppearance]]) -> None:
+    def __test_observation_coming_from_communicative_action(self, perceived_locations: Dict[VWPositionNames, VWLocation], coords: List[VWCoord], actors: List[Optional[VWActorAppearance]], dirts: List[Optional[VWDirtAppearance]]) -> None:
         for action_type in [VWSpeakAction, VWBroadcastAction]:
             for action_outcome in (ActionOutcome.impossible, ActionOutcome.success, ActionOutcome.failure):
                 self.__test_observation_coming_from_single_action(perceived_locations=perceived_locations, coords=coords, actors=actors, dirts=dirts, action_type=action_type, action_outcome=action_outcome)
 
-    def __test_observation_coming_from_multiple_actions(self, perceived_locations: Dict[PositionNames, VWLocation], coords: List[Coord], actors: List[Optional[VWActorAppearance]], dirts: List[Optional[VWDirtAppearance]]) -> None:
+    def __test_observation_coming_from_multiple_actions(self, perceived_locations: Dict[VWPositionNames, VWLocation], coords: List[VWCoord], actors: List[Optional[VWActorAppearance]], dirts: List[Optional[VWDirtAppearance]]) -> None:
         for physical_action_type in [VWCleanAction, VWDropAction, VWIdleAction, VWMoveAction, VWTurnAction]:
             for communicative_action_type in [VWSpeakAction, VWBroadcastAction]:
                 for physical_action_outcome in (ActionOutcome.impossible, ActionOutcome.success, ActionOutcome.failure):
                     for communicative_action_outcome in (ActionOutcome.impossible, ActionOutcome.success, ActionOutcome.failure):
                         physical_result: ActionResult = ActionResult(outcome=physical_action_outcome)
                         communicative_result: ActionResult = ActionResult(outcome=communicative_action_outcome)
-                        physical_observation: Observation = Observation(action_type=physical_action_type, action_result=physical_result, locations_dict=perceived_locations)
-                        communicative_observation: Observation = Observation(action_type=communicative_action_type, action_result=communicative_result, locations_dict=perceived_locations)
+                        physical_observation: VWObservation = VWObservation(action_type=physical_action_type, action_result=physical_result, locations_dict=perceived_locations)
+                        communicative_observation: VWObservation = VWObservation(action_type=communicative_action_type, action_result=communicative_result, locations_dict=perceived_locations)
                         communicative_observation.merge_action_result_with_previous_observations(observations=[physical_observation])
 
-                        self.__check_locations(o=communicative_observation, positions=PositionNames.values(), coords=coords, actors=actors, dirts=dirts)
+                        self.__check_locations(o=communicative_observation, positions=VWPositionNames.values(), coords=coords, actors=actors, dirts=dirts)
 
                         actions_outcomes: Dict[Type[VWAction], Union[ActionOutcome, List[ActionOutcome]]] = communicative_observation.get_latest_actions_outcomes_as_dict()
 
@@ -109,11 +109,11 @@ class TestPerception(TestCase):
                         self.assertEqual(physical_action_outcome, actions_outcomes[physical_action_type.__name__])
                         self.assertEqual(communicative_action_outcome, actions_outcomes[communicative_action_type.__name__])
 
-    def __test_observation_coming_from_single_action(self, perceived_locations: Dict[PositionNames, VWLocation], coords: List[Coord], actors: List[Optional[VWActorAppearance]], dirts: List[Optional[VWDirtAppearance]], action_type: Type[VWAction], action_outcome: ActionOutcome) -> None:
+    def __test_observation_coming_from_single_action(self, perceived_locations: Dict[VWPositionNames, VWLocation], coords: List[VWCoord], actors: List[Optional[VWActorAppearance]], dirts: List[Optional[VWDirtAppearance]], action_type: Type[VWAction], action_outcome: ActionOutcome) -> None:
         result: ActionResult = ActionResult(outcome=action_outcome)
-        o: Observation = Observation(action_type=action_type, action_result=result, locations_dict=perceived_locations)
+        o: VWObservation = VWObservation(action_type=action_type, action_result=result, locations_dict=perceived_locations)
 
-        self.__check_locations(o=o, positions=PositionNames.values(), coords=coords, actors=actors, dirts=dirts)
+        self.__check_locations(o=o, positions=VWPositionNames.values(), coords=coords, actors=actors, dirts=dirts)
 
         actions_outcomes: Dict[Type[VWAction], Union[ActionOutcome, List[ActionOutcome]]] = o.get_latest_actions_outcomes_as_dict()
 
@@ -125,11 +125,11 @@ class TestPerception(TestCase):
         self.assertTrue(isinstance(action_outcomes, ActionOutcome))
         self.assertEqual(action_outcome, action_outcomes)
 
-    def __check_locations(self, o: Observation, positions: List[PositionNames], coords: List[Coord], actors: List[Optional[VWActorAppearance]], dirts: List[Optional[VWDirtAppearance]]) -> None:
+    def __check_locations(self, o: VWObservation, positions: List[VWPositionNames], coords: List[VWCoord], actors: List[Optional[VWActorAppearance]], dirts: List[Optional[VWDirtAppearance]]) -> None:
         for i in range(len(positions)):
             self.__check_location(o=o, position=positions[i], coord=coords[i], actor_appearance=actors[i], dirt_appearance=dirts[i])
 
-    def __check_location(self, o: Observation, position: PositionNames, coord: Coord, actor_appearance: Optional[VWActorAppearance], dirt_appearance: Optional[VWDirtAppearance]) -> None:
+    def __check_location(self, o: VWObservation, position: VWPositionNames, coord: VWCoord, actor_appearance: Optional[VWActorAppearance], dirt_appearance: Optional[VWDirtAppearance]) -> None:
         if o.get_location_at(position_name=position) is not None:
             location: VWLocation = o.get_location_at(position_name=position)
 
@@ -145,16 +145,16 @@ class TestPerception(TestCase):
             else:
                 self.assertIsNone(location.get_dirt_appearance())
 
-    def __generate_random_coords(self, grid_size: int) -> List[Coord]:
-        return [Coord(x=randint(0, grid_size - 1), y=randint(0, grid_size - 1)) for _ in range(self.__number_of_locations)]
+    def __generate_random_coords(self, grid_size: int) -> List[VWCoord]:
+        return [VWCoord(x=randint(0, grid_size - 1), y=randint(0, grid_size - 1)) for _ in range(self.__number_of_locations)]
 
     def __generate_random_actor_appearances(self) -> List[Optional[VWActorAppearance]]:
         return [None if randfloat() < 0.5 else self.__generate_random_actor_appearance() for _ in range(self.__number_of_locations)]
 
     def __generate_random_actor_appearance(self) -> VWActorAppearance:
         actor_id: str = str(uuid4())
-        colour: Colour = choice(list(Colour))
-        orientation: Orientation = choice(list(Orientation))
+        colour: VWColour = choice(list(VWColour))
+        orientation: VWOrientation = choice(list(VWOrientation))
         self.__progressive_id += 1
 
         return VWActorAppearance(actor_id=actor_id, progressive_id=self.__progressive_id, colour=colour, orientation=orientation)
@@ -164,17 +164,17 @@ class TestPerception(TestCase):
 
     def __generate_random_dirt_appearance(self) -> VWDirtAppearance:
         dirt_id: str = str(uuid4())
-        colour: Colour = choice(list(Colour))
+        colour: VWColour = choice(list(VWColour))
         self.__progressive_id += 1
 
         return VWDirtAppearance(dirt_id=dirt_id, progressive_id=self.__progressive_id, colour=colour)
 
-    def __generate_locations_dict(self, grid_size: int, coords: List[Coord], actors: List[Optional[VWActorAppearance]], dirts: List[Optional[VWDirtAppearance]]) -> Dict[PositionNames, VWLocation]:
-        locations_dict: Dict[PositionNames, VWLocation] = {}
+    def __generate_locations_dict(self, grid_size: int, coords: List[VWCoord], actors: List[Optional[VWActorAppearance]], dirts: List[Optional[VWDirtAppearance]]) -> Dict[VWPositionNames, VWLocation]:
+        locations_dict: Dict[VWPositionNames, VWLocation] = {}
 
         for i in range(len(coords)):
-            coord: Coord = coords[i]
-            locations_dict[PositionNames.values()[i]] = VWLocation(coord=coord, actor_appearance=actors[i], dirt_appearance=dirts[i], wall=VWEnvironment.generate_wall_from_coordinates(coord=coord, grid_size=grid_size)) if coord.in_bounds(min_x=0, max_x=grid_size-1, min_y=0, max_y=grid_size-1) else None
+            coord: VWCoord = coords[i]
+            locations_dict[VWPositionNames.values()[i]] = VWLocation(coord=coord, actor_appearance=actors[i], dirt_appearance=dirts[i], wall=VWEnvironment.generate_wall_from_coordinates(coord=coord, grid_size=grid_size)) if coord.in_bounds(min_x=0, max_x=grid_size-1, min_y=0, max_y=grid_size-1) else None
 
         return locations_dict
 

@@ -1,10 +1,10 @@
 from typing import Optional
 
 from .vwactor import VWActor
-from .vwusermind import VWUserMind
-from .vwsensors import VWListeningSensor, VWObservationSensor
-from .vwactuators import VWUserPhysicalActuator, VWCommunicativeActuator
-from ..actions.drop_action import VWDropAction
+from .mind.vwuser_mind import VWUserMind
+from .appendices.vwsensors import VWListeningSensor, VWObservationSensor
+from .appendices.vwactuators import VWUserPhysicalActuator, VWCommunicativeActuator
+from ..actions.vwdrop_action import VWDropAction
 
 
 class VWUser(VWActor):
