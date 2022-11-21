@@ -21,7 +21,7 @@ class SaveStateManager():
     def __init__(self) -> None:
         self.__files_dir: str = os.path.join(os.getcwd(), "files")
         self.__vw_saved_state_extension: str = ".json"
-        self.__vw_file_regex: str = "^[a-zA-Z0-9]+{}$".format(self.__vw_saved_state_extension)
+        self.__vw_file_regex: str = "^[a-zA-Z0-9]+{}$".format(self.__vw_saved_state_extension)  # With `.format()` the `.` is automatically treated as a character, rather than a regex symbol.
         self.__random_file_name_length: int = 10
 
         self.__prepare_files_dir()

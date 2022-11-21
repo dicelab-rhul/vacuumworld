@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import List, Tuple, Dict, Type, Optional
+from typing import List, Tuple, Dict, Type, Optional, Union
 from inspect import getfile
 from itertools import product
 from math import floor, sqrt
@@ -56,7 +56,6 @@ class VWEnvironment(Environment):
         super(VWEnvironment, self).__init__(ambient=ambient, initial_actors=initial_actors, initial_passive_bodies=initial_dirts)
 
         self.__cycle: int = -1
-        self.__surrogate_minds_metadata: Dict[str, str] = {}  # TODO: is this ever used?
         self.__config: dict = config
 
     def can_evolve(self) -> bool:
@@ -69,12 +68,6 @@ class VWEnvironment(Environment):
             return True
         else:
             return self.__cycle < self.__config["total_cycles"]
-
-    def get_surrogate_minds_metadata(self) -> Dict[str, str]:
-        '''
-        Returns a `Dict[str, str]` mapping `VWActor` IDs to surrogate mind metadata.
-        '''
-        return self.__surrogate_minds_metadata()
 
     def get_current_cycle_number(self) -> int:
         '''
@@ -143,8 +136,11 @@ class VWEnvironment(Environment):
         n_physical: int = self.__config["max_number_of_physical_actions_per_actor_per_cycle"]
         n_communicative: int = self.__config["max_number_of_communicative_actions_per_actor_per_cycle"]
 
-        assert 0 < len(actions) <= n
+        # Self-consistency assertion in the config data.
         assert n_physical + n_communicative == n
+
+        # The check that at least one `VWAction` (and no more than `n`) is attempted has already been done in `__validate_number_of_actions()`. Hence, this is an assertion, and not a conditional statement.
+        assert 0 < len(actions) <= n
 
         if sum(map(lambda action: isinstance(action, VWPhysicalAction), actions)) > n_physical:
             raise VWActionAttemptException("Too many physical actions were attempted. There is a hard limit of {} physical action, and {} communicative action per actor per cycle.".format(n_physical, n_communicative))
@@ -335,7 +331,7 @@ class VWEnvironment(Environment):
 
         return state
 
-    # This is meant to throw an exception if something goes wrong.
+    # This method is meant to throw an exception if something goes wrong.
     @staticmethod
     def from_json(data: Dict[str, List[Dict[str, Dict[str, str | int]]]], config: dict) -> VWEnvironment:
         '''
@@ -352,30 +348,38 @@ class VWEnvironment(Environment):
 
         for location_data in data["locations"]:
             coord: Coord = Coord(x=location_data["coords"]["x"], y=location_data["coords"]["y"])
-            actor: VWActor = None
-            actor_appearance: VWActorAppearance = None
-            dirt: Dirt = None
-            dirt_appearance: VWDirtAppearance = None
+            actor, actor_appearance = VWEnvironment.__load_actor(location_data=location_data)
+            dirt, dirt_appearance = VWEnvironment.__load_dirt(location_data=location_data)
 
-            if "actor" in location_data and location_data["actor"]["colour"] != str(Colour.user):
-                actor, actor_appearance = VWCleaningAgentsFactory.create_cleaning_agent_from_json_data(data=location_data["actor"])
-                actors.append(actor)
-            elif "actor" in location_data and location_data["actor"]["colour"] == str(Colour.user):
-                actor, actor_appearance = VWUsersFactory.create_user_from_json_data(data=location_data["actor"])
-                actors.append(actor)
+            assert actor and actor_appearance or not actor and not actor_appearance
+            assert dirt and dirt_appearance or not dirt and not dirt_appearance
 
-            if "dirt" in location_data:
-                dirt = Dirt(colour=Colour(location_data["dirt"]["colour"]))
-                dirt_appearance = VWDirtAppearance(dirt_id=dirt.get_id(), progressive_id=dirt.get_progressive_id(), colour=dirt.get_colour())
-                dirts.append(dirt)
-
-            wall: Dict[Orientation, bool] = {Orientation.north: location_data["wall"][str(Orientation.north)], Orientation.south: location_data["wall"][str(Orientation.south)], Orientation.west: location_data["wall"][str(Orientation.west)], Orientation.east: location_data["wall"][str(Orientation.east)]}
+            actors = actors + [actor] if actor else actors
+            dirts = dirts + [dirt] if dirt else dirts
+            wall: Dict[Orientation, bool] = {o: location_data["wall"][str(o)] for o in Orientation}
 
             grid[coord] = VWLocation(coord=coord, actor_appearance=actor_appearance, dirt_appearance=dirt_appearance, wall=wall)
 
         VWEnvironment.__validate_grid(grid=grid, config=config)
 
         return VWEnvironment(config=config, ambient=VWAmbient(grid=grid), initial_actors=actors, initial_dirts=dirts)
+
+    @staticmethod
+    def __load_actor(location_data: Dict[str, Dict[str, Union[str, int]]]) -> Tuple[Optional[VWActor], Optional[VWActorAppearance]]:
+        if "actor" in location_data:
+            return VWCleaningAgentsFactory.create_cleaning_agent_from_json_data(data=location_data["actor"]) if location_data["actor"]["colour"] != str(Colour.user) else VWUsersFactory.create_user_from_json_data(data=location_data["actor"])
+        else:
+            return None, None
+
+    @staticmethod
+    def __load_dirt(location_data: Dict[str, Dict[str, Union[str, int]]]) -> Tuple[Optional[Dirt], Optional[VWDirtAppearance]]:
+        if "dirt" in location_data:
+            dirt = Dirt(colour=Colour(location_data["dirt"]["colour"]))
+            dirt_appearance = VWDirtAppearance(dirt_id=dirt.get_id(), progressive_id=dirt.get_progressive_id(), colour=dirt.get_colour())
+
+            return dirt, dirt_appearance
+        else:
+            return None, None
 
     @staticmethod
     def generate_empty_env(config: dict, forced_line_dim: int=-1) -> VWEnvironment:
@@ -387,6 +391,7 @@ class VWEnvironment(Environment):
 
             if forced_line_dim != -1:
                 assert forced_line_dim >= config["min_environment_dim"] and forced_line_dim <= config["max_environment_dim"]
+
                 line_dim = forced_line_dim
 
             grid: Dict[Coord, VWLocation] = {Coord(x=x, y=y): VWLocation(coord=Coord(x=x, y=y), actor_appearance=None, dirt_appearance=None, wall=VWEnvironment.generate_wall_from_coordinates(coord=Coord(x=x, y=y), grid_size=line_dim)) for x, y in product(range(line_dim), range(line_dim))}
