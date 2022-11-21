@@ -6,23 +6,23 @@ from pystarworldsturbo.common.message import BccMessage
 
 from vacuumworld import run
 from vacuumworld.model.actions.vwactions import VWAction
-from vacuumworld.model.actions.idle_action import VWIdleAction
-from vacuumworld.model.actions.broadcast_action import VWBroadcastAction
-from vacuumworld.model.actions.effort import ActionEffort
-from vacuumworld.model.actor.actor_mind_surrogate import ActorMindSurrogate
-from vacuumworld.common.observation import Observation
+from vacuumworld.model.actions.vwidle_action import VWIdleAction
+from vacuumworld.model.actions.vwbroadcast_action import VWBroadcastAction
+from vacuumworld.model.actions.vweffort import VWActionEffort
+from vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate import VWActorMindSurrogate
+from vacuumworld.common.vwobservation import VWObservation
 
 
-class MyMind(ActorMindSurrogate):
+class MyMind(VWActorMindSurrogate):
     def __init__(self) -> None:
         super(MyMind, self).__init__()
 
         # Add here all the attributes you need/want.
 
-    def revise(self, observation: Observation, messages: Iterable[BccMessage]) -> None:
+    def revise(self, observation: VWObservation, messages: Iterable[BccMessage]) -> None:
         # Do something with the observation, the messages, and the effort instead of simply storing/printing them.
 
-        self.__observation: Observation = observation
+        self.__observation: VWObservation = observation
         self.__latest_messages: Iterable[BccMessage] = messages
         self.__my_id: str = self.__observation.get_center().get_actor_appearance().get_id()
 
@@ -38,4 +38,4 @@ class MyMind(ActorMindSurrogate):
 
 
 if __name__ == "__main__":
-    run(default_mind=MyMind(), efforts=ActionEffort.REASONABLE_EFFORTS)
+    run(default_mind=MyMind(), efforts=VWActionEffort.REASONABLE_EFFORTS)

@@ -8,48 +8,49 @@ from pystarworldsturbo.common.message import BccMessage
 
 from vacuumworld import run
 from vacuumworld.model.actions.vwactions import VWAction
-from vacuumworld.model.actions.idle_action import VWIdleAction
-from vacuumworld.model.actions.move_action import VWMoveAction
-from vacuumworld.model.actions.turn_action import VWTurnAction
-from vacuumworld.model.actions.broadcast_action import VWBroadcastAction
-from vacuumworld.common.observation import Observation
-from vacuumworld.common.orientation import Orientation
-from vacuumworld.common.direction import Direction
-from vacuumworld.common.colour import Colour
-from vacuumworld.common.coordinates import Coord
+from vacuumworld.model.actions.vwidle_action import VWIdleAction
+from vacuumworld.model.actions.vwmove_action import VWMoveAction
+from vacuumworld.model.actions.vwturn_action import VWTurnAction
+from vacuumworld.model.actions.vwbroadcast_action import VWBroadcastAction
+from vacuumworld.common.vwobservation import VWObservation
+from vacuumworld.common.vworientation import VWOrientation
+from vacuumworld.common.vwdirection import VWDirection
+from vacuumworld.common.vwcolour import VWColour
+from vacuumworld.common.vwcoordinates import VWCoord
 
 from dance_mind import DanceMind
 
 
 class ColourMind(DanceMind):
-    """
+    '''
     This mind is build on top of the basic mind. It adds additional behaviours which address
     the task at hand.
-    """
+    '''
     def __init__(self):
         super(ColourMind, self).__init__()
 
-        self.__target_loc: Coord = None  # The location to move to.
+        self.__target_loc: VWCoord = None  # The location to move to.
         self.__dance_time: Tuple[int, int] = ()  # Time interval where the agent should be dancing.
 
-    def sub_revise(self, observation: Observation, messages: Iterable[BccMessage]):
-        """
+    def sub_revise(self, observation: VWObservation, messages: Iterable[BccMessage]):
+        '''
         This function gets called after all of the basic state updates happen in DanceMind.
         The behaviour is quite simple, we just listen for messages and set attributes in
         response to specific messages.
-        """
+        '''
 
         ignore(observation)
 
-        self.__leader: bool = self.get_colour() == Colour.orange  # Am I the orange agent? Orange is the leader.
+        self.__leader: bool = self.get_colour() == VWColour.orange  # Am I the orange agent? Orange is the leader.
 
         for message in map(lambda m: m.get_content(), messages):
             self.__parse_message(message=message)
 
     def __parse_message(self, message: Union[int, float, str, list, tuple, dict]) -> None:
-        """
+        '''
         This function is used to parse messages when pattern matching is not available.
-        """
+        '''
+
         error_message: str = f"{'#'*30}\nWARNING: Bad message: {str(message)}\n{'#'*30}"
 
         if ColourMind.__well_formed(message=message):
@@ -61,7 +62,7 @@ class ColourMind(DanceMind):
             assert all(isinstance(x, int) for x in message[1])
 
             if message[0] == "goto":
-                self.__target_loc = Coord(x=message[1][0], y=message[1][1])
+                self.__target_loc = VWCoord(x=message[1][0], y=message[1][1])
             elif message[0] == "dance":
                 self.__dance_time = message[1]
             else:
@@ -71,7 +72,7 @@ class ColourMind(DanceMind):
 
     @staticmethod
     def __well_formed(message: Union[int, float, str, list, tuple, dict]) -> bool:
-        """ Is the message well formed? """
+        ''' Is the message well formed? '''
         if not isinstance(message, list):
             return False
         elif len(message) != 2:
@@ -88,7 +89,7 @@ class ColourMind(DanceMind):
             return True
 
     def decide(self):
-        """
+        '''
         This is a slightly more complex function which implements some teleo-reactive
         behaviour but is essentially just a big if statement. Each "production rule"
         maps a condition (or set of conditions) to an action or a subgoal.
@@ -109,7 +110,7 @@ class ColourMind(DanceMind):
         action) and that after a condition succeeds we choose an action and do not check
         further ones. For this reason it's important that we use if/elif structure, since
         only one case can "fire".
-        """
+        '''
 
         # Rule 1:
         # should dance -> dance
@@ -133,7 +134,7 @@ class ColourMind(DanceMind):
         # Rule 5:
         # at target location but not facing friend -> turn
         elif self.__at_target_loc() and not self.__can_see_friend():
-            return VWTurnAction(Direction.left)
+            return VWTurnAction(VWDirection.left)
         # Rule 6:
         # at target location and can see friend and no agreed dancing time -> choose and
         #   broadcast dance time
@@ -149,58 +150,58 @@ class ColourMind(DanceMind):
             return VWIdleAction()
 
     @staticmethod
-    def __gen_meeting_locs(max_n: int=8) -> Tuple[Coord, Coord]:
-        """
+    def __gen_meeting_locs(max_n: int=8) -> Tuple[VWCoord, VWCoord]:
+        '''
         A function to generate a meeting point, a default grid size of 8 is assumed.
         Picks a random point that isn't on the grid perimeter (adjacent to a wall).
         Randomly chooses a second point directly adjacent to the first.
-        """
+        '''
         x1: int = randint(1, max_n-2)
         y1: int = randint(1, max_n-2)
         offset: List[int] = choice([[1, 0], [-1, 0], [0, 1], [0, -1]])
         x2: int = x1 + offset[0]
         y2: int = y1 + offset[1]
 
-        return Coord(x=x1, y=y1), Coord(x=x2, y=y2)
+        return VWCoord(x=x1, y=y1), VWCoord(x=x2, y=y2)
 
     def __move_to_target(self) -> VWAction:
-        """
+        '''
         A simple (although sub-optimal) function for infering which action to take in order
         to reach the target location.
 
         If you're facing the right way move forward otherwise turn
-        """
+        '''
 
         # Starts by finding the x and y deltas
-        diff: Coord = Coord(x=self.get_coord().get_x() - self.__target_loc.get_x(), y=self.get_coord().get_y() - self.__target_loc.get_y())
+        diff: VWCoord = VWCoord(x=self.get_coord().get_x() - self.__target_loc.get_x(), y=self.get_coord().get_y() - self.__target_loc.get_y())
 
         # infer desired orientation based on x and y deltas
         if diff.get_y() > 0:
-            desired_ori: Orientation = Orientation.north
+            desired_ori: VWOrientation = VWOrientation.north
         elif diff.get_y() < 0:
-            desired_ori: Orientation = Orientation.south
+            desired_ori: VWOrientation = VWOrientation.south
         elif diff.get_x() > 0:
-            desired_ori: Orientation = Orientation.west
+            desired_ori: VWOrientation = VWOrientation.west
         elif diff.get_x() < 0:
-            desired_ori: Orientation = Orientation.east
+            desired_ori: VWOrientation = VWOrientation.east
         else:
             return VWIdleAction()
 
-        assert isinstance(desired_ori, Orientation)
+        assert isinstance(desired_ori, VWOrientation)
 
         # if orientation is correct go forward, otherwise turn
-        return VWMoveAction() if desired_ori == self.get_orientation() else VWTurnAction(Direction.left)
+        return VWMoveAction() if desired_ori == self.get_orientation() else VWTurnAction(VWDirection.left)
 
     def __at_target_loc(self) -> bool:
-        """ Am I at the target location? """
+        ''' Am I at the target location? '''
         return self.get_coord() == self.__target_loc
 
     def __can_see_friend(self) -> bool:
-        """ Can I see an agent directly ahead? """
+        ''' Can I see an agent directly ahead? '''
         return not self.get_obs().is_wall_immediately_ahead() and self.get_obs().get_forward().has_cleaning_agent()
 
     def __update_dancing_status(self) -> bool:
-        """ Is it time to dance?"""
+        ''' Is it time to dance? '''
         if not self.__dance_time:
 
             return False
@@ -224,7 +225,7 @@ class ColourMind(DanceMind):
             return False
 
     def __dance(self) -> VWAction:
-        """
+        '''
         A small bit of maths to coordinate the dancing.
 
         We want the agent to turn all the way right and then all the way left. Say the
@@ -238,18 +239,18 @@ class ColourMind(DanceMind):
         .
         .
         .
-        """
+        '''
         phase: int = ((self.get_tick() - self.__dance_time[0]) // 2) % 2
 
         assert phase in [0, 1]
 
         # phase != leader is equivalent to xor, this way the follower will turn the opposite
         #   way to the leader so they mirror the "dance moves".
-        return VWTurnAction(direction=Direction.right if phase != self.__leader else Direction.left)
+        return VWTurnAction(direction=VWDirection.right if phase != self.__leader else VWDirection.left)
 
     @staticmethod
     def __dance_enjoyment_declaration() -> str:
-        """Superfluous"""
+        ''' Superfluous '''
 
         strs: List[str] = [
             "I love dancing!",

@@ -5,28 +5,28 @@ from pystarworldsturbo.environment.ambient import Ambient
 from pystarworldsturbo.common.action_result import ActionResult
 
 from .vwlocation import VWLocation
-from ..actor.vwactor_appearance import VWActorAppearance
-from ..dirt.dirt_appearance import VWDirtAppearance
-from ...common.coordinates import Coord
-from ...common.direction import Direction
-from ...common.observation import Observation
-from ...common.position_names import PositionNames
-from ...common.orientation import Orientation
+from ..actor.appearance.vwactor_appearance import VWActorAppearance
+from ..dirt.vwdirt_appearance import VWDirtAppearance
+from ...common.vwcoordinates import VWCoord
+from ...common.vwdirection import VWDirection
+from ...common.vwobservation import VWObservation
+from ...common.vwposition_names import VWPositionNames
+from ...common.vworientation import VWOrientation
 from ...model.actions.vwactions import VWAction
 
 
 class VWAmbient(Ambient):
     '''
-    This class acts as a wrapper for the grid, which is a `Dict[Coord, VWLocation]` mapping `Coord` objects to `VWLocation` objects.
+    This class acts as a wrapper for the grid, which is a `Dict[Coord, VWLocation]` mapping `VWCoord` objects to `VWLocation` objects.
 
     An API is provided to query and modify the grid.
     '''
-    def __init__(self, grid: Dict[Coord, VWLocation]={}) -> None:
-        self.__grid: Dict[Coord, VWLocation] = grid
+    def __init__(self, grid: Dict[VWCoord, VWLocation]={}) -> None:
+        self.__grid: Dict[VWCoord, VWLocation] = grid
 
-    def get_grid(self) -> Dict[Coord, VWLocation]:
+    def get_grid(self) -> Dict[VWCoord, VWLocation]:
         '''
-        Returns the grid as a `Dict[Coord, VWLocation]`, where each `Coord` is mapped to a `VWLocation`.
+        Returns the grid as a `Dict[Coord, VWLocation]`, where each `VWCoord` is mapped to a `VWLocation`.
         '''
         return self.__grid
 
@@ -43,9 +43,9 @@ class VWAmbient(Ambient):
 
         return int(grid_dim)
 
-    def get_location_interface(self, coord: Coord) -> VWLocation:
+    def get_location_interface(self, coord: VWCoord) -> VWLocation:
         '''
-        Returns the appearance of the `VWLocation` whose coordinates match the `Coord` argument.
+        Returns the appearance of the `VWLocation` whose coordinates match the `VWCoord` argument `coord`.
 
         This method assumes (via assertion) that `coord` is in bounds.
         '''
@@ -53,31 +53,31 @@ class VWAmbient(Ambient):
 
         return self.__grid[coord]
 
-    def is_actor_at(self, coord: Coord) -> bool:
+    def is_actor_at(self, coord: VWCoord) -> bool:
         '''
-        Returns whether or not the `VWLocation` whose coordinates match the `Coord` argument has a `VWActor`.
+        Returns whether or not the `VWLocation` whose coordinates match the `VWCoord` argument `coord` has a `VWActor`.
 
         If `coord` is not in bounds, this method returns `False`.
         '''
         return coord in self.__grid and self.__grid[coord].has_actor()
 
-    def is_dirt_at(self, coord: Coord) -> bool:
+    def is_dirt_at(self, coord: VWCoord) -> bool:
         '''
-        Returns whether or not the `VWLocation` whose coordinates match the `Coord` argument has a `Dirt`.
+        Returns whether or not the `VWLocation` whose coordinates match the `VWCoord` argument `coord` has a `VWDirt`.
 
         If `coord` is not in bounds, this method returns `False`.
         '''
         return coord in self.__grid and self.__grid[coord].has_dirt()
 
-    def move_actor(self, from_coord: Coord, to_coord: Coord) -> None:
+    def move_actor(self, from_coord: VWCoord, to_coord: VWCoord) -> None:
         '''
-        Moves the `VWActor` from the `VWLocation` whose coordinates match the `Coord` argument `from_coord` to the `VWLocation` whose coordinates match the `Coord` argument `to_coord`.
+        Moves the `VWActor` from the `VWLocation` whose coordinates match the `VWCoord` argument `from_coord` to the `VWLocation` whose coordinates match the `VWCoord` argument `to_coord`.
 
         This method assumes the following via assertions:
 
-        * A `VWActor` is at the `VWLocation` whose coordinates match the `Coord` argument `from_coord`.
+        * A `VWActor` is at the `VWLocation` whose coordinates match the `VWCoord` argument `from_coord`.
 
-        * The `VWLocation` whose coordinates match the `Coord` argument `to_coord` has no `VWActor`.
+        * The `VWLocation` whose coordinates match the `VWCoord` argument `to_coord` has no `VWActor`.
 
         * `from_coord` and `to_coord` are in bounds.
         '''
@@ -90,13 +90,13 @@ class VWAmbient(Ambient):
         self.__grid[from_coord].remove_actor()
         self.__grid[to_coord].add_actor(actor_appearance=actor)
 
-    def turn_actor(self, coord: Coord, direction: Direction) -> None:
+    def turn_actor(self, coord: VWCoord, direction: VWDirection) -> None:
         '''
-        Rotates the `Orientation` of the `VWActor` at the `VWLocation` whose coordinates match the `Coord` argument `coord` as specified by the `Direction` argument `direction`.
+        Rotates the `VWOrientation` of the `VWActor` at the `VWLocation` whose coordinates match the `VWCoord` argument `coord` as specified by the `VWDirection` argument `direction`.
 
         This method assumes the following via assertions:
 
-        * A `VWActor` is at the `VWLocation` whose coordinates match the `Coord` argument `coord`.
+        * A `VWActor` is at the `VWLocation` whose coordinates match the `VWCoord` argument `coord`.
 
         * `coord` is in bounds.
         '''
@@ -104,15 +104,15 @@ class VWAmbient(Ambient):
 
         self.__grid[coord].get_actor_appearance().turn(direction=direction)
 
-    def drop_dirt(self, coord: Coord, dirt_appearance: VWDirtAppearance) -> None:
+    def drop_dirt(self, coord: VWCoord, dirt_appearance: VWDirtAppearance) -> None:
         '''
-        Drops a `Dirt` at the `VWLocation` whose coordinates match the `Coord` argument `coord`.
+        Drops a `VWDirt` at the `VWLocation` whose coordinates match the `VWCoord` argument `coord`.
 
-        The `VWDirtAppearance` of the `Dirt` to drop is given as the `dirt_appearance` argument.
+        The `VWDirtAppearance` of the `VWDirt` to drop is given as the `dirt_appearance` argument.
 
         This method assumes the following via assertions:
 
-        * The `VWLocation` whose coordinates match the `Coord` argument `coord` has no `Dirt`.
+        * The `VWLocation` whose coordinates match the `VWCoord` argument `coord` has no `VWDirt`.
 
         * `coord` is in bounds.
         '''
@@ -120,13 +120,13 @@ class VWAmbient(Ambient):
 
         self.__grid[coord].add_dirt(dirt_appearance=dirt_appearance)
 
-    def remove_dirt(self, coord: Coord) -> None:
+    def remove_dirt(self, coord: VWCoord) -> None:
         '''
-        Removes a `Dirt` from the `VWLocation` whose coordinates match the `Coord` argument `coord`.
+        Removes a `VWDirt` from the `VWLocation` whose coordinates match the `VWCoord` argument `coord`.
 
         This method assumes the following via assertions:
 
-        * The `VWLocation` whose coordinates match the `Coord` argument `coord` has a `Dirt`.
+        * The `VWLocation` whose coordinates match the `VWCoord` argument `coord` has a `VWDirt`.
 
         * `coord` is in bounds.
         '''
@@ -134,62 +134,62 @@ class VWAmbient(Ambient):
 
         self.__grid[coord].remove_dirt()
 
-    def generate_perception(self, actor_position: Coord, action_type: Type[VWAction], action_result:  ActionResult) -> Observation:
+    def generate_perception(self, actor_position: VWCoord, action_type: Type[VWAction], action_result:  ActionResult) -> VWObservation:
         '''
-        Generates and returns an `Observation` perception for a `VWActor`.
+        Generates and returns a `VWObservation` perception for a `VWActor`.
 
-        The `Coord` argument `actor_position` specifies the position of the `VWActor` whose perception is being generated.
+        The `VWCoord` argument `actor_position` specifies the position of the `VWActor` whose perception is being generated.
 
         The `Type[VWAction]` argument `action_type` specifies the kind of the `VWAction` that the `VWActor` attempted.
 
         The `ActionResult` argument `action_result` specifies the result of the aforementioned attempted.
 
-        The `Observation` returned by this method is generated as follows:
+        The `VWObservation` returned by this method is generated as follows:
 
-        * `PositionNames.center` is mapped to the `VWLocation` whose coordinates match the `Coord` argument `actor_position`.
+        * `VWPositionNames.center` is mapped to the `VWLocation` whose coordinates match the `VWCoord` argument `actor_position`.
 
-        * For every other member of `PositionNames`, the corresponding `Coord` is calculated.
+        * For every other member of `VWPositionNames`, the corresponding `VWCoord` is calculated.
 
-        * If such `Coord` is in bounds, then it is mapped to the `VWLocation` whose `Coord` matches it. Otherwise, that particular member of `PositionNames` is skipped.
+        * If such `VWCoord` is in bounds, then it is mapped to the `VWLocation` whose `VWCoord` matches it. Otherwise, that particular member of `VWPositionNames` is skipped.
 
-        * Finally, `action_type` and `action_result` are added to the `Observation`, the former being mapped to the latter.
+        * Finally, `action_type` and `action_result` are added to the `VWObservation`, the former being mapped to the latter.
 
         This method assumes the following via assertions:
 
-        * The `VWLocation` whose coordinates match the `Coord` argument `actor_position` has a `VWActor`.
+        * The `VWLocation` whose coordinates match the `VWCoord` argument `actor_position` has a `VWActor`.
 
         * `actor_position` is in bounds.
         '''
         assert actor_position in self.__grid and self.__grid[actor_position].has_actor()
 
-        locations_dict: Dict[PositionNames, VWLocation] = {}
+        locations_dict: Dict[VWPositionNames, VWLocation] = {}
 
-        orientation: Orientation = self.__grid[actor_position].get_actor_appearance().get_orientation()
+        orientation: VWOrientation = self.__grid[actor_position].get_actor_appearance().get_orientation()
 
-        forward_coord: Coord = actor_position.forward(orientation=orientation)
-        left_coord: Coord = actor_position.left(orientation=orientation)
-        right_coord: Coord = actor_position.right(orientation=orientation)
-        forwardleft_coord: Coord = actor_position.forwardleft(orientation=orientation)
-        forwardright_coord: Coord = actor_position.forwardright(orientation=orientation)
+        forward_coord: VWCoord = actor_position.forward(orientation=orientation)
+        left_coord: VWCoord = actor_position.left(orientation=orientation)
+        right_coord: VWCoord = actor_position.right(orientation=orientation)
+        forwardleft_coord: VWCoord = actor_position.forwardleft(orientation=orientation)
+        forwardright_coord: VWCoord = actor_position.forwardright(orientation=orientation)
 
-        locations_dict[PositionNames.center] = self.__grid[actor_position].deep_copy()
+        locations_dict[VWPositionNames.center] = self.__grid[actor_position].deep_copy()
 
         if forward_coord in self.__grid:
-            locations_dict[PositionNames.forward] = self.__grid[forward_coord]
+            locations_dict[VWPositionNames.forward] = self.__grid[forward_coord]
 
         if left_coord in self.__grid:
-            locations_dict[PositionNames.left] = self.__grid[left_coord]
+            locations_dict[VWPositionNames.left] = self.__grid[left_coord]
 
         if right_coord in self.__grid:
-            locations_dict[PositionNames.right] = self.__grid[right_coord]
+            locations_dict[VWPositionNames.right] = self.__grid[right_coord]
 
         if forwardleft_coord in self.__grid:
-            locations_dict[PositionNames.forwardleft] = self.__grid[forwardleft_coord]
+            locations_dict[VWPositionNames.forwardleft] = self.__grid[forwardleft_coord]
 
         if forwardright_coord in self.__grid:
-            locations_dict[PositionNames.forwardright] = self.__grid[forwardright_coord]
+            locations_dict[VWPositionNames.forwardright] = self.__grid[forwardright_coord]
 
-        return Observation(action_type=action_type, action_result=action_result, locations_dict=locations_dict)
+        return VWObservation(action_type=action_type, action_result=action_result, locations_dict=locations_dict)
 
     def __str__(self) -> str:
         grid_dim: int = self.get_grid_dim()
@@ -197,7 +197,7 @@ class VWAmbient(Ambient):
 
         for i in range(grid_dim):
             for j in range(grid_dim):
-                c: Coord = Coord(x=j, y=i)
+                c: VWCoord = VWCoord(x=j, y=i)
                 locations_list.append(self.__grid[c].visualise())
 
         partial_representation: str = VWAmbient.__compactify(grid_dim=grid_dim, locations_list=locations_list)

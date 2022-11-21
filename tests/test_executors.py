@@ -8,33 +8,33 @@ from pystarworldsturbo.common.action_result import ActionResult
 from pystarworldsturbo.common.action_outcome import ActionOutcome
 
 from vacuumworld import VacuumWorld
-from vacuumworld.common.coordinates import Coord
-from vacuumworld.common.colour import Colour
-from vacuumworld.common.direction import Direction
-from vacuumworld.common.observation import Observation
-from vacuumworld.common.orientation import Orientation
-from vacuumworld.model.actions.idle_action import VWIdleAction
-from vacuumworld.model.actions.speak_action import VWSpeakAction
-from vacuumworld.model.actions.turn_action import VWTurnAction
-from vacuumworld.model.actions.clean_action import VWCleanAction
-from vacuumworld.model.actions.drop_action import VWDropAction
-from vacuumworld.model.actions.move_action import VWMoveAction
-from vacuumworld.model.actions.broadcast_action import VWBroadcastAction
+from vacuumworld.common.vwcoordinates import VWCoord
+from vacuumworld.common.vwcolour import VWColour
+from vacuumworld.common.vwdirection import VWDirection
+from vacuumworld.common.vwobservation import VWObservation
+from vacuumworld.common.vworientation import VWOrientation
+from vacuumworld.model.actions.vwidle_action import VWIdleAction
+from vacuumworld.model.actions.vwspeak_action import VWSpeakAction
+from vacuumworld.model.actions.vwturn_action import VWTurnAction
+from vacuumworld.model.actions.vwclean_action import VWCleanAction
+from vacuumworld.model.actions.vwdrop_action import VWDropAction
+from vacuumworld.model.actions.vwmove_action import VWMoveAction
+from vacuumworld.model.actions.vwbroadcast_action import VWBroadcastAction
 from vacuumworld.model.actions.vwactions import VWCommunicativeAction
 from vacuumworld.model.actor.vwactor import VWActor
-from vacuumworld.model.actor.vwsensors import VWSensor
+from vacuumworld.model.actor.appendices.vwsensors import VWSensor
 from vacuumworld.model.actor.vwuser import VWUser
-from vacuumworld.model.environment.physics.broadcast_executor import BroadcastExecutor
-from vacuumworld.model.environment.physics.clean_executor import CleanExecutor
-from vacuumworld.model.environment.physics.drop_executor import DropExecutor
-from vacuumworld.model.environment.physics.idle_executor import IdleExecutor
-from vacuumworld.model.environment.physics.move_executor import MoveExecutor
-from vacuumworld.model.environment.physics.speak_executor import SpeakExecutor
-from vacuumworld.model.environment.physics.turn_executor import TurnExecutor
-from vacuumworld.model.dirt.dirt_appearance import VWDirtAppearance
+from vacuumworld.model.environment.physics.vwbroadcast_executor import VWBroadcastExecutor
+from vacuumworld.model.environment.physics.vwclean_executor import VWCleanExecutor
+from vacuumworld.model.environment.physics.vwdrop_executor import VWDropExecutor
+from vacuumworld.model.environment.physics.vwidle_executor import VWIdleExecutor
+from vacuumworld.model.environment.physics.vwmove_executor import VWMoveExecutor
+from vacuumworld.model.environment.physics.vwspeak_executor import VWSpeakExecutor
+from vacuumworld.model.environment.physics.vwturn_executor import VWTurnExecutor
+from vacuumworld.model.dirt.vwdirt_appearance import VWDirtAppearance
 from vacuumworld.model.environment.vwlocation import VWLocation
 from vacuumworld.model.environment.vwenvironment import VWEnvironment
-from vacuumworld.config_manager import ConfigManager
+from vacuumworld.vwconfig_manager import VWConfigManager
 
 import os
 import random as random_module
@@ -44,7 +44,7 @@ class TestExecutors(TestCase):
     def __init__(self, args) -> None:
         super(TestExecutors, self).__init__(args)
 
-        self.__config: dict = ConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
+        self.__config: dict = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
         self.__randbytes: Callable[[int], bytes] = random_module.randbytes if hasattr(random_module, "randbytes") else os.urandom
         self.__message_content_list: List[Union[int, float, str, bytes, list, tuple, dict]] = [
             "Hello World!",
@@ -64,7 +64,7 @@ class TestExecutors(TestCase):
 
     def test_idle_action(self) -> None:
         action: VWIdleAction = VWIdleAction()
-        idle_executor: IdleExecutor = IdleExecutor()
+        idle_executor: VWIdleExecutor = VWIdleExecutor()
         env, _ = VWEnvironment.generate_random_env_for_testing(custom_grid_size=True, config=self.__config)
 
         for actor_id in env.get_actors():
@@ -85,18 +85,18 @@ class TestExecutors(TestCase):
         self.__test_speak_action(custom_sender_id=custom_sender_id)
 
     def __test_speak_action(self, custom_sender_id: str=None) -> None:
-        speak_executor: SpeakExecutor = SpeakExecutor()
+        speak_executor: VWSpeakExecutor = VWSpeakExecutor()
         env, _ = VWEnvironment.generate_random_env_for_testing(custom_grid_size=True, config=self.__config)
 
         self.__test_messages_delivery(messages=self.__message_content_list, speak_executor=speak_executor, env=env, custom_sender_id=custom_sender_id, recipients=[a_id for a_id in env.get_actors()])
         self.__test_messages_delivery(messages=self.__message_content_list, speak_executor=speak_executor, env=env, custom_sender_id=custom_sender_id, recipients=[])
 
-    def __test_messages_delivery(self, messages: List[Union[int, float, str, list, tuple, dict]], speak_executor: SpeakExecutor, env: VWEnvironment, custom_sender_id: str, recipients: List[str]) -> None:
+    def __test_messages_delivery(self, messages: List[Union[int, float, str, list, tuple, dict]], speak_executor: VWSpeakExecutor, env: VWEnvironment, custom_sender_id: str, recipients: List[str]) -> None:
         for message in messages:
             for real_sender_id in env.get_actors():
                 self.__test_message_delivery(speak_executor=speak_executor, env=env, message=message, real_sender_id=real_sender_id, custom_sender_id=custom_sender_id, recipients=[r_id for r_id in recipients if r_id != real_sender_id])
 
-    def __test_message_delivery(self, speak_executor: SpeakExecutor, env: VWEnvironment, message: Union[int, float, str, list, tuple, dict], real_sender_id: str, custom_sender_id: str=None, recipients: List[str]=[]) -> None:
+    def __test_message_delivery(self, speak_executor: VWSpeakExecutor, env: VWEnvironment, message: Union[int, float, str, list, tuple, dict], real_sender_id: str, custom_sender_id: str=None, recipients: List[str]=[]) -> None:
         sender_id: str = real_sender_id if custom_sender_id is None else custom_sender_id
         action: VWSpeakAction = VWSpeakAction(message=message, sender_id=sender_id, recipients=recipients)
         action.set_actor_id(actor_id=real_sender_id)
@@ -115,7 +115,7 @@ class TestExecutors(TestCase):
 
     def __test_message_received(self, env: VWEnvironment, message: Union[int, float, str, list, tuple, dict], sender_id: str, recipients: List[str]) -> None:
         for recipient_id in recipients:
-            fake_observation: Observation = Observation(action_type=None, action_result=None, locations_dict={})
+            fake_observation: VWObservation = VWObservation(action_type=None, action_result=None, locations_dict={})
             recipient_actor: VWActor = env.get_actor(actor_id=recipient_id)
 
             # We just want the physical sensor.
@@ -145,14 +145,14 @@ class TestExecutors(TestCase):
         self.__test_broadcast_action(custom_sender_id=custom_sender_id)
 
     def __test_broadcast_action(self, custom_sender_id: str=None) -> None:
-        broadcast_executor: BroadcastExecutor = BroadcastExecutor()
+        broadcast_executor: VWBroadcastExecutor = VWBroadcastExecutor()
         env, _ = VWEnvironment.generate_random_env_for_testing(custom_grid_size=True, config=self.__config)
 
         for message in self.__message_content_list:
             for real_sender_id in env.get_actors():
                 self.__test_broadcast_delivery(broadcast_executor=broadcast_executor, env=env, message=message, real_sender_id=real_sender_id, custom_sender_id=custom_sender_id)
 
-    def __test_broadcast_delivery(self, broadcast_executor: BroadcastExecutor, env: VWEnvironment, message: Union[int, float, str, list, tuple, dict], real_sender_id: str, custom_sender_id: str) -> None:
+    def __test_broadcast_delivery(self, broadcast_executor: VWBroadcastExecutor, env: VWEnvironment, message: Union[int, float, str, list, tuple, dict], real_sender_id: str, custom_sender_id: str) -> None:
         sender_id: str = real_sender_id if custom_sender_id is None else custom_sender_id
         action: VWBroadcastAction = VWBroadcastAction(message=message, sender_id=sender_id)
         action.set_actor_id(actor_id=real_sender_id)
@@ -171,15 +171,15 @@ class TestExecutors(TestCase):
 
     def test_move_action(self) -> None:
         action: VWMoveAction = VWMoveAction()
-        move_executor: MoveExecutor = MoveExecutor()
+        move_executor: VWMoveExecutor = VWMoveExecutor()
         env, _ = VWEnvironment.generate_random_env_for_testing(custom_grid_size=True, config=self.__config)
 
         for actor_id in env.get_actors():
             action.set_actor_id(actor_id=actor_id)
 
-            actor_position: Coord = env.get_actor_position(actor_id=actor_id)
-            orientation: Orientation = env.get_actor_location(actor_id=actor_id).get_actor_appearance().get_orientation()
-            forward_position: Coord = actor_position.forward(orientation=orientation)
+            actor_position: VWCoord = env.get_actor_position(actor_id=actor_id)
+            orientation: VWOrientation = env.get_actor_location(actor_id=actor_id).get_actor_appearance().get_orientation()
+            forward_position: VWCoord = actor_position.forward(orientation=orientation)
             actor_location: VWLocation = env.get_actor_location(actor_id=actor_id)
 
             if forward_position in env.get_ambient().get_grid() and not env.get_ambient().get_grid()[forward_position].has_actor():
@@ -197,7 +197,7 @@ class TestExecutors(TestCase):
             else:
                 self.assertFalse(move_executor.is_possible(env=env, action=action))
 
-    def __actor_on_location(self, location: VWLocation, actor_id: str, orientation: Orientation) -> bool:
+    def __actor_on_location(self, location: VWLocation, actor_id: str, orientation: VWOrientation) -> bool:
         if not location.has_actor():
             return False
 
@@ -207,15 +207,15 @@ class TestExecutors(TestCase):
         return location.get_actor_appearance().get_orientation() == orientation
 
     def test_turn_action(self) -> None:
-        left_turn_action: VWTurnAction = VWTurnAction(Direction.left)
-        right_turn_action: VWTurnAction = VWTurnAction(Direction.right)
-        turn_executor: TurnExecutor = TurnExecutor()
+        left_turn_action: VWTurnAction = VWTurnAction(VWDirection.left)
+        right_turn_action: VWTurnAction = VWTurnAction(VWDirection.right)
+        turn_executor: VWTurnExecutor = VWTurnExecutor()
         env, _ = VWEnvironment.generate_random_env_for_testing(custom_grid_size=True, config=self.__config)
 
         for actor_id in env.get_actors():
             left_turn_action.set_actor_id(actor_id=actor_id)
 
-            old_orientation: Orientation = env.get_actor_location(actor_id=actor_id).get_actor_appearance().get_orientation()
+            old_orientation: VWOrientation = env.get_actor_location(actor_id=actor_id).get_actor_appearance().get_orientation()
 
             self.assertTrue(turn_executor.is_possible(env=env, action=left_turn_action))
 
@@ -229,7 +229,7 @@ class TestExecutors(TestCase):
         for actor_id in env.get_actors():
             right_turn_action.set_actor_id(actor_id=actor_id)
 
-            old_orientation: Orientation = env.get_actor_location(actor_id=actor_id).get_actor_appearance().get_orientation()
+            old_orientation: VWOrientation = env.get_actor_location(actor_id=actor_id).get_actor_appearance().get_orientation()
 
             self.assertTrue(turn_executor.is_possible(env=env, action=right_turn_action))
 
@@ -242,16 +242,16 @@ class TestExecutors(TestCase):
 
     def test_clean_action(self) -> None:
         action: VWCleanAction = VWCleanAction()
-        clean_executor: CleanExecutor = CleanExecutor()
+        clean_executor: VWCleanExecutor = VWCleanExecutor()
         env, _ = VWEnvironment.generate_random_env_for_testing(custom_grid_size=True, config=self.__config)
 
         for actor_id in env.get_actors():
             action.set_actor_id(actor_id=actor_id)
 
             dirt_appearance: VWDirtAppearance = env.get_actor_location(actor_id=actor_id).get_dirt_appearance()
-            actor_colour: Colour = env.get_actor_location(actor_id=actor_id).get_actor_appearance().get_colour()
+            actor_colour: VWColour = env.get_actor_location(actor_id=actor_id).get_actor_appearance().get_colour()
 
-            if dirt_appearance and (actor_colour == dirt_appearance.get_colour() or actor_colour == Colour.white):
+            if dirt_appearance and (actor_colour == dirt_appearance.get_colour() or actor_colour == VWColour.white):
                 self.assertTrue(clean_executor.is_possible(env=env, action=action))
 
                 result: ActionResult = clean_executor.execute(env=env, action=action)
@@ -262,9 +262,9 @@ class TestExecutors(TestCase):
                 self.assertFalse(clean_executor.is_possible(env=env, action=action))
 
     def test_drop_action(self) -> None:
-        drop_green_dirt_action: VWDropAction = VWDropAction(dirt_colour=Colour.green)
-        drop_orange_dirt_action: VWDropAction = VWDropAction(dirt_colour=Colour.orange)
-        drop_executor: DropExecutor = DropExecutor()
+        drop_green_dirt_action: VWDropAction = VWDropAction(dirt_colour=VWColour.green)
+        drop_orange_dirt_action: VWDropAction = VWDropAction(dirt_colour=VWColour.orange)
+        drop_executor: VWDropExecutor = VWDropExecutor()
         env, _ = VWEnvironment.generate_random_env_for_testing(custom_grid_size=True, config=self.__config)
 
         for actor_id, actor in env.get_actors().items():

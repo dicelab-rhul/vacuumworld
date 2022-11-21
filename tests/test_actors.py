@@ -4,25 +4,25 @@ from unittest import main, TestCase
 
 from pystarworldsturbo.common.message import BccMessage
 
-from vacuumworld.model.actor.user_difficulty import UserDifficulty
-from vacuumworld.model.actor.actor_factories import VWCleaningAgentsFactory, VWUsersFactory
-from vacuumworld.common.orientation import Orientation
-from vacuumworld.model.actor.vwactor_appearance import VWActorAppearance
-from vacuumworld.common.colour import Colour
-from vacuumworld.common.observation import Observation
-from vacuumworld.model.actor.vwactormind import VWMind
-from vacuumworld.model.actor.vwusermind import VWUserMind
-from vacuumworld.model.actor.hystereticmindsurrogate import VWHystereticMindSurrogate
-from vacuumworld.model.actor.user_mind_surrogate import UserMindSurrogate
+from vacuumworld.common.vwuser_difficulty import VWUserDifficulty
+from vacuumworld.model.actor.vwactor_factories import VWCleaningAgentsFactory, VWUsersFactory
+from vacuumworld.common.vworientation import VWOrientation
+from vacuumworld.model.actor.appearance.vwactor_appearance import VWActorAppearance
+from vacuumworld.common.vwcolour import VWColour
+from vacuumworld.common.vwobservation import VWObservation
+from vacuumworld.model.actor.mind.vwactor_mind import VWMind
+from vacuumworld.model.actor.mind.vwuser_mind import VWUserMind
+from vacuumworld.model.actor.mind.surrogate.vwhysteretic_mind_surrogate import VWHystereticMindSurrogate
+from vacuumworld.model.actor.mind.surrogate.vwuser_mind_surrogate import VWUserMindSurrogate
 from vacuumworld.model.actor.vwagent import VWCleaningAgent
 from vacuumworld.model.actor.vwuser import VWUser
-from vacuumworld.model.actions.idle_action import VWIdleAction
-from vacuumworld.model.actions.speak_action import VWSpeakAction
-from vacuumworld.model.actions.broadcast_action import VWBroadcastAction
-from vacuumworld.model.actions.move_action import VWMoveAction
-from vacuumworld.model.actions.turn_action import VWTurnAction
-from vacuumworld.model.actions.clean_action import VWCleanAction
-from vacuumworld.model.actions.drop_action import VWDropAction
+from vacuumworld.model.actions.vwidle_action import VWIdleAction
+from vacuumworld.model.actions.vwspeak_action import VWSpeakAction
+from vacuumworld.model.actions.vwbroadcast_action import VWBroadcastAction
+from vacuumworld.model.actions.vwmove_action import VWMoveAction
+from vacuumworld.model.actions.vwturn_action import VWTurnAction
+from vacuumworld.model.actions.vwclean_action import VWCleanAction
+from vacuumworld.model.actions.vwdrop_action import VWDropAction
 
 
 class TestActors(TestCase):
@@ -33,22 +33,22 @@ class TestActors(TestCase):
         self.assertEqual(surrogate.__class__, mind.get_surrogate().__class__)
 
     def test_user_mind_creation(self) -> None:
-        easy_surrogate: UserMindSurrogate = UserMindSurrogate(difficulty_level=UserDifficulty.easy)
-        hard_surrogate: UserMindSurrogate = UserMindSurrogate(difficulty_level=UserDifficulty.hard)
+        easy_surrogate: VWUserMindSurrogate = VWUserMindSurrogate(difficulty_level=VWUserDifficulty.easy)
+        hard_surrogate: VWUserMindSurrogate = VWUserMindSurrogate(difficulty_level=VWUserDifficulty.hard)
         easy_mind: VWUserMind = VWUserMind(surrogate=easy_surrogate)
         hard_mind: VWUserMind = VWUserMind(surrogate=hard_surrogate)
 
-        self.assertEqual(easy_surrogate.get_difficulty_level(), UserDifficulty.easy)
-        self.assertEqual(hard_surrogate.get_difficulty_level(), UserDifficulty.hard)
-        self.assertEqual(easy_mind.get_surrogate().get_difficulty_level(), UserDifficulty.easy)
-        self.assertEqual(hard_mind.get_surrogate().get_difficulty_level(), UserDifficulty.hard)
+        self.assertEqual(easy_surrogate.get_difficulty_level(), VWUserDifficulty.easy)
+        self.assertEqual(hard_surrogate.get_difficulty_level(), VWUserDifficulty.hard)
+        self.assertEqual(easy_mind.get_surrogate().get_difficulty_level(), VWUserDifficulty.easy)
+        self.assertEqual(hard_mind.get_surrogate().get_difficulty_level(), VWUserDifficulty.hard)
 
     def test_cleaning_agent_creation(self) -> None:
         surrogate: VWHystereticMindSurrogate = VWHystereticMindSurrogate()
         mind: VWMind = VWMind(surrogate=surrogate)
 
-        for colour in [Colour.white, Colour.green, Colour.orange]:
-            for orientation in [Orientation.north, Orientation.south, Orientation.west, Orientation.east]:
+        for colour in [VWColour.white, VWColour.green, VWColour.orange]:
+            for orientation in [VWOrientation.north, VWOrientation.south, VWOrientation.west, VWOrientation.east]:
                 agent: VWCleaningAgent = VWCleaningAgent(mind=mind)
                 appearance: VWActorAppearance = VWActorAppearance(colour=colour, orientation=orientation, actor_id=agent.get_id(), progressive_id=agent.get_progressive_id())
                 factory_agent, factory_agent_appearance = VWCleaningAgentsFactory.create_cleaning_agent(colour=colour, mind_surrogate=surrogate, orientation=orientation)
@@ -72,7 +72,7 @@ class TestActors(TestCase):
                     self.assertIsNotNone(a.get_listening_sensor())
                     self.assertEqual(a.get_listening_sensor(), a.get_sensor_for(event_type=BccMessage))
                     self.assertIsNotNone(a.get_observation_sensor())
-                    self.assertEqual(a.get_observation_sensor(), a.get_sensor_for(event_type=Observation))
+                    self.assertEqual(a.get_observation_sensor(), a.get_sensor_for(event_type=VWObservation))
                     self.assertNotEqual(a.get_listening_sensor(), a.get_observation_sensor())
                     self.assertIsNotNone(a.get_communicative_actuator())
                     self.assertEqual(a.get_communicative_actuator(), a.get_actuator_for(event_type=VWBroadcastAction))
@@ -86,15 +86,15 @@ class TestActors(TestCase):
                     self.assertNotEqual(a.get_communicative_actuator(), a.get_physical_actuator())
 
     def test_user_creation(self) -> None:
-        easy_surrogate: VWHystereticMindSurrogate = UserMindSurrogate(difficulty_level=UserDifficulty.easy)
-        hard_surrogate: VWHystereticMindSurrogate = UserMindSurrogate(difficulty_level=UserDifficulty.hard)
+        easy_surrogate: VWHystereticMindSurrogate = VWUserMindSurrogate(difficulty_level=VWUserDifficulty.easy)
+        hard_surrogate: VWHystereticMindSurrogate = VWUserMindSurrogate(difficulty_level=VWUserDifficulty.hard)
         easy_mind: VWMind = VWMind(surrogate=easy_surrogate)
         hard_mind: VWMind = VWMind(surrogate=hard_surrogate)
 
-        for mind, level in {easy_mind: UserDifficulty.easy, hard_mind: UserDifficulty.hard}.items():
-            for orientation in [Orientation.north, Orientation.south, Orientation.west, Orientation.east]:
+        for mind, level in {easy_mind: VWUserDifficulty.easy, hard_mind: VWUserDifficulty.hard}.items():
+            for orientation in [VWOrientation.north, VWOrientation.south, VWOrientation.west, VWOrientation.east]:
                 user: VWUser = VWUser(mind=mind)
-                appearance: VWActorAppearance = VWActorAppearance(colour=Colour.user, orientation=orientation, actor_id=user.get_id(), progressive_id=user.get_progressive_id())
+                appearance: VWActorAppearance = VWActorAppearance(colour=VWColour.user, orientation=orientation, actor_id=user.get_id(), progressive_id=user.get_progressive_id())
                 factory_user, factory_user_appearance = VWUsersFactory.create_user(difficulty_level=level, orientation=orientation)
 
                 # Test user appearance
@@ -104,8 +104,8 @@ class TestActors(TestCase):
                 self.assertEqual(factory_user.get_progressive_id(), factory_user_appearance.get_progressive_id())
 
                 # Test user appearance
-                self.assertEqual(appearance.get_colour(), Colour.user)
-                self.assertEqual(factory_user_appearance.get_colour(), Colour.user)
+                self.assertEqual(appearance.get_colour(), VWColour.user)
+                self.assertEqual(factory_user_appearance.get_colour(), VWColour.user)
                 self.assertEqual(appearance.get_orientation(), orientation)
                 self.assertEqual(factory_user_appearance.get_orientation(), orientation)
 
@@ -116,7 +116,7 @@ class TestActors(TestCase):
                     self.assertIsNotNone(u.get_listening_sensor())
                     self.assertEqual(u.get_listening_sensor(), u.get_sensor_for(event_type=BccMessage))
                     self.assertIsNotNone(u.get_observation_sensor())
-                    self.assertEqual(u.get_observation_sensor(), u.get_sensor_for(event_type=Observation))
+                    self.assertEqual(u.get_observation_sensor(), u.get_sensor_for(event_type=VWObservation))
                     self.assertNotEqual(u.get_listening_sensor(), u.get_observation_sensor())
                     self.assertIsNotNone(u.get_communicative_actuator())
                     self.assertEqual(u.get_communicative_actuator(), u.get_actuator_for(event_type=VWBroadcastAction))

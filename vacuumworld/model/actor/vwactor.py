@@ -3,15 +3,15 @@ from typing import List, Tuple, Iterable, Union, Optional
 from pystarworldsturbo.common.message import BccMessage
 from pystarworldsturbo.elements.actor import Actor
 
-from .actor_behaviour_debugger import ActorBehaviourDebugger
-from .vwactormind import VWMind
-from .vwsensors import VWSensor, VWListeningSensor, VWObservationSensor
-from .vwactuators import VWActuator, VWCommunicativeActuator
+from .vwactor_behaviour_debugger import ActorBehaviourDebugger
+from .mind.vwactor_mind import VWMind
+from .appendices.vwsensors import VWSensor, VWListeningSensor, VWObservationSensor
+from .appendices.vwactuators import VWActuator, VWCommunicativeActuator
 from ..actions.vwactions import VWAction, VWPhysicalAction, VWCommunicativeAction
-from ..actions.speak_action import VWSpeakAction
-from ..actions.broadcast_action import VWBroadcastAction
-from ...common.observation import Observation
-from ...common.exceptions import VWActionAttemptException, VWPerceptionException
+from ..actions.vwspeak_action import VWSpeakAction
+from ..actions.vwbroadcast_action import VWBroadcastAction
+from ...common.vwobservation import VWObservation
+from ...common.vwexceptions import VWActionAttemptException, VWPerceptionException
 
 
 class VWActor(Actor):
@@ -37,7 +37,7 @@ class VWActor(Actor):
         '''
         Returns the `VWObservationSensor` of this `VWActor` if any, `None` otherwise.
         '''
-        return super(VWActor, self).get_sensor_for(event_type=Observation)
+        return super(VWActor, self).get_sensor_for(event_type=VWObservation)
 
     def get_physical_actuator(_) -> Optional[VWActuator]:
         '''
@@ -61,11 +61,11 @@ class VWActor(Actor):
         else:
             return None
 
-    def perceive(self) -> Tuple[Observation, Iterable[BccMessage]]:
+    def perceive(self) -> Tuple[VWObservation, Iterable[BccMessage]]:
         '''
         Performs the `List[Observation]` and the `List[BccMessage]` that are available for this `VWActor` during this cycle.
         '''
-        observations: List[Observation] = self.__fetch_observations()
+        observations: List[VWObservation] = self.__fetch_observations()
         messages: List[BccMessage] = self.__fetch_messages()
 
         assert len(observations) > 0
@@ -75,14 +75,14 @@ class VWActor(Actor):
         else:
             return observations[0], messages
 
-    def __fetch_observations(self) -> List[Observation]:
-        observations: List[Observation] = []
+    def __fetch_observations(self) -> List[VWObservation]:
+        observations: List[VWObservation] = []
         observation_sensor: VWObservationSensor = self.get_observation_sensor()
 
         if not observation_sensor:
-            raise VWPerceptionException("No sensor found for {}.".format(Observation))
+            raise VWPerceptionException("No sensor found for {}.".format(VWObservation))
 
-        # There can be more than one `Observation` if more than one `VWAction` has been attempted.
+        # There can be more than one `VWObservation` if more than one `VWAction` has been attempted.
         while self.get_observation_sensor().has_perception():
             observations.append(self.get_observation_sensor().source())
 
@@ -101,7 +101,7 @@ class VWActor(Actor):
 
         return messages
 
-    def __merge_observations(self, observations: List[Observation]) -> Observation:
+    def __merge_observations(self, observations: List[VWObservation]) -> VWObservation:
         assert len(observations) > 1
 
         observations[-1].merge_action_result_with_previous_observations(observations=observations[:-1])

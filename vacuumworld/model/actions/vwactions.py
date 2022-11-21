@@ -3,9 +3,9 @@ from typing import Iterable, Type, Union, List
 from pystarworldsturbo.common.action import Action
 from pystarworldsturbo.common.message import Message
 
-from .effort import ActionEffort
+from .vweffort import VWActionEffort
 
-from ...common.exceptions import VWMalformedActionException
+from ...common.vwexceptions import VWMalformedActionException
 
 
 class VWAction(Action):
@@ -19,10 +19,10 @@ class VWAction(Action):
         '''
         Returns the effort of this `VWAction` as an `int`.
         '''
-        if type(self).__name__ in ActionEffort.EFFORTS:
-            return ActionEffort.EFFORTS[type(self).__name__]
+        if type(self).__name__ in VWActionEffort.EFFORTS:
+            return VWActionEffort.EFFORTS[type(self).__name__]
         else:
-            return ActionEffort.DEFAULT_EFFORT_FOR_OTHER_ACTIONS
+            return VWActionEffort.DEFAULT_EFFORT_FOR_OTHER_ACTIONS
 
 
 class VWPhysicalAction(VWAction):

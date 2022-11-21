@@ -7,15 +7,15 @@ from pystarworldsturbo.common.message import BccMessage
 from pystarworldsturbo.utils.utils import ignore
 
 from vacuumworld import VacuumWorld, run
-from vacuumworld.config_manager import ConfigManager
-from vacuumworld.common.colour import Colour
-from vacuumworld.common.observation import Observation
-from vacuumworld.common.exceptions import VWInternalError
-from vacuumworld.model.actor.actor_mind_surrogate import ActorMindSurrogate
-from vacuumworld.model.actor.hystereticmindsurrogate import VWHystereticMindSurrogate
+from vacuumworld.vwconfig_manager import VWConfigManager
+from vacuumworld.common.vwcolour import VWColour
+from vacuumworld.common.vwobservation import VWObservation
+from vacuumworld.common.vwexceptions import VWInternalError
+from vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate import VWActorMindSurrogate
+from vacuumworld.model.actor.mind.surrogate.vwhysteretic_mind_surrogate import VWHystereticMindSurrogate
 from vacuumworld.model.actions.vwactions import VWAction
-from vacuumworld.model.actions.idle_action import VWIdleAction
-from vacuumworld.runner.guiless_runner import VWGUIlessRunner
+from vacuumworld.model.actions.vwidle_action import VWIdleAction
+from vacuumworld.runner.vwguiless_runner import VWGUIlessRunner
 
 
 class EmptySurrogateMind():
@@ -23,7 +23,7 @@ class EmptySurrogateMind():
 
 
 class NoDecideSurrogateMind():
-    def revise(self, observation: Observation, messages: Iterable[BccMessage]) -> None:
+    def revise(self, observation: VWObservation, messages: Iterable[BccMessage]) -> None:
         ignore(self)
         ignore(observation)
 
@@ -37,7 +37,7 @@ class NoReviseSurrogateMind():
 
 
 class MalformedReviseSurrogateMind():
-    def revise(self, observation: Observation, messages: Iterable[BccMessage], nonsense: List[str]) -> None:
+    def revise(self, observation: VWObservation, messages: Iterable[BccMessage], nonsense: List[str]) -> None:
         ignore(self)
         ignore(observation)
 
@@ -52,7 +52,7 @@ class MalformedReviseSurrogateMind():
 
 
 class NoMessagesMalformedReviseSurrogateMind():
-    def revise(self, observation: Observation) -> None:
+    def revise(self, observation: VWObservation) -> None:
         ignore(self)
         ignore(observation)
 
@@ -72,7 +72,7 @@ class NoObservationMalformedReviseSurrogateMind():
 
 
 class MalformedDecideSurrogateMind():
-    def revise(self, observation: Observation, messages: Iterable[BccMessage]) -> None:
+    def revise(self, observation: VWObservation, messages: Iterable[BccMessage]) -> None:
         ignore(self)
         ignore(observation)
 
@@ -96,11 +96,11 @@ class TestIllegalRunInputs(TestCase):
     def __init__(self, args) -> None:
         super(TestIllegalRunInputs, self).__init__(args)
 
-        self.__config: dict = ConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
-        self.__minds: Dict[Colour, ActorMindSurrogate()] = {
-            Colour.green: VWHystereticMindSurrogate(),
-            Colour.orange: VWHystereticMindSurrogate(),
-            Colour.white: VWHystereticMindSurrogate()
+        self.__config: dict = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
+        self.__minds: Dict[VWColour, VWActorMindSurrogate()] = {
+            VWColour.green: VWHystereticMindSurrogate(),
+            VWColour.orange: VWHystereticMindSurrogate(),
+            VWColour.white: VWHystereticMindSurrogate()
         }
 
     def test_illegal_speed_value(self) -> None:
@@ -163,12 +163,12 @@ class TestIllegalRunInputs(TestCase):
         vw_allowed_run_args_backup: Dict[str, Type] = VacuumWorld.ALLOWED_RUN_ARGS
 
         for mind in malformed_minds:
-            for colour in Colour:
-                if colour != Colour.user:
+            for colour in VWColour:
+                if colour != VWColour.user:
                     VacuumWorld.ALLOWED_RUN_ARGS["default_mind"] = type(mind)
                     VacuumWorld.ALLOWED_RUN_ARGS[str(colour) + "_mind"] = type(mind)
 
-            self.assertRaises(VWInternalError, ActorMindSurrogate.validate, mind=mind, colour=colour)
+            self.assertRaises(VWInternalError, VWActorMindSurrogate.validate, mind=mind, colour=colour)
 
         VacuumWorld.ALLOWED_RUN_ARGS = vw_allowed_run_args_backup
 
