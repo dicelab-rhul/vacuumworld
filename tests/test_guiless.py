@@ -15,6 +15,9 @@ import os
 
 
 class TestGUIless(TestCase):
+    '''
+    This class tests the GUI-less mode of operation of VacuumWorld.
+    '''
     def __init__(self, args) -> None:
         super(TestGUIless, self).__init__(args)
 
@@ -25,6 +28,9 @@ class TestGUIless(TestCase):
         self.__list_of_max_cycles_per_run: List[int] = [randint(self.__min_number_of_cycles, self.__max_number_of_cycles) for _ in range(self.__number_of_runs)]
 
     def test_guiless(self) -> None:
+        '''
+        Tests the GUI-less mode of operation of VacuumWorld.
+        '''
         for total_cycles in self.__list_of_max_cycles_per_run:
             try:
                 env, _ = VWEnvironment.generate_random_env_for_testing(config=self.__config, custom_grid_size=True)

@@ -16,6 +16,9 @@ from vacuumworld.vwconfig_manager import VWConfigManager
 
 
 class TestLocationAndCoordinates(TestCase):
+    '''
+    This class tests the `VWCoord` and `VWLocation` classes.
+    '''
     def __init__(self, args) -> None:
         super(TestLocationAndCoordinates, self).__init__(args)
 
@@ -25,6 +28,9 @@ class TestLocationAndCoordinates(TestCase):
         self.__number_of_runs: int = 100
 
     def test_coord(self) -> None:
+        '''
+        Tests the creation of `VWCoord` objects.
+        '''
         for _ in range(self.__number_of_runs):
             c: VWCoord = VWCoord.random_between_inclusive(min_x=0, max_x=self.__max_grid_size-1, min_y=0, max_y=self.__max_grid_size-1)
 
@@ -75,7 +81,7 @@ class TestLocationAndCoordinates(TestCase):
 
     def test_coord_back_compatibility(self) -> None:
         '''
-        This method tests that `VWCoord` works in the same way as the old `Coord` (child of `NamedTuple`) class.
+        Tests that `VWCoord` works in the same way as the old `Coord` (child of `NamedTuple`) class.
         '''
         for _ in range(self.__number_of_runs):
             x, y = randint(0, self.__max_grid_size-1), randint(0, self.__max_grid_size-1)
@@ -102,6 +108,9 @@ class TestLocationAndCoordinates(TestCase):
             self.assertEqual(c.get_y(), oc.y)
 
     def test_location(self) -> None:
+        '''
+        Tests the creation of `VWLocation` objects.
+        '''
         for _ in range(100):
             grid_size: int = randint(self.__min_grid_size, self.__max_grid_size)
 

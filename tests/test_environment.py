@@ -18,15 +18,24 @@ from vacuumworld.vwconfig_manager import VWConfigManager
 
 
 class TestEnvironment(TestCase):
+    '''
+    This class tests the creation of `VWAmbient` and `VWEnvironment` objects with various grid sizes and various amounts of `VWActor` and `VWDirt` objects.
+    '''
     def __init__(self, args) -> None:
         super(TestEnvironment, self).__init__(args)
 
         self.__config: dict = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
 
     def test_default_sized_empty_env(self) -> None:
+        '''
+        Tests the creation of an empty `VWEnvironment` object, with the default grid size.
+        '''
         self.__test_empty_env(custom_grid_size=False)
 
     def test_custom_sized_empty_env(self) -> None:
+        '''
+        Tests the creation of an empty `VWEnvironment` object, with a custom random grid size.
+        '''
         self.__test_empty_env(custom_grid_size=True)
 
     def __test_empty_env(self, custom_grid_size: bool) -> None:
@@ -40,9 +49,15 @@ class TestEnvironment(TestCase):
         self.assertEqual(len(env.get_passive_bodies_list()), 0)
 
     def test_default_sized_env_with_agents(self) -> None:
+        '''
+        Tests the creation of a `VWEnvironment` object, with the default grid size, and a `VWCleaningAgent` for each `VWColour` (except for `VWColour.user`).
+        '''
         self.__test_env_with_cleaning_agents(custom_grid_size=False)
 
     def test_custom_sized_env_with_agents(self) -> None:
+        '''
+        Tests the creation of a `VWEnvironment` object, with a custom random grid size, and a `VWCleaningAgent` for each `VWColour` (except for `VWColour.user`).
+        '''
         self.__test_env_with_cleaning_agents(custom_grid_size=True)
 
     def __test_env_with_cleaning_agents(self, custom_grid_size: bool) -> None:
@@ -78,9 +93,15 @@ class TestEnvironment(TestCase):
         # For the tests on the actor appearance, go to test_location_and_coordinates.py, and test_actors.py.
 
     def test_default_sized_env_with_dirts(self) -> None:
+        '''
+        Tests the creation of a `VWEnvironment` object, with the default grid size, and a `VWDirt` for each `VWColour` (except for `VWColour.white`, and `VWColour.user`).
+        '''
         self.__test_env_with_dirts(custom_grid_size=False)
 
     def test_custom_sized_env_with_dirts(self) -> None:
+        '''
+        Tests the creation of a `VWEnvironment` object, with a custom random grid size, and a `VWDirt` for each `VWColour` (except for `VWColour.white`, and `VWColour.user`).
+        '''
         self.__test_env_with_dirts(custom_grid_size=True)
 
     def __test_env_with_dirts(self, custom_grid_size: bool) -> None:
@@ -111,9 +132,15 @@ class TestEnvironment(TestCase):
         # For the tests on the dirt appearance, go to test_location_and_coordinates.py, and test_dirt.py.
 
     def test_default_sized_env_with_user(self) -> None:
+        '''
+        Tests the creation of a `VWEnvironment` object, with the default grid size, and a `VWUser` object.
+        '''
         self.__test_env_with_user(custom_grid_size=False)
 
     def test_custom_sized_env_with_user(self) -> None:
+        '''
+        Tests the creation of a `VWEnvironment` object, with a custom random grid size, and a `VWUser` object.
+        '''
         self.__test_env_with_user(custom_grid_size=True)
 
     def __test_env_with_user(self, custom_grid_size: bool) -> None:
@@ -140,9 +167,15 @@ class TestEnvironment(TestCase):
         # For the tests on the actor appearance, go to test_location_and_coordinates.py, and test_actors.py.
 
     def test_default_sized_env_with_actors_and_dirts(self) -> None:
+        '''
+        Tests the creation of a `VWEnvironment` object, with the default grid size, a `VWActor` for each `VWColour`, and a `VWDirt` for each `VWColour` (except for `VWColour.white`, and `VWColour.user`).
+        '''
         self.__test_env_with_actors_and_dirts(custom_grid_size=False)
 
     def test_custom_sized_env_with_actors_and_dirts(self) -> None:
+        '''
+        Tests the creation of a `VWEnvironment` object, with a custom random grid size, a `VWActor` for each `VWColour`, and a `VWDirt` for each `VWColour` (except for `VWColour.white`, and `VWColour.user`).
+        '''
         self.__test_env_with_actors_and_dirts(custom_grid_size=True)
 
     def __test_env_with_actors_and_dirts(self, custom_grid_size: bool) -> None:

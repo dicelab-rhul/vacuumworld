@@ -30,6 +30,17 @@ class VWObservation(Perception):
         self.__locations: Dict[VWPositionNames, VWLocation] = locations_dict
         self.__action_results: List[Tuple[Type[VWAction], ActionResult]] = [(action_type, action_result)]
 
+    def get_observer_id(self) -> Optional[str]:
+        '''
+        Returns the `str` ID of the `VWActor` that presumably observed this `VWObservation`, or `None` if no observer can be identified.
+
+        The observer is assumed to be the `VWActor` whose `VWActorAppearance` is contained by the `VWLocation` at the `VWPositionNames.center` position in this `VWObservation`.
+        '''
+        if VWPositionNames.center not in self.__locations or not self.__locations[VWPositionNames.center].has_actor():
+            return None
+        else:
+            return self.__locations[VWPositionNames.center].get_actor_appearance().get_id()
+
     def get_latest_actions_results(self) -> List[Tuple[Type[VWAction], ActionResult]]:
         '''
         Returns a `List` of the results of each `VWAction` that was attempted by the `VWActor` during the last cycle.

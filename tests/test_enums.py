@@ -10,7 +10,13 @@ from vacuumworld.common.vwuser_difficulty import VWUserDifficulty
 
 
 class TestEnums(TestCase):
+    '''
+    This class tests the enums in the `vacuumworld.common` package: `VWColour`, `VWDirection`, `VWOrientation`, `VWPositionNames`, and `VWUserDifficulty`.
+    '''
     def test_colour(self) -> None:
+        '''
+        Tests the `VWColour` enum.
+        '''
         self.assertEqual("white", VWColour.white.value)
         self.assertEqual("white", repr(VWColour.white))
         self.assertEqual("white", str(VWColour.white))
@@ -32,6 +38,9 @@ class TestEnums(TestCase):
         self.assertEqual(VWColour("user"), VWColour.user)
 
     def test_direction(self) -> None:
+        '''
+        Tests the `VWDirection` enum.
+        '''
         self.assertEqual("left", VWDirection.left.value)
         self.assertEqual("left", repr(VWDirection.left))
         self.assertEqual("left", str(VWDirection.left))
@@ -43,6 +52,9 @@ class TestEnums(TestCase):
         self.assertEqual(VWDirection("right"), VWDirection.right)
 
     def test_orientation(self) -> None:
+        '''
+        Tests the `VWOrientation` enum.
+        '''
         self.assertEqual("north", VWOrientation.north.value)
         self.assertEqual("north", repr(VWOrientation.north))
         self.assertEqual("north", str(VWOrientation.north))
@@ -88,6 +100,9 @@ class TestEnums(TestCase):
         self.assertEqual(VWOrientation.east.get(direction=VWDirection.right), VWOrientation.south)
 
     def test_position_names(self) -> None:
+        '''
+        Tests the `VWPositionNames` enum.
+        '''
         self.assertEqual("center", VWPositionNames.center.value)
         self.assertEqual("center", repr(VWPositionNames.center))
         self.assertEqual("center", str(VWPositionNames.center))
@@ -119,6 +134,9 @@ class TestEnums(TestCase):
         self.assertEqual(VWPositionNames("forwardright"), VWPositionNames.forwardright)
 
     def test_user_difficulty(self) -> None:
+        '''
+        Tests the `VWUserDifficulty` enum.
+        '''
         self.assertEqual(0, VWUserDifficulty.easy.value)
         self.assertEqual("0", repr(VWUserDifficulty.easy))
         self.assertEqual("0", str(VWUserDifficulty.easy))

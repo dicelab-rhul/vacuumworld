@@ -35,6 +35,9 @@ import random as random_module
 
 
 class TestPerception(TestCase):
+    '''
+    This class tests `VWObservation` and `BccMessage`.
+    '''
     def __init__(self, args) -> None:
         super(TestPerception, self).__init__(args)
 
@@ -48,18 +51,27 @@ class TestPerception(TestCase):
         self.__randbytes: Callable[[int], bytes] = random_module.randbytes if hasattr(random_module, "randbytes") else os.urandom
 
     def test_observation_coming_from_physical_action(self) -> None:
+        '''
+        Tests a `VWObservation` coming from a `VWPhysicalAction`.
+        '''
         test_function: Callable = self.__test_observation_coming_from_physical_action
 
         for _ in range(self.__number_of_runs):
             self.__test_observation(test_function=test_function)
 
     def test_observation_coming_from_communicative_action(self) -> None:
+        '''
+        Tests a `VWObservation` coming from a `VWCommunicativeAction`.
+        '''
         test_function: Callable = self.__test_observation_coming_from_communicative_action
 
         for _ in range(self.__number_of_runs):
             self.__test_observation(test_function=test_function)
 
     def test_observation_coming_from_multiple_actions(self) -> None:
+        '''
+        Tests a `VWObservation` coming from a combination of a `VWPhysicalAction` and a `VWCommunicativeAction`.
+        '''
         test_function: Callable = self.__test_observation_coming_from_multiple_actions
 
         for _ in range(self.__number_of_runs):
@@ -130,10 +142,20 @@ class TestPerception(TestCase):
             self.__check_location(o=o, position=positions[i], coord=coords[i], actor_appearance=actors[i], dirt_appearance=dirts[i])
 
     def __check_location(self, o: VWObservation, position: VWPositionNames, coord: VWCoord, actor_appearance: Optional[VWActorAppearance], dirt_appearance: Optional[VWDirtAppearance]) -> None:
-        if o.get_location_at(position_name=position) is not None:
-            location: VWLocation = o.get_location_at(position_name=position)
+        self.__check_observer_id(observation=o, position=position, actor_appearance=actor_appearance)
 
-            self.assertEqual(location.get_coord(), coord)
+        if o.get_location_at(position_name=position) is not None:
+            self.__check_appearances(observation=o, position=position, actor_appearance=actor_appearance, dirt_appearance=dirt_appearance)
+
+    def __check_observer_id(self, observation: VWObservation, position: VWPositionNames, actor_appearance: Optional[VWActorAppearance]) -> None:
+        if position == VWPositionNames.center:
+            self.assertIsNotNone(observation.get_location_at(position_name=position))
+            self.assertIsNotNone(actor_appearance)
+            self.assertEqual(actor_appearance.get_id(), observation.get_observer_id())
+
+    def __check_appearances(self, observation: VWObservation, position: VWPositionNames, actor_appearance: Optional[VWActorAppearance], dirt_appearance: Optional[VWDirtAppearance]) -> None:
+        if observation.get_location_at(position_name=position) is not None:
+            location: VWLocation = observation.get_location_at(position_name=position)
 
             if actor_appearance is not None:
                 self.assertEqual(location.get_actor_appearance(), actor_appearance)
@@ -149,7 +171,9 @@ class TestPerception(TestCase):
         return [VWCoord(x=randint(0, grid_size - 1), y=randint(0, grid_size - 1)) for _ in range(self.__number_of_locations)]
 
     def __generate_random_actor_appearances(self) -> List[Optional[VWActorAppearance]]:
-        return [None if randfloat() < 0.5 else self.__generate_random_actor_appearance() for _ in range(self.__number_of_locations)]
+        # The `VWLocation` at `PositionNames.center` must always have a `VWActorAppearance` (i.e., the observer) in it.
+        # In particular, the first element of this list must be a `VWActorAppearance`.
+        return [None if randfloat() < 0.5 and i > 0 else self.__generate_random_actor_appearance() for i in range(self.__number_of_locations)]
 
     def __generate_random_actor_appearance(self) -> VWActorAppearance:
         actor_id: str = str(uuid4())
@@ -179,6 +203,9 @@ class TestPerception(TestCase):
         return locations_dict
 
     def test_message_with_int_content(self) -> None:
+        '''
+        Tests various instances of `BccMessage` whose content is an `int`.
+        '''
         contents: List[int] = [randint(-maxsize + 1, maxsize) for _ in range(self.__number_of_runs)]
 
         for content in contents:
@@ -188,6 +215,9 @@ class TestPerception(TestCase):
             self.__test_message(content=content, sender_id=sender_id, recipient_id=recipient_id)
 
     def test_message_with_float_content(self) -> None:
+        '''
+        Tests various instances of `BccMessage` whose content is a `float`.
+        '''
         contents: List[float] = [randfloat() * float_info.max for _ in range(self.__number_of_runs)]
 
         for content in contents:
@@ -197,6 +227,9 @@ class TestPerception(TestCase):
             self.__test_message(content=content, sender_id=sender_id, recipient_id=recipient_id)
 
     def test_message_with_str_content(self) -> None:
+        '''
+        Tests various instances of `BccMessage` whose content is a `str`.
+        '''
         contents: List[str] = [self.__randbytes(randint(0, 2**16 - 1)).hex() for _ in range(self.__number_of_runs)]
 
         for content in contents:
@@ -206,6 +239,9 @@ class TestPerception(TestCase):
             self.__test_message(content=content, sender_id=sender_id, recipient_id=recipient_id)
 
     def test_message_with_bytes_content(self) -> None:
+        '''
+        Tests various instances of `BccMessage` whose content is a `bytes` value.
+        '''
         contents: List[bytes] = [self.__randbytes(randint(0, 2**16 - 1)) for _ in range(self.__number_of_runs)]
 
         for content in contents:
@@ -215,6 +251,9 @@ class TestPerception(TestCase):
             self.__test_message(content=content, sender_id=sender_id, recipient_id=recipient_id)
 
     def test_message_with_list_content(self) -> None:
+        '''
+        Tests various instances of `BccMessage` whose content is a `list`.
+        '''
         contents: List[List[Union[int, float, str, bytes, list, tuple, dict]]] = [self.__generate_random_list() for _ in range(self.__number_of_runs)]
 
         for content in contents:
@@ -224,6 +263,9 @@ class TestPerception(TestCase):
             self.__test_message(content=content, sender_id=sender_id, recipient_id=recipient_id)
 
     def test_message_with_tuple_content(self) -> None:
+        '''
+        Tests various instances of `BccMessage` whose content is a `tuple`.
+        '''
         contents: List[Tuple[Union[int, float, str, bytes, list, tuple, dict]]] = [self.__generate_random_tuple() for _ in range(self.__number_of_runs)]
 
         for content in contents:
@@ -233,6 +275,9 @@ class TestPerception(TestCase):
             self.__test_message(content=content, sender_id=sender_id, recipient_id=recipient_id)
 
     def test_message_with_dict_content(self) -> None:
+        '''
+        Tests various instances of `BccMessage` whose content is a `dict`.
+        '''
         contents: List[Dict[Union[int, float, str, bytes], Union[int, float, str, bytes, list, tuple, dict]]] = [self.__generate_random_dict() for _ in range(self.__number_of_runs)]
 
         for content in contents:
@@ -242,6 +287,9 @@ class TestPerception(TestCase):
             self.__test_message(content=content, sender_id=sender_id, recipient_id=recipient_id)
 
     def test_messages_with_recursion(self) -> None:
+        '''
+        Tests various instances of `BccMessage` whose content contains recursive data structures.
+        '''
         for content in (1, 1.32343, "foo", bytes("foobar", "utf-8"), ["foo", 1, 1.234, bytes("foobar", "utf-8"), [], (), {"foo": "bar"}], ("foo", 1, 1.234, [], (), {}, bytes("foobar", "utf-8")), {1: ["", None], 1.2343: (3, 4.5, {})}):
             for sender_id in ("Sephiroth", "Jenova", "Hojo", "Rufus"):
                 for recipient_id in ("Cloud", "Barret", "Red XIII", "Cid", "Vincent", "Tifa", "Yuffie", "Cait Sith", "Aerith"):

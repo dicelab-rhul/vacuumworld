@@ -19,11 +19,25 @@ from vacuumworld.runner.vwguiless_runner import VWGUIlessRunner
 
 
 class EmptySurrogateMind():
+    '''
+    This class is malformed for surrogate minds, because:
+    * It does not inherit from `VWActorMindSurrogate`.
+    * It does not implement the `revise(self, observation: VWObservation, messages: Iterable[BccMessage]) -> None` method.
+    * It does not implement the `decide(self) -> Union[VWAction, VWIdleAction]` method.
+    '''
     pass
 
 
 class NoDecideSurrogateMind():
+    '''
+    This class is malformed for surrogate minds, because:
+    * It does not inherit from `VWActorMindSurrogate`.
+    * It does not implement the `decide(self) -> Union[VWAction, VWIdleAction]` method.
+    '''
     def revise(self, observation: VWObservation, messages: Iterable[BccMessage]) -> None:
+        '''
+        This method is well-formed.
+        '''
         ignore(observation)
 
         for m in messages:
@@ -31,12 +45,29 @@ class NoDecideSurrogateMind():
 
 
 class NoReviseSurrogateMind():
+    '''
+    This class is malformed for surrogate minds, because:
+    * It does not inherit from `VWActorMindSurrogate`.
+    * It does not implement the `revise(self, observation: VWObservation, messages: Iterable[BccMessage]) -> None` method.
+    '''
     def decide(self) -> Union[VWAction, Tuple[VWAction]]:
+        '''
+        This method is well-formed.
+        '''
         return VWIdleAction()
 
 
 class MalformedReviseSurrogateMind():
+    '''
+    This class is malformed for surrogate minds, because:
+    * It does not inherit from `VWActorMindSurrogate`.
+    * It implements a malformed `revise(self, observation: VWObservation, messages: Iterable[BccMessage], nonsense: List[str]) -> None` method.
+    * It does not implement the `revise(self, observation: VWObservation, messages: Iterable[BccMessage]) -> None` method.
+    '''
     def revise(self, observation: VWObservation, messages: Iterable[BccMessage], nonsense: List[str]) -> None:
+        '''
+        This method is malformed, because it has an unwarranted `nonsense` argument of type `List[str]`.
+        '''
         ignore(observation)
 
         for m in messages:
@@ -46,19 +77,43 @@ class MalformedReviseSurrogateMind():
             ignore(elm)
 
     def decide(self) -> Union[VWAction, Tuple[VWAction]]:
+        '''
+        This method is well-formed.
+        '''
         return VWIdleAction()
 
 
 class NoMessagesMalformedReviseSurrogateMind():
+    '''
+    This class is malformed for surrogate minds, because:
+    * It does not inherit from `VWActorMindSurrogate`.
+    * It implements a malformed `revise(self, observation: VWObservation) -> None` method.
+    * It does not implement the `revise(self, observation: VWObservation, messages: Iterable[BccMessage]) -> None` method.
+    '''
     def revise(self, observation: VWObservation) -> None:
+        '''
+        This method is malformed, because it lacks the `messages` argument of type `Iterable[BccMessage]`.
+        '''
         ignore(observation)
 
     def decide(self) -> Union[VWAction, Tuple[VWAction]]:
+        '''
+        This method is well-formed.
+        '''
         return VWIdleAction()
 
 
 class NoObservationMalformedReviseSurrogateMind():
+    '''
+    This class is malformed for surrogate minds, because:
+    * It does not inherit from `VWActorMindSurrogate`.
+    * It implements a malformed `revise(self, messages: Iterable[BccMessage]) -> None` method.
+    * It does not implement the `revise(self, observation: VWObservation, messages: Iterable[BccMessage]) -> None` method.
+    '''
     def revise(self, messages: Iterable[BccMessage]) -> None:
+        '''
+        This method is malformed, because it lacks the `observation` argument of type `VWObservation`.
+        '''
         for m in messages:
             ignore(m)
 
@@ -67,13 +122,25 @@ class NoObservationMalformedReviseSurrogateMind():
 
 
 class MalformedDecideSurrogateMind():
+    '''
+    This class is malformed for surrogate minds, because:
+    * It does not inherit from `VWActorMindSurrogate`.
+    * It implements a malformed `decide(self, nonsense: List[str]) -> Union[VWAction, VWIdleAction]` method.
+    * It does not implement the `decide(self) -> Union[VWAction, VWIdleAction]` method.
+    '''
     def revise(self, observation: VWObservation, messages: Iterable[BccMessage]) -> None:
+        '''
+        This method is well-formed.
+        '''
         ignore(observation)
 
         for m in messages:
             ignore(m)
 
     def decide(self, nonsense: List[str]) -> Union[VWAction, Tuple[VWAction]]:
+        '''
+        This method is malformed, because it has an unwarranted `nonsense` argument of type `List[str]`.
+        '''
         for elm in nonsense:
             ignore(elm)
 
@@ -82,11 +149,14 @@ class MalformedDecideSurrogateMind():
 
 class TestIllegalRunInputs(TestCase):
     '''
+    Tests the rejection of various illegal/malformed attributes (orcombinations of attributes) of the `run()` method.
+
+    All tests are performed in GUI-less mode.
+
     All the arguments of `run()` that are not tested are simply ignored if they are not valid.
 
     All unknown arguments of `run()` are ignored by the system.
     '''
-
     def __init__(self, args) -> None:
         super(TestIllegalRunInputs, self).__init__(args)
 
@@ -98,6 +168,9 @@ class TestIllegalRunInputs(TestCase):
         }
 
     def test_illegal_speed_value(self) -> None:
+        '''
+        Tests various illegal `speed` values.
+        '''
         for value in [-1337, -70, -1, 2, 3, 100, 1000]:
             self.assertRaises(TypeError, VWGUIlessRunner, config=self.__config, minds=self.__minds, allowed_args=VacuumWorld.ALLOWED_RUN_ARGS, speed=value)
 
@@ -105,6 +178,9 @@ class TestIllegalRunInputs(TestCase):
             self.assertRaises(ValueError, VWGUIlessRunner, config=self.__config, minds=self.__minds, allowed_args=VacuumWorld.ALLOWED_RUN_ARGS, speed=value)
 
     def test_illegal_scale_value(self) -> None:
+        '''
+        Tests various illegal `scale` values.
+        '''
         for value in [-100, -1, 2, 3, 100, 1000]:
             self.assertRaises(TypeError, VWGUIlessRunner, config=self.__config, minds=self.__minds, allowed_args=VacuumWorld.ALLOWED_RUN_ARGS, scale=value)
 
@@ -112,9 +188,15 @@ class TestIllegalRunInputs(TestCase):
             self.assertRaises(ValueError, VWGUIlessRunner, config=self.__config, minds=self.__minds, allowed_args=VacuumWorld.ALLOWED_RUN_ARGS, scale=value)
 
     def test_play_without_load(self) -> None:
+        '''
+        Tests the illegal combination of `play=True` and no `load`.
+        '''
         self.assertRaises(ValueError, VWGUIlessRunner, config=self.__config, minds=self.__minds, allowed_args=VacuumWorld.ALLOWED_RUN_ARGS, play=True)
 
     def test_illegal_total_cycles_value(self) -> None:
+        '''
+        Tests various illegal `total_cycles` values.
+        '''
         for value in [-1.2, -0.3, 0.1, 1.1]:
             self.assertRaises(TypeError, VWGUIlessRunner, config=self.__config, minds=self.__minds, allowed_args=VacuumWorld.ALLOWED_RUN_ARGS, total_cycles=value)
 
@@ -122,6 +204,9 @@ class TestIllegalRunInputs(TestCase):
             self.assertRaises(ValueError, VWGUIlessRunner, config=self.__config, minds=self.__minds, allowed_args=VacuumWorld.ALLOWED_RUN_ARGS, total_cycles=value)
 
     def test_illegal_efforts(self) -> None:
+        '''
+        Tests various illegal `efforts` values.
+        '''
         for value in ["hello", "world", 1, -8.8, ["foo", "bar"]]:
             self.assertRaises(TypeError, VWGUIlessRunner, config=self.__config, minds=self.__minds, allowed_args=VacuumWorld.ALLOWED_RUN_ARGS, efforts=value)
 
@@ -135,6 +220,9 @@ class TestIllegalRunInputs(TestCase):
             self.assertRaises(ValueError, VWGUIlessRunner, config=self.__config, minds=self.__minds, allowed_args=VacuumWorld.ALLOWED_RUN_ARGS, efforts=value)
 
     def test_illegal_minds_combination(self) -> None:
+        '''
+        Tests the `run()` function with various illegal combinations of `default_mind`, `green_mind`, `orange_mind`, and `white_mind`.
+        '''
         self.assertRaises(AssertionError, run)
         self.assertRaises(AssertionError, run, green_mind=VWHystereticMindSurrogate())
         self.assertRaises(AssertionError, run, orange_mind=VWHystereticMindSurrogate())
@@ -144,6 +232,9 @@ class TestIllegalRunInputs(TestCase):
         self.assertRaises(AssertionError, run, orange_mind=VWHystereticMindSurrogate(), white_mind=VWHystereticMindSurrogate())
 
     def test_malformed_surrogate_minds(self) -> None:
+        '''
+        Tests the rejection of various malformed surrogate minds.
+        '''
         malformed_minds: list = [
             EmptySurrogateMind(),
             NoReviseSurrogateMind(),
