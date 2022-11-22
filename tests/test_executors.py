@@ -41,6 +41,16 @@ import random as random_module
 
 
 class TestExecutors(TestCase):
+    '''
+    This class tests the executors for each non-abstract subclass of `VWAction`:
+    * `VWIdleExecutor` for `VWIdleAction`.
+    * `VWSpeakExecutor` for `VWSpeakAction`.
+    * `VWTurnExecutor` for `VWTurnAction`.
+    * `VWCleanExecutor` for `VWCleanAction`.
+    * `VWDropExecutor` for `VWDropAction`.
+    * `VWMoveExecutor` for `VWMoveAction`.
+    * `VWBroadcastExecutor` for `VWBroadcastAction`.
+    '''
     def __init__(self, args) -> None:
         super(TestExecutors, self).__init__(args)
 
@@ -63,6 +73,9 @@ class TestExecutors(TestCase):
         VWCommunicativeAction.SENDER_ID_SPOOFING_ALLOWED = self.__config["sender_id_spoofing_allowed"]
 
     def test_idle_action(self) -> None:
+        '''
+        Tests the execution of a `VWIdleAction` by a `VWIdleExecutor`.
+        '''
         action: VWIdleAction = VWIdleAction()
         idle_executor: VWIdleExecutor = VWIdleExecutor()
         env, _ = VWEnvironment.generate_random_env_for_testing(custom_grid_size=True, config=self.__config)
@@ -78,9 +91,19 @@ class TestExecutors(TestCase):
             self.assertTrue(idle_executor.succeeded(env=env, action=action))
 
     def test_speak_action(self) -> None:
+        '''
+        Tests the execution of a `VWSpeakAction` by a `VWSpeakExecutor` without `sender_id` spoofing.
+
+        Both the cases of an empty (i.e., equivalent to `VWBroadcastAction`) and a non-empty list of recipients are tested.
+        '''
         self.__test_speak_action()
 
     def test_speak_action_with_sender_id_spoofing(self) -> None:
+        '''
+        Tests the execution of a `VWSpeakAction` by a `VWSpeakExecutor` with `sender_id` spoofing (i.e., with a custom randon sender ID).
+
+        Both the cases of an empty (i.e., equivalent to `VWBroadcastAction`) and a non-empty list of recipients are tested.
+        '''
         custom_sender_id: str = self.__randbytes(randint(1, 16)).hex()
         self.__test_speak_action(custom_sender_id=custom_sender_id)
 
@@ -138,9 +161,15 @@ class TestExecutors(TestCase):
             self.assertTrue(received)
 
     def test_broadcast_action(self) -> None:
+        '''
+        Tests the execution of a `VWBroadcastAction` by a `VWBroadcastExecutor` without `sender_id` spoofing.
+        '''
         self.__test_broadcast_action()
 
     def test_broadcast_action_with_sender_id_spoofing(self) -> None:
+        '''
+        Tests the execution of a `VWBroadcastAction` by a `VWBroadcastExecutor` with `sender_id` spoofing (i.e., with a custom randon sender ID).
+        '''
         custom_sender_id: str = self.__randbytes(randint(1, 16)).hex()
         self.__test_broadcast_action(custom_sender_id=custom_sender_id)
 
@@ -170,6 +199,9 @@ class TestExecutors(TestCase):
             self.assertTrue(result.get_outcome() == ActionOutcome.failure)
 
     def test_move_action(self) -> None:
+        '''
+        Tests the execution of a `VWMoveAction` by a `VWMoveExecutor`.
+        '''
         action: VWMoveAction = VWMoveAction()
         move_executor: VWMoveExecutor = VWMoveExecutor()
         env, _ = VWEnvironment.generate_random_env_for_testing(custom_grid_size=True, config=self.__config)
@@ -207,6 +239,11 @@ class TestExecutors(TestCase):
         return location.get_actor_appearance().get_orientation() == orientation
 
     def test_turn_action(self) -> None:
+        '''
+        Tests the execution of a `VWTurnAction` by a `VWTurnExecutor`.
+
+        Both the cases of a turn to `VWDirection.left` and to `VWDirection.right` are tested.
+        '''
         left_turn_action: VWTurnAction = VWTurnAction(VWDirection.left)
         right_turn_action: VWTurnAction = VWTurnAction(VWDirection.right)
         turn_executor: VWTurnExecutor = VWTurnExecutor()
@@ -241,6 +278,11 @@ class TestExecutors(TestCase):
             self.assertEqual(env.get_actor_location(actor_id=actor_id).get_actor_appearance().get_previous_orientation(), old_orientation)
 
     def test_clean_action(self) -> None:
+        '''
+        Tests the execution of a `VWCleanAction` by a `VWCleanExecutor`.
+
+        The tests also checks that the `VWActor` is a `VWCleaningAgent`, and that the `VWColour` of the `VWActor` is compatible with the `VWColour` of the `VWDirt`.
+        '''
         action: VWCleanAction = VWCleanAction()
         clean_executor: VWCleanExecutor = VWCleanExecutor()
         env, _ = VWEnvironment.generate_random_env_for_testing(custom_grid_size=True, config=self.__config)
@@ -262,6 +304,13 @@ class TestExecutors(TestCase):
                 self.assertFalse(clean_executor.is_possible(env=env, action=action))
 
     def test_drop_action(self) -> None:
+        '''
+        Tests the execution of a `VWDropAction` by a `VWDropExecutor`.
+
+        Both the cases of the drop of a `VWColour.green` and the drop of a `VWColour.orange` are tested.
+
+        The tests also checks that the `VWActor` is a `VWUser`.
+        '''
         drop_green_dirt_action: VWDropAction = VWDropAction(dirt_colour=VWColour.green)
         drop_orange_dirt_action: VWDropAction = VWDropAction(dirt_colour=VWColour.orange)
         drop_executor: VWDropExecutor = VWDropExecutor()

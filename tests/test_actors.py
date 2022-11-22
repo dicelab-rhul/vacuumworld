@@ -26,13 +26,26 @@ from vacuumworld.model.actions.vwdrop_action import VWDropAction
 
 
 class TestActors(TestCase):
+    '''
+    This class tests:
+    * The construction of `VWUserMindSurrogate` objects.
+    * The construction of objects whose class is a subclass of `VWActorMindSurrogate` (in this case, `VWHystereticMindSurrogate`).
+    * The construction of `VWMind` and `VWUserMind` objects from `VWHystereticMindSurrogate` and `VWUsermindSurrogate` objects respectively.
+    * The constructon of `VWCleaningAgent` and `VWUser` via `VWCleaningAgentsFactory` and `VWUsersFactory` respectively.
+    '''
     def test_agent_mind_creation(self) -> None:
+        '''
+        Tests the creation of `VWHystereticMindSurrogate` and `VWMind` objects.
+        '''
         surrogate: VWHystereticMindSurrogate = VWHystereticMindSurrogate()
         mind: VWMind = VWMind(surrogate=surrogate)
 
         self.assertEqual(surrogate.__class__, mind.get_surrogate().__class__)
 
     def test_user_mind_creation(self) -> None:
+        '''
+        Tests the creation of `VWUserMindSurrogate` and `VWUserMind` objects.
+        '''
         easy_surrogate: VWUserMindSurrogate = VWUserMindSurrogate(difficulty_level=VWUserDifficulty.easy)
         hard_surrogate: VWUserMindSurrogate = VWUserMindSurrogate(difficulty_level=VWUserDifficulty.hard)
         easy_mind: VWUserMind = VWUserMind(surrogate=easy_surrogate)
@@ -44,6 +57,9 @@ class TestActors(TestCase):
         self.assertEqual(hard_mind.get_surrogate().get_difficulty_level(), VWUserDifficulty.hard)
 
     def test_cleaning_agent_creation(self) -> None:
+        '''
+        Tests the creation of `VWCleaningAgent` objects via `VWCleaningAgentsFactory`.
+        '''
         surrogate: VWHystereticMindSurrogate = VWHystereticMindSurrogate()
         mind: VWMind = VWMind(surrogate=surrogate)
 
@@ -86,10 +102,13 @@ class TestActors(TestCase):
                     self.assertNotEqual(a.get_communicative_actuator(), a.get_physical_actuator())
 
     def test_user_creation(self) -> None:
+        '''
+        Tests the creation of `VWUser` objects via `VWUsersFactory`.
+        '''
         easy_surrogate: VWHystereticMindSurrogate = VWUserMindSurrogate(difficulty_level=VWUserDifficulty.easy)
         hard_surrogate: VWHystereticMindSurrogate = VWUserMindSurrogate(difficulty_level=VWUserDifficulty.hard)
-        easy_mind: VWMind = VWMind(surrogate=easy_surrogate)
-        hard_mind: VWMind = VWMind(surrogate=hard_surrogate)
+        easy_mind: VWUserMind = VWUserMind(surrogate=easy_surrogate)
+        hard_mind: VWUserMind = VWUserMind(surrogate=hard_surrogate)
 
         for mind, level in {easy_mind: VWUserDifficulty.easy, hard_mind: VWUserDifficulty.hard}.items():
             for orientation in [VWOrientation.north, VWOrientation.south, VWOrientation.west, VWOrientation.east]:

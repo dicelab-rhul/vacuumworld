@@ -8,7 +8,13 @@ from vacuumworld.model.dirt.vwdirt_appearance import VWDirtAppearance
 
 
 class TestDirt(TestCase):
+    '''
+    This class tests the creation of `VWDirt` and `VWDirtAppearance` objects.
+    '''
     def test_dirt(self) -> None:
+        '''
+        Tests the creation of `VWDirt`and `VWDirtAppearance` objects.
+        '''
         for colour in [VWColour.green, VWColour.orange]:
             dirt: VWDirt = VWDirt(colour=colour)
             dirt_appearance: VWDirtAppearance = VWDirtAppearance(dirt_id=dirt.get_id(), progressive_id=dirt.get_progressive_id(), colour=colour)
