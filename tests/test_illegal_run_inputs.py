@@ -13,7 +13,6 @@ from vacuumworld.common.vwobservation import VWObservation
 from vacuumworld.common.vwexceptions import VWInternalError
 from vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate import VWActorMindSurrogate
 from vacuumworld.model.actor.mind.surrogate.vwhysteretic_mind_surrogate import VWHystereticMindSurrogate
-from vacuumworld.model.actor.mind.surrogate.vwuser_mind_surrogate import VWUserMindSurrogate
 from vacuumworld.model.actions.vwactions import VWAction
 from vacuumworld.model.actions.vwidle_action import VWIdleAction
 from vacuumworld.runner.vwguiless_runner import VWGUIlessRunner
@@ -165,8 +164,7 @@ class TestIllegalRunInputs(TestCase):
         self.__minds: Dict[VWColour, VWActorMindSurrogate()] = {
             VWColour.green: VWHystereticMindSurrogate(),
             VWColour.orange: VWHystereticMindSurrogate(),
-            VWColour.white: VWHystereticMindSurrogate(),
-            VWColour.user: VWUserMindSurrogate()
+            VWColour.white: VWHystereticMindSurrogate()
         }
 
     def test_illegal_speed_value(self) -> None:
