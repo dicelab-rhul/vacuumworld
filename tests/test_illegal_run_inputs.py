@@ -13,6 +13,7 @@ from vacuumworld.common.vwobservation import VWObservation
 from vacuumworld.common.vwexceptions import VWInternalError
 from vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate import VWActorMindSurrogate
 from vacuumworld.model.actor.mind.surrogate.vwhysteretic_mind_surrogate import VWHystereticMindSurrogate
+from vacuumworld.model.actor.mind.surrogate.vwuser_mind_surrogate import VWUserMindSurrogate
 from vacuumworld.model.actions.vwactions import VWAction
 from vacuumworld.model.actions.vwidle_action import VWIdleAction
 from vacuumworld.runner.vwguiless_runner import VWGUIlessRunner
@@ -164,7 +165,8 @@ class TestIllegalRunInputs(TestCase):
         self.__minds: Dict[VWColour, VWActorMindSurrogate()] = {
             VWColour.green: VWHystereticMindSurrogate(),
             VWColour.orange: VWHystereticMindSurrogate(),
-            VWColour.white: VWHystereticMindSurrogate()
+            VWColour.white: VWHystereticMindSurrogate(),
+            VWColour.user: VWUserMindSurrogate()
         }
 
     def test_illegal_speed_value(self) -> None:
@@ -218,6 +220,13 @@ class TestIllegalRunInputs(TestCase):
 
         for value in [{"donald": 1}, {"goofy": 2}, {"mickey": 3}, {"minnie": 4}]:
             self.assertRaises(ValueError, VWGUIlessRunner, config=self.__config, minds=self.__minds, allowed_args=VacuumWorld.ALLOWED_RUN_ARGS, efforts=value)
+
+    def test_illegal_debug_flag(self) -> None:
+        '''
+        Tests various illegal `debug_enabled` values.
+        '''
+        for value in [-1, -8.8, "whatever", ["foo", "bar"], {1: 1}, ("a", "b", "c")]:
+            self.assertRaises(TypeError, VWGUIlessRunner, config=self.__config, minds=self.__minds, allowed_args=VacuumWorld.ALLOWED_RUN_ARGS, debug_enabled=value)
 
     def test_illegal_minds_combination(self) -> None:
         '''
