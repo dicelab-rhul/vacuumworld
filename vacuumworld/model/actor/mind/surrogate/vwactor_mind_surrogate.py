@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, Iterable, Tuple, Union
+from typing import Any, Iterable, Tuple, Union, Type
 from inspect import signature
 from importlib import import_module
 
@@ -63,11 +63,15 @@ class VWActorMindSurrogate():
         raise NotImplementedError()
 
     @staticmethod
-    def validate(mind: VWActorMindSurrogate, colour: VWColour) -> None:
+    def validate(mind: VWActorMindSurrogate, colour: VWColour, surrogate_mind_type: Type) -> None:
         '''
         Validates the `VWActorMindSurrogate` `mind` by checking that all the methods specified in `VWActorMindSurrogate.MUST_BE_DEFINED` are defined, together with the correct arguments.
+
+        The type check on `mind` is replaced with an assertion, as the actual check is performed by the `VWRunner` constructor.
         '''
         assert mind
+        assert isinstance(mind, surrogate_mind_type)
+        assert isinstance(colour, VWColour)
 
         for fun_name, number_of_parameters in VWActorMindSurrogate.MUST_BE_DEFINED.items():
             if fun_name not in set(dir(mind)):

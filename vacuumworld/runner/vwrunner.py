@@ -145,10 +145,10 @@ class VWRunner(Process):
 
     def __validate_minds(self) -> None:
         if not all(isinstance(self.__minds[colour], self.__allowed_args[str(colour) + "_mind"]) for colour in VWColour if colour != VWColour.user):
-            raise ValueError("One or more mind surrogates are not of the allowed type.")
+            raise TypeError("One or more mind surrogates are not of the allowed type.")
 
         for colour, mind in self.__minds.items():
-            VWActorMindSurrogate.validate(mind=mind, colour=colour)
+            VWActorMindSurrogate.validate(mind=mind, colour=colour, surrogate_mind_type=self.__allowed_args[str(colour) + "_mind"])
 
     def __validate_optional_args(self) -> None:
         self.__validate_play_load()

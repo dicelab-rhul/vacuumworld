@@ -7,6 +7,7 @@ from inspect import getsourcefile
 from pystarworldsturbo.common.message import BccMessage
 from pystarworldsturbo.utils.utils import ignore
 
+from vacuumworld import VacuumWorld
 from vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate import VWActorMindSurrogate
 from vacuumworld.model.actor.mind.surrogate.vwhysteretic_mind_surrogate import VWHystereticMindSurrogate
 from vacuumworld.common.vwcolour import VWColour
@@ -20,6 +21,8 @@ import os
 class TmpSurrogateMind(VWActorMindSurrogate):
     '''
     This class inherits from VWActorMindSurrogate and overrides the `revise()` and `decide()` methods.
+
+    No malformed surrogate minds are tested here, as those are tested in the `test_illegal_run_inputs.py` file.
     '''
     def revise(self, observation: VWObservation, messages: Iterable[BccMessage]) -> None:
         '''
@@ -71,7 +74,8 @@ class TestSurrogate(TestCase):
         self.assertIsInstance(surrogate_mind, VWActorMindSurrogate)
 
         for colour in [c for c in VWColour if c != VWColour.user]:
-            VWActorMindSurrogate.validate(mind=surrogate_mind, colour=colour)
+            print(VacuumWorld.ALLOWED_RUN_ARGS["{}_mind".format(str(colour))], type(surrogate_mind))
+            VWActorMindSurrogate.validate(mind=surrogate_mind, colour=colour, surrogate_mind_type=VacuumWorld.ALLOWED_RUN_ARGS["{}_mind".format(str(colour))])
 
 
 if __name__ == '__main__':
