@@ -36,10 +36,10 @@ class VWSaveStateManager():
         if not os.path.exists(self.__files_dir):
             os.mkdir(self.__files_dir)
         elif not os.path.isdir(self.__files_dir):
-            raise ValueError("Could not create the `{}` directory.".format(self.__files_dir))
+            raise IOError("Could not create the `{}` directory, because something with the same name that is not a directory already exists.".format(self.__files_dir))
 
         if not os.path.isdir(self.__files_dir):  # The directory was not created.
-            raise ValueError("Could not create the `{}` directory.".format(self.__files_dir))
+            raise IOError("Could not create the `{}` directory.".format(self.__files_dir))
 
     def __file_exists(self, filename: str) -> bool:
         assert filename and type(filename) == str

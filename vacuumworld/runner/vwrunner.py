@@ -9,6 +9,7 @@ from ..common.vwcolour import VWColour
 from ..model.actions.vwactions import VWAction, VWCommunicativeAction
 from ..model.actions.vweffort import VWActionEffort
 from ..model.actor.mind.surrogate.vwactor_mind_surrogate import VWActorMindSurrogate
+from ..model.actor.mind.surrogate.vwuser_mind_surrogate import VWUserMindSurrogate
 from ..model.actor.vwactor_behaviour_debugger import VWActorBehaviourDebugger
 from ..model.environment.vwenvironment import VWEnvironment
 from ..gui.vwsaveload import VWSaveStateManager
@@ -148,7 +149,10 @@ class VWRunner(Process):
             raise TypeError("One or more mind surrogates are not of the allowed type.")
 
         for colour, mind in self.__minds.items():
-            VWActorMindSurrogate.validate(mind=mind, colour=colour, surrogate_mind_type=self.__allowed_args[str(colour) + "_mind"])
+            if colour != VWColour.user:
+                VWActorMindSurrogate.validate(mind=mind, colour=colour, surrogate_mind_type=self.__allowed_args[str(colour) + "_mind"])
+            else:
+                VWActorMindSurrogate.validate(mind=mind, colour=colour, surrogate_mind_type=VWUserMindSurrogate)
 
     def __validate_optional_args(self) -> None:
         self.__validate_play_load()

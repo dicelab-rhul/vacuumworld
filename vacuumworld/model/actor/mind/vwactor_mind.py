@@ -25,7 +25,7 @@ class VWMind(Mind):
     def __init__(self, surrogate: VWActorMindSurrogate) -> None:
         super(VWMind, self).__init__()
 
-        VWMind.__validate_surrogate(surrogate=surrogate)
+        # `surrogate` has already been validated by the `VWRunner` constructor.
 
         # This is to prevent that, when the simulation is stopped and the grid is cleared, the surrogates retain the values of their attributes.
         self.__surrogate: VWActorMindSurrogate = self._clone_surrogate(surrogate=surrogate)
@@ -42,17 +42,6 @@ class VWMind(Mind):
     # This method needs to be overridden by sub-classes.
     def _clone_surrogate(self, surrogate: VWActorMindSurrogate) -> VWActorMindSurrogate:
         return type(surrogate)()
-
-    @staticmethod
-    def __validate_surrogate(surrogate: VWActorMindSurrogate) -> None:
-        if not isinstance(surrogate, VWActorMindSurrogate):
-            raise ValueError("Invalid surrogate mind.")
-
-        if not hasattr(surrogate, VWMind.REVISE_METHOD_NAME) or not callable(getattr(surrogate, VWMind.REVISE_METHOD_NAME)):
-            raise ValueError("Invalid surrogate mind: no callable {}() method found.".format(VWMind.REVISE_METHOD_NAME))
-
-        if not hasattr(surrogate, VWMind.DECIDE_METHOD_NAME) or not callable(getattr(surrogate, VWMind.DECIDE_METHOD_NAME)):
-            raise ValueError("Invalid surrogate mind: no callable {}() method found.".format(VWMind.DECIDE_METHOD_NAME))
 
     def reset_surrogate(self) -> None:
         '''

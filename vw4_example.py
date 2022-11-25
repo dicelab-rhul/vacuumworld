@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from typing import Iterable, Tuple, Union
+from typing import Iterable, Tuple, Union, Optional
 
 from pystarworldsturbo.common.message import BccMessage
 
@@ -24,7 +24,7 @@ class MyMind(VWActorMindSurrogate):
 
         self.__observation: VWObservation = observation
         self.__latest_messages: Iterable[BccMessage] = messages
-        self.__my_id: str = self.__observation.get_center().get_actor_appearance().get_id()
+        self.__my_id: Optional[str] = self.__observation.get_observer_id()
 
         print("Observation:", self.__observation.pretty_format())
         print("Messages: {}".format([str(m) for m in self.__latest_messages]))
@@ -32,7 +32,7 @@ class MyMind(VWActorMindSurrogate):
 
     def decide(self) -> Union[VWAction, Tuple[VWAction]]:
         # VWSpeakAction and VWBroadcastAction will result in a failure if `sender_id` is not the same as the actor ID.
-        return VWIdleAction(), VWBroadcastAction(message="Hello!", sender_id=self.__my_id)
+        return VWIdleAction(), VWBroadcastAction(message="Hello!", sender_id=self.__my_id if self.__my_id is not None else "UNKNOWN")
 
         # Replace this trivial decision process with something meaningful.
 
