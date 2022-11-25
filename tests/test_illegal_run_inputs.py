@@ -147,6 +147,27 @@ class MalformedDecideSurrogateMind():
         return VWIdleAction()
 
 
+class NoInheritanceMalformedSurrogateMind():
+    '''
+    This class is malformed for surrogate minds, because:
+    * It does not inherit from `VWActorMindSurrogate`.
+    '''
+    def revise(self, observation: VWObservation, messages: Iterable[BccMessage]) -> None:
+        '''
+        This method is well-formed.
+        '''
+        ignore(observation)
+
+        for m in messages:
+            ignore(m)
+
+    def decide(self) -> Union[VWAction, Tuple[VWAction]]:
+        '''
+        This method is well-formed.
+        '''
+        return VWIdleAction()
+
+
 class TestIllegalRunInputs(TestCase):
     '''
     Tests the rejection of various illegal/malformed attributes (orcombinations of attributes) of the `run()` method.
@@ -241,6 +262,8 @@ class TestIllegalRunInputs(TestCase):
     def test_malformed_surrogate_minds(self) -> None:
         '''
         Tests the rejection of various malformed surrogate minds.
+
+        The requirement that surrogate minds must inherit from `VWActorMindSurrogate` is waived in this particular test by means of temporarily overriding `VacuumWorld.ALLOWED_RUN_ARGS`.
         '''
         malformed_minds: list = [
             EmptySurrogateMind(),
@@ -252,7 +275,7 @@ class TestIllegalRunInputs(TestCase):
             MalformedDecideSurrogateMind()
         ]
 
-        vw_allowed_run_args_backup: Dict[str, Type] = VacuumWorld.ALLOWED_RUN_ARGS
+        vw_allowed_run_args_backup: Dict[str, Type] = {k: v for k, v in VacuumWorld.ALLOWED_RUN_ARGS.items()}
 
         for mind in malformed_minds:
             for colour in VWColour:
@@ -260,9 +283,17 @@ class TestIllegalRunInputs(TestCase):
                     VacuumWorld.ALLOWED_RUN_ARGS["default_mind"] = type(mind)
                     VacuumWorld.ALLOWED_RUN_ARGS[str(colour) + "_mind"] = type(mind)
 
-            self.assertRaises(VWInternalError, VWActorMindSurrogate.validate, mind=mind, colour=colour)
+            self.assertRaises(VWInternalError, VWActorMindSurrogate.validate, mind=mind, colour=colour, surrogate_mind_type=type(mind))
 
         VacuumWorld.ALLOWED_RUN_ARGS = vw_allowed_run_args_backup
+
+    def test_no_inheritance_malformed_surrogate_mind(self) -> None:
+        '''
+        Tests the rejection of a surrogate mind that does not inherit from `VWActorMindSurrogate`.
+        '''
+        for colour in VWColour:
+            if colour != VWColour.user:
+                self.assertRaises(TypeError, VWGUIlessRunner, config=self.__config, minds={c: NoInheritanceMalformedSurrogateMind() for c in VWColour if c != VWColour.user}, allowed_args=VacuumWorld.ALLOWED_RUN_ARGS)
 
 
 if __name__ == "__main__":
