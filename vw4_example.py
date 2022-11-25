@@ -31,10 +31,11 @@ class MyMind(VWActorMindSurrogate):
         print("Current effort since the beginning of the simulation: {}.".format(self.get_effort()))
 
     def decide(self) -> Union[VWAction, Tuple[VWAction]]:
-        # VWSpeakAction and VWBroadcastAction will result in a failure if `sender_id` is not the same as the actor ID.
-        return VWIdleAction(), VWBroadcastAction(message="Hello!", sender_id=self.__my_id if self.__my_id is not None else "UNKNOWN")
-
         # Replace this trivial decision process with something meaningful.
+        if self.__my_id is not None:
+            return VWIdleAction(), VWBroadcastAction(message="Hello!", sender_id=self.__my_id)
+        else:
+            return VWIdleAction()
 
 
 if __name__ == "__main__":
