@@ -27,7 +27,7 @@ from ...common.vwdirection import VWDirection
 from ...common.vwcolour import VWColour
 from ...common.vwobservation import VWObservation
 from ...common.vworientation import VWOrientation
-from ...common.vwexceptions import VWActionAttemptException, VWMalformedActionException
+from ...common.vwexceptions import VWActionAttemptException, VWMalformedActionException, VWInternalError
 from ...model.actions.vwactions import VWAction, VWPhysicalAction, VWCommunicativeAction
 
 
@@ -267,7 +267,7 @@ class VWEnvironment(Environment):
             if l.has_actor() and l.get_actor_appearance().get_id() == actor_id:
                 return c, l
 
-        raise ValueError("Actor {} not found: there is an inconsistency between the grid and the list of actors.".format(actor_id))
+        raise VWInternalError("Actor {} not found: there is an inconsistency between the grid and the list of actors.".format(actor_id))
 
     def get_actor_orientation(self, actor_id: str) -> VWOrientation:
         '''

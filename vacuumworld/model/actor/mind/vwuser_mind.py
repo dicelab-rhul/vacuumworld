@@ -9,6 +9,8 @@ class VWUserMind(VWMind):
     def __init__(self, surrogate: VWUserMindSurrogate) -> None:
         super(VWUserMind, self).__init__(surrogate=surrogate)
 
+        assert isinstance(surrogate, VWUserMindSurrogate)
+
     def get_surrogate(self) -> VWUserMindSurrogate:
         '''
         Returns the `VWUserMindSurrogate` of this `VWUserMind`.

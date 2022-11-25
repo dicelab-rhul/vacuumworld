@@ -60,4 +60,4 @@ class VWGUIlessRunner(VWRunner):
 
     def __validate_load(self) -> None:
         if not self.get_config()["file_to_load"]:
-            raise ValueError("VacuumWorld cannot run GUI-less if no savestate file is provided.")
+            raise ValueError("VacuumWorld cannot run GUI-less if no savestate file is provided via the `load` argument.")

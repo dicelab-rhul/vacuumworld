@@ -36,7 +36,7 @@ class VWObservation(Perception):
 
         The observer is assumed to be the `VWActor` whose `VWActorAppearance` is contained by the `VWLocation` at the `VWPositionNames.center` position in this `VWObservation`.
         '''
-        if VWPositionNames.center not in self.__locations or not self.__locations[VWPositionNames.center].has_actor():
+        if VWPositionNames.center not in self.__locations or not self.__locations[VWPositionNames.center] or not self.__locations[VWPositionNames.center].has_actor():
             return None
         else:
             return self.__locations[VWPositionNames.center].get_actor_appearance().get_id()
@@ -310,7 +310,7 @@ class VWObservation(Perception):
         '''
         Returns an empty `VWObservation`.
         '''
-        return VWObservation(action_type=VWIdleAction, action_result=ActionResult(outcome=ActionOutcome.impossible), locations_dict={})
+        return VWObservation(action_type=VWIdleAction, action_result=ActionResult(outcome=ActionOutcome.impossible), locations_dict={p: None for p in VWPositionNames})
 
     def __iter__(self) -> Iterator[VWLocation]:
         for location in self.__locations.values():
@@ -329,7 +329,7 @@ class VWObservation(Perception):
         observation_dict: dict = {
             # The `.name` is necessary because `ActionOutcome` is an `Enum` and `Enum` objects are not JSON serialisable.
             "Action outcomes": [{action_type.__name__: action_result.get_outcome().name} for action_type, action_result in self.__action_results],
-            "Perceived locations": {pos.name: loc.pretty_format() for pos, loc in self.__locations.items()}
+            "Perceived locations": {pos.name: loc.pretty_format() for pos, loc in self.__locations.items() if loc is not None}
         }
 
         return dumps(observation_dict, indent=4)
