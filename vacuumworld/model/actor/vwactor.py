@@ -46,6 +46,9 @@ class VWActor(Actor):
         observations: List[Observation] = self.__fetch_observations()
         messages: List[BccMessage] = self.__fetch_messages()
 
+        if len(observations) == 0:
+            observations = [Observation.create_empty_observation()]
+
         assert len(observations) > 0
 
         if len(observations) > 1:
