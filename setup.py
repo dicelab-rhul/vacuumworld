@@ -20,7 +20,7 @@ classifiers: list = [
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Operating System :: OS Independent",
 ]
-dependencies: list = ["pystarworldsturbo>=1.1.3", "pillow", "wheel", "ipython", "screeninfo", "tk", "requests", "playsound"]
+dependencies: list = ["pystarworldsturbo>=1.1.5", "pillow", "wheel", "ipython", "screeninfo", "tk", "requests", "playsound"]
 
 # End of static metadata
 
