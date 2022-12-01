@@ -175,19 +175,19 @@ class VWAmbient(Ambient):
         locations_dict[VWPositionNames.center] = self.__grid[actor_position].deep_copy()
 
         if forward_coord in self.__grid:
-            locations_dict[VWPositionNames.forward] = self.__grid[forward_coord]
+            locations_dict[VWPositionNames.forward] = self.__grid[forward_coord].deep_copy()
 
         if left_coord in self.__grid:
-            locations_dict[VWPositionNames.left] = self.__grid[left_coord]
+            locations_dict[VWPositionNames.left] = self.__grid[left_coord].deep_copy()
 
         if right_coord in self.__grid:
-            locations_dict[VWPositionNames.right] = self.__grid[right_coord]
+            locations_dict[VWPositionNames.right] = self.__grid[right_coord].deep_copy()
 
         if forwardleft_coord in self.__grid:
-            locations_dict[VWPositionNames.forwardleft] = self.__grid[forwardleft_coord]
+            locations_dict[VWPositionNames.forwardleft] = self.__grid[forwardleft_coord].deep_copy()
 
         if forwardright_coord in self.__grid:
-            locations_dict[VWPositionNames.forwardright] = self.__grid[forwardright_coord]
+            locations_dict[VWPositionNames.forwardright] = self.__grid[forwardright_coord].deep_copy()
 
         return VWObservation(action_type=action_type, action_result=action_result, locations_dict=locations_dict)
 

@@ -295,6 +295,9 @@ class TestPerception(TestCase):
                 for recipient_id in ("Cloud", "Barret", "Red XIII", "Cid", "Vincent", "Tifa", "Yuffie", "Cait Sith", "Aerith"):
                     self.__test_message(content=content, sender_id=sender_id, recipient_id=recipient_id)
 
+    def test_message_with_none_top_content(self) -> None:
+        self.assertRaises(ValueError, BccMessage, content=None, sender_id="Sephiroth", recipient_id="Cloud")
+
     def __test_message(self, content: Union[int, float, str, bytes, list, tuple, dict], sender_id: str, recipient_id: str) -> None:
         message: BccMessage = BccMessage(content=content, sender_id=sender_id, recipient_id=recipient_id)
 
