@@ -68,9 +68,9 @@ class VWActor(Actor):
         observations: List[VWObservation] = self.__fetch_observations()
         messages: List[BccMessage] = self.__fetch_messages()
 
-        if len(observations) == 0:  # E.g., if a new `VWActor` is dropped into the `VWEnvironment` while the simulation is paused.
+        if len(observations) == 0:  # E.g., if a new `VWActor` is dropped into the `VWEnvironment` while the simulation is stopped.
             return VWObservation.create_empty_observation(), messages
-        if len(observations) > 1:
+        elif len(observations) > 1:
             return self.__merge_observations(observations), messages
         else:
             return observations[0], messages
