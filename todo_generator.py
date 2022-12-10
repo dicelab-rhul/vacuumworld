@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 '''
-Please run this file as ./todo_generator from within its parent directory.
+Please run this file as ./todo_generator.py from within its parent directory.
 Otherwise, the paths will not be generated/printed correctly.
 '''
 
@@ -11,7 +11,8 @@ import os
 
 
 INTERESTING_FILES_EXTENSIONS: List[str] = [".py"]
-EXCLUSION_LIST: List[str] = [os.path.basename(__file__)]
+FILES_EXCLUSION_LIST: List[str] = [os.path.basename(__file__)]
+DIR_EXCLUSION_LIST: List[str] = ["examples_not_to_commit"]
 TODO_FILE: str = "TODO.md"
 TODO_PATTERN: str = "TODO"
 TODO_HEADER: str = "# List of TODOs"
@@ -21,8 +22,11 @@ def main() -> None:
     lines: List[str] = []
 
     for dir, _, files in os.walk(os.getcwd()):
+        if os.path.basename(dir) in DIR_EXCLUSION_LIST:
+            continue
+
         for f in filter(lambda candidate: any(filter(lambda ext: candidate.endswith(ext), INTERESTING_FILES_EXTENSIONS)), files):
-            if f not in EXCLUSION_LIST:
+            if f not in FILES_EXCLUSION_LIST:
                 lines += __look_for_todos(os.path.join(dir, f))
 
     with open(TODO_FILE, "w") as f:

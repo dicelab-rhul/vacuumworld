@@ -6,14 +6,14 @@ from requests import get, Response
 from time import sleep
 from screeninfo import get_monitors
 
-from .config_manager import ConfigManager
-from .model.actor.actor_mind_surrogate import ActorMindSurrogate
-from .model.actor.user_mind_surrogate import UserMindSurrogate
-from .model.actor.user_difficulty import UserDifficulty
-from .common.colour import Colour
-from .runner.runner import VWRunner
-from .runner.gui_runner import VWGUIRunner
-from .runner.guiless_runner import VWGUIlessRunner
+from .vwconfig_manager import VWConfigManager
+from .model.actor.mind.surrogate.vwactor_mind_surrogate import VWActorMindSurrogate
+from .model.actor.mind.surrogate.vwuser_mind_surrogate import VWUserMindSurrogate
+from .common.vwuser_difficulty import VWUserDifficulty
+from .common.vwcolour import VWColour
+from .runner.vwrunner import VWRunner
+from .runner.vwgui_runner import VWGUIRunner
+from .runner.vwguiless_runner import VWGUIlessRunner
 
 import os
 import signal as signal_module
@@ -24,10 +24,10 @@ class VacuumWorld():
     CONFIG_FILE_PATH: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), CONFIG_FILE_NAME)
     MIN_PYTHON_VERSION: Tuple[int, int] = (3, 8)
     ALLOWED_RUN_ARGS: Dict[str, Type] = {
-        "default_mind": ActorMindSurrogate,
-        "green_mind": ActorMindSurrogate,
-        "orange_mind": ActorMindSurrogate,
-        "white_mind": ActorMindSurrogate,
+        "default_mind": VWActorMindSurrogate,
+        "green_mind": VWActorMindSurrogate,
+        "orange_mind": VWActorMindSurrogate,
+        "white_mind": VWActorMindSurrogate,
         "gui": bool,
         "skip": bool,
         "play": bool,
@@ -36,20 +36,21 @@ class VacuumWorld():
         "scale": float,
         "tooltips": bool,
         "efforts": Dict[str, int],
-        "total_cycles": int
+        "total_cycles": int,
+        "debug_enabled": bool
     }
 
     def __init__(self) -> None:
         VacuumWorld.__python_version_check()
         VacuumWorld.__set_sigtstp_handler()
 
-        self.__config: dict = ConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
+        self.__config: dict = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
 
         self.__vw_version_check()
 
-    def run(self, default_mind: ActorMindSurrogate=None, white_mind: ActorMindSurrogate=None, green_mind: ActorMindSurrogate=None, orange_mind: ActorMindSurrogate=None, **kwargs) -> None:
-        minds: Dict[Colour, ActorMindSurrogate] = VacuumWorld.__process_minds(default_mind=default_mind, white_mind=white_mind, green_mind=green_mind, orange_mind=orange_mind)
-        minds[Colour.user] = UserMindSurrogate(difficulty_level=UserDifficulty(self.__config["default_user_mind_level"]))
+    def run(self, default_mind: VWActorMindSurrogate=None, white_mind: VWActorMindSurrogate=None, green_mind: VWActorMindSurrogate=None, orange_mind: VWActorMindSurrogate=None, **kwargs) -> None:
+        minds: Dict[VWColour, VWActorMindSurrogate] = VacuumWorld.__process_minds(default_mind=default_mind, white_mind=white_mind, green_mind=green_mind, orange_mind=orange_mind)
+        minds[VWColour.user] = VWUserMindSurrogate(difficulty_level=VWUserDifficulty(self.__config["default_user_mind_level"]))
 
         if "gui" in kwargs and type(kwargs.get("gui")) == VacuumWorld.ALLOWED_RUN_ARGS["gui"] and not kwargs.get("gui"):
             self.__run(runner_type=VWGUIlessRunner, minds=minds, **kwargs)
@@ -119,7 +120,7 @@ class VacuumWorld():
             return ""
 
         try:
-            remote_config: dict = ConfigManager.load_config_from_file(config_file_path=remote_config_path)
+            remote_config: dict = VWConfigManager.load_config_from_file(config_file_path=remote_config_path)
 
             return remote_config["version_number"]
         except Exception:
@@ -160,7 +161,7 @@ class VacuumWorld():
 
         return False
 
-    def __run(self, runner_type: Type[VWRunner], minds: Dict[Colour, ActorMindSurrogate], **kwargs) -> None:
+    def __run(self, runner_type: Type[VWRunner], minds: Dict[VWColour, VWActorMindSurrogate], **kwargs) -> None:
         try:
             runner: VWRunner = runner_type(config=self.__config, minds=minds, allowed_args=VacuumWorld.ALLOWED_RUN_ARGS, **kwargs)
             runner.start()
@@ -177,7 +178,7 @@ class VacuumWorld():
             print("Fatal error. Bye")
 
     @staticmethod
-    def __process_minds(default_mind: ActorMindSurrogate=None, white_mind: ActorMindSurrogate=None, green_mind: ActorMindSurrogate=None, orange_mind: ActorMindSurrogate=None) -> Dict[Colour, ActorMindSurrogate]:
+    def __process_minds(default_mind: VWActorMindSurrogate=None, white_mind: VWActorMindSurrogate=None, green_mind: VWActorMindSurrogate=None, orange_mind: VWActorMindSurrogate=None) -> Dict[VWColour, VWActorMindSurrogate]:
         assert default_mind is not None or white_mind is not None and green_mind is not None and orange_mind is not None
 
         if all(m is not None for m in [default_mind, white_mind, green_mind, orange_mind]):
@@ -185,9 +186,9 @@ class VacuumWorld():
 
         # The minds are validated at a later stage.
         return {
-            Colour.white: white_mind if white_mind is not None else default_mind,
-            Colour.green: green_mind if green_mind is not None else default_mind,
-            Colour.orange: orange_mind if orange_mind is not None else default_mind
+            VWColour.white: white_mind if white_mind is not None else default_mind,
+            VWColour.green: green_mind if green_mind is not None else default_mind,
+            VWColour.orange: orange_mind if orange_mind is not None else default_mind
         }
 
     @staticmethod
@@ -200,6 +201,6 @@ class VacuumWorld():
 
 
 # For back-compatibility with 4.2.5.
-def run(default_mind: ActorMindSurrogate=None, white_mind: ActorMindSurrogate=None, green_mind: ActorMindSurrogate=None, orange_mind: ActorMindSurrogate=None, **kwargs) -> None:
+def run(default_mind: VWActorMindSurrogate=None, white_mind: VWActorMindSurrogate=None, green_mind: VWActorMindSurrogate=None, orange_mind: VWActorMindSurrogate=None, **kwargs) -> None:
     vw: VacuumWorld = VacuumWorld()
     vw.run(default_mind=default_mind, white_mind=white_mind, green_mind=green_mind, orange_mind=orange_mind, **kwargs)

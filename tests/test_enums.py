@@ -2,135 +2,153 @@
 
 from unittest import main, TestCase
 
-from vacuumworld.common.colour import Colour
-from vacuumworld.common.orientation import Orientation
-from vacuumworld.common.direction import Direction
-from vacuumworld.common.position_names import PositionNames
-from vacuumworld.model.actor.user_difficulty import UserDifficulty
+from vacuumworld.common.vwcolour import VWColour
+from vacuumworld.common.vworientation import VWOrientation
+from vacuumworld.common.vwdirection import VWDirection
+from vacuumworld.common.vwposition_names import VWPositionNames
+from vacuumworld.common.vwuser_difficulty import VWUserDifficulty
 
 
 class TestEnums(TestCase):
+    '''
+    This class tests the enums in the `vacuumworld.common` package: `VWColour`, `VWDirection`, `VWOrientation`, `VWPositionNames`, and `VWUserDifficulty`.
+    '''
     def test_colour(self) -> None:
-        self.assertEqual("white", Colour.white.value)
-        self.assertEqual("white", repr(Colour.white))
-        self.assertEqual("white", str(Colour.white))
-        self.assertEqual(Colour("white"), Colour.white)
+        '''
+        Tests the `VWColour` enum.
+        '''
+        self.assertEqual("white", VWColour.white.value)
+        self.assertEqual("white", repr(VWColour.white))
+        self.assertEqual("white", str(VWColour.white))
+        self.assertEqual(VWColour("white"), VWColour.white)
 
-        self.assertEqual("green", Colour.green.value)
-        self.assertEqual("green", repr(Colour.green))
-        self.assertEqual("green", str(Colour.green))
-        self.assertEqual(Colour("green"), Colour.green)
+        self.assertEqual("green", VWColour.green.value)
+        self.assertEqual("green", repr(VWColour.green))
+        self.assertEqual("green", str(VWColour.green))
+        self.assertEqual(VWColour("green"), VWColour.green)
 
-        self.assertEqual("orange", Colour.orange.value)
-        self.assertEqual("orange", repr(Colour.orange))
-        self.assertEqual("orange", str(Colour.orange))
-        self.assertEqual(Colour("orange"), Colour.orange)
+        self.assertEqual("orange", VWColour.orange.value)
+        self.assertEqual("orange", repr(VWColour.orange))
+        self.assertEqual("orange", str(VWColour.orange))
+        self.assertEqual(VWColour("orange"), VWColour.orange)
 
-        self.assertEqual("user", Colour.user.value)
-        self.assertEqual("user", repr(Colour.user))
-        self.assertEqual("user", str(Colour.user))
-        self.assertEqual(Colour("user"), Colour.user)
+        self.assertEqual("user", VWColour.user.value)
+        self.assertEqual("user", repr(VWColour.user))
+        self.assertEqual("user", str(VWColour.user))
+        self.assertEqual(VWColour("user"), VWColour.user)
 
     def test_direction(self) -> None:
-        self.assertEqual("left", Direction.left.value)
-        self.assertEqual("left", repr(Direction.left))
-        self.assertEqual("left", str(Direction.left))
-        self.assertEqual(Direction("left"), Direction.left)
+        '''
+        Tests the `VWDirection` enum.
+        '''
+        self.assertEqual("left", VWDirection.left.value)
+        self.assertEqual("left", repr(VWDirection.left))
+        self.assertEqual("left", str(VWDirection.left))
+        self.assertEqual(VWDirection("left"), VWDirection.left)
 
-        self.assertEqual("right", Direction.right.value)
-        self.assertEqual("right", repr(Direction.right))
-        self.assertEqual("right", str(Direction.right))
-        self.assertEqual(Direction("right"), Direction.right)
+        self.assertEqual("right", VWDirection.right.value)
+        self.assertEqual("right", repr(VWDirection.right))
+        self.assertEqual("right", str(VWDirection.right))
+        self.assertEqual(VWDirection("right"), VWDirection.right)
 
     def test_orientation(self) -> None:
-        self.assertEqual("north", Orientation.north.value)
-        self.assertEqual("north", repr(Orientation.north))
-        self.assertEqual("north", str(Orientation.north))
-        self.assertEqual(Orientation("north"), Orientation.north)
-        self.assertEqual(Orientation.north.get_left(), Orientation.west)
-        self.assertEqual(Orientation.north.left(), Orientation.west)
-        self.assertEqual(Orientation.north.get(direction=Direction.left), Orientation.west)
-        self.assertEqual(Orientation.north.get_right(), Orientation.east)
-        self.assertEqual(Orientation.north.right(), Orientation.east)
-        self.assertEqual(Orientation.north.get(direction=Direction.right), Orientation.east)
+        '''
+        Tests the `VWOrientation` enum.
+        '''
+        self.assertEqual("north", VWOrientation.north.value)
+        self.assertEqual("north", repr(VWOrientation.north))
+        self.assertEqual("north", str(VWOrientation.north))
+        self.assertEqual(VWOrientation("north"), VWOrientation.north)
+        self.assertEqual(VWOrientation.north.get_left(), VWOrientation.west)
+        self.assertEqual(VWOrientation.north.left(), VWOrientation.west)
+        self.assertEqual(VWOrientation.north.get(direction=VWDirection.left), VWOrientation.west)
+        self.assertEqual(VWOrientation.north.get_right(), VWOrientation.east)
+        self.assertEqual(VWOrientation.north.right(), VWOrientation.east)
+        self.assertEqual(VWOrientation.north.get(direction=VWDirection.right), VWOrientation.east)
 
-        self.assertEqual("south", Orientation.south.value)
-        self.assertEqual("south", repr(Orientation.south))
-        self.assertEqual("south", str(Orientation.south))
-        self.assertEqual(Orientation("south"), Orientation.south)
-        self.assertEqual(Orientation.south.get_left(), Orientation.east)
-        self.assertEqual(Orientation.south.left(), Orientation.east)
-        self.assertEqual(Orientation.south.get(direction=Direction.left), Orientation.east)
-        self.assertEqual(Orientation.south.get_right(), Orientation.west)
-        self.assertEqual(Orientation.south.right(), Orientation.west)
-        self.assertEqual(Orientation.south.get(direction=Direction.right), Orientation.west)
+        self.assertEqual("south", VWOrientation.south.value)
+        self.assertEqual("south", repr(VWOrientation.south))
+        self.assertEqual("south", str(VWOrientation.south))
+        self.assertEqual(VWOrientation("south"), VWOrientation.south)
+        self.assertEqual(VWOrientation.south.get_left(), VWOrientation.east)
+        self.assertEqual(VWOrientation.south.left(), VWOrientation.east)
+        self.assertEqual(VWOrientation.south.get(direction=VWDirection.left), VWOrientation.east)
+        self.assertEqual(VWOrientation.south.get_right(), VWOrientation.west)
+        self.assertEqual(VWOrientation.south.right(), VWOrientation.west)
+        self.assertEqual(VWOrientation.south.get(direction=VWDirection.right), VWOrientation.west)
 
-        self.assertEqual("west", Orientation.west.value)
-        self.assertEqual("west", repr(Orientation.west))
-        self.assertEqual("west", str(Orientation.west))
-        self.assertEqual(Orientation("west"), Orientation.west)
-        self.assertEqual(Orientation.west.get_left(), Orientation.south)
-        self.assertEqual(Orientation.west.left(), Orientation.south)
-        self.assertEqual(Orientation.west.get(direction=Direction.left), Orientation.south)
-        self.assertEqual(Orientation.west.get_right(), Orientation.north)
-        self.assertEqual(Orientation.west.right(), Orientation.north)
-        self.assertEqual(Orientation.west.get(direction=Direction.right), Orientation.north)
+        self.assertEqual("west", VWOrientation.west.value)
+        self.assertEqual("west", repr(VWOrientation.west))
+        self.assertEqual("west", str(VWOrientation.west))
+        self.assertEqual(VWOrientation("west"), VWOrientation.west)
+        self.assertEqual(VWOrientation.west.get_left(), VWOrientation.south)
+        self.assertEqual(VWOrientation.west.left(), VWOrientation.south)
+        self.assertEqual(VWOrientation.west.get(direction=VWDirection.left), VWOrientation.south)
+        self.assertEqual(VWOrientation.west.get_right(), VWOrientation.north)
+        self.assertEqual(VWOrientation.west.right(), VWOrientation.north)
+        self.assertEqual(VWOrientation.west.get(direction=VWDirection.right), VWOrientation.north)
 
-        self.assertEqual("east", Orientation.east.value)
-        self.assertEqual("east", repr(Orientation.east))
-        self.assertEqual("east", str(Orientation.east))
-        self.assertEqual(Orientation("east"), Orientation.east)
-        self.assertEqual(Orientation.east.get_left(), Orientation.north)
-        self.assertEqual(Orientation.east.left(), Orientation.north)
-        self.assertEqual(Orientation.east.get(direction=Direction.left), Orientation.north)
-        self.assertEqual(Orientation.east.get_right(), Orientation.south)
-        self.assertEqual(Orientation.east.right(), Orientation.south)
-        self.assertEqual(Orientation.east.get(direction=Direction.right), Orientation.south)
+        self.assertEqual("east", VWOrientation.east.value)
+        self.assertEqual("east", repr(VWOrientation.east))
+        self.assertEqual("east", str(VWOrientation.east))
+        self.assertEqual(VWOrientation("east"), VWOrientation.east)
+        self.assertEqual(VWOrientation.east.get_left(), VWOrientation.north)
+        self.assertEqual(VWOrientation.east.left(), VWOrientation.north)
+        self.assertEqual(VWOrientation.east.get(direction=VWDirection.left), VWOrientation.north)
+        self.assertEqual(VWOrientation.east.get_right(), VWOrientation.south)
+        self.assertEqual(VWOrientation.east.right(), VWOrientation.south)
+        self.assertEqual(VWOrientation.east.get(direction=VWDirection.right), VWOrientation.south)
 
     def test_position_names(self) -> None:
-        self.assertEqual("center", PositionNames.center.value)
-        self.assertEqual("center", repr(PositionNames.center))
-        self.assertEqual("center", str(PositionNames.center))
-        self.assertEqual(PositionNames("center"), PositionNames.center)
+        '''
+        Tests the `VWPositionNames` enum.
+        '''
+        self.assertEqual("center", VWPositionNames.center.value)
+        self.assertEqual("center", repr(VWPositionNames.center))
+        self.assertEqual("center", str(VWPositionNames.center))
+        self.assertEqual(VWPositionNames("center"), VWPositionNames.center)
 
-        self.assertEqual("left", PositionNames.left.value)
-        self.assertEqual("left", repr(PositionNames.left))
-        self.assertEqual("left", str(PositionNames.left))
-        self.assertEqual(PositionNames("left"), PositionNames.left)
+        self.assertEqual("left", VWPositionNames.left.value)
+        self.assertEqual("left", repr(VWPositionNames.left))
+        self.assertEqual("left", str(VWPositionNames.left))
+        self.assertEqual(VWPositionNames("left"), VWPositionNames.left)
 
-        self.assertEqual("right", PositionNames.right.value)
-        self.assertEqual("right", repr(PositionNames.right))
-        self.assertEqual("right", str(PositionNames.right))
-        self.assertEqual(PositionNames("right"), PositionNames.right)
+        self.assertEqual("right", VWPositionNames.right.value)
+        self.assertEqual("right", repr(VWPositionNames.right))
+        self.assertEqual("right", str(VWPositionNames.right))
+        self.assertEqual(VWPositionNames("right"), VWPositionNames.right)
 
-        self.assertEqual("forward", PositionNames.forward.value)
-        self.assertEqual("forward", repr(PositionNames.forward))
-        self.assertEqual("forward", str(PositionNames.forward))
-        self.assertEqual(PositionNames("forward"), PositionNames.forward)
+        self.assertEqual("forward", VWPositionNames.forward.value)
+        self.assertEqual("forward", repr(VWPositionNames.forward))
+        self.assertEqual("forward", str(VWPositionNames.forward))
+        self.assertEqual(VWPositionNames("forward"), VWPositionNames.forward)
 
-        self.assertEqual("forwardleft", PositionNames.forwardleft.value)
-        self.assertEqual("forwardleft", repr(PositionNames.forwardleft))
-        self.assertEqual("forwardleft", str(PositionNames.forwardleft))
-        self.assertEqual(PositionNames("forwardleft"), PositionNames.forwardleft)
+        self.assertEqual("forwardleft", VWPositionNames.forwardleft.value)
+        self.assertEqual("forwardleft", repr(VWPositionNames.forwardleft))
+        self.assertEqual("forwardleft", str(VWPositionNames.forwardleft))
+        self.assertEqual(VWPositionNames("forwardleft"), VWPositionNames.forwardleft)
 
-        self.assertEqual("forwardright", PositionNames.forwardright.value)
-        self.assertEqual("forwardright", repr(PositionNames.forwardright))
-        self.assertEqual("forwardright", str(PositionNames.forwardright))
-        self.assertEqual(PositionNames("forwardright"), PositionNames.forwardright)
+        self.assertEqual("forwardright", VWPositionNames.forwardright.value)
+        self.assertEqual("forwardright", repr(VWPositionNames.forwardright))
+        self.assertEqual("forwardright", str(VWPositionNames.forwardright))
+        self.assertEqual(VWPositionNames("forwardright"), VWPositionNames.forwardright)
 
     def test_user_difficulty(self) -> None:
-        self.assertEqual(0, UserDifficulty.easy.value)
-        self.assertEqual("0", repr(UserDifficulty.easy))
-        self.assertEqual("0", str(UserDifficulty.easy))
-        self.assertEqual(UserDifficulty(0), UserDifficulty.easy)
+        '''
+        Tests the `VWUserDifficulty` enum.
+        '''
+        self.assertEqual(0, VWUserDifficulty.easy.value)
+        self.assertEqual("0", repr(VWUserDifficulty.easy))
+        self.assertEqual("0", str(VWUserDifficulty.easy))
+        self.assertEqual(VWUserDifficulty(0), VWUserDifficulty.easy)
 
-        self.assertEqual(1, UserDifficulty.hard.value)
-        self.assertEqual("1", repr(UserDifficulty.hard))
-        self.assertEqual("1", str(UserDifficulty.hard))
-        self.assertEqual(UserDifficulty(1), UserDifficulty.hard)
+        self.assertEqual(1, VWUserDifficulty.hard.value)
+        self.assertEqual("1", repr(VWUserDifficulty.hard))
+        self.assertEqual("1", str(VWUserDifficulty.hard))
+        self.assertEqual(VWUserDifficulty(1), VWUserDifficulty.hard)
 
-        self.assertEqual(UserDifficulty.easy.toggle(), UserDifficulty.hard)
-        self.assertEqual(UserDifficulty.hard.toggle(), UserDifficulty.easy)
+        self.assertEqual(VWUserDifficulty.easy.opposite(), VWUserDifficulty.hard)
+        self.assertEqual(VWUserDifficulty.hard.opposite(), VWUserDifficulty.easy)
 
 
 if __name__ == "__main__":

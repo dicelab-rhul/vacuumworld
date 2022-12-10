@@ -1,13 +1,21 @@
 from tkinter import Button, Label, Toplevel, LEFT, SOLID
 
 
-class ToolTip():
+class VWToolTip():
+    '''
+    This class is used to create tooltips for each `VWButton`.
+    '''
     def __init__(self, widget: Button, config: dict) -> None:
         self.__widget: Button = widget
         self.__config: dict = config
         self.__already_init: bool = False
 
     def showtip(self, text: str) -> None:
+        '''
+        This method is used to show the tooltip.
+
+        It needs to be bound to some event, like `<Enter>` or `<Leave>`.
+        '''
         self.__text: str = text
 
         if not self.__already_init:
@@ -28,6 +36,11 @@ class ToolTip():
         label.pack(ipadx=1)
 
     def hidetip(self) -> None:
+        '''
+        This method is used to hide the tooltip.
+
+        It needs to be bound to some event, like `<Enter>` or `<Leave>`.
+        '''
         tw: Toplevel = self.__tipwindow
         self.__tipwindow = None
 
@@ -36,7 +49,12 @@ class ToolTip():
 
 
 def create_tooltip(widget: Button, text: str, config: dict) -> None:
-    tooltip: ToolTip = ToolTip(widget=widget, config=config)
+    '''
+    Creates the tooltip for the given `widget` with the given `text`.
+
+    It also binds the `showtip()` and `hidetip()` methods to the `<Enter>` and `<Leave>` events.
+    '''
+    tooltip: VWToolTip = VWToolTip(widget=widget, config=config)
 
     widget.bind("<Enter>", lambda _: tooltip.showtip(text))
     widget.bind("<Leave>", lambda _: tooltip.hidetip())

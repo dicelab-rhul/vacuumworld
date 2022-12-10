@@ -5,22 +5,28 @@ from random import choice
 from string import ascii_letters, digits
 
 from vacuumworld import VacuumWorld
-from vacuumworld.common.coordinates import Coord
+from vacuumworld.common.vwcoordinates import VWCoord
 from vacuumworld.model.environment.vwlocation import VWLocation
 from vacuumworld.model.environment.vwenvironment import VWEnvironment
-from vacuumworld.config_manager import ConfigManager
-from vacuumworld.gui.saveload import SaveStateManager
+from vacuumworld.vwconfig_manager import VWConfigManager
+from vacuumworld.gui.vwsaveload import VWSaveStateManager
 
 
 class TestSaveLoad(TestCase):
+    '''
+    This class tests the save/load functionality of VacuumWorld (i.e., the `VWSaveStateManager` class).
+    '''
     def __init__(self, args) -> None:
         super(TestSaveLoad, self).__init__(args)
 
-        self.__save_state_manager = SaveStateManager()
-        self.__config: dict = ConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
+        self.__save_state_manager = VWSaveStateManager()
+        self.__config: dict = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
         self.__temp_file_deletion_after_error_message: str = "We are still deleting the temporary saved state."
 
     def test_save_to_file(self):
+        '''
+        Tests saving a `VWEnvironment` to a file.
+        '''
         env, _ = VWEnvironment.generate_random_env_for_testing(custom_grid_size=True, config=self.__config)
         filename: str = "".join([choice(ascii_letters + digits) for _ in range(10)]) + self.__save_state_manager.get_vw_saved_state_extension()
 
@@ -35,6 +41,9 @@ class TestSaveLoad(TestCase):
             self.__save_state_manager.remove_saved_state(filename=filename)
 
     def test_load_from_file(self):
+        '''
+        Tests loading a `VWEnvironment` from a file.
+        '''
         env, _ = VWEnvironment.generate_random_env_for_testing(custom_grid_size=True, config=self.__config)
         filename: str = "".join([choice(ascii_letters + digits) for _ in range(10)]) + self.__save_state_manager.get_vw_saved_state_extension()
 
@@ -63,7 +72,7 @@ class TestSaveLoad(TestCase):
         if len(env1.get_passive_bodies_list()) != len(env2.get_passive_bodies_list()):
             return False
 
-        for coord in [Coord(x=x, y=y) for x in range(env1.get_ambient().get_grid_dim()) for y in range(env1.get_ambient().get_grid_dim())]:
+        for coord in [VWCoord(x=x, y=y) for x in range(env1.get_ambient().get_grid_dim()) for y in range(env1.get_ambient().get_grid_dim())]:
             if not TestSaveLoad.__compatible(loc1=env1.get_ambient().get_grid()[coord], loc2=env2.get_ambient().get_grid()[coord]):
                 return False
 

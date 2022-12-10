@@ -4,29 +4,38 @@ from unittest import main, TestCase
 from random import randint
 
 from vacuumworld import VacuumWorld
-from vacuumworld.common.coordinates import Coord
-from vacuumworld.common.colour import Colour
-from vacuumworld.common.orientation import Orientation
-from vacuumworld.model.actor.user_difficulty import UserDifficulty
-from vacuumworld.model.actor.hystereticmindsurrogate import VWHystereticMindSurrogate
-from vacuumworld.model.actor.actor_factories import VWCleaningAgentsFactory, VWUsersFactory
-from vacuumworld.model.dirt.dirt_appearance import VWDirtAppearance
-from vacuumworld.model.dirt.dirt import Dirt
+from vacuumworld.common.vwcoordinates import VWCoord
+from vacuumworld.common.vwcolour import VWColour
+from vacuumworld.common.vworientation import VWOrientation
+from vacuumworld.common.vwuser_difficulty import VWUserDifficulty
+from vacuumworld.model.actor.mind.surrogate.vwhysteretic_mind_surrogate import VWHystereticMindSurrogate
+from vacuumworld.model.actor.vwactor_factories import VWCleaningAgentsFactory, VWUsersFactory
+from vacuumworld.model.dirt.vwdirt_appearance import VWDirtAppearance
+from vacuumworld.model.dirt.vwdirt import VWDirt
 from vacuumworld.model.environment.vwlocation import VWLocation
 from vacuumworld.model.environment.vwenvironment import VWEnvironment
-from vacuumworld.config_manager import ConfigManager
+from vacuumworld.vwconfig_manager import VWConfigManager
 
 
 class TestEnvironment(TestCase):
+    '''
+    This class tests the creation of `VWAmbient` and `VWEnvironment` objects with various grid sizes and various amounts of `VWActor` and `VWDirt` objects.
+    '''
     def __init__(self, args) -> None:
         super(TestEnvironment, self).__init__(args)
 
-        self.__config: dict = ConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
+        self.__config: dict = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
 
     def test_default_sized_empty_env(self) -> None:
+        '''
+        Tests the creation of an empty `VWEnvironment` object, with the default grid size.
+        '''
         self.__test_empty_env(custom_grid_size=False)
 
     def test_custom_sized_empty_env(self) -> None:
+        '''
+        Tests the creation of an empty `VWEnvironment` object, with a custom random grid size.
+        '''
         self.__test_empty_env(custom_grid_size=True)
 
     def __test_empty_env(self, custom_grid_size: bool) -> None:
@@ -40,19 +49,25 @@ class TestEnvironment(TestCase):
         self.assertEqual(len(env.get_passive_bodies_list()), 0)
 
     def test_default_sized_env_with_agents(self) -> None:
+        '''
+        Tests the creation of a `VWEnvironment` object, with the default grid size, and a `VWCleaningAgent` for each `VWColour` (except for `VWColour.user`).
+        '''
         self.__test_env_with_cleaning_agents(custom_grid_size=False)
 
     def test_custom_sized_env_with_agents(self) -> None:
+        '''
+        Tests the creation of a `VWEnvironment` object, with a custom random grid size, and a `VWCleaningAgent` for each `VWColour` (except for `VWColour.user`).
+        '''
         self.__test_env_with_cleaning_agents(custom_grid_size=True)
 
     def __test_env_with_cleaning_agents(self, custom_grid_size: bool) -> None:
-        green_agent_orientation: Orientation = Orientation.random()
-        orange_agent_orientation: Orientation = Orientation.random()
-        white_agent_orientation: Orientation = Orientation.random()
+        green_agent_orientation: VWOrientation = VWOrientation.random()
+        orange_agent_orientation: VWOrientation = VWOrientation.random()
+        white_agent_orientation: VWOrientation = VWOrientation.random()
 
-        green_agent, green_agent_appearance = VWCleaningAgentsFactory.create_cleaning_agent(colour=Colour.green, orientation=green_agent_orientation, mind_surrogate=VWHystereticMindSurrogate())
-        orange_agent, orange_agent_appearance = VWCleaningAgentsFactory.create_cleaning_agent(colour=Colour.orange, orientation=orange_agent_orientation, mind_surrogate=VWHystereticMindSurrogate())
-        white_agent, white_agent_appearance = VWCleaningAgentsFactory.create_cleaning_agent(colour=Colour.white, orientation=white_agent_orientation, mind_surrogate=VWHystereticMindSurrogate())
+        green_agent, green_agent_appearance = VWCleaningAgentsFactory.create_cleaning_agent(colour=VWColour.green, orientation=green_agent_orientation, mind_surrogate=VWHystereticMindSurrogate())
+        orange_agent, orange_agent_appearance = VWCleaningAgentsFactory.create_cleaning_agent(colour=VWColour.orange, orientation=orange_agent_orientation, mind_surrogate=VWHystereticMindSurrogate())
+        white_agent, white_agent_appearance = VWCleaningAgentsFactory.create_cleaning_agent(colour=VWColour.white, orientation=white_agent_orientation, mind_surrogate=VWHystereticMindSurrogate())
 
         env, grid_size = VWEnvironment.generate_empty_env_for_testing(custom_grid_size=custom_grid_size, config=self.__config)
 
@@ -78,17 +93,23 @@ class TestEnvironment(TestCase):
         # For the tests on the actor appearance, go to test_location_and_coordinates.py, and test_actors.py.
 
     def test_default_sized_env_with_dirts(self) -> None:
+        '''
+        Tests the creation of a `VWEnvironment` object, with the default grid size, and a `VWDirt` for each `VWColour` (except for `VWColour.white`, and `VWColour.user`).
+        '''
         self.__test_env_with_dirts(custom_grid_size=False)
 
     def test_custom_sized_env_with_dirts(self) -> None:
+        '''
+        Tests the creation of a `VWEnvironment` object, with a custom random grid size, and a `VWDirt` for each `VWColour` (except for `VWColour.white`, and `VWColour.user`).
+        '''
         self.__test_env_with_dirts(custom_grid_size=True)
 
     def __test_env_with_dirts(self, custom_grid_size: bool) -> None:
-        green_dirt: Dirt = Dirt(colour=Colour.green)
-        green_dirt_appearance: VWDirtAppearance = VWDirtAppearance(dirt_id=green_dirt.get_id(), progressive_id=green_dirt.get_progressive_id(), colour=Colour.green)
+        green_dirt: VWDirt = VWDirt(colour=VWColour.green)
+        green_dirt_appearance: VWDirtAppearance = VWDirtAppearance(dirt_id=green_dirt.get_id(), progressive_id=green_dirt.get_progressive_id(), colour=VWColour.green)
 
-        orange_dirt: Dirt = Dirt(colour=Colour.orange)
-        orange_dirt_appearance: VWDirtAppearance = VWDirtAppearance(dirt_id=orange_dirt.get_id(), progressive_id=orange_dirt.get_progressive_id(), colour=Colour.orange)
+        orange_dirt: VWDirt = VWDirt(colour=VWColour.orange)
+        orange_dirt_appearance: VWDirtAppearance = VWDirtAppearance(dirt_id=orange_dirt.get_id(), progressive_id=orange_dirt.get_progressive_id(), colour=VWColour.orange)
 
         env, grid_size = VWEnvironment.generate_empty_env_for_testing(custom_grid_size=custom_grid_size, config=self.__config)
 
@@ -111,14 +132,20 @@ class TestEnvironment(TestCase):
         # For the tests on the dirt appearance, go to test_location_and_coordinates.py, and test_dirt.py.
 
     def test_default_sized_env_with_user(self) -> None:
+        '''
+        Tests the creation of a `VWEnvironment` object, with the default grid size, and a `VWUser` object.
+        '''
         self.__test_env_with_user(custom_grid_size=False)
 
     def test_custom_sized_env_with_user(self) -> None:
+        '''
+        Tests the creation of a `VWEnvironment` object, with a custom random grid size, and a `VWUser` object.
+        '''
         self.__test_env_with_user(custom_grid_size=True)
 
     def __test_env_with_user(self, custom_grid_size: bool) -> None:
-        user_orientation: Orientation = Orientation.random()
-        difficutly_level: UserDifficulty = UserDifficulty.random()
+        user_orientation: VWOrientation = VWOrientation.random()
+        difficutly_level: VWUserDifficulty = VWUserDifficulty.random()
 
         user, user_appearance = VWUsersFactory.create_user(difficulty_level=difficutly_level, orientation=user_orientation)
 
@@ -129,7 +156,7 @@ class TestEnvironment(TestCase):
 
         env.add_actor(actor=user)
 
-        user_coord: Coord = Coord(x=randint(0, grid_size - 1), y=randint(0, grid_size - 1))
+        user_coord: VWCoord = VWCoord(x=randint(0, grid_size - 1), y=randint(0, grid_size - 1))
 
         env.get_ambient().get_grid()[user_coord] = VWLocation(coord=user_coord, actor_appearance=user_appearance, wall=VWEnvironment.generate_wall_from_coordinates(coord=user_coord, grid_size=grid_size))
 
@@ -140,28 +167,34 @@ class TestEnvironment(TestCase):
         # For the tests on the actor appearance, go to test_location_and_coordinates.py, and test_actors.py.
 
     def test_default_sized_env_with_actors_and_dirts(self) -> None:
+        '''
+        Tests the creation of a `VWEnvironment` object, with the default grid size, a `VWActor` for each `VWColour`, and a `VWDirt` for each `VWColour` (except for `VWColour.white`, and `VWColour.user`).
+        '''
         self.__test_env_with_actors_and_dirts(custom_grid_size=False)
 
     def test_custom_sized_env_with_actors_and_dirts(self) -> None:
+        '''
+        Tests the creation of a `VWEnvironment` object, with a custom random grid size, a `VWActor` for each `VWColour`, and a `VWDirt` for each `VWColour` (except for `VWColour.white`, and `VWColour.user`).
+        '''
         self.__test_env_with_actors_and_dirts(custom_grid_size=True)
 
     def __test_env_with_actors_and_dirts(self, custom_grid_size: bool) -> None:
-        green_agent_orientation: Orientation = Orientation.random()
-        orange_agent_orientation: Orientation = Orientation.random()
-        white_agent_orientation: Orientation = Orientation.random()
-        user_orientation: Orientation = Orientation.random()
-        difficutly_level: UserDifficulty = UserDifficulty.random()
+        green_agent_orientation: VWOrientation = VWOrientation.random()
+        orange_agent_orientation: VWOrientation = VWOrientation.random()
+        white_agent_orientation: VWOrientation = VWOrientation.random()
+        user_orientation: VWOrientation = VWOrientation.random()
+        difficutly_level: VWUserDifficulty = VWUserDifficulty.random()
 
-        green_agent, green_agent_appearance = VWCleaningAgentsFactory.create_cleaning_agent(colour=Colour.green, orientation=green_agent_orientation, mind_surrogate=VWHystereticMindSurrogate())
-        orange_agent, orange_agent_appearance = VWCleaningAgentsFactory.create_cleaning_agent(colour=Colour.orange, orientation=orange_agent_orientation, mind_surrogate=VWHystereticMindSurrogate())
-        white_agent, white_agent_appearance = VWCleaningAgentsFactory.create_cleaning_agent(colour=Colour.white, orientation=white_agent_orientation, mind_surrogate=VWHystereticMindSurrogate())
+        green_agent, green_agent_appearance = VWCleaningAgentsFactory.create_cleaning_agent(colour=VWColour.green, orientation=green_agent_orientation, mind_surrogate=VWHystereticMindSurrogate())
+        orange_agent, orange_agent_appearance = VWCleaningAgentsFactory.create_cleaning_agent(colour=VWColour.orange, orientation=orange_agent_orientation, mind_surrogate=VWHystereticMindSurrogate())
+        white_agent, white_agent_appearance = VWCleaningAgentsFactory.create_cleaning_agent(colour=VWColour.white, orientation=white_agent_orientation, mind_surrogate=VWHystereticMindSurrogate())
         user, user_appearance = VWUsersFactory.create_user(difficulty_level=difficutly_level, orientation=user_orientation)
 
-        green_dirt: Dirt = Dirt(colour=Colour.green)
-        green_dirt_appearance: VWDirtAppearance = VWDirtAppearance(dirt_id=green_dirt.get_id(), progressive_id=green_dirt.get_progressive_id(), colour=Colour.green)
+        green_dirt: VWDirt = VWDirt(colour=VWColour.green)
+        green_dirt_appearance: VWDirtAppearance = VWDirtAppearance(dirt_id=green_dirt.get_id(), progressive_id=green_dirt.get_progressive_id(), colour=VWColour.green)
 
-        orange_dirt: Dirt = Dirt(colour=Colour.orange)
-        orange_dirt_appearance: VWDirtAppearance = VWDirtAppearance(dirt_id=orange_dirt.get_id(), progressive_id=orange_dirt.get_progressive_id(), colour=Colour.orange)
+        orange_dirt: VWDirt = VWDirt(colour=VWColour.orange)
+        orange_dirt_appearance: VWDirtAppearance = VWDirtAppearance(dirt_id=orange_dirt.get_id(), progressive_id=orange_dirt.get_progressive_id(), colour=VWColour.orange)
 
         env, grid_size = VWEnvironment.generate_empty_env_for_testing(custom_grid_size=custom_grid_size, config=self.__config)
 
