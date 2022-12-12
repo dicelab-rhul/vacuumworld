@@ -194,7 +194,7 @@ class VWLocation(LocationAppearance):
         '''
         Returns whether or not this `VWLocation` is an edge of the `VWEnvironment` grid.
 
-        A `VWLocation` is a corner if it has exactly three sides without a wall (and a wall on the remaining side).
+        A `VWLocation` is an edge if it has exactly three sides without a wall (and a wall on the remaining side).
 
         The above definition means that a 1x1 grid has no edges.
         '''
