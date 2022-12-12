@@ -26,13 +26,37 @@ class VWActorAppearance(ActorAppearance):
 
     def get_orientation(self) -> VWOrientation:
         '''
-        Returns the current `VWOrientation` of the `VWActor` this `VWActorAppearance` refer to.
+        Returns the current `VWOrientation` of the `VWActor` this `VWActorAppearance` refers to.
         '''
         return self.__orientation
 
+    def is_facing_north(self) -> bool:
+        '''
+        Returns whether or not the `VWActor` this `VWActorAppearance` refers to is facing `VWOrientation.north`.
+        '''
+        return self.__orientation == VWOrientation.north
+
+    def is_facing_east(self) -> bool:
+        '''
+        Returns whether or not the `VWActor` this `VWActorAppearance` refers to is facing `VWOrientation.east`.
+        '''
+        return self.__orientation == VWOrientation.east
+
+    def is_facing_south(self) -> bool:
+        '''
+        Returns whether or not the `VWActor` this `VWActorAppearance` refers to is facing `VWOrientation.south`.
+        '''
+        return self.__orientation == VWOrientation.south
+
+    def is_facing_west(self) -> bool:
+        '''
+        Returns whether or not the `VWActor` this `VWActorAppearance` refers to is facing `VWOrientation.west`.
+        '''
+        return self.__orientation == VWOrientation.west
+
     def get_previous_orientation(self) -> VWOrientation:
         '''
-        Returns the backed-up `VWOrientation` of the `VWActor` this `VWActorAppearance` refer to.
+        Returns the backed-up `VWOrientation` of the `VWActor` this `VWActorAppearance` refers to.
 
         A `VWOrientation` is normally backed up just before a turn left/right.
 
