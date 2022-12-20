@@ -1,6 +1,7 @@
 from tkinter import Entry, Frame, StringVar, Listbox, END, ACTIVE
 from re import match
 from typing import List
+from pyoptional.pyoptional import PyOptional
 
 
 # Inspired by https://code.activestate.com/recipes/578253-an-entry-with-autocompletion-for-the-tkinter-gui/
@@ -25,7 +26,7 @@ class VWAutocompleteEntry(Entry):
         self.bind("<Up>", self.__up)
         self.bind("<Down>", self.__down)
 
-        self.__lb: Listbox = None
+        self.__lb: PyOptional[Listbox] = PyOptional.empty()
         self.__lb_up: bool = False
 
     def set_list_a(self, list_a: List[str]) -> None:
@@ -47,8 +48,7 @@ class VWAutocompleteEntry(Entry):
 
     def __changed(self, *_) -> None:
         if self.__var.get() == "":
-            if self.__lb:
-                self.__lb.destroy()
+            self.__lb.if_present(lambda x: x.destroy())
 
             self.__lb_up = False
         else:
@@ -59,64 +59,64 @@ class VWAutocompleteEntry(Entry):
 
         if words:
             if not self.__lb_up:
-                self.__lb = Listbox(self.__dropdown_parent, font=self.__font, height=self.__height)
+                self.__lb = PyOptional.of(Listbox(self.__dropdown_parent, font=self.__font, height=self.__height))
 
-                self.__lb.bind("<Double-Button-1>", self.__selection)
-                self.__lb.place(x=self.winfo_x(), y=self.winfo_y()+self.winfo_height())
+                self.__lb.or_else_raise().bind("<Double-Button-1>", self.__selection)
+                self.__lb.or_else_raise().place(x=self.winfo_x(), y=self.winfo_y()+self.winfo_height())
 
                 self.__lb_up = True
 
-            self.__lb.delete(0, END)
+            self.__lb.or_else_raise().delete(0, END)
 
             for w in words:
-                self.__lb.insert(END, w)
+                self.__lb.or_else_raise().insert(END, w)
         elif self.__lb_up:
-            self.__lb.destroy()
+            self.__lb.or_else_raise().destroy()
 
             self.__lb_up = False
 
     def __selection(self, _) -> None:
         if self.__lb_up:
-            self.__var.set(self.__lb.get(ACTIVE))
-            self.__lb.destroy()
+            self.__var.set(self.__lb.or_else_raise().get(ACTIVE))
+            self.__lb.or_else_raise().destroy()
 
             self.__lb_up = False
 
             self.icursor(END)
 
     def __up(self, _) -> None:
-        if self.__lb_up and self.__lb.curselection() != ():
-            index: int = self.__lb.curselection()[0]
+        if self.__lb_up and self.__lb.or_else_raise().curselection() != ():
+            index: int = self.__lb.or_else_raise().curselection()[0]
 
             if index >= 0:
-                self.__lb.yview_scroll(-1, "units")
-                self.__lb.selection_clear(first=index)
+                self.__lb.or_else_raise().yview_scroll(-1, "units")
+                self.__lb.or_else_raise().selection_clear(first=index)
 
                 index_str: str = str(int(index)-1)
 
-                self.__lb.selection_set(first=index_str)
-                self.__lb.activate(index_str)
+                self.__lb.or_else_raise().selection_set(first=index_str)
+                self.__lb.or_else_raise().activate(index_str)
 
     def __down(self, _) -> None:
         if self.__lb_up:
-            if self.__lb.curselection() == ():
-                self.__lb.selection_set(first=0)
-                self.__lb.activate(0)
+            if self.__lb.or_else_raise().curselection() == ():
+                self.__lb.or_else_raise().selection_set(first=0)
+                self.__lb.or_else_raise().activate(0)
 
                 return
 
-            index: int = self.__lb.curselection()[0]
+            index: int = self.__lb.or_else_raise().curselection()[0]
 
             if int(index) + 1 < len(self.__lista):
                 if int(index) + 1 >= self.__height:
-                    self.__lb.yview_scroll(1, "units")
+                    self.__lb.or_else_raise().yview_scroll(1, "units")
 
-                self.__lb.selection_clear(first=index)
+                self.__lb.or_else_raise().selection_clear(first=index)
 
                 index_str: str = str(int(index)+1)
 
-                self.__lb.selection_set(first=index_str)
-                self.__lb.activate(index_str)
+                self.__lb.or_else_raise().selection_set(first=index_str)
+                self.__lb.or_else_raise().activate(index_str)
 
     def __comparison(self) -> List[str]:
         return [w for w in self.__lista if match(".*" + self.__var.get() + ".*", w)]

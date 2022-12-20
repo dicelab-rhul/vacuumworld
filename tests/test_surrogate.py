@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
 from unittest import main, TestCase
-from typing import Union, Tuple, Iterable
+from typing import Iterable
 from inspect import getsourcefile
+from pyoptional.pyoptional import PyOptional
 
 from pystarworldsturbo.common.message import BccMessage
 from pystarworldsturbo.utils.utils import ignore
@@ -24,7 +25,7 @@ class TmpSurrogateMind(VWActorMindSurrogate):
 
     No malformed surrogate minds are tested here, as those are tested in the `test_illegal_run_inputs.py` file.
     '''
-    def revise(self, observation: VWObservation, messages: Iterable[BccMessage]) -> None:
+    def perceive(self, observation: VWObservation, messages: Iterable[BccMessage]) -> None:
         '''
         This method ignores both `observation`, and each item of `messages`, and does nothing.
         '''
@@ -33,11 +34,11 @@ class TmpSurrogateMind(VWActorMindSurrogate):
         for message in messages:
             ignore(message)
 
-    def decide(self) -> Union[VWAction, Tuple[VWAction]]:
+    def decide(self) -> Iterable[VWAction]:
         '''
         This method always returns a `VWIdleAction`.
         '''
-        return VWIdleAction()
+        return [VWIdleAction()]
 
 
 # The various kinds of malformed surrogates are already tested in `test_illegal_run_inputs.py`.
@@ -54,11 +55,12 @@ class TestSurrogate(TestCase):
         '''
         Tests the loading and validity of `VWHystereticMindSurrogate` objects.
         '''
-        surrogate_file_path: str = getsourcefile(VWHystereticMindSurrogate)
+        surrogate_file_path: PyOptional[str] = PyOptional.of_nullable(getsourcefile(VWHystereticMindSurrogate))
 
-        self.assertTrue(os.path.isfile(surrogate_file_path))
+        self.assertTrue(surrogate_file_path.is_present())
+        self.assertTrue(os.path.isfile(surrogate_file_path.or_else_raise()))
 
-        surrogate_mind: VWActorMindSurrogate = VWActorMindSurrogate.load_from_file(surrogate_mind_file=surrogate_file_path, surrogate_mind_class_name=VWHystereticMindSurrogate.__name__)
+        surrogate_mind: VWActorMindSurrogate = VWActorMindSurrogate.load_from_file(surrogate_mind_file=surrogate_file_path.or_else_raise(), surrogate_mind_class_name=VWHystereticMindSurrogate.__name__)
 
         self.__test_load_surrogate(surrogate_mind=surrogate_mind)
 
@@ -74,7 +76,6 @@ class TestSurrogate(TestCase):
         self.assertIsInstance(surrogate_mind, VWActorMindSurrogate)
 
         for colour in [c for c in VWColour if c != VWColour.user]:
-            print(VacuumWorld.ALLOWED_RUN_ARGS["{}_mind".format(str(colour))], type(surrogate_mind))
             VWActorMindSurrogate.validate(mind=surrogate_mind, colour=colour, surrogate_mind_type=VacuumWorld.ALLOWED_RUN_ARGS["{}_mind".format(str(colour))])
 
 

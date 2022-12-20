@@ -1,14 +1,17 @@
 from __future__ import annotations
-from typing import Any, Iterable, Tuple, Union, Type
+from typing import Any, Iterable, Type, Dict, List
 from inspect import signature
 from importlib import import_module
 
 from pystarworldsturbo.common.message import BccMessage
-from pystarworldsturbo.utils.utils import ignore
 
 from ....actions.vwactions import VWAction
+from ....actions.vwactions import VWPhysicalAction
+from ....actions.vwactions import VWCommunicativeAction
 from .....common.vwobservation import VWObservation
 from .....common.vwcolour import VWColour
+from .....common.vworientation import VWOrientation
+from .....common.vwcoordinates import VWCoord
 from .....common.vwexceptions import VWInternalError, VWLoadException
 
 import os
@@ -19,9 +22,9 @@ class VWActorMindSurrogate():
     '''
     This class specifies the surrogate for the `VWMind` of a `VWActor`. It is an abstract class.
     '''
-    MUST_BE_DEFINED: dict = {
-        "revise": 2,  # Not including `self`.
-        "decide": 0   # Not including `self`.
+    MUST_BE_DEFINED: Dict[str, Any] = {
+        "revise": {"number_of_params_excluding_self": 0, "return_type": [None, "None", "NoneType"]},
+        "decide": {"number_of_params_excluding_self": 0, "return_type": [Iterable[VWAction], Iterable[VWPhysicalAction], Iterable[VWCommunicativeAction]]},
     }
 
     def __init__(self) -> None:
@@ -33,38 +36,85 @@ class VWActorMindSurrogate():
         '''
         return self.__effort
 
+    def get_latest_observation(self) -> VWObservation:
+        '''
+        Returns the last `VWObservation` perceived by the `VWActor`.
+        '''
+        return self.__latest_observation
+
+    def get_latest_received_messages(self) -> Iterable[BccMessage]:
+        '''
+        Returns the last `Iterable[BccMessage]` received by the `VWActor`.
+        '''
+        return self.__latest_received_messages
+
+    def get_own_id(self) -> str:
+        '''
+        Returns the `str` ID of the `VWActor` this `VWActorMindSurrogate` is part of.
+        '''
+        return self.__latest_observation.get_observer_id().or_else_raise()
+
+    def get_own_colour(self) -> VWColour:
+        '''
+        Returns the `VWColour` of the `VWActor` this `VWActorMindSurrogate` is part of.
+        '''
+        return self.__latest_observation.get_center().or_else_raise().get_actor_appearance().or_else_raise().get_colour()
+
+    def get_own_orientation(self) -> VWOrientation:
+        '''
+        Returns the `VWOrientation` of the `VWActor` this `VWActorMindSurrogate` is part of.
+        '''
+        return self.__latest_observation.get_center().or_else_raise().get_actor_appearance().or_else_raise().get_orientation()
+
+    def get_own_position(self) -> VWCoord:
+        '''
+        Returns the position (as a `VWCoord` object) of the `VWActor` this `VWActorMindSurrogate` is part of.
+        '''
+        return self.__latest_observation.get_center().or_else_raise().get_coord()
+
     def update_effort(self, increment: int) -> None:
         '''
         WARNING: This method must be public, but it is not part of the public `VWActorMindSurrogate` API.
 
         Updates the cumulative effort of the `VWActor` by `increment`.
         '''
-        assert type(increment) == int
+        assert int is not None and isinstance(increment, int)
 
         self.__effort += increment
 
-    def revise(self, observation: VWObservation, messages: Iterable[BccMessage]) -> None:
+    def perceive(self, observation: VWObservation, messages: Iterable[BccMessage]) -> None:
         '''
-        This is an abstract method. It is called by the `VWActor` to update the `VWActorMindSurrogate` with the latest `VWObservation` and `Iterable[BccMessage]`.
+        WARNING: This method must be public, but it is not part of the public `VWActorMindSurrogate` API.
+
+        This method is automatically called by a `VWActor` to store the received `VWObservation` and `Iterable[BccMessage]`.
         '''
-        ignore(observation)
+        assert observation is not None and isinstance(observation, VWObservation)
+        assert messages is not None and isinstance(messages, Iterable) and all(isinstance(message, BccMessage) for message in messages)
 
-        for message in messages:
-            ignore(message)
+        self.__latest_observation: VWObservation = observation
+        self.__latest_received_messages: Iterable[BccMessage] = messages is not None and messages or []
 
-        raise NotImplementedError()
-
-    def decide(self) -> Union[VWAction, Tuple[VWAction]]:
+    def revise(self) -> None:
         '''
-        This is an abstract method. It is called by the `VWActor` to decide the next `VWAction` or `Tuple[VWAction]` to be executed.
+        This method must be overridden by a subclass. Failure to do so will result in a `NotImplementedError`.
 
-        This method MUST NOT loop, as it is called by the `VWActor` every cycle after `revise()`.
+        Revises the internal state of this `VWActorMindSurrogate` based on the latest received `VWObservation` and `Iterable[BccMessage]`.
         '''
-        raise NotImplementedError()
+        raise NotImplementedError("This method must be implemented by a subclass.")
+
+    def decide(self) -> Iterable[VWAction]:
+        '''
+        This method must be overridden by a subclass. Failure to do so will result in a `NotImplementedError`.
+
+        Decides the next `Iterable[VWAction]` to be performed by the `VWActor` based on the internal state of this `VWActorMindSurrogate`.
+        '''
+        raise NotImplementedError("This method must be implemented by a subclass.")
 
     @staticmethod
     def validate(mind: VWActorMindSurrogate, colour: VWColour, surrogate_mind_type: Type) -> None:
         '''
+        WARNING: This method must be public, but it is not part of the public `VWActorMindSurrogate` API.
+
         Validates the `VWActorMindSurrogate` `mind` by checking that all the methods specified in `VWActorMindSurrogate.MUST_BE_DEFINED` are defined, together with the correct arguments.
 
         The type check on `mind` is replaced with an assertion, as the actual check is performed by the `VWRunner` constructor.
@@ -73,7 +123,7 @@ class VWActorMindSurrogate():
         assert isinstance(mind, surrogate_mind_type)
         assert isinstance(colour, VWColour)
 
-        for fun_name, number_of_parameters in VWActorMindSurrogate.MUST_BE_DEFINED.items():
+        for fun_name, fun_info in VWActorMindSurrogate.MUST_BE_DEFINED.items():
             if fun_name not in set(dir(mind)):
                 raise VWInternalError("The {} mind surrogate must define the following method: `{}`".format(colour, fun_name))
 
@@ -81,12 +131,22 @@ class VWActorMindSurrogate():
 
             if not callable(fun):
                 raise VWInternalError("{} agent: {} must be callable".format(colour, fun_name))
-            elif len(signature(fun).parameters) != number_of_parameters:
-                raise VWInternalError("{} agent: `{}` must be defined with {} arguments, excluding `self`.".format(colour, fun_name, number_of_parameters))
+
+            number_of_parameters: int = fun_info["number_of_params_excluding_self"]
+
+            if len(signature(fun).parameters) != number_of_parameters:
+                raise VWInternalError("{} agent: `{}` must be defined with exactly {} parameters.".format(colour, fun_name, number_of_parameters))
+
+            return_type: List[Type] = fun_info["return_type"]
+
+            if signature(fun).return_annotation not in return_type:
+                raise VWInternalError("{} agent: `{}` must be defined with a return type that is compatible with `{}`.".format(colour, fun_name, return_type))
 
     @staticmethod
     def load_from_file(surrogate_mind_file: str, surrogate_mind_class_name: str) -> VWActorMindSurrogate:
         '''
+        WARNING: This method must be public, but it is not part of the public `VWActorMindSurrogate` API.
+
         Loads the `VWActorMindSurrogate` class from the Python file whose path is specified by `surrogate_mind_file` and returns an instance of it.
         '''
         try:

@@ -1,12 +1,12 @@
-from typing import Iterable, List, Tuple, Union
+from typing import Iterable, List
 
 from pystarworldsturbo.elements.mind import Mind
 from pystarworldsturbo.common.message import BccMessage
 
 from .surrogate.vwactor_mind_surrogate import VWActorMindSurrogate
 from ...actions.vwactions import VWAction
-from ...actions.vwidle_action import VWIdleAction
 from ....common.vwobservation import VWObservation
+from ....common.vwexceptions import VWActionAttemptException
 
 
 class VWMind(Mind):
@@ -31,7 +31,7 @@ class VWMind(Mind):
         self.__surrogate: VWActorMindSurrogate = self._clone_surrogate(surrogate=surrogate)
         del surrogate
 
-        self.__next_actions: Tuple[VWAction] = None
+        self.__next_actions: List[VWAction] = []
 
     def get_surrogate(self) -> VWActorMindSurrogate:
         '''
@@ -49,27 +49,31 @@ class VWMind(Mind):
         '''
         self.__surrogate = self._clone_surrogate(surrogate=self.__surrogate)
 
-    def perceive(*_) -> None:
+    def perceive(self, observation: VWObservation, messages: Iterable[BccMessage]) -> None:
         '''
-        Not implemented, as the perception is initiated by the body.
-        '''
+        Calls the `perceive()` method of the `VWActorMindSurrogate`, passing the `observation` and `messages` arguments.
 
-    def revise(self, observation: VWObservation, messages: Iterable[BccMessage]) -> None:
+        This method assumes (via assertions) that the `VWActorMindSurrogate` has a callable `perceive()` method which accepts the intended arguments.
         '''
-        Calls the `revise()` method of the `VWActorMindSurrogate`, passing the `observation` and `messages` arguments.
+        assert hasattr(self.__surrogate, VWMind.PERCEIVE_METHOD_NAME)
+        assert callable(getattr(self.__surrogate, VWMind.PERCEIVE_METHOD_NAME))
+        assert observation is not None
+        assert isinstance(observation, VWObservation)
+        assert messages is not None
+        assert isinstance(messages, Iterable)
 
-        This method assumes (via assertions) that the `VWActorMindSurrogate` has a callable `revise()` method which accepts the intended arguments.
+        self.__surrogate.perceive(observation=observation, messages=messages)
+
+    def revise(self) -> None:
+        '''
+        Calls the `revise()` method of the `VWActorMindSurrogate`.
+
+        This method assumes (via assertions) that the `VWActorMindSurrogate` has a callable `revise()` method.
         '''
         assert hasattr(self.__surrogate, VWMind.REVISE_METHOD_NAME)
         assert callable(getattr(self.__surrogate, VWMind.REVISE_METHOD_NAME))
 
-        if not observation:
-            observation = VWObservation.create_empty_observation()
-
-        if not messages:
-            messages = []
-
-        self.__surrogate.revise(observation=observation, messages=messages)
+        self.__surrogate.revise()
 
     def decide(self) -> None:
         '''
@@ -80,31 +84,31 @@ class VWMind(Mind):
         assert hasattr(self.__surrogate, VWMind.DECIDE_METHOD_NAME)
         assert callable(getattr(self.__surrogate, VWMind.DECIDE_METHOD_NAME))
 
-        actions: Union[VWAction, Tuple[VWAction]] = self.__surrogate.decide()
+        actions: Iterable[VWAction] = self.__surrogate.decide()
 
         if actions is None:
-            self.__next_actions = (VWIdleAction(),)  # For safety and back compatibility with 4.1.8.
-        elif type(actions) == tuple:
+            raise VWActionAttemptException("The `decide()` method of the surrogate mind must not return `None`.")
+        elif isinstance(actions, Iterable):
             self.__store_actions_for_next_cycle(actions=actions)
         else:
-            assert isinstance(actions, VWAction)
-            self.__next_actions = (actions,)
+            raise VWActionAttemptException("The `decide()` method of the surrogate mind must return an `Iterable[VWAction]`.")
 
-    def __store_actions_for_next_cycle(self, actions: Tuple[VWAction]) -> None:
+    def __store_actions_for_next_cycle(self, actions: Iterable[VWAction]) -> None:
         sanitised_actions: List[VWAction] = []
 
         for action in actions:
             if action is None:
-                sanitised_actions.append(VWIdleAction())  # For safety and back compatibility with 4.1.8.
+                raise VWActionAttemptException("The `decide()` method of the surrogate mind must not return an `Iterable` with `None` elements.")
+            elif not isinstance(action, VWAction):
+                raise VWActionAttemptException("The `decide()` method of the surrogate mind must return an `Iterable[VWAction]`.")
             else:
-                assert isinstance(action, VWAction)
                 sanitised_actions.append(action)
 
-        self.__next_actions = tuple(sanitised_actions)
+        self.__next_actions = sanitised_actions
 
-    def execute(self) -> Tuple[VWAction]:
+    def execute(self) -> List[VWAction]:
         '''
-        Returns a Tuple[VWAction] consisting of each `VWAction` to be attempted.
+        Returns a `List[VWAction]` consisting of each `VWAction` to be attempted.
 
         This method assumes (via assertion) that at least one `VWAction` is returned.
         '''

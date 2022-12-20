@@ -41,7 +41,7 @@ class VWCleanExecutor(ActionExecutor):
         elif actor_colour == VWColour.user:
             return False
         else:
-            return actor_location.get_dirt_appearance().get_colour() == actor_colour
+            return actor_location.get_dirt_appearance().or_else_raise().get_colour() == actor_colour
 
     def attempt(self, env: VWEnvironment, action: VWCleanAction) -> ActionResult:
         '''
@@ -58,7 +58,7 @@ class VWCleanExecutor(ActionExecutor):
             actor_location: VWLocation = env.get_actor_location(actor_id=actor_id)
 
             assert actor_location.has_dirt()
-            assert actor_colour == VWColour.white or actor_location.get_dirt_appearance().get_colour() == actor_colour
+            assert actor_colour == VWColour.white or actor_location.get_dirt_appearance().or_else_raise().get_colour() == actor_colour
 
             env.remove_dirt(coord=actor_position)
 

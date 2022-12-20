@@ -1,6 +1,8 @@
-from typing import Optional
+from typing import cast
+from pyoptional.pyoptional import PyOptional
 
 from .vwactor import VWActor
+from .mind.vwactor_mind import VWMind
 from .mind.vwuser_mind import VWUserMind
 from .appendices.vwsensors import VWListeningSensor, VWObservationSensor
 from .appendices.vwactuators import VWUserPhysicalActuator, VWCommunicativeActuator
@@ -18,12 +20,17 @@ class VWUser(VWActor):
         '''
         Returns the `VWUserMind` of this `VWUser`.
         '''
-        return super(VWUser, self).get_mind()
+        mind: VWMind = super(VWUser, self).get_mind()
 
-    def get_physical_actuator(self) -> Optional[VWUserPhysicalActuator]:
+        if isinstance(mind, VWUserMind):
+            return mind
+        else:
+            raise TypeError("The mind of a `VWUser` must be a `VWUserMind`.")
+
+    def get_physical_actuator(self) -> PyOptional[VWUserPhysicalActuator]:
         '''
         Returns the `VWUserPhysicalActuator` of this `VWUser`, or `None`, if it is not available.
 
         The `VWUserPhysicalActuator` of a `VWUser` must support `VWDropAction`.
         '''
-        return super(VWUser, self).get_actuator_for(event_type=VWDropAction)
+        return super(VWUser, self).get_actuator_for(event_type=VWDropAction).filter(lambda actuator: isinstance(actuator, VWUserPhysicalActuator)).map(lambda actuator: cast(VWUserPhysicalActuator, actuator))

@@ -1,7 +1,8 @@
 from typing import Callable, List
 from PIL import Image
 from PIL.ImageTk import PhotoImage
-from tkinter import Frame, Image as Img
+from PIL.Image import Image as PILImage
+from tkinter import Frame
 
 from .vwbutton import VWButton
 
@@ -12,7 +13,7 @@ class VWDifficultyButton(VWButton):
 
     It extends the `VWButton` class.
     '''
-    def __init__(self, parent: Frame, config: dict, img: Img, fun: Callable, tip_text: str) -> None:
+    def __init__(self, parent: Frame, config: dict, img: PILImage, fun: Callable, tip_text: str) -> None:
         super(VWDifficultyButton, self).__init__(parent=parent, config=config, img=img, fun=self.onclick, tip_text=tip_text)
 
         self.__rfun: Callable = fun

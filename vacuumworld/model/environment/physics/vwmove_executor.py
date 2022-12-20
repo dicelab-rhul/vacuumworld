@@ -75,13 +75,13 @@ class VWMoveExecutor(ActionExecutor):
         if not env.get_ambient().get_grid()[actor_position_after_move].has_actor():
             return False
 
-        if env.get_ambient().get_grid()[actor_position_after_move].get_actor_appearance().get_orientation() != actor_orientation:
+        if env.get_ambient().get_grid()[actor_position_after_move].get_actor_appearance().or_else_raise().get_orientation() != actor_orientation:
             return False
 
-        if env.get_ambient().get_grid()[actor_position_after_move].get_actor_appearance().get_id() != actor_id:
+        if env.get_ambient().get_grid()[actor_position_after_move].get_actor_appearance().or_else_raise().get_id() != actor_id:
             return False
 
         if not env.get_ambient().get_grid()[actor_position_before_move].has_actor():
             return True
 
-        return env.get_ambient().get_grid()[actor_position_before_move].get_actor_appearance().get_id() != actor_id
+        return env.get_ambient().get_grid()[actor_position_before_move].get_actor_appearance().or_else_raise().get_id() != actor_id

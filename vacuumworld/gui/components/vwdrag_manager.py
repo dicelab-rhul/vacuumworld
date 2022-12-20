@@ -1,5 +1,7 @@
-from tkinter import Canvas, Event, Image
+from tkinter import Canvas, Event
 from typing import Callable, Tuple
+from math import floor
+from PIL.ImageTk import PhotoImage
 
 from .vwbounds_manager import VWBoundsManager
 
@@ -8,7 +10,7 @@ class VWCanvasDragManager():
     '''
     This class speficies the behaviour of a drag manager for a `Canvas` object.
     '''
-    def __init__(self, config: dict, key: Tuple[str, str], grid_dim: int, canvas: Canvas, item: Image, on_start_callback: Callable, on_drop_callback: Callable) -> None:
+    def __init__(self, config: dict, key: Tuple[str, str], grid_dim: int, canvas: Canvas, item: int, on_start_callback: Callable, on_drop_callback: Callable) -> None:
         self.__config: dict = config
         self.__bounds_manager: VWBoundsManager = VWBoundsManager(config=config)
 
@@ -25,8 +27,6 @@ class VWCanvasDragManager():
         self.__canvas.tag_bind(item, "<ButtonRelease-1>", self.on_drop)
 
         self.__key: Tuple[str, str] = key
-        self.__drag_image: Image = None
-        self.__drag: Image = None
         self.__dragging: bool = False
 
     def on_start(self, event: Event) -> None:
@@ -48,8 +48,8 @@ class VWCanvasDragManager():
         Moves the `Image` object across the canvas.
         '''
         inc: int = self.__config["grid_size"] / self.__grid_dim
-        x: int = int(event.x / inc) * inc + (inc / 2) + 1
-        y: int = int(event.y / inc) * inc + (inc / 2) + 1
+        x: int = int(event.x / inc) * inc + floor(inc / 2) + 1
+        y: int = int(event.y / inc) * inc + floor(inc / 2) + 1
 
         if event.x < 0 or event.y < 0 or not self.__bounds_manager.in_bounds(x=x, y=y):
             self.__canvas.itemconfigure(self.__drag, state="hidden")
@@ -81,26 +81,26 @@ class VWCanvasDragManager():
         '''
         return self.__key
 
-    def get_drag(self) -> Image:
+    def get_drag(self) -> int:
         '''
-        Returns the `_CanvasItemId` object to be dragged as an `Image`.
+        Returns the `int` index of the image to be dragged.
         '''
         return self.__drag
 
-    def set_drag(self, drag: Image) -> None:
+    def set_drag(self, drag: int) -> None:
         '''
-        Sets the `Image` object to be dragged as a `_CanvasItemId`.
+        Sets the index of the image to be dragged as an `int`.
         '''
-        self.__drag = drag
+        self.__drag: int = drag
 
-    def get_drag_image(self) -> Image:
+    def get_drag_image(self) -> PhotoImage:
         '''
-        Returns the `PhotoImage` object to be dragged as an `Image`.
+        Returns the `PhotoImage` object to be dragged as a `PhotoImage`.
         '''
         return self.__drag_image
 
-    def set_drag_image(self, drag_image: Image) -> None:
+    def set_drag_image(self, drag_image: PhotoImage) -> None:
         '''
         Sets the `Image` object to be dragged as a `PhotoImage`.
         '''
-        self.__drag_image = drag_image
+        self.__drag_image: PhotoImage = drag_image

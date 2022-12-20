@@ -69,4 +69,4 @@ class VWDropExecutor(ActionExecutor):
         actor_id: str = action.get_actor_id()
         actor_location: VWLocation = env.get_actor_location(actor_id=actor_id)
 
-        return actor_location.has_dirt() and actor_location.get_dirt_appearance().get_colour() == action.get_dirt_colour()
+        return actor_location.has_dirt() and actor_location.get_dirt_appearance().or_else_raise().get_colour() == action.get_dirt_colour()

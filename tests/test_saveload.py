@@ -95,11 +95,11 @@ class TestSaveLoad(TestCase):
             return False
 
         if loc1.has_actor() and loc1.has_dirt():
-            return loc1.get_actor_appearance().equals_except_ids(loc2.get_actor_appearance()) and loc1.get_dirt_appearance().equals_except_ids(loc2.get_dirt_appearance())
+            return loc1.get_actor_appearance().or_else_raise().equals_except_ids(loc2.get_actor_appearance().or_else_raise()) and loc1.get_dirt_appearance().or_else_raise().equals_except_ids(loc2.get_dirt_appearance().or_else_raise())
         elif loc1.has_actor():
-            return loc1.get_actor_appearance().equals_except_ids(loc2.get_actor_appearance())
+            return loc1.get_actor_appearance().or_else_raise().equals_except_ids(loc2.get_actor_appearance().or_else_raise())
         elif loc1.has_dirt():
-            return loc1.get_dirt_appearance().equals_except_ids(loc2.get_dirt_appearance())
+            return loc1.get_dirt_appearance().or_else_raise().equals_except_ids(loc2.get_dirt_appearance().or_else_raise())
 
         return True
 

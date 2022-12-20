@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 
 from random import randint, choice
-from typing import Iterable, List, Tuple, Union
-
-from pystarworldsturbo.utils.utils import ignore
-from pystarworldsturbo.common.message import BccMessage
+from typing import Iterable, List, Union, Any
+from pyoptional.pyoptional import PyOptional
 
 from vacuumworld import run
 from vacuumworld.model.actions.vwactions import VWAction
@@ -12,7 +10,6 @@ from vacuumworld.model.actions.vwidle_action import VWIdleAction
 from vacuumworld.model.actions.vwmove_action import VWMoveAction
 from vacuumworld.model.actions.vwturn_action import VWTurnAction
 from vacuumworld.model.actions.vwbroadcast_action import VWBroadcastAction
-from vacuumworld.common.vwobservation import VWObservation
 from vacuumworld.common.vworientation import VWOrientation
 from vacuumworld.common.vwdirection import VWDirection
 from vacuumworld.common.vwcolour import VWColour
@@ -29,24 +26,22 @@ class ColourMind(DanceMind):
     def __init__(self):
         super(ColourMind, self).__init__()
 
-        self.__target_loc: VWCoord = None  # The location to move to.
-        self.__dance_time: Tuple[int, int] = ()  # Time interval where the agent should be dancing.
+        self.__target_loc: PyOptional[VWCoord] = PyOptional.empty()  # The location to move to.
+        self.__dance_time: List[int] = []  # Time interval where the agent should be dancing.
 
-    def sub_revise(self, observation: VWObservation, messages: Iterable[BccMessage]):
+    def sub_revise(self):
         '''
         This function gets called after all of the basic state updates happen in DanceMind.
         The behaviour is quite simple, we just listen for messages and set attributes in
         response to specific messages.
         '''
 
-        ignore(observation)
+        self.__leader: bool = self.get_own_colour() == VWColour.orange  # Am I the orange agent? Orange is the leader.
 
-        self.__leader: bool = self.get_colour() == VWColour.orange  # Am I the orange agent? Orange is the leader.
-
-        for message in map(lambda m: m.get_content(), messages):
+        for message in map(lambda m: m.get_content(), self.get_latest_received_messages()):
             self.__parse_message(message=message)
 
-    def __parse_message(self, message: Union[int, float, str, list, tuple, dict]) -> None:
+    def __parse_message(self, message: Any) -> None:
         '''
         This function is used to parse messages when pattern matching is not available.
         '''
@@ -57,13 +52,13 @@ class ColourMind(DanceMind):
             assert isinstance(message, list)
             assert len(message) == 2
             assert isinstance(message[0], str)
-            assert isinstance(message[1], Tuple)
+            assert isinstance(message[1], list)
             assert len(message[1]) == 2
             assert all(isinstance(x, int) for x in message[1])
 
             if message[0] == "goto":
-                self.__target_loc = VWCoord(x=message[1][0], y=message[1][1])
-            elif message[0] == "dance":
+                self.__target_loc = PyOptional.of(VWCoord(x=message[1][0], y=message[1][1]))
+            elif message[0] == "dance" and isinstance(message[1], list):
                 self.__dance_time = message[1]
             else:
                 print(error_message)
@@ -79,7 +74,7 @@ class ColourMind(DanceMind):
             return False
         elif not isinstance(message[0], str):
             return False
-        elif not isinstance(message[1], tuple):
+        elif not isinstance(message[1], list):
             return False
         elif len(message[1]) != 2:
             return False
@@ -88,7 +83,7 @@ class ColourMind(DanceMind):
         else:
             return True
 
-    def decide(self):
+    def decide(self) -> Iterable[VWAction]:
         '''
         This is a slightly more complex function which implements some teleo-reactive
         behaviour but is essentially just a big if statement. Each "production rule"
@@ -115,26 +110,26 @@ class ColourMind(DanceMind):
         # Rule 1:
         # should dance -> dance
         if self.__update_dancing_status():
-            return self.__dance()
+            return [self.__dance()]
         # Rule 2:
         # no meeting point agreed and leader -> choose and broadcast meeting point
-        elif not self.__target_loc and self.__leader:
+        elif self.__target_loc.is_empty() and self.__leader:
             loc1, loc2 = ColourMind.__gen_meeting_locs()
-            self.__target_loc = loc1
+            self.__target_loc = PyOptional.of(loc1)
 
-            return VWBroadcastAction(message=["goto", (loc2.get_x(), loc2.get_y())], sender_id=self.get_id())
+            return [VWBroadcastAction(message=["goto", [loc2.get_x(), loc2.get_y()]], sender_id=self.get_own_id())]
         # Rule 3:
         # no meeting point and not leader -> do nothing (wait for a meeting point)
-        elif not self.__target_loc and not self.__leader:
-            return VWIdleAction()
+        elif self.__target_loc.is_empty() and not self.__leader:
+            return [VWIdleAction()]
         # Rule 4:
         # not at target location -> move to target location (subgoal)
         elif not self.__at_target_loc():
-            return self.__move_to_target()
+            return [self.__move_to_target()]
         # Rule 5:
         # at target location but not facing friend -> turn
         elif self.__at_target_loc() and not self.__can_see_friend():
-            return VWTurnAction(VWDirection.left)
+            return [VWTurnAction(VWDirection.left)]
         # Rule 6:
         # at target location and can see friend and no agreed dancing time -> choose and
         #   broadcast dance time
@@ -142,15 +137,15 @@ class ColourMind(DanceMind):
             dance_start: int = self.get_tick() + randint(2, 5)
             dance_end: int = dance_start + randint(5, 10)
 
-            self.__dance_time = dance_start, dance_end
+            self.__dance_time = [dance_start, dance_end]
 
-            return VWBroadcastAction(message=["dance", self.__dance_time], sender_id=self.get_id())
+            return [VWBroadcastAction(message=["dance", self.__dance_time], sender_id=self.get_own_id())]
         else:
             # otherwise do nothing
-            return VWIdleAction()
+            return [VWIdleAction()]
 
     @staticmethod
-    def __gen_meeting_locs(max_n: int=8) -> Tuple[VWCoord, VWCoord]:
+    def __gen_meeting_locs(max_n: int=8) -> List[VWCoord]:
         '''
         A function to generate a meeting point, a default grid size of 8 is assumed.
         Picks a random point that isn't on the grid perimeter (adjacent to a wall).
@@ -162,7 +157,7 @@ class ColourMind(DanceMind):
         x2: int = x1 + offset[0]
         y2: int = y1 + offset[1]
 
-        return VWCoord(x=x1, y=y1), VWCoord(x=x2, y=y2)
+        return [VWCoord(x=x1, y=y1), VWCoord(x=x2, y=y2)]
 
     def __move_to_target(self) -> VWAction:
         '''
@@ -173,7 +168,7 @@ class ColourMind(DanceMind):
         '''
 
         # Starts by finding the x and y deltas
-        diff: VWCoord = VWCoord(x=self.get_coord().get_x() - self.__target_loc.get_x(), y=self.get_coord().get_y() - self.__target_loc.get_y())
+        diff: VWCoord = VWCoord(x=self.get_own_position().get_x() - self.__target_loc.or_else_raise().get_x(), y=self.get_own_position().get_y() - self.__target_loc.or_else_raise().get_y())
 
         # infer desired orientation based on x and y deltas
         if diff.get_y() > 0:
@@ -190,20 +185,19 @@ class ColourMind(DanceMind):
         assert isinstance(desired_ori, VWOrientation)
 
         # if orientation is correct go forward, otherwise turn
-        return VWMoveAction() if desired_ori == self.get_orientation() else VWTurnAction(VWDirection.left)
+        return VWMoveAction() if desired_ori == self.get_own_orientation() else VWTurnAction(VWDirection.left)
 
     def __at_target_loc(self) -> bool:
         ''' Am I at the target location? '''
-        return self.get_coord() == self.__target_loc
+        return self.get_own_position() == self.__target_loc.or_else_raise()
 
     def __can_see_friend(self) -> bool:
         ''' Can I see an agent directly ahead? '''
-        return not self.get_obs().is_wall_immediately_ahead() and self.get_obs().get_forward().has_cleaning_agent()
+        return not self.get_latest_observation().is_wall_immediately_ahead() and self.get_latest_observation().get_forward().or_else_raise().has_cleaning_agent()
 
     def __update_dancing_status(self) -> bool:
         ''' Is it time to dance? '''
         if not self.__dance_time:
-
             return False
         elif self.get_tick() < self.__dance_time[0]:
             print(f"I can't wait to dance in {self.__dance_time[0]-self.get_tick()} cycles!")
@@ -217,11 +211,13 @@ class ColourMind(DanceMind):
             # Once the dancing window ends, reset the dance time and target location, now
             # the behaviour will start "from the beginning" choosing a new meeting location
             # and doing another dance.
-            self.__dance_time = ()
-            self.__target_loc = None
+            self.__dance_time = []
+            self.__target_loc = PyOptional.empty()
 
             print("Okay enough dancing let's be serious... :-|")
 
+            return False
+        else:
             return False
 
     def __dance(self) -> VWAction:

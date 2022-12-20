@@ -1,16 +1,18 @@
-from typing import Tuple, Dict, Type, List
+from typing import Tuple, Dict, Type, List, Optional
 from sys import version_info
 from traceback import print_exc
 from signal import signal as handle_signal
 from requests import get, Response
 from time import sleep
 from screeninfo import get_monitors
+from pyoptional.pyoptional import PyOptional
 
 from .vwconfig_manager import VWConfigManager
 from .model.actor.mind.surrogate.vwactor_mind_surrogate import VWActorMindSurrogate
 from .model.actor.mind.surrogate.vwuser_mind_surrogate import VWUserMindSurrogate
 from .common.vwuser_difficulty import VWUserDifficulty
 from .common.vwcolour import VWColour
+from .common.vwexceptions import VWInternalError
 from .runner.vwrunner import VWRunner
 from .runner.vwgui_runner import VWGUIRunner
 from .runner.vwguiless_runner import VWGUIlessRunner
@@ -48,7 +50,7 @@ class VacuumWorld():
 
         self.__vw_version_check()
 
-    def run(self, default_mind: VWActorMindSurrogate=None, white_mind: VWActorMindSurrogate=None, green_mind: VWActorMindSurrogate=None, orange_mind: VWActorMindSurrogate=None, **kwargs) -> None:
+    def run(self, default_mind: PyOptional[VWActorMindSurrogate]=PyOptional.empty(), white_mind: PyOptional[VWActorMindSurrogate]=PyOptional.empty(), green_mind: PyOptional[VWActorMindSurrogate]=PyOptional.empty(), orange_mind: PyOptional[VWActorMindSurrogate]=PyOptional.empty(), **kwargs) -> None:
         minds: Dict[VWColour, VWActorMindSurrogate] = VacuumWorld.__process_minds(default_mind=default_mind, white_mind=white_mind, green_mind=green_mind, orange_mind=orange_mind)
         minds[VWColour.user] = VWUserMindSurrogate(difficulty_level=VWUserDifficulty(self.__config["default_user_mind_level"]))
 
@@ -162,33 +164,45 @@ class VacuumWorld():
         return False
 
     def __run(self, runner_type: Type[VWRunner], minds: Dict[VWColour, VWActorMindSurrogate], **kwargs) -> None:
+        runner: PyOptional[VWRunner] = self.__get_runner(runner_type=runner_type, minds=minds, **kwargs)
+
         try:
-            runner: VWRunner = runner_type(config=self.__config, minds=minds, allowed_args=VacuumWorld.ALLOWED_RUN_ARGS, **kwargs)
-            runner.start()
-            runner.join()
+            if runner.is_present():
+                runner.or_else_raise().start()
+                runner.or_else_raise().join()
+            else:
+                raise VWInternalError("Could not create runner.")
         except KeyboardInterrupt:
             print("Received a SIGINT (possibly via CTRL+C). Stopping...")
 
-            assert "runner" in locals()
-
-            runner.propagate_stop_signal()
-            runner.join()
+            if runner.is_present():
+                runner.or_else_raise().propagate_stop_signal()
+                runner.or_else_raise().join()
         except Exception:
             print_exc()
             print("Fatal error. Bye")
 
-    @staticmethod
-    def __process_minds(default_mind: VWActorMindSurrogate=None, white_mind: VWActorMindSurrogate=None, green_mind: VWActorMindSurrogate=None, orange_mind: VWActorMindSurrogate=None) -> Dict[VWColour, VWActorMindSurrogate]:
-        assert default_mind is not None or white_mind is not None and green_mind is not None and orange_mind is not None
+    def __get_runner(self, runner_type: Type[VWRunner], minds: Dict[VWColour, VWActorMindSurrogate], **kwargs) -> PyOptional[VWRunner]:
+        try:
+            return PyOptional.of(runner_type(config=self.__config, minds=minds, allowed_args=VacuumWorld.ALLOWED_RUN_ARGS, **kwargs))
+        except Exception:
+            return PyOptional.empty()
 
-        if all(m is not None for m in [default_mind, white_mind, green_mind, orange_mind]):
-            print("WARNING: You have specified a default mind surrogate and a mind surrogate for each of the agent colours. The default mind surrogate will be ignored.")
+    @staticmethod
+    def __process_minds(default_mind: PyOptional[VWActorMindSurrogate]=PyOptional.empty(), white_mind: PyOptional[VWActorMindSurrogate]=PyOptional.empty(), green_mind: PyOptional[VWActorMindSurrogate]=PyOptional.empty(), orange_mind: PyOptional[VWActorMindSurrogate]=PyOptional.empty()) -> Dict[VWColour, VWActorMindSurrogate]:
+        if any(m is None for m in [default_mind, white_mind, green_mind, orange_mind]):
+            raise ValueError("It is strictly forbidden to explicitly set to `None` one or more mind surrogates.")
+        elif default_mind.is_empty() and any(m.is_empty() for m in [white_mind, green_mind, orange_mind]):
+            raise ValueError("You must provide a `default_mind` surrogate, or all coloured mind surrogates (i.e., `green_mind`, `orange_mind`, and `white_mind`).")
+
+        if all(m.is_present() for m in [default_mind, white_mind, green_mind, orange_mind]):
+            print("WARNING: You have specified a `default_mind` surrogate and a mind surrogate for each of the agent colours. The `default_mind` surrogate will be ignored.")
 
         # The minds are validated at a later stage.
         return {
-            VWColour.white: white_mind if white_mind is not None else default_mind,
-            VWColour.green: green_mind if green_mind is not None else default_mind,
-            VWColour.orange: orange_mind if orange_mind is not None else default_mind
+            VWColour.white: white_mind.or_else_raise() if white_mind.is_present() else default_mind.or_else_raise(),
+            VWColour.green: green_mind.or_else_raise() if green_mind.is_present() else default_mind.or_else_raise(),
+            VWColour.orange: orange_mind.or_else_raise() if orange_mind.is_present() else default_mind.or_else_raise()
         }
 
     @staticmethod
@@ -197,10 +211,12 @@ class VacuumWorld():
         if hasattr(signal_module, "SIGTSTP"):
             from signal import SIGTSTP
 
-            handle_signal(SIGTSTP, lambda _, __: print("SIGTSTP received and ignored."))
+            handle_signal(SIGTSTP, lambda num, _: print(f"SIGTSTP (signal number {num}) received and ignored."))
 
 
 # For back-compatibility with 4.2.5.
-def run(default_mind: VWActorMindSurrogate=None, white_mind: VWActorMindSurrogate=None, green_mind: VWActorMindSurrogate=None, orange_mind: VWActorMindSurrogate=None, **kwargs) -> None:
+def run(default_mind: Optional[VWActorMindSurrogate]=None, white_mind: Optional[VWActorMindSurrogate]=None, green_mind: Optional[VWActorMindSurrogate]=None, orange_mind: Optional[VWActorMindSurrogate]=None, **kwargs) -> None:
     vw: VacuumWorld = VacuumWorld()
-    vw.run(default_mind=default_mind, white_mind=white_mind, green_mind=green_mind, orange_mind=orange_mind, **kwargs)
+
+    # The use of `Optional` instead of `PyOptional` is intentional, so that the user can avoid wrapping the minds in `PyOptional`.
+    vw.run(default_mind=PyOptional.of_nullable(default_mind), white_mind=PyOptional.of_nullable(white_mind), green_mind=PyOptional.of_nullable(green_mind), orange_mind=PyOptional.of_nullable(orange_mind), **kwargs)

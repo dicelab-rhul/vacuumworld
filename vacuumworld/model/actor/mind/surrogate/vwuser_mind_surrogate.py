@@ -1,9 +1,6 @@
-from typing import Iterable, List
+from typing import List, Iterable
 from random import random
 from itertools import accumulate
-
-from pystarworldsturbo.common.message import BccMessage
-from pystarworldsturbo.utils.utils import ignore
 
 from .vwactor_mind_surrogate import VWActorMindSurrogate
 from .....common.vwuser_difficulty import VWUserDifficulty
@@ -12,7 +9,6 @@ from ....actions.vwmove_action import VWMoveAction
 from ....actions.vwturn_action import VWTurnAction
 from ....actions.vwdrop_action import VWDropAction
 from ....actions.vwidle_action import VWIdleAction
-from .....common.vwobservation import VWObservation
 from .....common.vwcolour import VWColour
 from .....common.vwdirection import VWDirection
 
@@ -43,26 +39,24 @@ class VWUserMindSurrogate(VWActorMindSurrogate):
         self.__difficulty_level = difficulty_level
 
     def __is_on_dirt(self) -> bool:
-        return self.__observation.get_center() and self.__observation.get_center().has_dirt()
+        return self.get_latest_observation().get_center().filter(lambda center: center.has_dirt()).is_present()
 
     def __is_actor_ahead(self) -> bool:
-        return not self.__observation.is_wall_immediately_ahead() and self.__observation.get_forward().has_actor()
+        return not self.get_latest_observation().is_wall_immediately_ahead() and self.get_latest_observation().get_forward().filter(lambda forward: forward.has_actor()).is_present()
 
     def __is_actor_on_the_left(self) -> bool:
-        return not self.__observation.is_wall_immediately_to_the_left() and self.__observation.get_left().has_actor()
+        return not self.get_latest_observation().is_wall_immediately_to_the_left() and self.get_latest_observation().get_left().filter(lambda left: left.has_actor()).is_present()
 
     def __is_actor_on_the_right(self) -> bool:
-        return not self.__observation.is_wall_immediately_to_the_right() and self.__observation.get_right().has_actor()
+        return not self.get_latest_observation().is_wall_immediately_to_the_right() and self.get_latest_observation().get_right().filter(lambda right: right.has_actor()).is_present()
 
-    def revise(self, observation: VWObservation, messages: Iterable[BccMessage]) -> None:
+    def revise(self) -> None:
         '''
-        Stores the given `VWObservation` for later use, and ignores each `BccMessage`.
+        The `VWUser` does not need to revise anything.
         '''
-        self.__observation: VWObservation = observation
+        pass
 
-        ignore(messages)
-
-    def decide(self) -> VWPhysicalAction:
+    def decide(self) -> Iterable[VWPhysicalAction]:
         '''
         Decides the next `VWPhysicalAction` to be attempted by the `VWUser` associated with this `VWUserMindSurrogate`.
 
@@ -72,17 +66,17 @@ class VWUserMindSurrogate(VWActorMindSurrogate):
 
         * If the `VWUserDifficulty` of this `VWUserMindSurrogate` is `VWUserDifficulty.hard`, then the `VWUser` will try to avoid each `VWActor` that comes too close.
         '''
-        if not self.__observation:
-            return VWIdleAction()
+        if not self.get_latest_observation():
+            return [VWIdleAction()]
         elif self.__difficulty_level == VWUserDifficulty.easy:
-            return self.__be_kind()
+            return [self.__be_kind()]
         elif self.__difficulty_level == VWUserDifficulty.hard:
-            return self.__be_inconsiderate()
+            return [self.__be_inconsiderate()]
         else:
             raise ValueError("Unrecognised user difficulty level: {}.".format(self.__difficulty_level))
 
     def __be_kind(self) -> VWPhysicalAction:
-        if self.__observation.is_wall_immediately_ahead():
+        if self.get_latest_observation().is_wall_immediately_ahead():
             return self.__decide_if_wall_ahead_and_kind()
         elif self.__is_on_dirt():
             # If there is already a dirt on this location, move or turn.
@@ -92,17 +86,17 @@ class VWUserMindSurrogate(VWActorMindSurrogate):
             return VWUserMindSurrogate.__act_randomly(weights=[0.2, 0.2, 0.45, 0.075, 0.075])
 
     def __decide_if_wall_ahead_and_kind(self) -> VWPhysicalAction:
-        if self.__observation.is_wall_immediately_to_the_left():
+        if self.get_latest_observation().is_wall_immediately_to_the_left():
             return VWTurnAction(direction=VWDirection.right)
-        elif self.__observation.is_wall_immediately_to_the_right():
+        elif self.get_latest_observation().is_wall_immediately_to_the_right():
             return VWTurnAction(direction=VWDirection.left)
         else:
             return VWUserMindSurrogate.__turn_randomly()
 
     def __decide_if_on_dirt_and_kind(self) -> VWPhysicalAction:
-        if self.__observation.is_wall_immediately_to_the_left():
+        if self.get_latest_observation().is_wall_immediately_to_the_left():
             return VWUserMindSurrogate.__move_randomly(weights=[0.6, 0.0, 0.4])
-        elif self.__observation.is_wall_immediately_to_the_right():
+        elif self.get_latest_observation().is_wall_immediately_to_the_right():
             return VWUserMindSurrogate.__move_randomly(weights=[0.6, 0.4, 0.0])
         else:
             return VWUserMindSurrogate.__move_randomly(weights=[0.5, 0.25, 0.25])
@@ -154,7 +148,7 @@ class VWUserMindSurrogate(VWActorMindSurrogate):
 
     def __be_inconsiderate(self) -> VWPhysicalAction:
         # Wall ahead.
-        if self.__observation.is_wall_immediately_ahead():
+        if self.get_latest_observation().is_wall_immediately_ahead():
             return self.__decide_if_wall_ahead_and_inconsiderate()
         # Actor ahead.
         elif self.__is_actor_ahead():
@@ -163,16 +157,16 @@ class VWUserMindSurrogate(VWActorMindSurrogate):
         elif self.__is_actor_on_the_left() and self.__is_actor_on_the_right():
             return VWUserMindSurrogate.__move_or_drop_randomly(weights=[0.1, 0.1, 0.8])
         # Actor on the left and no wall on the right.
-        elif self.__is_actor_on_the_left() and not self.__observation.is_wall_immediately_to_the_right():
+        elif self.__is_actor_on_the_left() and not self.get_latest_observation().is_wall_immediately_to_the_right():
             return VWUserMindSurrogate.__move_randomly(weights=[0.5, 0.0, 0.5])
         # Actor on the right and no wall on the left.
-        elif self.__is_actor_on_the_right() and not self.__observation.is_wall_immediately_to_the_left():
+        elif self.__is_actor_on_the_right() and not self.get_latest_observation().is_wall_immediately_to_the_left():
             return VWUserMindSurrogate.__move_randomly(weights=[0.5, 0.5, 0.0])
         # Wall on the left.
-        elif self.__observation.is_wall_immediately_to_the_left():
+        elif self.get_latest_observation().is_wall_immediately_to_the_left():
             return self.__decide_if_wall_on_the_left_and_inconsiderate()
         # Wall on the right.
-        elif self.__observation.is_wall_immediately_to_the_right():
+        elif self.get_latest_observation().is_wall_immediately_to_the_right():
             return self.__decide_if_wall_on_the_right_and_inconsiderate()
         # Any other possibility.
         else:
@@ -180,9 +174,9 @@ class VWUserMindSurrogate(VWActorMindSurrogate):
 
         # Always wall ahead
     def __decide_if_wall_ahead_and_inconsiderate(self) -> VWPhysicalAction:
-        if self.__observation.is_wall_immediately_to_the_left():  # Wall on the left.
+        if self.get_latest_observation().is_wall_immediately_to_the_left():  # Wall on the left.
             return VWTurnAction(direction=VWDirection.right)
-        elif self.__observation.is_wall_immediately_to_the_right():  # Wall on the right.
+        elif self.get_latest_observation().is_wall_immediately_to_the_right():  # Wall on the right.
             return VWTurnAction(direction=VWDirection.left)
         elif self.__is_actor_on_the_left() and self.__is_actor_on_the_right():  # Both left and right are occupied by actors.
             return VWUserMindSurrogate.__turn_randomly()
@@ -197,9 +191,9 @@ class VWUserMindSurrogate(VWActorMindSurrogate):
 
     # Always actor ahead.
     def __decide_if_agent_ahead_and_inconsiderate(self) -> VWPhysicalAction:
-        if self.__observation.is_wall_immediately_to_the_left():  # Wall on the left.
+        if self.get_latest_observation().is_wall_immediately_to_the_left():  # Wall on the left.
             return VWTurnAction(direction=VWDirection.right)
-        elif not self.__observation.is_wall_immediately_to_the_right():  # Wall on the right.
+        elif not self.get_latest_observation().is_wall_immediately_to_the_right():  # Wall on the right.
             return VWTurnAction(direction=VWDirection.left)
         elif self.__is_actor_on_the_left() and self.__is_actor_on_the_right():  # Both left and right are occupied by actors.
             return self.__drop_random_dirt()  # Dropping a dirt in front of the actor, if possible.

@@ -145,71 +145,57 @@ class VWCoord():
         }
 
     def __add__(self, other: Union[int, VWCoord, List[int], Tuple[int, int]]) -> VWCoord:
-        assert other is not None
-
-        if isinstance(other, int):
-            return VWCoord(x=self[0] + other, y=self[1] + other)
+        if other is None:
+            raise ValueError("Cannot add `None` to a `VWCoord`.")
+        elif isinstance(other, int):
+            return VWCoord(x=self.__x + other, y=self.__y + other)
+        elif isinstance(other, (Tuple, List)) and len(other) == 2 and isinstance(other[0], int) and isinstance(other[1], int):
+            return VWCoord(x=self.__x + other[0], y=self.__y + other[1])
         elif isinstance(other, VWCoord):
-            return VWCoord(x=self[0] + other[0], y=self[1] + other[1])
+            return VWCoord(x=self.__x + other.get_x(), y=self.__y + other.get_y())
         else:
-            assert type(other) in [list, tuple] and len(other) == len(self)
-            assert isinstance(other[0], int) and isinstance(other[1], int)
-
-            return VWCoord(x=self[0] + other[0], y=self[1] + other[1])
+            raise ValueError(f"Unsupported object to add to a `VWCoord`: {other}.")
 
     def __sub__(self, other: Union[int, VWCoord, List[int], Tuple[int, int]]) -> VWCoord:
-        assert other is not None
-
-        if isinstance(other, int):
-            return VWCoord(x=self[0] - other, y=self[1] - other)
+        if other is None:
+            raise ValueError("Cannot subtract `None` from a `VWCoord`.")
+        elif isinstance(other, int):
+            return VWCoord(x=self.__x - other, y=self.__y - other)
+        elif isinstance(other, (Tuple, List)) and len(other) == 2 and isinstance(other[0], int) and isinstance(other[1], int):
+            return VWCoord(x=self.__x - other[0], y=self.__y - other[1])
         elif isinstance(other, VWCoord):
-            return VWCoord(x=self[0] - other[0], y=self[1] - other[1])
+            return VWCoord(x=self.__x - other.get_x(), y=self.__y - other.get_y())
         else:
-            assert type(other) in [list, tuple] and len(other) == len(self)
-            assert isinstance(other[0], int) and isinstance(other[1], int)
-
-            return VWCoord(x=self[0] - other[0], y=self[1] - other[1])
+            raise ValueError(f"Unsupported object to subtract from a `VWCoord`: {other}.")
 
     def __mul__(self, other: Union[int, VWCoord, List[int], Tuple[int, int]]) -> VWCoord:
-        assert other is not None
-
-        if isinstance(other, int):
-            return VWCoord(x=self[0] * other, y=self[1] * other)
+        if other is None:
+            raise ValueError("Cannot multiply a `VWCoord` by `None`.")
+        elif isinstance(other, int):
+            return VWCoord(x=self.__x * other, y=self.__y * other)
+        elif isinstance(other, (Tuple, List)) and len(other) == 2 and isinstance(other[0], int) and isinstance(other[1], int):
+            return VWCoord(x=self.__x * other[0], y=self.__y * other[1])
         elif isinstance(other, VWCoord):
-            return VWCoord(x=self[0] * other[0], y=self[1] * other[1])
+            return VWCoord(x=self.__x * other.get_x(), y=self.__y * other.get_y())
         else:
-            assert type(other) in [list, tuple] and len(other) == len(self)
-            assert isinstance(other[0], int) and isinstance(other[1], int)
-
-            return VWCoord(x=self[0] * other[0], y=self[1] * other[1])
+            raise ValueError(f"Unsupported object for a multiplication with `VWCoord`: {other}.")
 
     # Integer division.
     def __floordiv__(self, other: Union[int, VWCoord, List[int], Tuple[int, int]]) -> VWCoord:
-        assert other is not None
-
-        if isinstance(other, int):
-            return VWCoord(x=self[0] // other, y=self[1] // other)
-        elif isinstance(other, VWCoord):
-            return VWCoord(x=self[0] // other[0], y=self[1] // other[1])
+        if other is None:
+            raise ValueError("Cannot divide a `VWCoord` by `None`.")
+        elif isinstance(other, int) and other != 0:
+            return VWCoord(x=self.__x * other, y=self.__y * other)
+        elif isinstance(other, (Tuple, List)) and len(other) == 2 and isinstance(other[0], int) and isinstance(other[1], int) and other[0] != 0 and other[1] != 0:
+            return VWCoord(x=self.__x * other[0], y=self.__y * other[1])
+        elif isinstance(other, VWCoord) and other.get_x() != 0 and other.get_y() != 0:
+            return VWCoord(x=self.__x * other.get_x(), y=self.__y * other.get_y())
         else:
-            assert type(other) in [list, tuple] and len(other) == len(self)
-            assert isinstance(other[0], int) and isinstance(other[1], int)
-
-            return VWCoord(x=self[0] // other[0], y=self[1] // other[1])
+            raise ValueError(f"Unsupported object for a multiplication with `VWCoord`: {other}.")
 
     # We force `/` to work like `//`.
     def __truediv__(self, other: Union[int, VWCoord, List[int], Tuple[int, int]]) -> VWCoord:
-        assert other is not None
-
-        if isinstance(other, int):
-            return self // other
-        elif isinstance(other, VWCoord):
-            return self // other
-        else:
-            assert type(other) in [list, tuple] and len(other) == len(self)
-            assert isinstance(other[0], int) and isinstance(other[1], int)
-
-            return self // (int(other[0]), int(other[1]))
+        return self.__floordiv__(other)
 
     def __str__(self) -> str:
         return "({}, {})".format(self.__x, self.__y)

@@ -1,7 +1,10 @@
-from typing import List, Tuple, Iterable, Union, Optional
+from typing import List, Tuple, Iterable, cast
+from pyoptional.pyoptional import PyOptional
 
 from pystarworldsturbo.common.message import BccMessage
 from pystarworldsturbo.elements.actor import Actor
+from pystarworldsturbo.elements.sensor import Sensor
+from pystarworldsturbo.elements.actuator import Actuator
 
 from .vwactor_behaviour_debugger import VWActorBehaviourDebugger
 from .mind.vwactor_mind import VWMind
@@ -18,58 +21,57 @@ class VWActor(Actor):
     '''
     This abstract class specifies the actors in the VacuumWorld universe.
     '''
-    def __init__(self, mind: VWMind, sensors: List[VWSensor], actuators: List[VWActuator]) -> None:
-        super(VWActor, self).__init__(mind=mind, sensors=sensors, actuators=actuators)
+    def __init__(self, mind: VWMind, sensors: List[VWSensor]=[], actuators: List[VWActuator]=[]) -> None:
+        super(VWActor, self).__init__(mind=mind, sensors=[s for s in sensors if isinstance(s, Sensor)], actuators=[a for a in actuators if isinstance(a, Actuator)])
 
     def get_mind(self) -> VWMind:
         '''
         Returns the `VWMind` of this `VWActor`.
         '''
-        return super(VWActor, self).get_mind()
+        return cast(VWMind, super(VWActor, self).get_mind())
 
-    def get_listening_sensor(self) -> Optional[VWListeningSensor]:
+    def get_listening_sensor(self) -> PyOptional[VWListeningSensor]:
         '''
-        Return the `VWListeningSensor` of this `VWActor` if any, `None` otherwise.
+        Return a `PyOptional` wrapping the `VWListeningSensor` of this `VWActor` if any, otherwise returns an empty `PyOptional`.
         '''
-        return super(VWActor, self).get_listening_sensor()
+        return super(VWActor, self).get_listening_sensor().filter(lambda s: isinstance(s, VWListeningSensor)).map(lambda s: cast(VWListeningSensor, s))
 
-    def get_observation_sensor(self) -> Optional[VWObservationSensor]:
+    def get_observation_sensor(self) -> PyOptional[VWObservationSensor]:
         '''
-        Returns the `VWObservationSensor` of this `VWActor` if any, `None` otherwise.
+        Returns a `PyOptional` wrapping the `VWObservationSensor` of this `VWActor` if any, otherwise returns an empty `PyOptional`.
         '''
-        return super(VWActor, self).get_sensor_for(event_type=VWObservation)
+        return super(VWActor, self).get_sensor_for(event_type=VWObservation).filter(lambda s: isinstance(s, VWObservationSensor)).map(lambda s: cast(VWObservationSensor, s))
 
-    def get_physical_actuator(_) -> Optional[VWActuator]:
+    def get_physical_actuator(self) -> PyOptional[VWActuator]:
         '''
         Abstract method to be implemented by subclasses.
 
-        It should return the `VWActuator` of this `VWActor` that is responsible for the execution of each `VWPhysicalAction`.
+        It should return a `PyOptional` wrapping the `VWActuator` of this `VWActor` that is responsible for the execution of each `VWPhysicalAction`, or an empty `PyOptional` if no such `VWActuator` exists.
         '''
 
         raise NotImplementedError()
 
-    def get_communicative_actuator(self) -> Optional[VWCommunicativeActuator]:
+    def get_communicative_actuator(self) -> PyOptional[VWCommunicativeActuator]:
         '''
-        Returns the `VWCommunicativeActuator` of this `VWActor` if any, `None` otherwise.
+        Returns a `PyOptional` wrapping the `VWCommunicativeActuator` of this `VWActor` if any, otherwise returns an empty `PyOptional`.
         '''
-        candidate: VWCommunicativeActuator = super(VWActor, self).get_actuator_for(event_type=VWSpeakAction)
+        return super(VWActor, self).get_actuator_for(event_type=VWSpeakAction).filter(lambda a: isinstance(a, VWCommunicativeActuator)).map(lambda a: cast(VWCommunicativeActuator, a)).filter(lambda a: a.is_subscribed_to(event_type=VWBroadcastAction))
 
-        if candidate:
-            assert candidate.is_subscribed_to(event_type=VWBroadcastAction)
-
-            return candidate
-        else:
-            return None
-
-    def perceive(self) -> Tuple[VWObservation, Iterable[BccMessage]]:
+    def test_get_percepts(self) -> Tuple[VWObservation, Iterable[BccMessage]]:
         '''
-        Performs the `List[Observation]` and the `List[BccMessage]` that are available for this `VWActor` during this cycle.
+        WARNING: this method is only used for testing purposes. It must be public.
+        '''
+        return self.__get_percepts()
+
+    def __get_percepts(self) -> Tuple[VWObservation, Iterable[BccMessage]]:
+        '''
+        Returns the `List[Observation]` and the `List[BccMessage]` that are available for this `VWActor` during this cycle.
         '''
         observations: List[VWObservation] = self.__fetch_observations()
         messages: List[BccMessage] = self.__fetch_messages()
 
-        if len(observations) == 0:  # E.g., if a new `VWActor` is dropped into the `VWEnvironment` while the simulation is paused.
-            return VWObservation.create_empty_observation(), messages
+        assert len(observations) > 0
+
         if len(observations) > 1:
             return self.__merge_observations(observations), messages
         else:
@@ -77,27 +79,22 @@ class VWActor(Actor):
 
     def __fetch_observations(self) -> List[VWObservation]:
         observations: List[VWObservation] = []
-        observation_sensor: VWObservationSensor = self.get_observation_sensor()
-
-        if not observation_sensor:
-            raise VWPerceptionException("No sensor found for {}.".format(VWObservation))
+        observation_sensor: VWObservationSensor = self.get_observation_sensor().or_else_raise(VWPerceptionException("No sensor found for {}.".format(VWObservation)))
 
         # There can be more than one `VWObservation` if more than one `VWAction` has been attempted.
-        while self.get_observation_sensor().has_perception():
-            observations.append(self.get_observation_sensor().source())
+        while observation_sensor.has_perception():
+            observations.append(observation_sensor.source().or_else_raise())
 
         return observations
 
     def __fetch_messages(self) -> List[BccMessage]:
         messages: List[BccMessage] = []
 
-        if self.get_listening_sensor().has_perception():
-            tmp: Union[BccMessage, Iterable[BccMessage]] = self.get_listening_sensor().source()
+        listening_sensor: PyOptional[VWListeningSensor] = self.get_listening_sensor()
 
-            if isinstance(tmp, BccMessage):
-                messages.append(tmp)
-            elif isinstance(tmp, Iterable):
-                messages += tmp
+        if listening_sensor.is_present():
+            while listening_sensor.get().has_perception():
+                messages += [m for m in listening_sensor.get().source()]
 
         return messages
 
@@ -121,41 +118,32 @@ class VWActor(Actor):
         VWActorBehaviourDebugger.debug()
 
         # Fetch the perceptions.
-        observation, messages = self.perceive()
+        observation, messages = self.__get_percepts()
+
+        # Stores the perceptions into the mind.
+        self.get_mind().perceive(observation=observation, messages=messages)
 
         # Revise the internal state/beliefs based on the perceptions.
-        self.get_mind().revise(observation=observation, messages=messages)
+        self.get_mind().revise()
 
-        # Decide the next `VWAction` or `Tuple[VWAction]` to attempt.
+        # Decide the next `VWAction` or `List[VWAction]` to attempt.
         self.get_mind().decide()
 
-        # Attempt the execution of the `VWAction` or `Tuple[VWAction]`.
-        self.execute()
+        # Attempt the execution of the `List[VWAction]` decided by the mind.
+        actions_to_attempt: List[VWAction] = self.get_mind().execute()
 
-    def execute(self) -> None:
-        '''
-        Attempts the execution of the `VWAction` or `Tuple[VWAction]` that has been decided by the `VWMind`.
-        '''
-        # Fetch the `VWAction` or `Tuple[VWAction]` to attempt.
-        actions_to_attempt: Tuple[VWAction] = self.get_mind().execute()
-
-        # Attempt the `VWAction` or `Tuple[VWAction]`.
+        # Attempt `List[VWAction]`.
         self.__attempt_actions(actions=actions_to_attempt)
 
-    def __attempt_actions(self, actions: Tuple[VWAction]) -> None:
+    def __attempt_actions(self, actions: List[VWAction]) -> None:
         for action in actions:
             self.get_mind().get_surrogate().update_effort(increment=action.get_effort())
 
             action.set_actor_id(self.get_id())
 
-            actuator: VWActuator = None
-
             if isinstance(action, VWPhysicalAction):
-                actuator = self.get_physical_actuator()
+                self.get_physical_actuator().or_else_raise(VWActionAttemptException("No actuator found for {}.".format(type(action)))).sink(action=action)
             elif isinstance(action, VWCommunicativeAction):
-                actuator = self.get_communicative_actuator()
-
-            if not actuator:
-                raise VWActionAttemptException("No actuator found for {}.".format(type(action)))
+                self.get_communicative_actuator().or_else_raise(VWActionAttemptException("No actuator found for {}.".format(type(action)))).sink(action=action)
             else:
-                actuator.sink(action=action)
+                raise VWActionAttemptException("Unsupported action type {}.".format(type(action)))

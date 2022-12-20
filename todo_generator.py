@@ -25,7 +25,7 @@ def main() -> None:
         if os.path.basename(dir) in DIR_EXCLUSION_LIST:
             continue
 
-        for f in filter(lambda candidate: any(filter(lambda ext: candidate.endswith(ext), INTERESTING_FILES_EXTENSIONS)), files):
+        for f in filter(lambda candidate: any(filter(lambda ext: isinstance(ext, str) and candidate.endswith(ext), INTERESTING_FILES_EXTENSIONS)), files):
             if f not in FILES_EXCLUSION_LIST:
                 lines += __look_for_todos(os.path.join(dir, f))
 
