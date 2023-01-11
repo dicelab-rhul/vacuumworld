@@ -1,5 +1,6 @@
-from tkinter import Canvas, Frame, Event, Image
+from tkinter import Canvas, Frame, Event
 from typing import Callable
+from math import floor
 
 from pystarworldsturbo.utils.utils import ignore
 
@@ -8,13 +9,13 @@ class VWSlider(Canvas):
     '''
     This class specifies a slider widget for the VacuumWorld GUI.
     '''
-    def __init__(self, parent: Frame, config: dict, release_callback: Callable, slide_callback: Callable, width: float, height: float, increments: float=0, slider_width: float=8, start: float=0, **kwargs) -> None:
+    def __init__(self, parent: Frame, config: dict, release_callback: Callable, slide_callback: Callable, width: float, height: float, increments: int=0, slider_width: float=8, start: float=0, **kwargs) -> None:
         super(VWSlider, self).__init__(parent, width=width, height=height, bd=0, highlightthickness=0, relief="ridge", bg=config["bg_colour"], **kwargs)
 
         self.__release_callback: Callable = release_callback
         self.__slide_callback: Callable = slide_callback
 
-        self.__increments: float = increments
+        self.__increments: int = increments
         self.__slide_item_dim: float = slider_width
 
         self.__x: float = start  # Real position of the slider.
@@ -26,10 +27,10 @@ class VWSlider(Canvas):
         if increments:
             dx: int = int((width - self.__slide_item_dim) / self.__increments)
             self.__x = start * dx
-            self.__inc = start
+            self.__inc = floor(start)
 
-        self.background_item: Image = self.create_rectangle(0, 0, width-1, height-1, fill=config["bg_colour"])
-        self.slider_item: Image = self.create_rectangle(self.__x, 0, self.__x + self.__slide_item_dim, height, fill=config["fg_colour"])
+        self.background_item: int = self.create_rectangle(0, 0, width-1, height-1, fill=config["bg_colour"])
+        self.slider_item: int = self.create_rectangle(self.__x, 0, self.__x + self.__slide_item_dim, height, fill=config["fg_colour"])
 
         self.bind("<ButtonPress-1>", self.on_start)
         self.bind("<B1-Motion>", self.on_drag)
@@ -40,8 +41,8 @@ class VWSlider(Canvas):
         Sets the position of the slider by moving it by `inc`.
         '''
         if inc != self.__inc:
-            inc: int = max(0, min(inc, self.__increments))
-            width: int = self.winfo_width() - self.__slide_item_dim
+            inc = max(0, min(inc, self.__increments))
+            width: int = self.winfo_width() - floor(self.__slide_item_dim)
             old_x: float = self.__x
 
             self.__x = inc * int(width / self.__increments)
@@ -54,7 +55,7 @@ class VWSlider(Canvas):
                 self.__release_callback(self.__inc)
 
     def __move_slider(self, event: Event) -> None:
-        width: int = self.winfo_width() - self.__slide_item_dim
+        width: int = self.winfo_width() - floor(self.__slide_item_dim)
         x: int = event.x
 
         if x > 0 and x < width:

@@ -1,4 +1,5 @@
-from typing import Type, Optional
+from typing import Type, cast
+from pyoptional.pyoptional import PyOptional
 
 from pystarworldsturbo.environment.physics.executor_factory import ExecutorFactory
 from pystarworldsturbo.environment.physics.action_executor import ActionExecutor
@@ -25,7 +26,7 @@ class VWExecutorFactory(ExecutorFactory):
     This class is a factory for creating `ActionExecutor` objects.
     '''
     @staticmethod
-    def get_executor_for(action: VWAction) -> Optional[ActionExecutor]:
+    def get_executor_for(action: VWAction) -> PyOptional[ActionExecutor]:
         '''
         Returns an `ActionExecutor` object for the given `VWAction`, or `None` if `action` is incompatible with `VWEnvironment`.
         '''
@@ -34,18 +35,18 @@ class VWExecutorFactory(ExecutorFactory):
         action_type: Type = type(action)
 
         if action_type == VWMoveAction:
-            return VWMoveExecutor()
+            return PyOptional.of(VWMoveExecutor()).filter(lambda e: isinstance(e, ActionExecutor)).map(lambda e: cast(ActionExecutor, e))
         elif action_type == VWTurnAction:
-            return VWTurnExecutor()
+            return PyOptional.of(VWTurnExecutor()).filter(lambda e: isinstance(e, ActionExecutor)).map(lambda e: cast(ActionExecutor, e))
         elif action_type == VWCleanAction:
-            return VWCleanExecutor()
+            return PyOptional.of(VWCleanExecutor()).filter(lambda e: isinstance(e, ActionExecutor)).map(lambda e: cast(ActionExecutor, e))
         elif action_type == VWDropAction:
-            return VWDropExecutor()
+            return PyOptional.of(VWDropExecutor()).filter(lambda e: isinstance(e, ActionExecutor)).map(lambda e: cast(ActionExecutor, e))
         elif action_type == VWIdleAction:
-            return VWIdleExecutor()
+            return PyOptional.of(VWIdleExecutor()).filter(lambda e: isinstance(e, ActionExecutor)).map(lambda e: cast(ActionExecutor, e))
         elif action_type == VWSpeakAction:
-            return VWSpeakExecutor()
+            return PyOptional.of(VWSpeakExecutor()).filter(lambda e: isinstance(e, ActionExecutor)).map(lambda e: cast(ActionExecutor, e))
         elif action_type == VWBroadcastAction:
-            return VWBroadcastExecutor()
+            return PyOptional.of(VWBroadcastExecutor()).filter(lambda e: isinstance(e, ActionExecutor)).map(lambda e: cast(ActionExecutor, e))
         else:
-            return None
+            return PyOptional.empty()

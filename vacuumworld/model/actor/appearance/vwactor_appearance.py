@@ -87,9 +87,24 @@ class VWActorAppearance(ActorAppearance):
         '''
         Returns a JSON representation of this `VWActorAppearance`.
 
-        No ID, progressive ID, or `VWUserDifficulty` are included.
+        No ID, progressive ID, or `VWUserDifficulty` (if applicable) are included.
         '''
         return {
+            "colour": str(self.__colour),
+            "orientation": str(self.__orientation)
+        }
+
+    def to_json_with_ids(self) -> Dict[str, str]:
+        '''
+        Returns a JSON representation of this `VWActorAppearance`.
+
+        The ID, progressive ID, are included.
+
+        `VWUserDifficulty` is not included (if applicable).
+        '''
+        return {
+            "id": self.get_id(),
+            "progressive_id": self.get_progressive_id(),
             "colour": str(self.__colour),
             "orientation": str(self.__orientation)
         }

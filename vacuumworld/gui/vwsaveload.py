@@ -4,6 +4,7 @@ from random import choice
 from string import ascii_letters
 from tkinter.filedialog import asksaveasfile, askopenfile
 from typing import List
+from pyoptional.pyoptional import PyOptional
 
 from ..model.environment.vwenvironment import VWEnvironment
 
@@ -79,7 +80,7 @@ class VWSaveStateManager():
             elif not filename.endswith(self.__vw_saved_state_extension):
                 filename += self.__vw_saved_state_extension
 
-            with asksaveasfile(mode="w", initialdir=self.__files_dir, initialfile=filename, defaultextension=self.__vw_saved_state_extension) as f:
+            with PyOptional.of_nullable(asksaveasfile(mode="w", initialdir=self.__files_dir, initialfile=filename, defaultextension=self.__vw_saved_state_extension)).or_else_raise() as f:
                 dump(obj=state, fp=f, indent=4)
                 return True
         except AttributeError:
@@ -111,7 +112,7 @@ class VWSaveStateManager():
 
     def __load_dialog(self, file: str="") -> dict:
         try:
-            with askopenfile(mode="rb", initialdir=self.__files_dir, initialfile=file) as f:
+            with PyOptional.of_nullable(askopenfile(mode="rb", initialdir=self.__files_dir, initialfile=file)).or_else_raise() as f:
                 return load(fp=f)
         except AttributeError:
             return {}

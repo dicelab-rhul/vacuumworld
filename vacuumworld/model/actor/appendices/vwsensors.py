@@ -1,4 +1,5 @@
-from typing import Iterable, Union, List, Type
+from typing import Iterable, List, Type, cast
+from pyoptional.pyoptional import PyOptional
 
 from pystarworldsturbo.elements.sensor import Sensor
 from pystarworldsturbo.common.message import BccMessage
@@ -21,11 +22,11 @@ class VWObservationSensor(VWSensor):
     def __init__(self) -> None:
         super(VWObservationSensor, self).__init__(subscribed_events=[VWObservation])
 
-    def source(self) -> VWObservation:
+    def source(self) -> PyOptional[VWObservation]:
         '''
         Fetches and returns a `VWObservation`.
         '''
-        return super(VWObservationSensor, self).source()
+        return super(VWObservationSensor, self).source().filter(lambda observation: isinstance(observation, VWObservation)).map(lambda observation: cast(VWObservation, observation))
 
 
 class VWListeningSensor(VWSensor):
@@ -35,18 +36,8 @@ class VWListeningSensor(VWSensor):
     def __init__(self) -> None:
         super(VWListeningSensor, self).__init__(subscribed_events=[BccMessage])
 
-    def source(self) -> Union[BccMessage, Iterable[BccMessage]]:
+    def source(self) -> Iterable[BccMessage]:
         '''
-        Fetches the single available `BccMessage` or all the available `BccMessage` instances (if more than one is available), and returns either the single `BccMessage`, or an `Iterable[BccMessage]`.
+        Fetches all the available `BccMessage` instances, and returns either the single `BccMessage`, or an `Iterable[BccMessage]`.
         '''
-        messages: List[BccMessage] = []
-
-        while True:
-            message: BccMessage = super(VWListeningSensor, self).source()
-
-            if message is None:
-                break
-            else:
-                messages.append(message)
-
-        return messages
+        return [m for m in super(VWListeningSensor, self).source_all() if isinstance(m, BccMessage)]

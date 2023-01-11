@@ -182,7 +182,7 @@ class TestIllegalRunInputs(TestCase):
         super(TestIllegalRunInputs, self).__init__(args)
 
         self.__config: dict = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
-        self.__minds: Dict[VWColour, VWActorMindSurrogate()] = {
+        self.__minds: Dict[VWColour, VWActorMindSurrogate] = {
             VWColour.green: VWHystereticMindSurrogate(),
             VWColour.orange: VWHystereticMindSurrogate(),
             VWColour.white: VWHystereticMindSurrogate()
@@ -251,13 +251,13 @@ class TestIllegalRunInputs(TestCase):
         '''
         Tests the `run()` function with various illegal combinations of `default_mind`, `green_mind`, `orange_mind`, and `white_mind`.
         '''
-        self.assertRaises(AssertionError, run)
-        self.assertRaises(AssertionError, run, green_mind=VWHystereticMindSurrogate())
-        self.assertRaises(AssertionError, run, orange_mind=VWHystereticMindSurrogate())
-        self.assertRaises(AssertionError, run, white_mind=VWHystereticMindSurrogate())
-        self.assertRaises(AssertionError, run, green_mind=VWHystereticMindSurrogate(), orange_mind=VWHystereticMindSurrogate())
-        self.assertRaises(AssertionError, run, green_mind=VWHystereticMindSurrogate(), white_mind=VWHystereticMindSurrogate())
-        self.assertRaises(AssertionError, run, orange_mind=VWHystereticMindSurrogate(), white_mind=VWHystereticMindSurrogate())
+        self.assertRaises(ValueError, run)
+        self.assertRaises(ValueError, run, green_mind=VWHystereticMindSurrogate())
+        self.assertRaises(ValueError, run, orange_mind=VWHystereticMindSurrogate())
+        self.assertRaises(ValueError, run, white_mind=VWHystereticMindSurrogate())
+        self.assertRaises(ValueError, run, green_mind=VWHystereticMindSurrogate(), orange_mind=VWHystereticMindSurrogate())
+        self.assertRaises(ValueError, run, green_mind=VWHystereticMindSurrogate(), white_mind=VWHystereticMindSurrogate())
+        self.assertRaises(ValueError, run, orange_mind=VWHystereticMindSurrogate(), white_mind=VWHystereticMindSurrogate())
 
     def test_malformed_surrogate_minds(self) -> None:
         '''
@@ -283,7 +283,7 @@ class TestIllegalRunInputs(TestCase):
                     VacuumWorld.ALLOWED_RUN_ARGS["default_mind"] = type(mind)
                     VacuumWorld.ALLOWED_RUN_ARGS[str(colour) + "_mind"] = type(mind)
 
-            self.assertRaises(VWInternalError, VWActorMindSurrogate.validate, mind=mind, colour=colour, surrogate_mind_type=type(mind))
+                self.assertRaises(VWInternalError, VWActorMindSurrogate.validate, mind=mind, colour=colour, surrogate_mind_type=type(mind))
 
         VacuumWorld.ALLOWED_RUN_ARGS = vw_allowed_run_args_backup
 

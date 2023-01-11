@@ -1,3 +1,4 @@
+from .surrogate.vwactor_mind_surrogate import VWActorMindSurrogate
 from .surrogate.vwuser_mind_surrogate import VWUserMindSurrogate
 from .vwactor_mind import VWMind
 
@@ -15,7 +16,12 @@ class VWUserMind(VWMind):
         '''
         Returns the `VWUserMindSurrogate` of this `VWUserMind`.
         '''
-        return VWMind.get_surrogate(self)
+        surrogate: VWActorMindSurrogate = VWMind.get_surrogate(self)
+
+        if isinstance(surrogate, VWUserMindSurrogate):
+            return surrogate
+        else:
+            raise TypeError("The surrogate of a `VWUserMind` must be a `VWUserMindSurrogate`.")
 
     def _clone_surrogate(self, surrogate: VWUserMindSurrogate) -> VWUserMindSurrogate:
         return VWUserMindSurrogate(difficulty_level=surrogate.get_difficulty_level())

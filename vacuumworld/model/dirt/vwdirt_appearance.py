@@ -36,8 +36,20 @@ class VWDirtAppearance(Identifiable):
     def to_json(self) -> Dict[str, str]:
         '''
         Returns a JSON representation of this `VWDirtAppearance`.
+
+        No ID, progressive ID, or `VWUserDifficulty` (if applicable) are included.
         '''
         return {
+            "colour": str(self.__colour)
+        }
+
+    def to_json_with_ids(self) -> Dict[str, str]:
+        '''
+        Returns a JSON representation of this `VWDirtAppearance`, including its ID and progressive ID.
+        '''
+        return {
+            "id": self.get_id(),
+            "progressive_id": self.get_progressive_id(),
             "colour": str(self.__colour)
         }
 
