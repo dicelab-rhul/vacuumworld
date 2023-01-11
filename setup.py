@@ -8,7 +8,7 @@ import os
 
 name: str = "vacuumworld"
 description: str = "VacuumWorld: an agent platform for cleaning robots."
-author: str = ".".join(["Emanuele Uliana", "Benedict Wilkins", "Nausheen Saba", "Joel Clarke", "Kostas Stathis"])
+author: str = ", ".join(["Emanuele Uliana", "Benedict Wilkins", "Nausheen Saba", "Joel Clarke", "Kostas Stathis"])
 author_email: str = "vw@dicelab-rhul.org"
 license: str = "GNU3"
 classifiers: list = [
