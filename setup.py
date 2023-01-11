@@ -8,19 +8,20 @@ import os
 
 name: str = "vacuumworld"
 description: str = "VacuumWorld: an agent platform for cleaning robots."
-author: list = ["Emanuele Uliana", "Benedict Wilkins", "Nausheen Saba", "Joel Clarke", "Kostas Stathis"]
+author: str = ", ".join(["Emanuele Uliana", "Benedict Wilkins", "Nausheen Saba", "Joel Clarke", "Kostas Stathis"])
 author_email: str = "vw@dicelab-rhul.org"
 license: str = "GNU3"
 classifiers: list = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3 :: Only",
     "Development Status :: 4 - Beta",
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Operating System :: OS Independent",
 ]
-dependencies: list = ["pystarworldsturbo>=1.1.5", "pillow", "wheel", "ipython", "screeninfo", "tk", "requests", "playsound"]
+dependencies: list = ["pystarworldsturbo>=1.1.6", "pillow", "wheel", "ipython", "screeninfo", "tk", "requests", "playsound", "pyjoptional>=1.0.3"]
 
 # End of static metadata
 

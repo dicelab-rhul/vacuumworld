@@ -1,6 +1,7 @@
-from tkinter import Tk, Frame, Canvas, Image as Img
+from tkinter import Tk, Frame, Canvas
 from typing import Callable, Dict
 from PIL import Image
+from PIL.Image import Image as PILImage
 from PIL.ImageTk import PhotoImage
 
 from ..buttons.vwbutton import VWButton
@@ -35,7 +36,7 @@ class VWInitialWindow(Frame):
         self.__canvas: Canvas = Canvas(self, width=self.__config["grid_size"]+1, height=self.__config["grid_size"]+1, bd=0, highlightthickness=0)
 
         self.__img_tk: PhotoImage = PhotoImage(Image.open(self.__config["main_menu_image_path"]).resize((int(self.__config["grid_size"]), int(self.__config["grid_size"])), Image.BICUBIC))
-        self.__image: Img = self.__canvas.create_image(self.__config["grid_size"]/2, self.__config["grid_size"]/2, image=self.__img_tk)
+        self.__image: int = self.__canvas.create_image(self.__config["grid_size"]/2, self.__config["grid_size"]/2, image=self.__img_tk)
 
         self.__button_frame: Frame = Frame(self)
 
@@ -50,16 +51,16 @@ class VWInitialWindow(Frame):
 
         # Note: pack() for VWInitialWindow needs to be called by the caller.
 
-    def get_image(self) -> Img:
+    def get_image(self) -> int:
         '''
-        Returns the image of the initial window as a tkinter `Image`.
+        Returns the `int` ID of the image of the initial window.
         '''
         return self.__image
 
     def __build_button(self, button_name: str, parent: Frame) -> VWButton:
         action: Callable = self.__button_data[button_name]["action"]
         text: str = self.__button_data[button_name]["text"]
-        image: Img = Image.open(os.path.join(self.__config["button_data_path"], self.__button_data[button_name]["image_file"]))
+        image: PILImage = Image.open(os.path.join(self.__config["button_data_path"], self.__button_data[button_name]["image_file"]))
         image = image.resize((int(image.width), int(image.height)), Image.BICUBIC)
         tip_text: str = self.__button_data[button_name]["tip_text"]
 

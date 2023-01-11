@@ -82,6 +82,3 @@ class VWOrientation(Enum):
         Returns a random `VWOrientation`.
         '''
         return choice(list(VWOrientation))
-
-    left: VWOrientation = get_left
-    right: VWOrientation = get_right

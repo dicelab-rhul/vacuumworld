@@ -32,9 +32,10 @@ class TestGUIless(TestCase):
         Tests the GUI-less mode of operation of VacuumWorld.
         '''
         for total_cycles in self.__list_of_max_cycles_per_run:
+            test_file: str = "".join([choice(ascii_letters + digits) for _ in range(10)]) + ".json"
+
             try:
                 env, _ = VWEnvironment.generate_random_env_for_testing(config=self.__config, custom_grid_size=True)
-                test_file: str = "".join([choice(ascii_letters + digits) for _ in range(10)]) + ".json"
                 manager: VWSaveStateManager = VWSaveStateManager()
                 manager.save_state(env=env, filename=test_file)
 

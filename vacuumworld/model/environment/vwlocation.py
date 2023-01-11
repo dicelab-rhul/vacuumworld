@@ -1,6 +1,7 @@
 from __future__ import annotations
-from typing import cast, Dict, Optional
+from typing import cast, Dict, Union, Any
 from random import randint
+from pyoptional.pyoptional import PyOptional
 
 from pystarworldsturbo.environment.location_appearance import LocationAppearance
 
@@ -27,12 +28,12 @@ class VWLocation(LocationAppearance):
 
     Each of the four sides of `VWLocation` may contain a (`bool`) wall. However, the sides exhibiting a wall must be consecutive.
     '''
-    def __init__(self, coord: VWCoord, actor_appearance: VWActorAppearance=None, dirt_appearance: VWDirtAppearance=None, wall: Dict[VWOrientation, bool]={orientation: False for orientation in VWOrientation}) -> None:
+    def __init__(self, coord: VWCoord, actor_appearance: PyOptional[VWActorAppearance]=PyOptional.empty(), dirt_appearance: PyOptional[VWDirtAppearance]=PyOptional.empty(), wall: Dict[VWOrientation, bool]={orientation: False for orientation in VWOrientation}) -> None:
         assert coord is not None
 
         self.__coord: VWCoord = coord
-        self.__actor_appearance: Optional[VWActorAppearance] = actor_appearance
-        self.__dirt_appearance: Optional[VWDirtAppearance] = dirt_appearance
+        self.__actor_appearance: PyOptional[VWActorAppearance] = actor_appearance
+        self.__dirt_appearance: PyOptional[VWDirtAppearance] = dirt_appearance
         self.__wall: Dict[VWOrientation, bool] = wall
 
     def get_coord(self) -> VWCoord:
@@ -41,9 +42,9 @@ class VWLocation(LocationAppearance):
         '''
         return self.__coord
 
-    def get_actor_appearance(self) -> Optional[VWActorAppearance]:
+    def get_actor_appearance(self) -> PyOptional[VWActorAppearance]:
         '''
-        Returns the `VWActorAppearance` of the `VWActor` who is at this `VWLocation`, if any, `None` otherwise.
+        Returns a `PyOptional` wrapping the `VWActorAppearance` of the `VWActor` who is at this `VWLocation`, if any. Otherwise, returns an empty `PyOptional`.
         '''
         return self.__actor_appearance
 
@@ -55,9 +56,9 @@ class VWLocation(LocationAppearance):
 
         This method assumes (via assertion) that this `VWLocation` has a `VWActorAppearance` in it.
         '''
-        assert self.__actor_appearance is not None
+        assert self.__actor_appearance.is_present()
 
-        self.__actor_appearance = None
+        self.__actor_appearance = PyOptional.empty()
 
     def add_actor(self, actor_appearance: VWActorAppearance) -> None:
         '''
@@ -67,27 +68,27 @@ class VWLocation(LocationAppearance):
 
         This method assumes (via assertion) that this `VWLocation` has no `VWActorAppearance` in it.
         '''
-        assert self.__actor_appearance is None
+        assert self.__actor_appearance.is_empty()
 
-        self.__actor_appearance = actor_appearance
+        self.__actor_appearance = PyOptional.of(actor_appearance)
 
     def has_actor(self) -> bool:
         '''
-        Returns wheter or not this `VWLocation` has a `VWActor` in it, i.e., whether or not this `VWLocation` contains a `VWActorAppearance`.
+        Returns whether or not this `VWLocation` has a `VWActor` in it, i.e., whether or not this `VWLocation` contains a `VWActorAppearance`.
         '''
-        return self.__actor_appearance is not None
+        return self.__actor_appearance.is_present()
 
     def has_cleaning_agent(self) -> bool:
         '''
-        Returns wheter or not this `VWLocation` has a `VWCleaningAgent` in it, i.e., whether or not this `VWLocation` contains the `VWActorAppearance` of a `VWCleaningAgent`.
+        Returns whether or not this `VWLocation` has a `VWCleaningAgent` in it, i.e., whether or not this `VWLocation` contains the `VWActorAppearance` of a `VWCleaningAgent`.
         '''
-        return self.__actor_appearance is not None and self.__actor_appearance.get_colour() in [VWColour.white, VWColour.green, VWColour.orange]
+        return self.__actor_appearance.filter(lambda actor_appearance: actor_appearance.get_colour() in [VWColour.white, VWColour.green, VWColour.orange]).is_present()
 
     def has_user(self) -> bool:
         '''
-        Returns wheter or not this `VWLocation` has a `VWUser` in it, i.e., whether or not this `VWLocation` contains a `VWActorAppearance` of a `VWUser`.
+        Returns whether or not this `VWLocation` has a `VWUser` in it, i.e., whether or not this `VWLocation` contains a `VWActorAppearance` of a `VWUser`.
         '''
-        return self.__actor_appearance is not None and self.__actor_appearance.get_colour() == VWColour.user
+        return self.__actor_appearance.filter(lambda actor_appearance: actor_appearance.get_colour() == VWColour.user).is_present()
 
     def is_empty(self) -> bool:
         '''
@@ -97,9 +98,9 @@ class VWLocation(LocationAppearance):
         '''
         return not self.has_actor() and not self.has_dirt()
 
-    def get_dirt_appearance(self) -> Optional[VWDirtAppearance]:
+    def get_dirt_appearance(self) -> PyOptional[VWDirtAppearance]:
         '''
-        Returns the `VWDirtAppearance` of the `VWDirt` which is at this `VWLocation`, if any, `None` otherwise.
+        Returns a `PyOptional` wrapping the `VWDirtAppearance` of the `VWDirt` which is at this `VWLocation`, if any. Otherwise, returns an empty `PyOptional`.
         '''
         return self.__dirt_appearance
 
@@ -111,9 +112,9 @@ class VWLocation(LocationAppearance):
 
         This method assumes (via assertion) that this `VWLocation` has a `VWDirtAppearance` in it.
         '''
-        assert self.__dirt_appearance is not None
+        assert self.__dirt_appearance.is_present()
 
-        self.__dirt_appearance = None
+        self.__dirt_appearance = PyOptional.empty()
 
     def add_dirt(self, dirt_appearance: VWDirtAppearance) -> None:
         '''
@@ -123,15 +124,15 @@ class VWLocation(LocationAppearance):
 
         This method assumes (via assertion) that this `VWLocation` has no `VWDirtAppearance` in it.
         '''
-        assert self.__dirt_appearance is None
+        assert self.__dirt_appearance.is_empty()
 
-        self.__dirt_appearance = dirt_appearance
+        self.__dirt_appearance = PyOptional.of(dirt_appearance)
 
     def has_dirt(self) -> bool:
         '''
-        Returns wheter or not this `VWLocation` has a `VWDirt` in it, i.e., whether or not this `VWLocation` contains a `VWDirtAppearance`.
+        Returns whether or not this `VWLocation` has a `VWDirt` in it, i.e., whether or not this `VWLocation` contains a `VWDirtAppearance`.
         '''
-        return self.__dirt_appearance is not None
+        return self.__dirt_appearance.is_present()
 
     def get_wall_info(self) -> Dict[VWOrientation, bool]:
         '''
@@ -210,22 +211,22 @@ class VWLocation(LocationAppearance):
 
         Returns a deep-copy of this `VWLocation`.
         '''
-        if not self.__actor_appearance and not self.__dirt_appearance:
-            return VWLocation(coord=self.__coord, actor_appearance=None, dirt_appearance=None, wall=self.__wall)
-        elif self.__actor_appearance and not self.__dirt_appearance:
-            return VWLocation(coord=self.__coord, actor_appearance=self.__actor_appearance.deep_copy(), dirt_appearance=None, wall=self.__wall)
-        elif not self.__actor_appearance and self.__dirt_appearance:
-            return VWLocation(coord=self.__coord, actor_appearance=None, dirt_appearance=self.__dirt_appearance.deep_copy(), wall=self.__wall)
+        if self.__actor_appearance.is_empty() and self.__dirt_appearance.is_empty():
+            return VWLocation(coord=self.__coord, actor_appearance=PyOptional.empty(), dirt_appearance=PyOptional.empty(), wall=self.__wall)
+        elif self.__actor_appearance.is_present() and self.__dirt_appearance.is_empty():
+            return VWLocation(coord=self.__coord, actor_appearance=self.__actor_appearance.map(lambda a: a.deep_copy()), dirt_appearance=PyOptional.empty(), wall=self.__wall)
+        elif self.__actor_appearance.is_empty() and self.__dirt_appearance.is_present():
+            return VWLocation(coord=self.__coord, actor_appearance=PyOptional.empty(), dirt_appearance=self.__dirt_appearance.map(lambda d: d.deep_copy()), wall=self.__wall)
         else:
-            return VWLocation(coord=self.__coord, actor_appearance=self.__actor_appearance.deep_copy(), dirt_appearance=self.__dirt_appearance.deep_copy(), wall=self.__wall)
+            return VWLocation(coord=self.__coord, actor_appearance=self.__actor_appearance.map(lambda a: a.deep_copy()), dirt_appearance=self.__dirt_appearance.map(lambda d: d.deep_copy()), wall=self.__wall)
 
-    def to_json(self) -> Dict[str, Dict[str, str | int]]:
+    def to_json(self, include_ids: bool=False) -> Dict[str, Dict[str, Any]]:
         '''
         Returns a JSON representation of this `VWLocation`.
 
         No `VWActor` IDs, no `VWActor` progressive IDs, and no `VWUserDifficulty` are included.
         '''
-        location: Dict[str, Dict[str, str | int]] = {
+        location: Dict[str, Dict[str, Any]] = {
             "coords": self.__coord.to_json(),
             "wall": {
                 str(VWOrientation.north): self.has_wall_on_north(),
@@ -236,27 +237,20 @@ class VWLocation(LocationAppearance):
         }
 
         if self.has_actor():
-            location["actor"] = self.__actor_appearance.to_json()
+            location["actor"] = self.__actor_appearance.map(lambda a: a.to_json() if not include_ids else a.to_json_with_ids()).or_else_raise()
 
         if self.has_dirt():
-            location["dirt"] = self.__dirt_appearance.to_json()
+            location["dirt"] = self.__dirt_appearance.map(lambda d: d.to_json() if not include_ids else d.to_json_with_ids()).or_else_raise()
 
         return location
 
-    def pretty_format(self) -> Dict[str, Dict[str, str | int]]:
+    def pretty_format(self, include_ids: bool=True) -> Dict[str, Union[Dict[str, str], Dict[str, int], Dict[str, bool]]]:
         '''
         Returns a pretty-formatted JSON string representation of this `VWLocation`.
 
-        Unlike `to_json()`, the IDs and progressive IDs of each `VWActor` are included.
+        Unlike `to_json()`, the IDs and progressive IDs of each `VWActor` are included by default.
         '''
-        location_dict: Dict[str, Dict[str, str | int]] = self.to_json()
-
-        # Unlike `to_json()`, we want to store the ID and progressive ID of the actor.
-        if self.has_actor():
-            location_dict["actor"]["ID"] = self.get_actor_appearance().get_id()
-            location_dict["actor"]["progressive_ID"] = self.get_actor_appearance().get_progressive_id()
-
-        return location_dict
+        return self.to_json(include_ids=include_ids)
 
     def __str__(self) -> str:
         return "(coord: {}, actor: {}, dirt: {}, wall: {})".format(str(self.__coord), str(self.__actor_appearance), str(self.__dirt_appearance), str(self.__wall))
@@ -308,11 +302,11 @@ class VWLocation(LocationAppearance):
         if self.is_empty():
             s += f"{chr(164)}     {chr(164)}\n"
         elif not self.has_actor() and self.has_dirt():
-            s += f"{chr(164)}  " + str(self.__dirt_appearance.get_colour())[0] + f"  {chr(164)}\n"
+            s += f"{chr(164)}  " + str(self.__dirt_appearance.map(lambda d: d.get_colour()).or_else_raise())[0] + f"  {chr(164)}\n"
         elif not self.has_dirt():
-            s += f"{chr(164)}  " + str(self.__actor_appearance.get_colour())[0].upper() + f"  {chr(164)}\n"
+            s += f"{chr(164)}  " + str(self.__actor_appearance.map(lambda a: a.get_colour()).or_else_raise())[0].upper() + f"  {chr(164)}\n"
         else:
-            s += f"{chr(164)} " + str(self.__actor_appearance.get_colour())[0].upper() + "+" + str(self.__dirt_appearance.get_colour())[0] + f" {chr(164)}\n"
+            s += f"{chr(164)} " + str(self.__actor_appearance.map(lambda a: a.get_colour()).or_else_raise())[0].upper() + "+" + str(self.__dirt_appearance.map(lambda d: d.get_colour()).or_else_raise())[0] + f" {chr(164)}\n"
 
         return s + chr(164) * 7
 

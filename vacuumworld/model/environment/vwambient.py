@@ -37,9 +37,10 @@ class VWAmbient(Ambient):
         The dimension of the grid is the square root of the number of `VWLocation` objects in the grid.
         '''
         number_of_locations: int = len(self.__grid)
-        grid_dim: int = sqrt(number_of_locations)
+        tmp: float = sqrt(number_of_locations)
+        grid_dim: int = floor(tmp)
 
-        assert floor(grid_dim) == grid_dim
+        assert grid_dim == tmp
 
         return int(grid_dim)
 
@@ -85,7 +86,7 @@ class VWAmbient(Ambient):
         assert self.__grid[from_coord].has_actor()
         assert not self.__grid[to_coord].has_actor()
 
-        actor: VWActorAppearance = self.__grid[from_coord].get_actor_appearance()
+        actor: VWActorAppearance = self.__grid[from_coord].get_actor_appearance().or_else_raise()
 
         self.__grid[from_coord].remove_actor()
         self.__grid[to_coord].add_actor(actor_appearance=actor)
@@ -102,7 +103,7 @@ class VWAmbient(Ambient):
         '''
         assert coord in self.__grid and self.__grid[coord].has_actor()
 
-        self.__grid[coord].get_actor_appearance().turn(direction=direction)
+        self.__grid[coord].get_actor_appearance().or_else_raise().turn(direction=direction)
 
     def drop_dirt(self, coord: VWCoord, dirt_appearance: VWDirtAppearance) -> None:
         '''
@@ -164,7 +165,7 @@ class VWAmbient(Ambient):
 
         locations_dict: Dict[VWPositionNames, VWLocation] = {}
 
-        orientation: VWOrientation = self.__grid[actor_position].get_actor_appearance().get_orientation()
+        orientation: VWOrientation = self.__grid[actor_position].get_actor_appearance().or_else_raise().get_orientation()
 
         forward_coord: VWCoord = actor_position.forward(orientation=orientation)
         left_coord: VWCoord = actor_position.left(orientation=orientation)

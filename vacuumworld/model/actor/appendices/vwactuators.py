@@ -1,4 +1,4 @@
-from typing import Iterable, List, Union, Type
+from typing import Iterable, List, Type
 
 from pystarworldsturbo.elements.actuator import Actuator
 
@@ -19,21 +19,11 @@ class VWActuator(Actuator):
     def __init__(self, subscribed_events: List[Type]) -> None:
         super(VWActuator, self).__init__(subscribed_events=subscribed_events)
 
-    def source(self) -> Union[VWAction, Iterable[VWAction]]:
+    def source(self) -> Iterable[VWAction]:
         '''
-        Fetches the single available `VWAction` or all the available `VWAction` instances (if more than one is available), and returns either the single `VWAction`, or an `Iterable[VWAction]`.
+        Fetches all the available `VWAction` instances, and returns either the single `VWAction`, or an `Iterable[VWAction]`.
         '''
-        actions: List[VWAction] = []
-
-        while True:
-            action: VWAction = super(VWActuator, self).source()
-
-            if not action:
-                break
-            else:
-                actions.append(action)
-
-        return actions
+        return [a for a in super(VWActuator, self).source_all() if isinstance(a, VWAction)]
 
 
 class VWPhysicalActuator(VWActuator):

@@ -1,4 +1,4 @@
-from typing import Dict, Union, Type, List
+from typing import Dict, Union, Type, Any, cast
 from traceback import print_exc
 from multiprocessing import Process, Event
 from multiprocessing.synchronize import Event as EventType
@@ -6,6 +6,7 @@ from inspect import getsourcefile
 from signal import signal as handle_signal
 
 from ..common.vwcolour import VWColour
+from ..common.vwexceptions import VWInternalError
 from ..model.actions.vwactions import VWAction, VWCommunicativeAction
 from ..model.actions.vweffort import VWActionEffort
 from ..model.actor.mind.surrogate.vwactor_mind_surrogate import VWActorMindSurrogate
@@ -28,10 +29,10 @@ class VWRunner(Process):
     def __init__(self, config: dict, minds: Dict[VWColour, VWActorMindSurrogate], allowed_args: Dict[str, Type], **kwargs) -> None:
         super(VWRunner, self).__init__()
 
-        self.__config: dict = config
+        self.__config: Dict[str, Any] = config
         self.__minds: Dict[VWColour, VWActorMindSurrogate] = minds
         self.__allowed_args: Dict[str, Type] = allowed_args
-        self.__args: Dict[str, Union[bool, int, float, str, Dict[str, int]]] = {
+        self.__args: Dict[str, Union[bool, int, float, str, Dict[str, int], Dict[Type[VWAction], int]]] = {
             "gui": kwargs.get("gui", True),
             "skip": kwargs.get("skip", False),
             "play": kwargs.get("play", False),
@@ -69,7 +70,7 @@ class VWRunner(Process):
         '''
         return self.__minds
 
-    def get_arg(self, arg: str) -> Union[bool, int, float, str, Dict[str, int]]:
+    def get_arg(self, arg: str) -> Union[bool, int, float, str, Dict[str, int], Dict[Type[VWAction], int]]:
         '''
         Returns the value of the argument `arg` as a `Union[bool, int, float, Dict[str, int]]`.
         '''
@@ -182,7 +183,7 @@ class VWRunner(Process):
         if not isinstance(self.__args["speed"], self.__allowed_args["speed"]):
             raise TypeError("Argument `speed` must be a float.")
 
-        if self.__args["speed"] < 0 or self.__args["speed"] >= 1:
+        if cast(float, self.__args["speed"]) < 0.0 or cast(float, self.__args["speed"]) >= 1:
             raise ValueError("Argument \"speed\" must be >=0 and < 1.")
 
     def __validate_scale(self) -> None:
@@ -190,7 +191,7 @@ class VWRunner(Process):
             raise TypeError("Argument `scale` must be a float.")
 
         # A 0 value is equivalent to omitting the argument from `vacuumworld.run()`.
-        if self.__args["scale"] < 0 or self.__args["scale"] > 2.5:
+        if cast(float, self.__args["scale"]) < 0.0 or cast(float, self.__args["scale"]) > 2.5:
             raise ValueError("Argument \"scale\" must be >= 0 and <= 2.5.")
 
     def __validate_tooltips(self) -> None:
@@ -202,7 +203,7 @@ class VWRunner(Process):
             raise TypeError("Argument `total_cycles` must be an integer.")
 
         # A 0 value means an infinite number of cycles.
-        if self.__args["total_cycles"] < 0:
+        if cast(int, self.__args["total_cycles"]) < 0:
             raise ValueError("Argument \"total_cycles\" must be >= 0.")
 
     def __validate_efforts(self) -> None:
@@ -229,6 +230,8 @@ class VWRunner(Process):
         self.__config["user_mind_filename"] = getsourcefile(self.__minds[VWColour.user].__class__)
         self.__config["skip"] |= self.__args["skip"]
         self.__config["play"] |= self.__args["play"]
+
+        assert isinstance(self.__args["speed"], float)
         self.__config["time_step_modifier"] = 1 - self.__args["speed"]
         self.__config["file_to_load"] = self.__args["load"]
         self.__config["scale"] = self.__args["scale"]
@@ -259,12 +262,14 @@ class VWRunner(Process):
 
     def __assign_efforts_to_actions(self) -> None:
         # The content of `self.__args` has already been validated in `__validate_optional_args()`.
+        assert self.__args["efforts"] is not None and isinstance(self.__args["efforts"], dict) and all(isinstance(key, (str, Type)) for key in self.__args["efforts"].keys()) and all(isinstance(value, int) for value in self.__args["efforts"].values())
+
         for k, v in self.__args["efforts"].items():
-            if type(k) == type and issubclass(k, VWAction) and type(v) == int:
+            if isinstance(k, Type) and issubclass(k, VWAction) and isinstance(v, int):
                 VWActionEffort.override_default_effort_for_action(action_name=k.__name__, new_effort=v)
 
                 print("The effort of {} is now {}.".format(k.__name__, VWActionEffort.EFFORTS[k.__name__]))
-            elif type(k) == str and type(v) == int:
+            elif isinstance(k, str) and isinstance(v, int):
                 VWActionEffort.override_default_effort_for_action(action_name=k, new_effort=v)
 
                 print("The effort of {} is now {}.".format(k, VWActionEffort.EFFORTS[k]))
@@ -275,12 +280,22 @@ class VWRunner(Process):
         VWCommunicativeAction.SENDER_ID_SPOOFING_ALLOWED = self.__config["sender_id_spoofing_allowed"]
 
     def __manage_debug_flag(self) -> None:
-        VWActorBehaviourDebugger.DEBUG_ENABLED: bool = self.__config["debug"]
+        if self.__config["debug"] is None or not isinstance(self.__config["debug"], bool):
+            raise VWInternalError("The debug flag is not valid.")
+        elif self.__config["debug_test"] is None or not isinstance(self.__config["debug_test"], bool):
+            raise VWInternalError("The debug test flag is not valid.")
+        elif self.__config["debug_primes"] is None or not isinstance(self.__config["debug_primes"], list) or any(not isinstance(p, int) for p in self.__config["debug_primes"]):
+            raise VWInternalError("The list of debug primes is not valid.")
+        elif self.__config["debug_primes_test"] is None or not isinstance(self.__config["debug_primes_test"], list) or any(not isinstance(p, int) for p in self.__config["debug_primes_test"]):
+            raise VWInternalError("The list of test debug primes is not valid.")
+
+        if self.__config["debug"] is not None and isinstance(self.__config["debug"], bool):
+            VWActorBehaviourDebugger.DEBUG_ENABLED = self.__config["debug"]
 
         if self.__config["debug_test"]:
-            VWActorBehaviourDebugger.PRIMES: List[int] = self.__config["debug_primes_test"]
+            VWActorBehaviourDebugger.PRIMES = self.__config["debug_primes_test"]
         else:
-            VWActorBehaviourDebugger.PRIMES: List[int] = self.__config["debug_primes"]
+            VWActorBehaviourDebugger.PRIMES = self.__config["debug_primes"]
 
     @staticmethod
     def __set_sigtstp_handler() -> None:

@@ -1,6 +1,7 @@
-from typing import Callable
+from typing import Callable, Literal
 from PIL.ImageTk import PhotoImage
-from tkinter import Button, Frame, Image
+from PIL.Image import Image as PILImage
+from tkinter import Button, Frame
 
 from .vwtooltips import create_tooltip
 
@@ -11,7 +12,7 @@ class VWButton():
 
     A `VWButton` has a text, an image, a function to be executed when it is clicked and a tooltip text.
     '''
-    def __init__(self, parent: Frame, config: dict, img: Image, fun: Callable, text: str=None, tip_text: str="") -> None:
+    def __init__(self, parent: Frame, config: dict, img: PILImage, fun: Callable, text: str="", tip_text: str="") -> None:
         self.__img: PhotoImage = PhotoImage(img)
         self.__fun: Callable = fun
         self.__button: Button = Button(parent, text=text, bd=0, font=config["root_font"], fg=config["buttons_fg_colour"], highlightthickness=0, bg=config["bg_colour"], activebackground=config["bg_colour"], activeforeground=config["bg_colour"], highlightcolor=config["bg_colour"], compound="center", command=self.__fun)
@@ -22,7 +23,7 @@ class VWButton():
         if self.__tooltip_enabled and self.__tip_text:
             create_tooltip(widget=self.__button, text=self.__tip_text, config=config)
 
-    def pack(self, side: str) -> None:
+    def pack(self, side: Literal["left", "right", "top", "bottom"]) -> None:
         '''
         Packs the wrapped `Button` into the parent `Frame`, according to the provided `side`.
         '''

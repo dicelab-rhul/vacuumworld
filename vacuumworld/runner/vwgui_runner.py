@@ -2,6 +2,7 @@ from typing import Dict, Type
 from tkinter import Tk
 from webbrowser import open_new_tab
 from json import load
+from math import floor
 
 from .vwrunner import VWRunner
 from ..gui.components.vwautocomplete import VWAutocompleteEntry
@@ -124,11 +125,9 @@ class VWGUIRunner(VWRunner):
             h: int = self.__root.winfo_reqheight() * self.get_config()["y_scale"]
             sw: int = self.__root.winfo_screenwidth()
             sh: int = self.__root.winfo_screenheight()
-            x: int = (sw / 2) - w - w/4 + w/26
-            y: int = (sh / 2) - h - h/2
+            x: int = floor((sw / 2) - w - w/4 + w/26)
+            y: int = floor((sh / 2) - h - h/2)
 
-            self.__root.x = x
-            self.__root.y = y
             self.__root.geometry("+%d+%d" % (x, y))
             self.__already_centered = True
 

@@ -121,7 +121,7 @@ class VWActorsFactory():
         assert type(colour) == VWColour
 
         if colour == VWColour.user:
-            assert type(mind_surrogate) == VWUserMindSurrogate
+            assert isinstance(mind_surrogate, VWUserMindSurrogate)
 
             difficulty_level: VWUserDifficulty = mind_surrogate.get_difficulty_level()
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
-from typing import Dict, Iterable, List, Optional, Type, Tuple, Union, Iterator
+from typing import Dict, Iterable, List, Type, Tuple, Iterator
 from json import dumps
+from pyoptional.pyoptional import PyOptional
 
 from pystarworldsturbo.common.action_outcome import ActionOutcome
 from pystarworldsturbo.common.perception import Perception
@@ -10,7 +11,6 @@ from .vwposition_names import VWPositionNames
 from .vworientation import VWOrientation
 from ..model.environment.vwlocation import VWLocation
 from ..model.actions.vwactions import VWAction
-from ..model.actions.vwidle_action import VWIdleAction
 
 
 class VWObservation(Perception):
@@ -26,20 +26,21 @@ class VWObservation(Perception):
 
         for position_name in locations_dict:
             assert position_name in VWPositionNames
+            assert locations_dict[position_name] is not None
 
         self.__locations: Dict[VWPositionNames, VWLocation] = locations_dict
         self.__action_results: List[Tuple[Type[VWAction], ActionResult]] = [(action_type, action_result)]
 
-    def get_observer_id(self) -> Optional[str]:
+    def get_observer_id(self) -> PyOptional[str]:
         '''
         Returns the `str` ID of the `VWActor` that presumably observed this `VWObservation`, or `None` if no observer can be identified.
 
         The observer is assumed to be the `VWActor` whose `VWActorAppearance` is contained by the `VWLocation` at the `VWPositionNames.center` position in this `VWObservation`.
         '''
         if VWPositionNames.center not in self.__locations or not self.__locations[VWPositionNames.center] or not self.__locations[VWPositionNames.center].has_actor():
-            return None
+            return PyOptional.empty()
         else:
-            return self.__locations[VWPositionNames.center].get_actor_appearance().get_id()
+            return PyOptional.of(self.__locations[VWPositionNames.center].get_actor_appearance().or_else_raise().get_id())
 
     def get_latest_actions_results(self) -> List[Tuple[Type[VWAction], ActionResult]]:
         '''
@@ -49,24 +50,24 @@ class VWObservation(Perception):
         '''
         return self.__action_results
 
-    def get_latest_actions_outcomes_as_dict(self) -> Dict[Type[VWAction], Union[ActionOutcome, List[ActionOutcome]]]:
+    def get_latest_actions_outcomes_as_dict(self) -> Dict[Type[VWAction], List[ActionOutcome]]:
         '''
-        Returns a `Dict` mapping each kind of `VWAction` that was attempted by the `VWActor` during the last cycle to its `ActionOutcome`, or `List[ActionOutcome]`.
+        Returns a `Dict` mapping each kind of `VWAction` that was attempted by the `VWActor` during the last cycle to its `List[ActionOutcome]`.
 
         The attempt order is not preserved in general, because the returned `Dict` exhibits no particular ordering for the keys.
         '''
-        to_return: Dict[Type[VWAction], Union[ActionOutcome, List[ActionOutcome]]] = {}
+        to_return: Dict[Type[VWAction], List[ActionOutcome]] = {}
 
         for elm in self.__action_results:
             action_type: Type[VWAction] = elm[0]
             action_result: ActionResult = elm[1]
 
             if action_type not in to_return:
-                to_return[action_type.__name__] = action_result.get_outcome()
-            elif isinstance(to_return[action_type.__name__], list):
-                to_return[action_type.__name__].append(action_result.get_outcome())
+                to_return[action_type] = [action_result.get_outcome()]
             else:
-                to_return[action_type.__name__] = [to_return[action_type.__name__], action_result.get_outcome()]
+                assert isinstance(to_return[action_type], list)
+
+                to_return[action_type].append(action_result.get_outcome())
 
         return to_return
 
@@ -108,100 +109,91 @@ class VWObservation(Perception):
         '''
         return self.__locations
 
-    def get_location_at(self, position_name: VWPositionNames) -> Optional[VWLocation]:
+    def get_location_at(self, position_name: VWPositionNames) -> PyOptional[VWLocation]:
         '''
-        Returns the `VWLocation` at the given `VWPositionNames`, or `None` if there is no `VWLocation` at that position.
+        Returns a `PyOptional` wrapping the `VWLocation` at the given `VWPositionNames`, or an empty `PyOptional` if there is no `VWLocation` at that position.
         '''
-        if position_name in self.__locations:
-            return self.__locations[position_name]
-        else:
-            return None
+        return PyOptional.of(self.__locations[position_name]) if position_name in self.__locations else PyOptional.empty()
 
-    def get_center(self) -> Optional[VWLocation]:
+    def get_locations_in_order(self) -> List[PyOptional[VWLocation]]:
         '''
-        Returns the `VWLocation` at the center of the `VWActor`'s view, or `None` if there is no `VWLocation` at that position.
+        Returns a `List` of the `VWLocation` objects in this `VWObservation`, in the following order:
+        * `VWPositionNames.center`
+        * `VWPositionNames.forward`
+        * `VWPositionNames.left`
+        * `VWPositionNames.right`
+        * `VWPositionNames.forwardleft`
+        * `VWPositionNames.forwardright`
         '''
-        if VWPositionNames.center in self.__locations:
-            return self.__locations[VWPositionNames.center]
-        else:
-            return None
+        return [PyOptional.of(self.__locations[position]) if position in self.__locations else PyOptional.empty() for position in VWPositionNames.values_in_order()]
 
-    def get_forward(self) -> Optional[VWLocation]:
+    def get_center(self) -> PyOptional[VWLocation]:
         '''
-        Returns the `VWLocation` in front of the `VWActor`, or `None` if there is no `VWLocation` at that position.
+        Returns a `PyOptional` wrapping the `VWLocation` at the center of the `VWActor`'s view, or an empty `PyOptional` if there is no `VWLocation` at that position.
         '''
-        if VWPositionNames.forward in self.__locations:
-            return self.__locations[VWPositionNames.forward]
-        else:
-            return None
+        return PyOptional.of(self.__locations[VWPositionNames.center]) if VWPositionNames.center in self.__locations else PyOptional.empty()
 
-    def get_left(self) -> Optional[VWLocation]:
+    def get_forward(self) -> PyOptional[VWLocation]:
         '''
-        Returns the `VWLocation` to the left of the `VWActor`, or `None` if there is no `VWLocation` at that position.
+        Returns a `PyOptional` wrapping the `VWLocation` in front of the `VWActor`, or an empty `PyOptional` if there is no `VWLocation` at that position.
         '''
-        if VWPositionNames.left in self.__locations:
-            return self.__locations[VWPositionNames.left]
-        else:
-            return None
+        return PyOptional.of(self.__locations[VWPositionNames.forward]) if VWPositionNames.forward in self.__locations else PyOptional.empty()
 
-    def get_right(self) -> Optional[VWLocation]:
+    def get_left(self) -> PyOptional[VWLocation]:
         '''
-        Returns the `VWLocation` to the right of the `VWActor`, or `None` if there is no `VWLocation` at that position.
+        Returns a `PyOptional` wrapping the `VWLocation` to the left of the `VWActor`, or an empty `PyOptional` if there is no `VWLocation` at that position.
         '''
-        if VWPositionNames.right in self.__locations:
-            return self.__locations[VWPositionNames.right]
-        else:
-            return None
+        return PyOptional.of(self.__locations[VWPositionNames.left]) if VWPositionNames.left in self.__locations else PyOptional.empty()
 
-    def get_forwardleft(self) -> Optional[VWLocation]:
+    def get_right(self) -> PyOptional[VWLocation]:
         '''
-        Returns the `VWLocation` to the front-left of the `VWActor`, or `None` if there is no `VWLocation` at that position.
+        Returns a `PyOptional` wrapping the `VWLocation` to the right of the `VWActor`, or an empty `PyOptional` if there is no `VWLocation` at that position.
         '''
-        if VWPositionNames.forwardleft in self.__locations:
-            return self.__locations[VWPositionNames.forwardleft]
-        else:
-            return None
+        return PyOptional.of(self.__locations[VWPositionNames.right]) if VWPositionNames.right in self.__locations else PyOptional.empty()
 
-    def get_forwardright(self) -> Optional[VWLocation]:
+    def get_forwardleft(self) -> PyOptional[VWLocation]:
         '''
-        Returns the `VWLocation` to the front-right of the `VWActor`, or `None` if there is no `VWLocation` at that position.
+        Returns a `PyOptional` wrapping the `VWLocation` to the front-left of the `VWActor`, or an empty `PyOptional` if there is no `VWLocation` at that position.
         '''
-        if VWPositionNames.forwardright in self.__locations:
-            return self.__locations[VWPositionNames.forwardright]
-        else:
-            return None
+        return PyOptional.of(self.__locations[VWPositionNames.forwardleft]) if VWPositionNames.forwardleft in self.__locations else PyOptional.empty()
+
+    def get_forwardright(self) -> PyOptional[VWLocation]:
+        '''
+        Returns a `PyOptional` wrapping the `VWLocation` to the front-right of the `VWActor`, or an empty `PyOptional` if there is no `VWLocation` at that position.
+        '''
+        return PyOptional.of(self.__locations[VWPositionNames.forwardright]) if VWPositionNames.forwardright in self.__locations else PyOptional.empty()
 
     def is_wall_immediately_ahead(self) -> bool:
         '''
         Returns whether or not there is a wall immediately in front of the `VWActor`.
         '''
-        actor_orientation: VWOrientation = self.get_center().get_actor_appearance().get_orientation()
+        actor_orientation: VWOrientation = self.get_center().or_else_raise().get_actor_appearance().or_else_raise().get_orientation()
 
-        return self.get_center().has_wall_on(orientation=actor_orientation)
+        return self.get_center().or_else_raise().has_wall_on(orientation=actor_orientation)
 
     def is_wall_immediately_behind(self) -> bool:
         '''
         Returns whether or not there is a wall immediately behind the `VWActor`.
         '''
-        actor_orientation: VWOrientation = self.get_center().get_actor_appearance().get_orientation()
+        actor_orientation: VWOrientation = self.get_center().or_else_raise().get_actor_appearance().or_else_raise().get_orientation()
 
-        return self.get_center().has_wall_on(orientation=actor_orientation.get_opposite())
+        return self.get_center().or_else_raise().has_wall_on(orientation=actor_orientation.get_opposite())
 
     def is_wall_immediately_to_the_left(self) -> bool:
         '''
         Returns whether or not there is a wall immediately to the left of the `VWActor`.
         '''
-        actor_orientation: VWOrientation = self.get_center().get_actor_appearance().get_orientation()
+        actor_orientation: VWOrientation = self.get_center().or_else_raise().get_actor_appearance().or_else_raise().get_orientation()
 
-        return self.get_center().has_wall_on(orientation=actor_orientation.get_left())
+        return self.get_center().or_else_raise().has_wall_on(orientation=actor_orientation.get_left())
 
     def is_wall_immediately_to_the_right(self) -> bool:
         '''
         Returns whether or not there is a wall immediately to the right of the `VWActor`.
         '''
-        actor_orientation: VWOrientation = self.get_center().get_actor_appearance().get_orientation()
+        actor_orientation: VWOrientation = self.get_center().or_else_raise().get_actor_appearance().or_else_raise().get_orientation()
 
-        return self.get_center().has_wall_on(orientation=actor_orientation.get_right())
+        return self.get_center().or_else_raise().has_wall_on(orientation=actor_orientation.get_right())
 
     def is_wall_one_step_ahead(self) -> bool:
         '''
@@ -212,11 +204,11 @@ class VWObservation(Perception):
         if self.is_wall_immediately_ahead():
             return False
 
-        assert self.get_forward() is not None
+        assert self.get_forward().is_present()
 
-        actor_orientation: VWOrientation = self.get_center().get_actor_appearance().get_orientation()
+        actor_orientation: VWOrientation = self.get_center().or_else_raise().get_actor_appearance().or_else_raise().get_orientation()
 
-        return self.get_forward().has_wall_on(orientation=actor_orientation)
+        return self.get_forward().or_else_raise().has_wall_on(orientation=actor_orientation)
 
     def is_wall_one_step_to_the_left(self) -> bool:
         '''
@@ -227,11 +219,11 @@ class VWObservation(Perception):
         if self.is_wall_immediately_to_the_left():
             return False
 
-        assert self.get_left() is not None
+        assert self.get_left().is_present()
 
-        actor_orientation: VWOrientation = self.get_center().get_actor_appearance().get_orientation()
+        actor_orientation: VWOrientation = self.get_center().or_else_raise().get_actor_appearance().or_else_raise().get_orientation()
 
-        return self.get_left().has_wall_on(orientation=actor_orientation.get_left())
+        return self.get_left().or_else_raise().has_wall_on(orientation=actor_orientation.get_left())
 
     def is_wall_one_step_to_the_right(self) -> bool:
         '''
@@ -242,11 +234,11 @@ class VWObservation(Perception):
         if self.is_wall_immediately_to_the_right():
             return False
 
-        assert self.get_right() is not None
+        assert self.get_right().is_present()
 
-        actor_orientation: VWOrientation = self.get_center().get_actor_appearance().get_orientation()
+        actor_orientation: VWOrientation = self.get_center().or_else_raise().get_actor_appearance().or_else_raise().get_orientation()
 
-        return self.get_right().has_wall_on(orientation=actor_orientation.get_right())
+        return self.get_right().or_else_raise().has_wall_on(orientation=actor_orientation.get_right())
 
     def is_wall_visible_somewhere_ahead(self) -> bool:
         '''
@@ -304,13 +296,6 @@ class VWObservation(Perception):
             return False  # If the wall is immediately to the right, it is not one step to the right.
         else:
             return self.is_wall_one_step_to_the_right()
-
-    @staticmethod
-    def create_empty_observation() -> VWObservation:
-        '''
-        Returns an empty `VWObservation`.
-        '''
-        return VWObservation(action_type=VWIdleAction, action_result=ActionResult(outcome=ActionOutcome.impossible), locations_dict={p: None for p in VWPositionNames})
 
     def __iter__(self) -> Iterator[VWLocation]:
         for location in self.__locations.values():

@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 
-from typing import Iterable, Tuple, Union, List
+from typing import Iterable, List, Type, cast
 from random import randint
-
-from pystarworldsturbo.common.message import BccMessage
 
 from vacuumworld import run
 from vacuumworld.model.actions.vwactions import VWAction, VWPhysicalAction
@@ -13,10 +11,7 @@ from vacuumworld.model.actions.vwturn_action import VWTurnAction
 from vacuumworld.model.actions.vwidle_action import VWIdleAction
 from vacuumworld.model.actions.vweffort import VWActionEffort
 from vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate import VWActorMindSurrogate
-from vacuumworld.common.vwobservation import VWObservation
-from vacuumworld.common.vworientation import VWOrientation
 from vacuumworld.common.vwdirection import VWDirection
-from vacuumworld.model.environment.vwlocation import VWLocation
 
 
 class WallMind(VWActorMindSurrogate):
@@ -25,35 +20,26 @@ class WallMind(VWActorMindSurrogate):
 
         # Add here all the attributes you need/want.
 
-    def revise(self, observation: VWObservation, messages: Iterable[BccMessage]) -> None:
-        self.__observation: VWObservation = observation
+    def revise(self) -> None:
+        # No need to revise anything.
+        pass
 
-        assert self.__observation.get_center() and self.__observation.get_center().has_actor()
-
-        self.__current_location: VWLocation = self.__observation.get_center()
-        self.__orientation: VWOrientation = self.__current_location.get_actor_appearance().get_orientation()
-        self.__id: str = self.__current_location.get_actor_appearance().get_id()
-
-        for message in messages:
-            print(message)
-
-    def decide(self) -> Union[VWAction, Tuple[VWAction]]:
-        return self.__random_physical_action(), self.__broadcast_possible_physical_actions()
+    def decide(self) -> Iterable[VWAction]:
+        return [cast(VWAction, self.__random_physical_action())] + [cast(VWAction, self.__broadcast_possible_physical_actions())]
 
     def __broadcast_possible_physical_actions(self) -> VWBroadcastAction:
         '''
         This method broadcasts the possible physical actions that the sender `VWCleaningAgent` can perform.
         '''
-
-        actions: List[VWPhysicalAction] = [VWIdleAction, VWTurnAction]
+        actions: List[Type[VWPhysicalAction]] = [VWIdleAction, VWTurnAction]
 
         if self.__can_move():
             actions.append(VWMoveAction)
 
-        return VWBroadcastAction(message="Possible physical actions for me: {}".format([action.__name__ for action in actions]), sender_id=self.__id)
+        return VWBroadcastAction(message="Possible physical actions for me: {}".format([action.__name__ for action in actions]), sender_id=self.get_own_id())
 
-    def __random_physical_action(self) -> VWAction:
-        pool: List[VWPhysicalAction] = [VWTurnAction, VWTurnAction]
+    def __random_physical_action(self) -> VWPhysicalAction:
+        pool: List[Type[VWPhysicalAction]] = [VWTurnAction, VWTurnAction]
 
         if self.__can_move():
             pool.append(VWMoveAction)
@@ -62,9 +48,9 @@ class WallMind(VWActorMindSurrogate):
 
         assert 0 <= roll < len(pool)
 
-        if roll == 0:
+        if roll == 0 and isinstance(pool[0], Type) and issubclass(pool[0], VWTurnAction):
             return pool[0](direction=VWDirection.left)
-        elif roll == 1:
+        elif roll == 1 and isinstance(pool[1], Type) and issubclass(pool[1], VWTurnAction):
             return pool[1](direction=VWDirection.right)
         else:
             assert VWMoveAction in pool
@@ -79,7 +65,7 @@ class WallMind(VWActorMindSurrogate):
         '''
 
         # Here the second condition will not raise an exception because we know that the forward location is not None because of the first condition.
-        return not self.__observation.get_center().has_wall_on(orientation=self.__orientation) and not self.__observation.get_forward().has_actor()
+        return not self.get_latest_observation().get_center().or_else_raise().has_wall_on(orientation=self.get_own_orientation()) and not self.get_latest_observation().get_forward().or_else_raise().has_actor()
 
 
 if __name__ == "__main__":
