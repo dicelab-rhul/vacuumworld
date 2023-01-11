@@ -92,7 +92,7 @@ class VWActorMindSurrogate():
         assert messages is not None and isinstance(messages, Iterable) and all(isinstance(message, BccMessage) for message in messages)
 
         self.__latest_observation: VWObservation = observation
-        self.__latest_received_messages: Iterable[BccMessage] = messages is not None and messages or []
+        self.__latest_received_messages: Iterable[BccMessage] = messages if messages is not None and messages else []
 
     def revise(self) -> None:
         '''
