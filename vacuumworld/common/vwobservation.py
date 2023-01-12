@@ -46,7 +46,7 @@ class VWObservation(Perception):
         '''
         Returns a `List` of the results of each `VWAction` that was attempted by the `VWActor` during the last cycle.
 
-        Each result is represented by a `Tuple[Type[VWAction], ActionResult]`, so to keep both the order of attempt, and the mapping between the kind of `VWAction` and its `ActionResult`.
+        Each result is represented by a `Tuple[Type[VWAction], ActionResult]`, so to preserve both the order of attempt, and the mapping between the kind of `VWAction` and its `ActionResult`.
         '''
         return self.__action_results
 
@@ -99,7 +99,9 @@ class VWObservation(Perception):
         '''
         Returns whether or not this `VWObservation` is empty, i.e. whether or not it contains any `VWLocation`.
         '''
-        return not self.__locations
+        assert self.__locations is not None
+
+        return len(self.__locations) == 0
 
     def get_locations(self) -> Dict[VWPositionNames, VWLocation]:
         '''
