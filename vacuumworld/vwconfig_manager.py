@@ -1,5 +1,6 @@
 from json import load
-from screeninfo import get_monitors, ScreenInfoError
+from screeninfo import get_monitors, ScreenInfoError, Monitor
+from typing import Any
 
 import os
 
@@ -9,7 +10,7 @@ class VWConfigManager():
     This class is responsible for loading the configuration of the application.
     '''
     @staticmethod
-    def load_config_from_file(config_file_path: str) -> dict:
+    def load_config_from_file(config_file_path: str) -> dict[str, Any]:
         '''
         Loads the configuration from the file identified by `config_file_path`, and returns it as a `dict`.
 
@@ -17,16 +18,19 @@ class VWConfigManager():
 
         If something goes wrong during the I/O operations, the resulting `IOError` is not caught (and thus automatically propagated).
         '''
-        assert config_file_path and type(config_file_path) == str and os.path.exists(config_file_path) and os.path.isfile(config_file_path)
+        assert config_file_path and isinstance(config_file_path, str) and os.path.exists(config_file_path) and os.path.isfile(config_file_path)
 
         # We let the `IOError` propagate, if any.
         with open(file=config_file_path, mode="r") as f:
-            config: dict = load(fp=f)
+            config: dict[str, Any] = load(fp=f)
 
         try:
             # Assuming the first monitor is the one where VW is running.
-            config["screen_width"] = get_monitors()[config["default_monitor_number"]].width
-            config["screen_height"] = get_monitors()[config["default_monitor_number"]].height
+            default_monitor_number: int = config["default_monitor_number"]
+            monitor: Monitor = get_monitors()[default_monitor_number]
+
+            config["screen_width"] = monitor.width
+            config["screen_height"] = monitor.height
             config["x_scale"] = float(config["screen_width"] / config["base_screen_width"])
             config["y_scale"] = float(config["screen_height"] / config["base_screen_height"])
 

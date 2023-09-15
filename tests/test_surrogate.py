@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from unittest import main, TestCase
-from typing import Iterable
+from typing import Iterable, Any
 from inspect import getsourcefile
 from pyoptional.pyoptional import PyOptional
 
@@ -48,7 +48,7 @@ class TestSurrogate(TestCase):
     * The loading and validity of `VwHystereticMindSurrogate` objects.
     * The loading and validity of objects whose class is a custom subclass (in this case `TmpSurrogateMind`) of `VWActorSurrogateMind`.
     '''
-    def __init__(self, args) -> None:
+    def __init__(self, args: Any) -> None:
         super(TestSurrogate, self).__init__(args)
 
     def test_load_hysteretic_surrogate(self) -> None:

@@ -26,17 +26,24 @@ class VWPositionNames(Enum):
     def __repr__(self) -> str:
         return str(self)
 
-    @staticmethod
-    def values() -> List[VWPositionNames]:
+    @classmethod
+    def elements(cls) -> list[VWPositionNames]:
         '''
-        Returns an ordered `List` of all the values of the `Enum`.
+        Returns a `list` of all the elements of this `Enum`.
         '''
-        return [pn for pn in VWPositionNames]
+        return [position_name for position_name in cls]
+
+    @classmethod
+    def values(cls) -> list[str]:
+        '''
+        Returns a `list` of all the values of this `Enum`.
+        '''
+        return [position_name.value for position_name in cls]
 
     @staticmethod
-    def values_in_order() -> List[VWPositionNames]:
+    def elements_in_order() -> List[VWPositionNames]:
         '''
-        Returns an ordered `List` of all the values of this `Enum`.
+        Returns an ordered `List` of all the elements of this `Enum`.
 
         The order is as follows:
         * `VWPositionNames.center`

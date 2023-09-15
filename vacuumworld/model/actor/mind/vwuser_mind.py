@@ -23,5 +23,8 @@ class VWUserMind(VWMind):
         else:
             raise TypeError("The surrogate of a `VWUserMind` must be a `VWUserMindSurrogate`.")
 
-    def _clone_surrogate(self, surrogate: VWUserMindSurrogate) -> VWUserMindSurrogate:
-        return VWUserMindSurrogate(difficulty_level=surrogate.get_difficulty_level())
+    def _clone_surrogate(self, surrogate: VWActorMindSurrogate) -> VWUserMindSurrogate:
+        if not isinstance(surrogate, VWUserMindSurrogate):
+            raise TypeError("The surrogate of a `VWUserMind` must be a `VWUserMindSurrogate`.")
+        else:
+            return VWUserMindSurrogate(difficulty_level=surrogate.get_difficulty_level())

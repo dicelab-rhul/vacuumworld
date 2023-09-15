@@ -1,6 +1,6 @@
 from tkinter import Entry, Frame, StringVar, Listbox, END, ACTIVE
 from re import match
-from typing import List
+from typing import List, Any
 from pyoptional.pyoptional import PyOptional
 
 
@@ -9,13 +9,13 @@ class VWAutocompleteEntry(Entry):
     '''
     This class specifies an `Entry` with autocomplete functionality.
     '''
-    def __init__(self, lista: List[str], height: int, *args, **kwargs) -> None:
+    def __init__(self, lista: List[str], height: int, *args: Any, **kwargs: Any) -> None:
         super(VWAutocompleteEntry, self).__init__(*args, **kwargs)
 
         self.__dropdown_parent: Frame = args[0]
         self.__lista: List[str] = lista
         self.__var: StringVar = self["textvariable"] if "textvariable" in kwargs else StringVar()
-        self.__font: tuple = kwargs.get("font", None)
+        self.__font: tuple[Any] = kwargs.get("font", None)
 
         self.__var.trace("w", self.__changed)
 
@@ -26,7 +26,7 @@ class VWAutocompleteEntry(Entry):
         self.bind("<Up>", self.__up)
         self.bind("<Down>", self.__down)
 
-        self.__lb: PyOptional[Listbox] = PyOptional.empty()
+        self.__lb: PyOptional[Listbox] = PyOptional[Listbox].empty()
         self.__lb_up: bool = False
 
     def set_list_a(self, list_a: List[str]) -> None:

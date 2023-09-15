@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Dict, Iterable, List, Type, Tuple, Iterator
+from typing import Dict, Iterable, List, Type, Tuple, Iterator, Any
 from json import dumps
 from pyoptional.pyoptional import PyOptional
 
@@ -38,7 +38,7 @@ class VWObservation(Perception):
         The observer is assumed to be the `VWActor` whose `VWActorAppearance` is contained by the `VWLocation` at the `VWPositionNames.center` position in this `VWObservation`.
         '''
         if VWPositionNames.center not in self.__locations or not self.__locations[VWPositionNames.center] or not self.__locations[VWPositionNames.center].has_actor():
-            return PyOptional.empty()
+            return PyOptional[str].empty()
         else:
             return PyOptional.of(self.__locations[VWPositionNames.center].get_actor_appearance().or_else_raise().get_id())
 
@@ -115,7 +115,7 @@ class VWObservation(Perception):
         '''
         Returns a `PyOptional` wrapping the `VWLocation` at the given `VWPositionNames`, or an empty `PyOptional` if there is no `VWLocation` at that position.
         '''
-        return PyOptional.of(self.__locations[position_name]) if position_name in self.__locations else PyOptional.empty()
+        return PyOptional.of(self.__locations[position_name]) if position_name in self.__locations else PyOptional[VWLocation].empty()
 
     def get_locations_in_order(self) -> List[PyOptional[VWLocation]]:
         '''
@@ -127,43 +127,43 @@ class VWObservation(Perception):
         * `VWPositionNames.forwardleft`
         * `VWPositionNames.forwardright`
         '''
-        return [PyOptional.of(self.__locations[position]) if position in self.__locations else PyOptional.empty() for position in VWPositionNames.values_in_order()]
+        return [PyOptional.of(self.__locations[position]) if position in self.__locations else PyOptional.empty() for position in VWPositionNames.elements_in_order()]
 
     def get_center(self) -> PyOptional[VWLocation]:
         '''
         Returns a `PyOptional` wrapping the `VWLocation` at the center of the `VWActor`'s view, or an empty `PyOptional` if there is no `VWLocation` at that position.
         '''
-        return PyOptional.of(self.__locations[VWPositionNames.center]) if VWPositionNames.center in self.__locations else PyOptional.empty()
+        return PyOptional.of(self.__locations[VWPositionNames.center]) if VWPositionNames.center in self.__locations else PyOptional[VWLocation].empty()
 
     def get_forward(self) -> PyOptional[VWLocation]:
         '''
         Returns a `PyOptional` wrapping the `VWLocation` in front of the `VWActor`, or an empty `PyOptional` if there is no `VWLocation` at that position.
         '''
-        return PyOptional.of(self.__locations[VWPositionNames.forward]) if VWPositionNames.forward in self.__locations else PyOptional.empty()
+        return PyOptional.of(self.__locations[VWPositionNames.forward]) if VWPositionNames.forward in self.__locations else PyOptional[VWLocation].empty()
 
     def get_left(self) -> PyOptional[VWLocation]:
         '''
         Returns a `PyOptional` wrapping the `VWLocation` to the left of the `VWActor`, or an empty `PyOptional` if there is no `VWLocation` at that position.
         '''
-        return PyOptional.of(self.__locations[VWPositionNames.left]) if VWPositionNames.left in self.__locations else PyOptional.empty()
+        return PyOptional.of(self.__locations[VWPositionNames.left]) if VWPositionNames.left in self.__locations else PyOptional[VWLocation].empty()
 
     def get_right(self) -> PyOptional[VWLocation]:
         '''
         Returns a `PyOptional` wrapping the `VWLocation` to the right of the `VWActor`, or an empty `PyOptional` if there is no `VWLocation` at that position.
         '''
-        return PyOptional.of(self.__locations[VWPositionNames.right]) if VWPositionNames.right in self.__locations else PyOptional.empty()
+        return PyOptional.of(self.__locations[VWPositionNames.right]) if VWPositionNames.right in self.__locations else PyOptional[VWLocation].empty()
 
     def get_forwardleft(self) -> PyOptional[VWLocation]:
         '''
         Returns a `PyOptional` wrapping the `VWLocation` to the front-left of the `VWActor`, or an empty `PyOptional` if there is no `VWLocation` at that position.
         '''
-        return PyOptional.of(self.__locations[VWPositionNames.forwardleft]) if VWPositionNames.forwardleft in self.__locations else PyOptional.empty()
+        return PyOptional.of(self.__locations[VWPositionNames.forwardleft]) if VWPositionNames.forwardleft in self.__locations else PyOptional[VWLocation].empty()
 
     def get_forwardright(self) -> PyOptional[VWLocation]:
         '''
         Returns a `PyOptional` wrapping the `VWLocation` to the front-right of the `VWActor`, or an empty `PyOptional` if there is no `VWLocation` at that position.
         '''
-        return PyOptional.of(self.__locations[VWPositionNames.forwardright]) if VWPositionNames.forwardright in self.__locations else PyOptional.empty()
+        return PyOptional.of(self.__locations[VWPositionNames.forwardright]) if VWPositionNames.forwardright in self.__locations else PyOptional[VWLocation].empty()
 
     def is_wall_immediately_ahead(self) -> bool:
         '''
@@ -313,10 +313,10 @@ class VWObservation(Perception):
         '''
         Returns a pretty-formatted JSON string representation of this `VWObservation`, including each perceived `VWLocation`, and the `ActionOutcome` of each `VWAction` that was attempted by the `VWActor` during the last cycle.
         '''
-        observation_dict: dict = {
+        observation_dict: dict[str, Any] = {
             # The `.name` is necessary because `ActionOutcome` is an `Enum` and `Enum` objects are not JSON serialisable.
             "Action outcomes": [{action_type.__name__: action_result.get_outcome().name} for action_type, action_result in self.__action_results],
-            "Perceived locations": {pos.name: loc.pretty_format() for pos, loc in self.__locations.items() if loc is not None}
+            "Perceived locations": {pos.name: loc.pretty_format() for pos, loc in self.__locations.items() if loc}
         }
 
         return dumps(observation_dict, indent=4)

@@ -15,6 +15,7 @@ from ..actions.vwspeak_action import VWSpeakAction
 from ..actions.vwbroadcast_action import VWBroadcastAction
 from ...common.vwobservation import VWObservation
 from ...common.vwexceptions import VWActionAttemptException, VWPerceptionException
+from ...common.vwvalidator import VWValidator
 
 
 class VWActor(Actor):
@@ -22,7 +23,7 @@ class VWActor(Actor):
     This abstract class specifies the actors in the VacuumWorld universe.
     '''
     def __init__(self, mind: VWMind, sensors: List[VWSensor]=[], actuators: List[VWActuator]=[]) -> None:
-        super(VWActor, self).__init__(mind=mind, sensors=[s for s in sensors if isinstance(s, Sensor)], actuators=[a for a in actuators if isinstance(a, Actuator)])
+        super(VWActor, self).__init__(mind=mind, sensors=[s for s in sensors if VWValidator.does_type_match(t=Sensor, obj=s)], actuators=[a for a in actuators if VWValidator.does_type_match(t=Actuator, obj=a)])
 
     def get_mind(self) -> VWMind:
         '''

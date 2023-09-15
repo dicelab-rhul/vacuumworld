@@ -2,6 +2,7 @@
 
 from unittest import main, TestCase
 from random import randint
+from typing import Any
 from pyoptional.pyoptional import PyOptional
 
 from vacuumworld import VacuumWorld
@@ -22,10 +23,10 @@ class TestEnvironment(TestCase):
     '''
     This class tests the creation of `VWAmbient` and `VWEnvironment` objects with various grid sizes and various amounts of `VWActor` and `VWDirt` objects.
     '''
-    def __init__(self, args) -> None:
+    def __init__(self, args: Any) -> None:
         super(TestEnvironment, self).__init__(args)
 
-        self.__config: dict = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
+        self.__config: dict[str, Any] = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
 
     def test_default_sized_empty_env(self) -> None:
         '''

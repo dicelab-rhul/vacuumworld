@@ -1,5 +1,5 @@
 from tkinter import Canvas, Frame, Event
-from typing import Callable
+from typing import Callable, Any
 from math import floor
 
 from pystarworldsturbo.utils.utils import ignore
@@ -9,11 +9,11 @@ class VWSlider(Canvas):
     '''
     This class specifies a slider widget for the VacuumWorld GUI.
     '''
-    def __init__(self, parent: Frame, config: dict, release_callback: Callable, slide_callback: Callable, width: float, height: float, increments: int=0, slider_width: float=8, start: float=0, **kwargs) -> None:
+    def __init__(self, parent: Frame, config: dict[str, Any], release_callback: Callable[..., Any], slide_callback: Callable[..., Any], width: float, height: float, increments: int=0, slider_width: float=8, start: float=0, **kwargs: Any) -> None:
         super(VWSlider, self).__init__(parent, width=width, height=height, bd=0, highlightthickness=0, relief="ridge", bg=config["bg_colour"], **kwargs)
 
-        self.__release_callback: Callable = release_callback
-        self.__slide_callback: Callable = slide_callback
+        self.__release_callback: Callable[..., Any] = release_callback
+        self.__slide_callback: Callable[..., Any] = slide_callback
 
         self.__increments: int = increments
         self.__slide_item_dim: float = slider_width

@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
 from unittest import main, TestCase
-from typing import List, Union, Callable, Any
+from typing import List, Callable, Any
 from random import randint
 from pyoptional.pyoptional import PyOptional
 
 from pystarworldsturbo.common.action_result import ActionResult
 from pystarworldsturbo.common.action_outcome import ActionOutcome
+from pystarworldsturbo.common.content_type import MessageContentType
 
 from vacuumworld import VacuumWorld
 from vacuumworld.common.vwcoordinates import VWCoord
@@ -52,12 +53,12 @@ class TestExecutors(TestCase):
     * `VWMoveExecutor` for `VWMoveAction`.
     * `VWBroadcastExecutor` for `VWBroadcastAction`.
     '''
-    def __init__(self, args) -> None:
+    def __init__(self, args: Any) -> None:
         super(TestExecutors, self).__init__(args)
 
-        self.__config: dict = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
+        self.__config: dict[str, Any] = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
         self.__randbytes: Callable[[int], bytes] = random_module.randbytes if hasattr(random_module, "randbytes") else os.urandom
-        self.__message_content_list: List[Union[int, float, str, bytes, list, tuple, dict]] = [
+        self.__message_content_list: List[MessageContentType] = [
             "Hello World!",
             ["Hello", "World", "!"],
             {
@@ -68,7 +69,7 @@ class TestExecutors(TestCase):
             bytes("foobar", "utf-8"),
             1337,
             0.1337,
-            ("Hello", "World", "!")
+            False
         ]
 
         VWCommunicativeAction.SENDER_ID_SPOOFING_ALLOWED = self.__config["sender_id_spoofing_allowed"]
@@ -120,7 +121,7 @@ class TestExecutors(TestCase):
             for real_sender_id in env.get_actors():
                 self.__test_message_delivery(speak_executor=speak_executor, env=env, message=message, real_sender_id=real_sender_id, custom_sender_id=custom_sender_id, recipients=[r_id for r_id in recipients if r_id != real_sender_id])
 
-    def __test_message_delivery(self, speak_executor: VWSpeakExecutor, env: VWEnvironment, message: Union[int, float, str, list, tuple, dict], real_sender_id: str, custom_sender_id: PyOptional[str]=PyOptional.empty(), recipients: List[str]=[]) -> None:
+    def __test_message_delivery(self, speak_executor: VWSpeakExecutor, env: VWEnvironment, message: MessageContentType, real_sender_id: str, custom_sender_id: PyOptional[str]=PyOptional.empty(), recipients: List[str]=[]) -> None:
         sender_id: str = custom_sender_id.or_else(real_sender_id)
         action: VWSpeakAction = VWSpeakAction(message=message, sender_id=sender_id, recipients=recipients)
         action.set_actor_id(actor_id=real_sender_id)
@@ -137,7 +138,7 @@ class TestExecutors(TestCase):
         else:
             self.assertTrue(result.get_outcome() == ActionOutcome.failure)
 
-    def __test_message_received(self, env: VWEnvironment, message: Union[int, float, str, list, tuple, dict], sender_id: str, recipients: List[str]) -> None:
+    def __test_message_received(self, env: VWEnvironment, message: MessageContentType, sender_id: str, recipients: List[str]) -> None:
         for recipient_id in recipients:
             fake_observation: VWObservation = VWObservation(action_type=VWIdleAction, action_result=ActionResult(outcome=ActionOutcome.impossible), locations_dict={})
             recipient_actor: VWActor = env.get_actor(actor_id=recipient_id).or_else_raise()

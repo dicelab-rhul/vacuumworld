@@ -1,13 +1,15 @@
 from tkinter import Button, Label, Toplevel, LEFT, SOLID
+from typing import Any
+from pyoptional.pyoptional import PyOptional
 
 
 class VWToolTip():
     '''
     This class is used to create tooltips for each `VWButton`.
     '''
-    def __init__(self, widget: Button, config: dict) -> None:
+    def __init__(self, widget: Button, config: dict[str, Any]) -> None:
         self.__widget: Button = widget
-        self.__config: dict = config
+        self.__config: dict[str, Any] = config
         self.__already_init: bool = False
 
     def showtip(self, text: str) -> None:
@@ -19,18 +21,22 @@ class VWToolTip():
         self.__text: str = text
 
         if not self.__already_init:
-            self.__tipwindow: Toplevel = None
+            self.__tipwindow: PyOptional[Toplevel] = PyOptional[Toplevel].empty()
             self.__already_init = True
 
-        if self.__tipwindow or not self.__text:
+        if self.__tipwindow.is_present() or not self.__text:
             return
 
-        x, y, _, cy = self.__widget.bbox("insert")
+        # TODO: fix this.
+        tmp: Any = self.__widget.bbox("insert")
+        x, y, _, cy = tmp if tmp else (0, 0, 0, 0)
         x: int = x + self.__widget.winfo_rootx() + 57
         y: int = y + cy + self.__widget.winfo_rooty() + 27
-        self.__tipwindow = tw = Toplevel(self.__widget)
+        tw = Toplevel(self.__widget)
+        # TODO: fix this.
         tw.wm_overrideredirect(1)
         tw.wm_geometry("+%d+%d" % (x, y))
+        self.__tipwindow = PyOptional[Toplevel].of(tw)
 
         label: Label = Label(tw, text=self.__text, justify=LEFT, bg=self.__config["tooltips_bg_colour"], relief=SOLID, borderwidth=1, font=self.__config["tooltips_font"], fg=self.__config["tooltips_fg_colour"])
         label.pack(ipadx=1)
@@ -41,14 +47,15 @@ class VWToolTip():
 
         It needs to be bound to some event, like `<Enter>` or `<Leave>`.
         '''
-        tw: Toplevel = self.__tipwindow
-        self.__tipwindow = None
+        if self.__tipwindow.is_present():
+            tw: Toplevel = self.__tipwindow.or_else_raise()
 
-        if tw:
             tw.destroy()
 
+        self.__tipwindow = PyOptional[Toplevel].empty()
 
-def create_tooltip(widget: Button, text: str, config: dict) -> None:
+
+def create_tooltip(widget: Button, text: str, config: dict[str, Any]) -> None:
     '''
     Creates the tooltip for the given `widget` with the given `text`.
 

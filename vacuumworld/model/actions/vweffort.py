@@ -39,7 +39,7 @@ class VWActionEffort():
 
         This method assumes (via assertion) that `action_name` is a `str`, and `new_effort` is an `int`.
         '''
-        assert type(action_name) == str and type(new_effort) == int
+        assert isinstance(action_name, str) and isinstance(new_effort, int)
 
         if action_name in VWActionEffort.EFFORTS:
             VWActionEffort.EFFORTS[action_name] = new_effort

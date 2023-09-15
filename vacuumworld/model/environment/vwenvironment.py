@@ -31,6 +31,7 @@ from ...common.vwcolour import VWColour
 from ...common.vwobservation import VWObservation
 from ...common.vworientation import VWOrientation
 from ...common.vwexceptions import VWActionAttemptException, VWMalformedActionException, VWInternalError
+from ...common.vwvalidator import VWValidator
 from ...model.actions.vwactions import VWAction, VWPhysicalAction, VWCommunicativeAction
 
 
@@ -55,11 +56,11 @@ class VWEnvironment(Environment):
     * A physical/communicative evolution phase, in which each `VWActor` potentially attempts to modify the `VWEnvironment` via a `VWPhysicalAction`, and potentially engages in communications via a `VWCommunicativeAction`.
     Only one `VWPhysicalAction` and one `VWCommunicativeAction` can be attempted per cycle per `VWActor`.
     '''
-    def __init__(self, config: dict, ambient: VWAmbient, initial_actors: List[VWActor]=[], initial_dirts: List[VWDirt]=[]) -> None:
-        super(VWEnvironment, self).__init__(ambient=ambient, initial_actors=[a for a in initial_actors if isinstance(a, Actor)], initial_passive_bodies=[d for d in initial_dirts if isinstance(d, Body)])
+    def __init__(self, config: dict[str, Any], ambient: VWAmbient, initial_actors: List[VWActor]=[], initial_dirts: List[VWDirt]=[]) -> None:
+        super(VWEnvironment, self).__init__(ambient=ambient, initial_actors=[a for a in initial_actors if VWValidator.does_type_match(t=Actor, obj=a)], initial_passive_bodies=[d for d in initial_dirts if VWValidator.does_type_match(t=Body, obj=d)])
 
         self.__cycle: int = -1
-        self.__config: dict = config
+        self.__config: dict[str, Any] = config
 
     def can_evolve(self) -> bool:
         '''
@@ -90,7 +91,7 @@ class VWEnvironment(Environment):
         '''
         return super(VWEnvironment, self).get_actor(actor_id=actor_id).filter(lambda a: isinstance(a, VWActor)).map(lambda a: cast(VWActor, a))
 
-    def get_user(self, user_id) -> PyOptional[VWUser]:
+    def get_user(self, user_id: str) -> PyOptional[VWUser]:
         '''
         Returns a `PyOptional` wrapping the `VWUser` with the given `user_id` if it exists, otherwise returns an empty `PyOptional`.
 
@@ -341,7 +342,7 @@ class VWEnvironment(Environment):
 
     # This method is meant to throw an exception if something goes wrong.
     @staticmethod
-    def from_json(data: Dict[str, List[Dict[str, Any]]], config: dict) -> VWEnvironment:
+    def from_json(data: Dict[str, List[Dict[str, Any]]], config: dict[str, Any]) -> VWEnvironment:
         '''
         Creates and returns a `VWEnvironment` from the specified JSON representation (`data`) and `config`.
 
@@ -379,7 +380,7 @@ class VWEnvironment(Environment):
 
             return PyOptional.of(cast(VWActor, actor)), PyOptional.of(actor_appearance)
         else:
-            return PyOptional.empty(), PyOptional.empty()
+            return PyOptional[VWActor].empty(), PyOptional[VWActorAppearance].empty()
 
     @staticmethod
     def __load_dirt(location_data: Dict[str, Any]) -> Tuple[PyOptional[VWDirt], PyOptional[VWDirtAppearance]]:
@@ -389,10 +390,10 @@ class VWEnvironment(Environment):
 
             return PyOptional.of(dirt),  PyOptional.of(dirt_appearance)
         else:
-            return PyOptional.empty(), PyOptional.empty()
+            return PyOptional[VWDirt].empty(), PyOptional[VWDirtAppearance].empty()
 
     @staticmethod
-    def generate_empty_env(config: dict, forced_line_dim: int=-1) -> VWEnvironment:
+    def generate_empty_env(config: dict[str, Any], forced_line_dim: int=-1) -> VWEnvironment:
         '''
         Generates and returns an empty `VWEnvironment` from the specified `config`.
         '''
@@ -433,8 +434,8 @@ class VWEnvironment(Environment):
         return default_wall
 
     @staticmethod
-    def __validate_grid(grid: Dict[VWCoord, VWLocation], config: dict, candidate_grid_line_dim: int=-1) -> None:
-        assert grid is not None and type(grid) == dict
+    def __validate_grid(grid: Dict[VWCoord, VWLocation], config: dict[str, Any], candidate_grid_line_dim: int=-1) -> None:
+        assert grid is not None and isinstance(grid, dict)
 
         tmp: float = sqrt(len(grid))
         grid_line_dim: int = floor(tmp)
@@ -449,7 +450,7 @@ class VWEnvironment(Environment):
         return str(self.get_ambient())
 
     @staticmethod
-    def generate_random_env_for_testing(config: dict, custom_grid_size: bool) -> Tuple[VWEnvironment, int]:
+    def generate_random_env_for_testing(config: dict[str, Any], custom_grid_size: bool) -> Tuple[VWEnvironment, int]:
         '''
         Generates and returns a random `VWEnvironment` for testing purposes, given `config`.
 
@@ -502,7 +503,7 @@ class VWEnvironment(Environment):
         return env, grid_size
 
     @staticmethod
-    def generate_empty_env_for_testing(custom_grid_size: bool, config: dict) -> Tuple[VWEnvironment, int]:
+    def generate_empty_env_for_testing(custom_grid_size: bool, config: dict[str, Any]) -> Tuple[VWEnvironment, int]:
         '''
         Generates and returns an empty `VWEnvironment` for testing purposes, given `config`.
 

@@ -1,11 +1,13 @@
-from typing import Iterable, Type, Union, List
+from typing import Iterable, List
 
 from pystarworldsturbo.common.action import Action
 from pystarworldsturbo.common.message import Message
+from pystarworldsturbo.common.content_type import MessageContentType
 
 from .vweffort import VWActionEffort
 
 from ...common.vwexceptions import VWMalformedActionException
+from ...common.vwvalidator import VWValidator
 
 
 class VWAction(Action):
@@ -37,10 +39,9 @@ class VWCommunicativeAction(VWAction):
     '''
     This class is a `VWAction` that requires the `VWActor` to communicate with another `VWActor` (or more) in the `VWEnvironment`.
     '''
-    ALLOWED_MESSAGE_TYPES: List[Type] = [int, float, str, bytes, list, tuple, dict]
     SENDER_ID_SPOOFING_ALLOWED: bool = False
 
-    def __init__(self, message: Union[int, float, str, bytes, list, tuple, dict], recipients: Iterable[str], sender_id: str) -> None:
+    def __init__(self, message: MessageContentType, recipients: Iterable[str], sender_id: str) -> None:
         super(VWCommunicativeAction, self).__init__()
 
         VWCommunicativeAction.__validate_message(message=message)
@@ -49,15 +50,15 @@ class VWCommunicativeAction(VWAction):
         self.__message: Message = Message(content=message, recipient_ids=[recipient for recipient in recipients], sender_id=sender_id)
 
     @staticmethod
-    def __validate_message(message: Union[int, float, str, bytes, list, tuple, dict]) -> None:
-        if not message:
-            raise VWMalformedActionException("A message cannot be NoneType or empty.")
-        elif type(message) not in VWCommunicativeAction.ALLOWED_MESSAGE_TYPES:
-            raise VWMalformedActionException("Invalid message type: {} (allowed: {}).".format(type(message), VWCommunicativeAction.ALLOWED_MESSAGE_TYPES))
+    def __validate_message(message: MessageContentType) -> None:
+        VWValidator.validate_not_none(obj=message)
+
+        if not VWValidator.does_type_match(t=int | float | bool | str | bytes | list | dict, obj=message):
+            raise VWMalformedActionException("Invalid message type: {} (allowed: {}).".format(type(message), MessageContentType))
 
     @staticmethod
-    def __validate_recipients(recipients: Iterable) -> None:
-        if not isinstance(recipients, Iterable):
+    def __validate_recipients(recipients: Iterable[str]) -> None:
+        if not VWValidator.does_type_match(t=Iterable, obj=recipients):
             raise VWMalformedActionException("`recipients` must be iterable.")
 
     def get_message(self) -> Message:

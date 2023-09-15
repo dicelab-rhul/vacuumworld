@@ -82,3 +82,10 @@ class VWOrientation(Enum):
         Returns a random `VWOrientation`.
         '''
         return choice(list(VWOrientation))
+
+    @classmethod
+    def values(cls) -> list[str]:
+        '''
+        Returns a `list` of all the values of this `Enum`.
+        '''
+        return [orientation.value for orientation in cls]

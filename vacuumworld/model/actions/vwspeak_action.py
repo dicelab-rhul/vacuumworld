@@ -1,4 +1,6 @@
-from typing import Union, Iterable
+from typing import Iterable
+
+from pystarworldsturbo.common.content_type import MessageContentType
 
 from .vwactions import VWCommunicativeAction
 from .vwbroadcast_action import VWBroadcastAction
@@ -11,7 +13,7 @@ class VWSpeakAction(VWCommunicativeAction):
 
     An empty list of recipients is interpreted as a broadcast.
     '''
-    def __init__(self, message: Union[int, float, str, bytes, list, tuple, dict], recipients: Iterable[str], sender_id: str) -> None:
+    def __init__(self, message: MessageContentType, recipients: Iterable[str], sender_id: str) -> None:
         super(VWSpeakAction, self).__init__(message=message, recipients=recipients, sender_id=sender_id)
 
     def get_effort(self) -> int:

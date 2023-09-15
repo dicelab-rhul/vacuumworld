@@ -1,9 +1,12 @@
+from typing import Any
+
+
 class VWBoundsManager():
     '''
     This class provides a quick way to check if two `int` numbers are within the bounds of the `grid_size` specified in the `config` argument.
     '''
-    def __init__(self, config: dict) -> None:
-        self.__config: dict = config
+    def __init__(self, config: dict[str, Any]) -> None:
+        self.__config: dict[str, Any] = config
 
     def in_bounds(self, x: int, y: int) -> bool:
         '''

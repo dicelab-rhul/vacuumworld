@@ -38,3 +38,10 @@ class VWUserDifficulty(Enum):
         Returns a random `VWUserDifficulty` value.
         '''
         return choice(list(VWUserDifficulty))
+
+    @classmethod
+    def values(cls) -> list[int]:
+        '''
+        Returns a list of all the `VWUserDifficulty` values.
+        '''
+        return [difficulty.value for difficulty in cls]

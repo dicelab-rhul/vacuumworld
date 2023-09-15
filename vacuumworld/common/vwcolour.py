@@ -32,3 +32,10 @@ class VWColour(Enum):
             return "an {}".format(self)
         else:
             return "a {}".format(self)
+
+    @classmethod
+    def values(cls) -> list[str]:
+        '''
+        Returns a `list` of all the values of this `Enum`.
+        '''
+        return [colour.value for colour in cls]

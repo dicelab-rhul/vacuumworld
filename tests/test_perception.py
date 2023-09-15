@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from unittest import main, TestCase
-from typing import Dict, List, Union, Type, Callable, Tuple
+from typing import Dict, List, Type, Callable, Any, cast
 from random import choice, randint, random as randfloat
 from uuid import uuid4
 from sys import maxsize, float_info
@@ -10,9 +10,11 @@ from pyoptional.pyoptional import PyOptional
 from pystarworldsturbo.common.message import BccMessage
 from pystarworldsturbo.common.action_outcome import ActionOutcome
 from pystarworldsturbo.common.action_result import ActionResult
+from pystarworldsturbo.common.content_type import MessageContentType, MessageContentSimpleType
 
 from vacuumworld import VacuumWorld
 from vacuumworld.common.vwposition_names import VWPositionNames
+from vacuumworld.common.vwvalidator import VWValidator
 from vacuumworld.model.actions.vwactions import VWAction
 from vacuumworld.model.actions.vwbroadcast_action import VWBroadcastAction
 from vacuumworld.model.actions.vwclean_action import VWCleanAction
@@ -39,10 +41,10 @@ class TestPerception(TestCase):
     '''
     This class tests `VWObservation` and `BccMessage`.
     '''
-    def __init__(self, args) -> None:
+    def __init__(self, args: Any) -> None:
         super(TestPerception, self).__init__(args)
 
-        self.__config: dict = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
+        self.__config: dict[str, Any] = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
         self.__min_grid_size: int = self.__config["min_environment_dim"]
         self.__max_grid_size: int = self.__config["max_environment_dim"]
         self.__number_of_locations: int = len(VWPositionNames)
@@ -55,7 +57,7 @@ class TestPerception(TestCase):
         '''
         Tests a `VWObservation` coming from a `VWPhysicalAction`.
         '''
-        test_function: Callable = self.__test_observation_coming_from_physical_action
+        test_function: Callable[..., None] = self.__test_observation_coming_from_physical_action
 
         for _ in range(self.__number_of_runs):
             self.__test_observation(test_function=test_function)
@@ -64,7 +66,7 @@ class TestPerception(TestCase):
         '''
         Tests a `VWObservation` coming from a `VWCommunicativeAction`.
         '''
-        test_function: Callable = self.__test_observation_coming_from_communicative_action
+        test_function: Callable[..., None] = self.__test_observation_coming_from_communicative_action
 
         for _ in range(self.__number_of_runs):
             self.__test_observation(test_function=test_function)
@@ -73,12 +75,12 @@ class TestPerception(TestCase):
         '''
         Tests a `VWObservation` coming from a combination of a `VWPhysicalAction` and a `VWCommunicativeAction`.
         '''
-        test_function: Callable = self.__test_observation_coming_from_multiple_actions
+        test_function: Callable[..., None] = self.__test_observation_coming_from_multiple_actions
 
         for _ in range(self.__number_of_runs):
             self.__test_observation(test_function=test_function)
 
-    def __test_observation(self, test_function: Callable) -> None:
+    def __test_observation(self, test_function: Callable[..., None]) -> None:
         grid_size: int = randint(self.__min_grid_size, self.__max_grid_size)
         coords: List[VWCoord] = self.__generate_random_coords(grid_size=grid_size)
         actors: List[PyOptional[VWActorAppearance]] = self.__generate_random_actor_appearances()
@@ -110,17 +112,17 @@ class TestPerception(TestCase):
                         communicative_observation: VWObservation = VWObservation(action_type=communicative_action_type, action_result=communicative_result, locations_dict=perceived_locations)
                         communicative_observation.merge_action_result_with_previous_observations(observations=[physical_observation])
 
-                        self.__check_locations(o=communicative_observation, positions=VWPositionNames.values(), coords=coords, actors=actors, dirts=dirts)
+                        self.__check_locations(o=communicative_observation, positions=VWPositionNames.elements(), coords=coords, actors=actors, dirts=dirts)
 
                         actions_outcomes: Dict[Type[VWAction], List[ActionOutcome]] = communicative_observation.get_latest_actions_outcomes_as_dict()
 
                         self.assertTrue(len(actions_outcomes) == 2)
                         self.assertTrue(physical_action_type in actions_outcomes)
                         self.assertTrue(communicative_action_type in actions_outcomes)
-                        self.assertTrue(isinstance(actions_outcomes[physical_action_type], List))
-                        self.assertTrue(all([isinstance(action_outcome, ActionOutcome) for action_outcome in actions_outcomes[physical_action_type]]))
-                        self.assertTrue(isinstance(actions_outcomes[communicative_action_type], List))
-                        self.assertTrue(all([isinstance(action_outcome, ActionOutcome) for action_outcome in actions_outcomes[communicative_action_type]]))
+                        self.assertTrue(VWValidator.does_type_match(t=list, obj=actions_outcomes[physical_action_type]))
+                        self.assertTrue(all([VWValidator.does_type_match(t=ActionOutcome, obj=action_outcome) for action_outcome in actions_outcomes[physical_action_type]]))
+                        self.assertTrue(VWValidator.does_type_match(t=list, obj=actions_outcomes[communicative_action_type]))
+                        self.assertTrue(all([VWValidator.does_type_match(t=ActionOutcome, obj=action_outcome) for action_outcome in actions_outcomes[communicative_action_type]]))
                         self.assertIn(physical_action_outcome, actions_outcomes[physical_action_type])
                         self.assertIn(communicative_action_outcome, actions_outcomes[communicative_action_type])
 
@@ -128,7 +130,7 @@ class TestPerception(TestCase):
         result: ActionResult = ActionResult(outcome=action_outcome)
         o: VWObservation = VWObservation(action_type=action_type, action_result=result, locations_dict=perceived_locations)
 
-        self.__check_locations(o=o, positions=VWPositionNames.values(), coords=coords, actors=actors, dirts=dirts)
+        self.__check_locations(o=o, positions=VWPositionNames.elements(), coords=coords, actors=actors, dirts=dirts)
 
         actions_outcomes: Dict[Type[VWAction], List[ActionOutcome]] = o.get_latest_actions_outcomes_as_dict()
 
@@ -137,8 +139,8 @@ class TestPerception(TestCase):
 
         action_outcomes: List[ActionOutcome] = actions_outcomes[action_type]
 
-        self.assertTrue(isinstance(action_outcomes, List))
-        self.assertTrue(all(isinstance(action_outcome, ActionOutcome) for action_outcome in action_outcomes))
+        self.assertTrue(VWValidator.does_type_match(t=list, obj=action_outcomes))
+        self.assertTrue(all([VWValidator.does_type_match(t=ActionOutcome, obj=action_outcome) for action_outcome in action_outcomes]))
         self.assertIn(action_outcome, action_outcomes)
 
     def __check_locations(self, o: VWObservation, positions: List[VWPositionNames], coords: List[VWCoord], actors: List[PyOptional[VWActorAppearance]], dirts: List[PyOptional[VWDirtAppearance]]) -> None:
@@ -148,7 +150,7 @@ class TestPerception(TestCase):
     def __check_location(self, o: VWObservation, position: VWPositionNames, coord: VWCoord, actor_appearance: PyOptional[VWActorAppearance], dirt_appearance: PyOptional[VWDirtAppearance]) -> None:
         self.__check_observer_id(observation=o, position=position, actor_appearance=actor_appearance)
 
-        if o.get_location_at(position_name=position) is not None:
+        if o.get_location_at(position_name=position):
             self.__check_appearances(observation=o, position=position, actor_appearance=actor_appearance, dirt_appearance=dirt_appearance)
 
     def __check_observer_id(self, observation: VWObservation, position: VWPositionNames, actor_appearance: PyOptional[VWActorAppearance]) -> None:
@@ -202,7 +204,8 @@ class TestPerception(TestCase):
 
         for i in range(len(coords)):
             coord: VWCoord = coords[i]
-            locations_dict[VWPositionNames.values()[i]] = PyOptional.of(VWLocation(coord=coord, actor_appearance=actors[i], dirt_appearance=dirts[i], wall=VWEnvironment.generate_wall_from_coordinates(coord=coord, grid_size=grid_size))) if coord.in_bounds(min_x=0, max_x=grid_size-1, min_y=0, max_y=grid_size-1) else PyOptional.empty()
+            position = VWPositionNames.elements()[i]
+            locations_dict[position] = PyOptional.of(VWLocation(coord=coord, actor_appearance=actors[i], dirt_appearance=dirts[i], wall=VWEnvironment.generate_wall_from_coordinates(coord=coord, grid_size=grid_size))) if coord.in_bounds(min_x=0, max_x=grid_size-1, min_y=0, max_y=grid_size-1) else PyOptional[VWLocation].empty()
 
         return {k: v.or_else_raise() for k, v in locations_dict.items() if v.is_present()}
 
@@ -258,19 +261,7 @@ class TestPerception(TestCase):
         '''
         Tests various instances of `BccMessage` whose content is a `list`.
         '''
-        contents: List[List[Union[int, float, str, bytes, list, tuple, dict]]] = [self.__generate_random_list() for _ in range(self.__number_of_runs)]
-
-        for content in contents:
-            sender_id: str = str(uuid4())
-            recipient_id: str = str(uuid4())
-
-            self.__test_message(content=content, sender_id=sender_id, recipient_id=recipient_id)
-
-    def test_message_with_tuple_content(self) -> None:
-        '''
-        Tests various instances of `BccMessage` whose content is a `tuple`.
-        '''
-        contents: List[Tuple[Union[int, float, str, bytes, list, tuple, dict]]] = [self.__generate_random_tuple() for _ in range(self.__number_of_runs)]
+        contents: List[List[MessageContentType]] = [self.__generate_random_list() for _ in range(self.__number_of_runs)]
 
         for content in contents:
             sender_id: str = str(uuid4())
@@ -282,7 +273,7 @@ class TestPerception(TestCase):
         '''
         Tests various instances of `BccMessage` whose content is a `dict`.
         '''
-        contents: List[Dict[Union[int, float, str, bytes], Union[int, float, str, bytes, list, tuple, dict]]] = [self.__generate_random_dict() for _ in range(self.__number_of_runs)]
+        contents: List[Dict[MessageContentSimpleType, MessageContentType]] = [self.__generate_random_dict() for _ in range(self.__number_of_runs)]
 
         for content in contents:
             sender_id: str = str(uuid4())
@@ -294,15 +285,15 @@ class TestPerception(TestCase):
         '''
         Tests various instances of `BccMessage` whose content contains recursive data structures.
         '''
-        for content in (1, 1.32343, "foo", bytes("foobar", "utf-8"), ["foo", 1, 1.234, bytes("foobar", "utf-8"), [], (), {"foo": "bar"}], ("foo", 1, 1.234, [], (), {}, bytes("foobar", "utf-8")), {1: ["", None], 1.2343: (3, 4.5, {})}):
+        for content in (1, 1.32343, "foo", bytes("foobar", "utf-8"), ["foo", 1, 1.234, bytes("foobar", "utf-8"), {"foo": "bar"}], True, {1: ["", False], 1.2343: [3, 4.5]}):
             for sender_id in ("Sephiroth", "Jenova", "Hojo", "Rufus"):
                 for recipient_id in ("Cloud", "Barret", "Red XIII", "Cid", "Vincent", "Tifa", "Yuffie", "Cait Sith", "Aerith"):
-                    self.__test_message(content=content, sender_id=sender_id, recipient_id=recipient_id)
+                    self.__test_message(content=cast(MessageContentType, content), sender_id=sender_id, recipient_id=recipient_id)
 
     def test_message_with_none_top_content(self) -> None:
-        self.assertRaises(ValueError, BccMessage, content=None, sender_id="Sephiroth", recipient_id="Cloud")
+        self.assertRaises(AssertionError, BccMessage, content=None, sender_id="Sephiroth", recipient_id="Cloud")
 
-    def __test_message(self, content: Union[int, float, str, bytes, list, tuple, dict], sender_id: str, recipient_id: str) -> None:
+    def __test_message(self, content: MessageContentType, sender_id: str, recipient_id: str) -> None:
         message: BccMessage = BccMessage(content=content, sender_id=sender_id, recipient_id=recipient_id)
 
         self.assertEqual(content, message.get_content())
@@ -310,16 +301,13 @@ class TestPerception(TestCase):
         self.assertEqual(len(message.get_recipients_ids()), 1)
         self.assertIn(recipient_id, message.get_recipients_ids())
 
-    def __generate_random_list(self) -> List[Union[int, float, str, bytes, list, tuple, dict]]:
+    def __generate_random_list(self) -> List[MessageContentType]:
         return [self.__generate_random_element() for _ in range(randint(0, self.__collection_size))]
 
-    def __generate_random_tuple(self) -> Tuple[Union[int, float, str, bytes, list, tuple, dict]]:
-        return tuple(self.__generate_random_element() for _ in range(randint(0, self.__collection_size)))
-
-    def __generate_random_dict(self) -> Dict[Union[int, float, str, bytes], Union[int, float, str, bytes, list, tuple, dict]]:
+    def __generate_random_dict(self) -> Dict[MessageContentSimpleType, MessageContentType]:
         return {self.__generate_random_key(): self.__generate_random_element() for _ in range(randint(0, self.__collection_size))}
 
-    def __generate_random_element(self) -> Union[int, float, str, bytes, list, tuple, dict]:
+    def __generate_random_element(self) -> MessageContentType:
         roll: float = randfloat() * 7
 
         if roll < 1:
@@ -331,16 +319,16 @@ class TestPerception(TestCase):
         elif roll < 4:
             return self.__randbytes(randint(0, 2**16 - 1))
         elif roll < 5:
-            return []  # We want to avoid infinite recursion.
+            return choice([True, False])
         elif roll < 6:
-            return tuple()  # We want to avoid infinite recursion.
+            return []  # We want to avoid infinite recursion.
         elif roll < 7:
             return {}  # We want to avoid infinite recursion.
         else:
             raise ValueError("Invalid roll")
 
-    def __generate_random_key(self) -> Union[int, float, str, bytes]:
-        roll: float = randfloat() * 4
+    def __generate_random_key(self) -> MessageContentSimpleType:
+        roll: float = randfloat() * 3
 
         if roll < 1:
             return randint(-maxsize + 1, maxsize)
@@ -348,8 +336,6 @@ class TestPerception(TestCase):
             return randfloat() * float_info.max
         elif roll < 3:
             return self.__randbytes(randint(0, 2**16 - 1)).hex()
-        elif roll < 4:
-            return self.__randbytes(randint(0, 2**16 - 1))
         else:
             raise ValueError("Invalid roll")
 

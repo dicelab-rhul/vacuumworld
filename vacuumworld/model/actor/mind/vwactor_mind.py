@@ -6,7 +6,7 @@ from pystarworldsturbo.common.message import BccMessage
 from .surrogate.vwactor_mind_surrogate import VWActorMindSurrogate
 from ...actions.vwactions import VWAction
 from ....common.vwobservation import VWObservation
-from ....common.vwexceptions import VWActionAttemptException
+from ....common.vwvalidator import VWValidator
 
 
 class VWMind(Mind):
@@ -86,23 +86,19 @@ class VWMind(Mind):
 
         actions: Iterable[VWAction] = self.__surrogate.decide()
 
-        if actions is None:
-            raise VWActionAttemptException("The `decide()` method of the surrogate mind must not return `None`.")
-        elif isinstance(actions, Iterable):
-            self.__store_actions_for_next_cycle(actions=actions)
-        else:
-            raise VWActionAttemptException("The `decide()` method of the surrogate mind must return an `Iterable[VWAction]`.")
+        VWValidator.validate_not_none(actions)
+        VWValidator.validate_type(t=Iterable, obj=actions)
+
+        self.__store_actions_for_next_cycle(actions=actions)
 
     def __store_actions_for_next_cycle(self, actions: Iterable[VWAction]) -> None:
         sanitised_actions: List[VWAction] = []
 
         for action in actions:
-            if action is None:
-                raise VWActionAttemptException("The `decide()` method of the surrogate mind must not return an `Iterable` with `None` elements.")
-            elif not isinstance(action, VWAction):
-                raise VWActionAttemptException("The `decide()` method of the surrogate mind must return an `Iterable[VWAction]`.")
-            else:
-                sanitised_actions.append(action)
+            VWValidator.validate_not_none(action)
+            VWValidator.validate_type(t=VWAction, obj=action)
+
+            sanitised_actions.append(action)
 
         self.__next_actions = sanitised_actions
 

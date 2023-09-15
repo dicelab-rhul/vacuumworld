@@ -3,6 +3,7 @@
 from unittest import main, TestCase
 from random import choice
 from string import ascii_letters, digits
+from typing import Any
 
 from vacuumworld import VacuumWorld
 from vacuumworld.common.vwcoordinates import VWCoord
@@ -16,11 +17,11 @@ class TestSaveLoad(TestCase):
     '''
     This class tests the save/load functionality of VacuumWorld (i.e., the `VWSaveStateManager` class).
     '''
-    def __init__(self, args) -> None:
+    def __init__(self, args: Any) -> None:
         super(TestSaveLoad, self).__init__(args)
 
         self.__save_state_manager = VWSaveStateManager()
-        self.__config: dict = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
+        self.__config: dict[str, Any] = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
         self.__temp_file_deletion_after_error_message: str = "We are still deleting the temporary saved state."
 
     def test_save_to_file(self):
@@ -50,7 +51,7 @@ class TestSaveLoad(TestCase):
         try:
             self.assertTrue(self.__save_state_manager.save_state(env=env, filename=filename))
 
-            loaded_grid: dict = self.__save_state_manager.load_state(filename=filename)
+            loaded_grid: dict[str, Any] = self.__save_state_manager.load_state(filename=filename)
             loaded_env: VWEnvironment = VWEnvironment.from_json(data=loaded_grid, config=self.__config)
 
             self.assertTrue(TestSaveLoad.__env_match(env, loaded_env))

@@ -16,3 +16,10 @@ class VWDirection(Enum):
 
     def __repr__(self) -> str:
         return str(self)
+
+    @classmethod
+    def values(cls) -> list[str]:
+        '''
+        Returns a `list` of all the values of this `Enum`.
+        '''
+        return [direction.value for direction in cls]

@@ -1,5 +1,5 @@
 from tkinter import Canvas, Event
-from typing import Callable, Tuple
+from typing import Callable, Tuple, Any
 from math import floor
 from PIL.ImageTk import PhotoImage
 
@@ -10,8 +10,8 @@ class VWCanvasDragManager():
     '''
     This class speficies the behaviour of a drag manager for a `Canvas` object.
     '''
-    def __init__(self, config: dict, key: Tuple[str, str], grid_dim: int, canvas: Canvas, item: int, on_start_callback: Callable, on_drop_callback: Callable) -> None:
-        self.__config: dict = config
+    def __init__(self, config: dict[str, Any], key: Tuple[str, str], grid_dim: int, canvas: Canvas, item: int, on_start_callback: Callable[..., None], on_drop_callback: Callable[..., None]) -> None:
+        self.__config: dict[str, Any] = config
         self.__bounds_manager: VWBoundsManager = VWBoundsManager(config=config)
 
         self.__x: int = 0
@@ -20,8 +20,8 @@ class VWCanvasDragManager():
         self.__grid_dim: int = grid_dim
         self.__canvas: Canvas = canvas
 
-        self.__on_start_callback: Callable = on_start_callback
-        self.__on_drop_callback: Callable = on_drop_callback
+        self.__on_start_callback: Callable[..., None] = on_start_callback
+        self.__on_drop_callback: Callable[..., None] = on_drop_callback
         self.__canvas.tag_bind(item, "<ButtonPress-1>", self.on_start)
         self.__canvas.tag_bind(item, "<B1-Motion>", self.on_drag)
         self.__canvas.tag_bind(item, "<ButtonRelease-1>", self.on_drop)

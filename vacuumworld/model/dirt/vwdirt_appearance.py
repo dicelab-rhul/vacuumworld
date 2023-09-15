@@ -4,6 +4,7 @@ from typing import cast, Dict
 from pystarworldsturbo.common.identifiable import Identifiable
 
 from ...common.vwcolour import VWColour
+from ...common.vwvalidator import VWValidator
 
 
 class VWDirtAppearance(Identifiable):
@@ -62,7 +63,7 @@ class VWDirtAppearance(Identifiable):
         if self is obj:
             return True
 
-        if type(obj) != VWDirtAppearance:
+        if not VWValidator.does_type_match(t=VWDirtAppearance, obj=obj):
             return False
 
         return self.__colour == obj.get_colour()
@@ -71,7 +72,7 @@ class VWDirtAppearance(Identifiable):
         return "dirt(colour: {})".format(self.__colour)
 
     def __eq__(self, o: object) -> bool:
-        if not o or type(o) != VWDirtAppearance:
+        if not o or not VWValidator.does_type_match(t=VWDirtAppearance, obj=o):
             return False
         else:
             o = cast(typ=VWDirtAppearance, val=o)

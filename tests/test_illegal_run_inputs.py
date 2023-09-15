@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from unittest import main, TestCase
-from typing import Iterable, Union, Tuple, List, Dict, Type
+from typing import Iterable, Union, Tuple, List, Dict, Type, Any
 
 from pystarworldsturbo.common.message import BccMessage
 from pystarworldsturbo.utils.utils import ignore
@@ -178,10 +178,10 @@ class TestIllegalRunInputs(TestCase):
 
     All unknown arguments of `run()` are ignored by the system.
     '''
-    def __init__(self, args) -> None:
+    def __init__(self, args: Any) -> None:
         super(TestIllegalRunInputs, self).__init__(args)
 
-        self.__config: dict = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
+        self.__config: dict[str, Any] = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
         self.__minds: Dict[VWColour, VWActorMindSurrogate] = {
             VWColour.green: VWHystereticMindSurrogate(),
             VWColour.orange: VWHystereticMindSurrogate(),
@@ -265,7 +265,7 @@ class TestIllegalRunInputs(TestCase):
 
         The requirement that surrogate minds must inherit from `VWActorMindSurrogate` is waived in this particular test by means of temporarily overriding `VacuumWorld.ALLOWED_RUN_ARGS`.
         '''
-        malformed_minds: list = [
+        malformed_minds: list[object] = [
             EmptySurrogateMind(),
             NoReviseSurrogateMind(),
             NoDecideSurrogateMind(),
@@ -275,7 +275,7 @@ class TestIllegalRunInputs(TestCase):
             MalformedDecideSurrogateMind()
         ]
 
-        vw_allowed_run_args_backup: Dict[str, Type] = {k: v for k, v in VacuumWorld.ALLOWED_RUN_ARGS.items()}
+        vw_allowed_run_args_backup: Dict[str, Type[Any]] = {k: v for k, v in VacuumWorld.ALLOWED_RUN_ARGS.items()}
 
         for mind in malformed_minds:
             for colour in VWColour:

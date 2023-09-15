@@ -7,6 +7,7 @@ from signal import signal as handle_signal
 
 from ..common.vwcolour import VWColour
 from ..common.vwexceptions import VWInternalError
+from ..common.vwvalidator import VWValidator
 from ..model.actions.vwactions import VWAction, VWCommunicativeAction
 from ..model.actions.vweffort import VWActionEffort
 from ..model.actor.mind.surrogate.vwactor_mind_surrogate import VWActorMindSurrogate
@@ -26,12 +27,12 @@ class VWRunner(Process):
 
     All the arguments passed to `VacuumWorld.run()`are stored and validated here, together with their default values.
     '''
-    def __init__(self, config: dict, minds: Dict[VWColour, VWActorMindSurrogate], allowed_args: Dict[str, Type], **kwargs) -> None:
+    def __init__(self, config: dict[str, Any], minds: Dict[VWColour, VWActorMindSurrogate], allowed_args: Dict[str, Type[Any]], **kwargs: Any) -> None:
         super(VWRunner, self).__init__()
 
         self.__config: Dict[str, Any] = config
         self.__minds: Dict[VWColour, VWActorMindSurrogate] = minds
-        self.__allowed_args: Dict[str, Type] = allowed_args
+        self.__allowed_args: Dict[str, Type[Any]] = allowed_args
         self.__args: Dict[str, Union[bool, int, float, str, Dict[str, int], Dict[Type[VWAction], int]]] = {
             "gui": kwargs.get("gui", True),
             "skip": kwargs.get("skip", False),
@@ -58,7 +59,7 @@ class VWRunner(Process):
 
         VWRunner.__set_sigtstp_handler()
 
-    def get_config(self) -> dict:
+    def get_config(self) -> dict[str, Any]:
         '''
         Returns the configuration `dict`.
         '''
@@ -125,7 +126,7 @@ class VWRunner(Process):
         If an error occurs, an empty `VWEnvironment` with a default grid size is generated and returned instead.
         '''
         try:
-            data: dict = {}
+            data: dict[str, Any] = {}
 
             if self.__config["file_to_load"]:
                 data = self.__load_grid_data_from_file(filename=self.__config["file_to_load"])
@@ -209,11 +210,11 @@ class VWRunner(Process):
     def __validate_efforts(self) -> None:
         if not isinstance(self.__args["efforts"], dict):
             raise TypeError("Invalid type for argument `efforts`: it should be `Dict[str, int]`, but it is `{}`".format(type(self.__args["efforts"])))
-        elif not all(isinstance(key, str) for key in self.__args["efforts"].keys()):
+        elif not VWValidator.does_type_match_for_all_elements(t=str, iterable=[key for key in self.__args["efforts"].keys()]):
             raise TypeError("Invalid type for argument `efforts`: it should be `Dict[str, int]`, but there is at least a key that is not a `str`")
-        elif not all(isinstance(value, int) for value in self.__args["efforts"].values()):
+        elif not VWValidator.does_type_match_for_all_elements(t=int, iterable=[value for value in self.__args["efforts"].values()]):
             raise TypeError("Invalid type for argument `efforts`: it should be `Dict[str, int]`, but there is at least a value that is not an `int`")
-        elif not all(effort_name in VWActionEffort.EFFORTS for effort_name in self.__args["efforts"]):
+        elif not all([effort_name in VWActionEffort.EFFORTS for effort_name in self.__args["efforts"]]):
             raise ValueError("Invalid effort name: it should be one of {}, but it is `{}`".format([k for k in VWActionEffort.EFFORTS], [e for e in self.__args["efforts"] if e not in VWActionEffort.EFFORTS][0]))
 
     def __validate_debug_enabled_flag(self) -> None:
@@ -248,8 +249,8 @@ class VWRunner(Process):
         self.__config["root_font"][1] = int(self.__config["root_font"][1] * self.__config["scale"])
         self.__config["time_step"] = self.__config["time_step"] * self.__config["time_step_modifier"] + self.__config["time_step_min"]
 
-    def __load_grid_data_from_file(self, filename: str) -> dict:
-        data: dict = self.__save_state_manager.load_state(filename=filename, no_gui=True)
+    def __load_grid_data_from_file(self, filename: str) -> dict[str, Any]:
+        data: dict[str, Any] = self.__save_state_manager.load_state(filename=filename, no_gui=True)
 
         if data:
             print("The saved grid was successfully loaded.")
@@ -262,14 +263,18 @@ class VWRunner(Process):
 
     def __assign_efforts_to_actions(self) -> None:
         # The content of `self.__args` has already been validated in `__validate_optional_args()`.
-        assert self.__args["efforts"] is not None and isinstance(self.__args["efforts"], dict) and all(isinstance(key, (str, Type)) for key in self.__args["efforts"].keys()) and all(isinstance(value, int) for value in self.__args["efforts"].values())
+        assert self.__args["efforts"] is not None and isinstance(self.__args["efforts"], dict) and all([isinstance(key, (str, Type))] for key in self.__args["efforts"].keys()) and all([isinstance(value, int) for value in self.__args["efforts"].values()])
 
         for k, v in self.__args["efforts"].items():
-            if isinstance(k, Type) and issubclass(k, VWAction) and isinstance(v, int):
+            if isinstance(k, Type):
+                assert issubclass(k, VWAction)
+
                 VWActionEffort.override_default_effort_for_action(action_name=k.__name__, new_effort=v)
 
                 print("The effort of {} is now {}.".format(k.__name__, VWActionEffort.EFFORTS[k.__name__]))
-            elif isinstance(k, str) and isinstance(v, int):
+            else:
+                assert isinstance(k, str)
+
                 VWActionEffort.override_default_effort_for_action(action_name=k, new_effort=v)
 
                 print("The effort of {} is now {}.".format(k, VWActionEffort.EFFORTS[k]))
@@ -284,13 +289,12 @@ class VWRunner(Process):
             raise VWInternalError("The debug flag is not valid.")
         elif self.__config["debug_test"] is None or not isinstance(self.__config["debug_test"], bool):
             raise VWInternalError("The debug test flag is not valid.")
-        elif self.__config["debug_primes"] is None or not isinstance(self.__config["debug_primes"], list) or any(not isinstance(p, int) for p in self.__config["debug_primes"]):
+        elif self.__config["debug_primes"] is None or not isinstance(self.__config["debug_primes"], list) or any([not isinstance(p, int) for p in cast(list[Any], self.__config["debug_primes"])]):
             raise VWInternalError("The list of debug primes is not valid.")
-        elif self.__config["debug_primes_test"] is None or not isinstance(self.__config["debug_primes_test"], list) or any(not isinstance(p, int) for p in self.__config["debug_primes_test"]):
+        elif self.__config["debug_primes_test"] is None or not isinstance(self.__config["debug_primes_test"], list) or any([not isinstance(p, int) for p in cast(list[Any], self.__config["debug_primes_test"])]):
             raise VWInternalError("The list of test debug primes is not valid.")
 
-        if self.__config["debug"] is not None and isinstance(self.__config["debug"], bool):
-            VWActorBehaviourDebugger.DEBUG_ENABLED = self.__config["debug"]
+        VWActorBehaviourDebugger.DEBUG_ENABLED = self.__config["debug"]
 
         if self.__config["debug_test"]:
             VWActorBehaviourDebugger.PRIMES = self.__config["debug_primes_test"]
