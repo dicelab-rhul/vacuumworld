@@ -1,5 +1,6 @@
 from setuptools import setup, find_packages
 from json import load
+from typing import Any, cast
 
 import os
 
@@ -11,7 +12,7 @@ description: str = "VacuumWorld: an agent platform for cleaning robots."
 author: str = ", ".join(["Emanuele Uliana", "Benedict Wilkins", "Nausheen Saba", "Joel Clarke", "Kostas Stathis"])
 author_email: str = "vw@dicelab-rhul.org"
 license: str = "GNU3"
-classifiers: list = [
+classifiers: list[str] = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -21,17 +22,17 @@ classifiers: list = [
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Operating System :: OS Independent",
 ]
-dependencies: list = ["pystarworldsturbo>=1.1.6", "pillow", "wheel", "ipython", "screeninfo", "tk", "requests", "playsound", "pyjoptional>=1.0.3"]
+dependencies: list[str] = ["pystarworldsturbo>=1.1.8", "pillow", "wheel", "ipython", "screeninfo", "tk", "requests", "playsound", "pyjoptional>=1.1.0"]
 
 # End of static metadata
 
 CONFIG_FILE_PATH: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "vacuumworld", "config.json")
 
 with open(CONFIG_FILE_PATH, "r") as f:
-    config: dict = load(fp=f)
+    config: dict[str, Any] = load(fp=f)
 
-    version = config["version_number"]
-    url = config["project_repo_url"]
+    version: str = cast(str, config["version_number"])
+    url: str = cast(str, config["project_repo_url"])
 
 # End of metadata
 

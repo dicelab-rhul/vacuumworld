@@ -1,5 +1,5 @@
 from tkinter import Event, Tk, Frame, Canvas, Label, StringVar, W, E, X
-from typing import Callable, Dict, List, Tuple
+from typing import Callable, Dict, List, Tuple, Any
 from PIL import Image
 from PIL.Image import Image as PILImage
 from PIL.ImageTk import PhotoImage
@@ -52,19 +52,19 @@ class VWSimulationWindow(Frame):
 
     * Handling mouse movements.
     '''
-    def __init__(self, parent: Tk, config: dict, buttons: dict, minds: Dict[VWColour, VWActorMindSurrogate], env: VWEnvironment, _guide: Callable, _save: Callable, _load: Callable, _exit: Callable, _error: Callable) -> None:
+    def __init__(self, parent: Tk, config: dict[str, Any], buttons: dict[str, Any], minds: Dict[VWColour, VWActorMindSurrogate], env: VWEnvironment, _guide: Callable[..., None], _save: Callable[..., None], _load: Callable[[VWAutocompleteEntry], VWEnvironment], _exit: Callable[..., None], _error: Callable[..., None]) -> None:
         super(VWSimulationWindow, self).__init__(parent)
 
         self.__parent: Tk = parent
-        self.__config: dict = config
+        self.__config: dict[str, Any] = config
         self.__bounds_manager: VWBoundsManager = VWBoundsManager(config=self.__config)
-        self.__button_data: dict = buttons
+        self.__button_data: dict[str, Any] = buttons
         self.__env: VWEnvironment = env
-        self.__guide: Callable = _guide
-        self.__save: Callable = _save
+        self.__guide: Callable[..., None] = _guide
+        self.__save: Callable[..., None] = _save
         self.__load: Callable[[VWAutocompleteEntry], VWEnvironment] = _load
-        self.__exit: Callable = _exit
-        self.__error: Callable = _error
+        self.__exit: Callable[..., None] = _exit
+        self.__error: Callable[..., None] = _error
         self.__after_hook: PyOptional[str] = PyOptional.empty()
         self.__save_state_manager: VWSaveStateManager = VWSaveStateManager()
         self.__empty_location_coordinates_text: str = "(-,-)"
@@ -77,7 +77,7 @@ class VWSimulationWindow(Frame):
         self.__all_images: Dict[Tuple[str, str], PILImage] = {}  # Will store all PIL images.
         self.__all_images_tk: Dict[Tuple[str, str], PhotoImage] = {}  # Will store all tk images.
         self.__all_images_tk_scaled: Dict[Tuple[str, str], PhotoImage] = {}  # Will store all tk images scaled to fit grid.
-        self.__grid_lines: list = []  # Will store line objects.
+        self.__grid_lines: list[int] = []  # Will store line objects.
 
         self.__create_and_display()
 
@@ -125,7 +125,7 @@ class VWSimulationWindow(Frame):
         self.__button_data["load"]["action"] = lambda: self.__load_and_redraw(self.__load_menu)
 
     def __build_textless_button(self, button_name: str, parent: Frame) -> VWButton:
-        action: Callable = self.__button_data[button_name]["action"]
+        action: Callable[..., Any] = self.__button_data[button_name]["action"]
         image: PILImage = self.__load_button_image(button_name=button_name)
         tip_text: str = self.__button_data[button_name]["tip_text"]
 
@@ -214,7 +214,7 @@ class VWSimulationWindow(Frame):
         self.__init_saveload_frame(bg=bg)
         self.__init_info_frame(bg=bg)
 
-    def __init_size_slider(self, parent, length=250) -> None:
+    def __init_size_slider(self, parent: Frame, length: int=250) -> None:
         increments: int = self.__config["max_environment_dim"] - self.__config["min_environment_dim"]
         self.__grid_scale_slider: VWSlider = VWSlider(parent, self.__config, self.__on_resize, self.__on_resize_slide, length * self.__config["scale"], 16 * self.__config["scale"], slider_width=length * self.__config["scale"]/(increments * 3), increments=increments, start=self.__config["grid_size"]/self.__config["location_size"] - self.__config["min_environment_dim"])
 
@@ -294,7 +294,7 @@ class VWSimulationWindow(Frame):
         self.__canvas.delete(old)
         del old
 
-    def __rotate_actor(self, _, direction: VWDirection) -> None:
+    def __rotate_actor(self, _: Any, direction: VWDirection) -> None:
         if self.__selected.is_empty():
             return
 
@@ -319,7 +319,7 @@ class VWSimulationWindow(Frame):
     def __rotate_actor_right(self, event:  Event) -> None:
         self.__rotate_actor(event, VWDirection.right)
 
-    def __pack_buttons(self, *buttons, forget: bool=True) -> None:
+    def __pack_buttons(self, *buttons: str, forget: bool=True) -> None:
         if forget:
             for button in self.__buttons.values():
                 button.get_button().grid_remove()
@@ -369,7 +369,7 @@ class VWSimulationWindow(Frame):
                 self.__redraw_loaded_env(loaded_env=loaded_env.or_else_raise())
 
     def __redraw_loaded_env(self, loaded_env: VWEnvironment) -> None:
-        if loaded_env is not None:
+        if loaded_env:
             self.__env = loaded_env
             self.__grid_scale_slider.set_position(self.__env.get_ambient().get_grid_dim() - self.__config["min_environment_dim"])
             self.__reset_canvas()

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from unittest import main, TestCase
-from typing import List
+from typing import List, Any
 from random import choice, randint
 from string import ascii_letters, digits
 
@@ -18,10 +18,10 @@ class TestGUIless(TestCase):
     '''
     This class tests the GUI-less mode of operation of VacuumWorld.
     '''
-    def __init__(self, args) -> None:
+    def __init__(self, args: Any) -> None:
         super(TestGUIless, self).__init__(args)
 
-        self.__config: dict = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
+        self.__config: dict[str, Any] = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
         self.__min_number_of_cycles: int = 1
         self.__max_number_of_cycles: int = 100
         self.__number_of_runs: int = 10

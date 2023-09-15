@@ -2,7 +2,7 @@ from vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate import VWActo
 
 
 class DanceMind(VWActorMindSurrogate):
-    def __init__(self):
+    def __init__(self) -> None:
         super(DanceMind, self).__init__()
 
         self.__tick: int = 0
@@ -21,5 +21,5 @@ class DanceMind(VWActorMindSurrogate):
 
         self.sub_revise()
 
-    def sub_revise(self):
+    def sub_revise(self) -> None:
         raise NotImplementedError()

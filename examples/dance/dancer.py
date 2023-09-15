@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
 from random import randint, choice
-from typing import Iterable, List, Union, Any
+from typing import Iterable, List, cast
 from pyoptional.pyoptional import PyOptional
+
+from pystarworldsturbo.common.content_type import MessageContentType
 
 from vacuumworld import run
 from vacuumworld.model.actions.vwactions import VWAction
@@ -23,13 +25,13 @@ class ColourMind(DanceMind):
     This mind is build on top of the basic mind. It adds additional behaviours which address
     the task at hand.
     '''
-    def __init__(self):
+    def __init__(self) -> None:
         super(ColourMind, self).__init__()
 
         self.__target_loc: PyOptional[VWCoord] = PyOptional.empty()  # The location to move to.
         self.__dance_time: List[int] = []  # Time interval where the agent should be dancing.
 
-    def sub_revise(self):
+    def sub_revise(self) -> None:
         '''
         This function gets called after all of the basic state updates happen in DanceMind.
         The behaviour is quite simple, we just listen for messages and set attributes in
@@ -41,7 +43,7 @@ class ColourMind(DanceMind):
         for message in map(lambda m: m.get_content(), self.get_latest_received_messages()):
             self.__parse_message(message=message)
 
-    def __parse_message(self, message: Any) -> None:
+    def __parse_message(self, message: MessageContentType) -> None:
         '''
         This function is used to parse messages when pattern matching is not available.
         '''
@@ -56,17 +58,17 @@ class ColourMind(DanceMind):
             assert len(message[1]) == 2
             assert all(isinstance(x, int) for x in message[1])
 
-            if message[0] == "goto":
+            if message[0] == "goto" and isinstance(message[1][0], int) and isinstance(message[1][1], int):
                 self.__target_loc = PyOptional.of(VWCoord(x=message[1][0], y=message[1][1]))
-            elif message[0] == "dance" and isinstance(message[1], list):
-                self.__dance_time = message[1]
+            elif message[0] == "dance" and isinstance(message[1][0], int) and isinstance(message[1][1], int):
+                self.__dance_time = [time for time in message[1] if isinstance(time, int)]
             else:
                 print(error_message)
         else:
             print(error_message)
 
     @staticmethod
-    def __well_formed(message: Union[int, float, str, list, tuple, dict]) -> bool:
+    def __well_formed(message: MessageContentType) -> bool:
         ''' Is the message well formed? '''
         if not isinstance(message, list):
             return False
@@ -139,7 +141,7 @@ class ColourMind(DanceMind):
 
             self.__dance_time = [dance_start, dance_end]
 
-            return [VWBroadcastAction(message=["dance", self.__dance_time], sender_id=self.get_own_id())]
+            return [VWBroadcastAction(message=["dance", cast(MessageContentType, self.__dance_time)], sender_id=self.get_own_id())]
         else:
             # otherwise do nothing
             return [VWIdleAction()]

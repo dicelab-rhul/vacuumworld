@@ -6,6 +6,7 @@ from pystarworldsturbo.elements.actor_appearance import ActorAppearance
 from ....common.vwcolour import VWColour
 from ....common.vworientation import VWOrientation
 from ....common.vwdirection import VWDirection
+from ....common.vwvalidator import VWValidator
 
 
 class VWActorAppearance(ActorAppearance):
@@ -118,7 +119,7 @@ class VWActorAppearance(ActorAppearance):
         if self is obj:
             return True
 
-        if type(obj) != VWActorAppearance:
+        if not VWValidator.does_type_match(t=VWActorAppearance, obj=obj):
             return False
 
         return self.__colour == obj.get_colour() and self.__orientation == obj.get_orientation() and self.__previous_orientation == obj.get_previous_orientation()
@@ -127,7 +128,7 @@ class VWActorAppearance(ActorAppearance):
         return "actor(ID: {}, progressive ID: {}, colour: {}, orientation: {})".format(self.get_id(), self.get_progressive_id(), self.__colour, self.__orientation)
 
     def __eq__(self, o: object) -> bool:
-        if not o or type(o) != VWActorAppearance:
+        if not o or not VWValidator.does_type_match(t=VWActorAppearance, obj=o):
             return False
 
         o = cast(typ=VWActorAppearance, val=o)

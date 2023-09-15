@@ -8,6 +8,7 @@ from pystarworldsturbo.environment.location_appearance import LocationAppearance
 from ...common.vwcoordinates import VWCoord
 from ...common.vwcolour import VWColour
 from ...common.vworientation import VWOrientation
+from ...common.vwvalidator import VWValidator
 from ..dirt.vwdirt_appearance import VWDirtAppearance
 from ..actor.appearance.vwactor_appearance import VWActorAppearance
 
@@ -212,11 +213,11 @@ class VWLocation(LocationAppearance):
         Returns a deep-copy of this `VWLocation`.
         '''
         if self.__actor_appearance.is_empty() and self.__dirt_appearance.is_empty():
-            return VWLocation(coord=self.__coord, actor_appearance=PyOptional.empty(), dirt_appearance=PyOptional.empty(), wall=self.__wall)
+            return VWLocation(coord=self.__coord, actor_appearance=PyOptional[VWActorAppearance].empty(), dirt_appearance=PyOptional[VWDirtAppearance].empty(), wall=self.__wall)
         elif self.__actor_appearance.is_present() and self.__dirt_appearance.is_empty():
-            return VWLocation(coord=self.__coord, actor_appearance=self.__actor_appearance.map(lambda a: a.deep_copy()), dirt_appearance=PyOptional.empty(), wall=self.__wall)
+            return VWLocation(coord=self.__coord, actor_appearance=self.__actor_appearance.map(lambda a: a.deep_copy()), dirt_appearance=PyOptional[VWDirtAppearance].empty(), wall=self.__wall)
         elif self.__actor_appearance.is_empty() and self.__dirt_appearance.is_present():
-            return VWLocation(coord=self.__coord, actor_appearance=PyOptional.empty(), dirt_appearance=self.__dirt_appearance.map(lambda d: d.deep_copy()), wall=self.__wall)
+            return VWLocation(coord=self.__coord, actor_appearance=PyOptional[VWActorAppearance].empty(), dirt_appearance=self.__dirt_appearance.map(lambda d: d.deep_copy()), wall=self.__wall)
         else:
             return VWLocation(coord=self.__coord, actor_appearance=self.__actor_appearance.map(lambda a: a.deep_copy()), dirt_appearance=self.__dirt_appearance.map(lambda d: d.deep_copy()), wall=self.__wall)
 
@@ -256,7 +257,7 @@ class VWLocation(LocationAppearance):
         return "(coord: {}, actor: {}, dirt: {}, wall: {})".format(str(self.__coord), str(self.__actor_appearance), str(self.__dirt_appearance), str(self.__wall))
 
     def __eq__(self, o: object) -> bool:
-        if not o or type(o) != VWLocation:
+        if not o or VWValidator.does_type_match(obj=o, t=VWLocation):
             return False
         else:
             o = cast(typ=VWLocation, val=o)

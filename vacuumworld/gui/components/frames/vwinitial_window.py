@@ -1,5 +1,5 @@
 from tkinter import Tk, Frame, Canvas
-from typing import Callable, Dict
+from typing import Callable, Dict, Any
 from PIL import Image
 from PIL.Image import Image as PILImage
 from PIL.ImageTk import PhotoImage
@@ -22,11 +22,11 @@ class VWInitialWindow(Frame):
 
     * `exit` closes the application.
     '''
-    def __init__(self, parent: Tk, config: dict, buttons: dict, env: VWEnvironment, _start: Callable, _exit: Callable, _guide: Callable) -> None:
+    def __init__(self, parent: Tk, config: dict[str, Any], buttons: dict[str, Any], env: VWEnvironment, _start: Callable[..., None], _exit: Callable[..., None], _guide: Callable[..., None]) -> None:
         super(VWInitialWindow, self).__init__(parent)
 
-        self.__config: dict = config
-        self.__button_data: dict = buttons
+        self.__config: dict[str, Any] = config
+        self.__button_data: dict[str, Any] = buttons
 
         self.__button_data["start"]["action"] = lambda: _start(env)
         self.__button_data["guide"]["action"] = _guide
@@ -58,9 +58,9 @@ class VWInitialWindow(Frame):
         return self.__image
 
     def __build_button(self, button_name: str, parent: Frame) -> VWButton:
-        action: Callable = self.__button_data[button_name]["action"]
+        action: Callable[..., None] = self.__button_data[button_name]["action"]
         text: str = self.__button_data[button_name]["text"]
-        image: PILImage = Image.open(os.path.join(self.__config["button_data_path"], self.__button_data[button_name]["image_file"]))
+        image: PILImage = Image.open(os.path.join(str(self.__config["button_data_path"]), str(self.__button_data[button_name]["image_file"])))
         image = image.resize((int(image.width), int(image.height)), Image.BICUBIC)
         tip_text: str = self.__button_data[button_name]["tip_text"]
 

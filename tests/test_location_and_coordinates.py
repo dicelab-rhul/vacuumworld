@@ -2,7 +2,7 @@
 
 from unittest import main, TestCase
 from random import randint
-from typing import NamedTuple, Type
+from typing import NamedTuple, Type, Any
 from pyoptional.pyoptional import PyOptional
 
 from vacuumworld import VacuumWorld
@@ -20,10 +20,10 @@ class TestLocationAndCoordinates(TestCase):
     '''
     This class tests the `VWCoord` and `VWLocation` classes.
     '''
-    def __init__(self, args) -> None:
+    def __init__(self, args: Any) -> None:
         super(TestLocationAndCoordinates, self).__init__(args)
 
-        self.__config: dict = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
+        self.__config: dict[str, Any] = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
         self.__min_grid_size: int = self.__config["min_environment_dim"]
         self.__max_grid_size: int = self.__config["max_environment_dim"]
         self.__number_of_runs: int = 100
@@ -103,7 +103,7 @@ class TestLocationAndCoordinates(TestCase):
             self.assertEqual(str(c), str(other))
 
             old_coord: Type[NamedTuple] = NamedTuple("old_coord", x=int, y=int)
-            oc: old_coord = old_coord(x=x, y=y)
+            oc = old_coord(x=x, y=y)
 
             self.assertEqual(c.get_x(), oc.x)
             self.assertEqual(c.get_y(), oc.y)

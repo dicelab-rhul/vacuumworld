@@ -1,4 +1,4 @@
-from typing import Dict, Type
+from typing import Dict, Type, Any
 from tkinter import Tk
 from webbrowser import open_new_tab
 from json import load
@@ -21,10 +21,10 @@ class VWGUIRunner(VWRunner):
 
     The VacuumWorld GUI is built on the top of the `tkinter` library.
     '''
-    def __init__(self, config: dict, minds: Dict[VWColour, VWActorMindSurrogate], allowed_args: Dict[str, Type], **kwargs) -> None:
+    def __init__(self, config: dict[str, Any], minds: Dict[VWColour, VWActorMindSurrogate], allowed_args: Dict[str, Type[Any]], **kwargs: Any) -> None:
         super(VWGUIRunner, self).__init__(config=config, minds=minds, allowed_args=allowed_args, **kwargs)
 
-        self.__button_data: dict = self.__load_button_data()
+        self.__button_data: dict[str, dict[str, str]] = self.__load_button_data()
         self.__already_centered: bool = False
 
     def run(self) -> None:
@@ -93,7 +93,7 @@ class VWGUIRunner(VWRunner):
     def __guide(self) -> None:
         open_new_tab(url=self.get_config()["project_wiki_url"])
 
-    def __start(self, env: VWEnvironment):
+    def __start(self, env: VWEnvironment) -> None:
         if hasattr(self, "_{}__initial_window".format(type(self).__name__)) and self.__initial_window:
             self.__initial_window.forget()
             self.__initial_window.destroy()
@@ -115,7 +115,7 @@ class VWGUIRunner(VWRunner):
     def __load(self, saveloadmenu: VWAutocompleteEntry) -> VWEnvironment:
         filename: str = saveloadmenu.get_var().get()
 
-        data: dict = self.get_save_state_manager().load_state(filename=filename)
+        data: dict[str, Any] = self.get_save_state_manager().load_state(filename=filename)
 
         return VWEnvironment.from_json(data=data, config=self.get_config())
 
@@ -131,6 +131,6 @@ class VWGUIRunner(VWRunner):
             self.__root.geometry("+%d+%d" % (x, y))
             self.__already_centered = True
 
-    def __load_button_data(self) -> dict:
-        with open(os.path.join(self.get_config()["button_data_path"], self.get_config()["button_data_file"]), "r") as f:
+    def __load_button_data(self) -> dict[str, dict[str, str]]:
+        with open(os.path.join(str(self.get_config()["button_data_path"]), str(self.get_config()["button_data_file"])), "r") as f:
             return load(fp=f)

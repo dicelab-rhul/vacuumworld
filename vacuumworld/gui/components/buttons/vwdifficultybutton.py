@@ -3,6 +3,7 @@ from PIL import Image
 from PIL.ImageTk import PhotoImage
 from PIL.Image import Image as PILImage
 from tkinter import Frame
+from typing import Any
 
 from .vwbutton import VWButton
 
@@ -13,10 +14,10 @@ class VWDifficultyButton(VWButton):
 
     It extends the `VWButton` class.
     '''
-    def __init__(self, parent: Frame, config: dict, img: PILImage, fun: Callable, tip_text: str) -> None:
+    def __init__(self, parent: Frame, config: dict[str, Any], img: PILImage, fun: Callable[..., None], tip_text: str) -> None:
         super(VWDifficultyButton, self).__init__(parent=parent, config=config, img=img, fun=self.onclick, tip_text=tip_text)
 
-        self.__rfun: Callable = fun
+        self.__rfun: Callable[..., None] = fun
         self.__difficulty: int = config["default_user_mind_level"]
         self.__imgs: List[PhotoImage] = [PhotoImage(img)]
 
@@ -26,7 +27,7 @@ class VWDifficultyButton(VWButton):
         self.get_button().config(image=self.get_img())
 
     @staticmethod
-    def next_image(img, red) -> PhotoImage:
+    def next_image(img: PILImage, red: float) -> PhotoImage:
         '''
         Returns the appropriate `PhotoImage` for the selected `VWUserDifficulty`.
         '''
@@ -34,6 +35,7 @@ class VWDifficultyButton(VWButton):
         img_dif.paste(img)
 
         rr, gg, bb = img_dif.split()
+        # TODO: fix this.
         rr = rr.point(lambda p: p + int(red))
 
         img_dif: Image.Image = Image.merge("RGB", (rr, gg, bb))

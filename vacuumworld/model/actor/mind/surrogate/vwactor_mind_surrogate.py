@@ -92,7 +92,7 @@ class VWActorMindSurrogate():
         assert messages is not None and isinstance(messages, Iterable) and all(isinstance(message, BccMessage) for message in messages)
 
         self.__latest_observation: VWObservation = observation
-        self.__latest_received_messages: Iterable[BccMessage] = messages if messages is not None and messages else []
+        self.__latest_received_messages: Iterable[BccMessage] = messages if messages else []
 
     def revise(self) -> None:
         '''
@@ -111,7 +111,7 @@ class VWActorMindSurrogate():
         raise NotImplementedError("This method must be implemented by a subclass.")
 
     @staticmethod
-    def validate(mind: VWActorMindSurrogate, colour: VWColour, surrogate_mind_type: Type) -> None:
+    def validate(mind: VWActorMindSurrogate, colour: VWColour, surrogate_mind_type: Type[Any]) -> None:
         '''
         WARNING: This method must be public, but it is not part of the public `VWActorMindSurrogate` API.
 
@@ -137,7 +137,7 @@ class VWActorMindSurrogate():
             if len(signature(fun).parameters) != number_of_parameters:
                 raise VWInternalError("{} agent: `{}` must be defined with exactly {} parameters.".format(colour, fun_name, number_of_parameters))
 
-            return_type: List[Type] = fun_info["return_type"]
+            return_type: List[Type[Any]] = fun_info["return_type"]
 
             if signature(fun).return_annotation not in return_type:
                 raise VWInternalError("{} agent: `{}` must be defined with a return type that is compatible with `{}`.".format(colour, fun_name, return_type))

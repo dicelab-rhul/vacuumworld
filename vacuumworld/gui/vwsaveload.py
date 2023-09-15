@@ -3,7 +3,7 @@ from re import match
 from random import choice
 from string import ascii_letters
 from tkinter.filedialog import asksaveasfile, askopenfile
-from typing import List
+from typing import List, Any
 from pyoptional.pyoptional import PyOptional
 
 from ..model.environment.vwenvironment import VWEnvironment
@@ -43,7 +43,7 @@ class VWSaveStateManager():
             raise IOError("Could not create the `{}` directory.".format(self.__files_dir))
 
     def __file_exists(self, filename: str) -> bool:
-        assert filename and type(filename) == str
+        assert filename and isinstance(filename, str)
 
         # Absolute path vs. relative path.
         return os.path.exists(filename) or os.path.exists(os.path.join(self.__files_dir, os.path.basename(filename)))
@@ -56,14 +56,14 @@ class VWSaveStateManager():
         '''
         assert env
 
-        state: dict = env.to_json()
+        state: dict[str, Any] = env.to_json()
 
         if filename and not self.__file_exists(filename) and match(self.__vw_file_regex, filename):
             return self.__quick_save(state=state, filename=filename)
         else:
             return self.__save_dialog(state=state, filename=filename)
 
-    def __quick_save(self, state: dict, filename: str) -> bool:
+    def __quick_save(self, state: dict[str, Any], filename: str) -> bool:
         assert filename
 
         try:
@@ -73,7 +73,7 @@ class VWSaveStateManager():
         except Exception:
             return False
 
-    def __save_dialog(self, state: dict, filename: str) -> bool:
+    def __save_dialog(self, state: dict[str, Any], filename: str) -> bool:
         try:
             if not filename:
                 filename = "".join(choice(ascii_letters) for _ in range(self.__random_file_name_length)) + self.__vw_saved_state_extension
@@ -88,7 +88,7 @@ class VWSaveStateManager():
         except Exception:
             return False
 
-    def load_state(self, filename: str="", no_gui: bool=False) -> dict:
+    def load_state(self, filename: str="", no_gui: bool=False) -> dict[str, Any]:
         '''
         Loads the state of a `VWEnvironment` from a file.
 
@@ -101,7 +101,7 @@ class VWSaveStateManager():
         else:
             return self.__load_dialog(filename)
 
-    def __quick_load(self, filename: str) -> dict:
+    def __quick_load(self, filename: str) -> dict[str, Any]:
         assert filename
 
         try:
@@ -110,7 +110,7 @@ class VWSaveStateManager():
         except Exception:
             return {}
 
-    def __load_dialog(self, file: str="") -> dict:
+    def __load_dialog(self, file: str="") -> dict[str, Any]:
         try:
             with PyOptional.of_nullable(askopenfile(mode="rb", initialdir=self.__files_dir, initialfile=file)).or_else_raise() as f:
                 return load(fp=f)

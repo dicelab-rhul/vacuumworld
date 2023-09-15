@@ -22,7 +22,7 @@ class VWUserMindSurrogate(VWActorMindSurrogate):
     def __init__(self, difficulty_level: VWUserDifficulty=VWUserDifficulty.easy) -> None:
         super(VWUserMindSurrogate, self).__init__()
 
-        assert type(difficulty_level) == VWUserDifficulty
+        assert isinstance(difficulty_level, VWUserDifficulty)
 
         self.__difficulty_level: VWUserDifficulty = difficulty_level
 
@@ -117,19 +117,19 @@ class VWUserMindSurrogate(VWActorMindSurrogate):
 
     @staticmethod
     def __move_randomly(weights: List[float]=[1/3, 1/3, 1/3]) -> VWPhysicalAction:
-        assert type(weights) == list and len(weights) == 3 and sum(weights) == 1.0
+        assert isinstance(weights, list) and len(weights) == 3 and sum(weights) == 1.0
 
         return VWUserMindSurrogate.__act_randomly(weights=[0.0, 0.0, weights[0], weights[1], weights[2]])
 
     @staticmethod
     def __move_or_drop_randomly(weights: List[float]=[1/3, 1/3, 1/3]) -> VWPhysicalAction:
-        assert type(weights) == list and len(weights) == 3 and sum(weights) == 1.0
+        assert isinstance(weights, list) and len(weights) == 3 and sum(weights) == 1.0
 
         return VWUserMindSurrogate.__act_randomly(weights=[weights[0], weights[1], weights[2], 0.0, 0.0])
 
     @staticmethod
     def __act_randomly(weights: List[float]=[0.2, 0.2, 0.2, 0.2, 0.2]) -> VWPhysicalAction:
-        assert type(weights) == list and len(weights) == 5 and sum(weights) == 1.0
+        assert isinstance(weights, list) and len(weights) == 5 and sum(weights) == 1.0
 
         rng_thresholds: List[float] = list(accumulate(weights))
 
