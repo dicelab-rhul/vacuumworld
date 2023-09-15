@@ -110,7 +110,7 @@ class VWSimulationWindow(Frame):
         self.__canvas.bind("<Leave>", self.__on_leave_canvas)
 
     def __load_button_image(self, button_name: str) -> PILImage:
-        return VWSimulationWindow.__scale(Image.open(os.path.join(self.__config["button_data_path"], self.__button_data[button_name]["image_file"])), self.__config["button_size"])
+        return VWSimulationWindow.__scale(Image.open(os.path.join(str(self.__config["button_data_path"]), str(self.__button_data[button_name]["image_file"]))), self.__config["button_size"])
 
     def __set_button_actions(self) -> None:
         self.__button_data["play"]["action"] = self.__play
@@ -294,7 +294,7 @@ class VWSimulationWindow(Frame):
         self.__canvas.delete(old)
         del old
 
-    def __rotate_actor(self, _: Any, direction: VWDirection) -> None:
+    def __rotate_actor(self, direction: VWDirection) -> None:
         if self.__selected.is_empty():
             return
 
@@ -313,11 +313,11 @@ class VWSimulationWindow(Frame):
             self.__env.turn_actor(coord=self.__selected.or_else_raise(), direction=direction)
             self.__lines_to_front()
 
-    def __rotate_actor_left(self, event: Event) -> None:
-        self.__rotate_actor(event, VWDirection.left)
+    def __rotate_actor_left(self, _: Any) -> None:
+        self.__rotate_actor(VWDirection.left)
 
-    def __rotate_actor_right(self, event:  Event) -> None:
-        self.__rotate_actor(event, VWDirection.right)
+    def __rotate_actor_right(self, _: Any) -> None:
+        self.__rotate_actor(VWDirection.right)
 
     def __pack_buttons(self, *buttons: str, forget: bool=True) -> None:
         if forget:
