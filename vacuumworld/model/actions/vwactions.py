@@ -2,7 +2,7 @@ from typing import Iterable, List
 
 from pystarworldsturbo.common.action import Action
 from pystarworldsturbo.common.message import Message
-from pystarworldsturbo.common.content_type import MessageContentType
+from pystarworldsturbo.common.content_type import MessageContentType, MessageContentBaseType
 
 from .vweffort import VWActionEffort
 
@@ -53,7 +53,7 @@ class VWCommunicativeAction(VWAction):
     def __validate_message(message: MessageContentType) -> None:
         VWValidator.validate_not_none(obj=message)
 
-        if not VWValidator.does_type_match(t=int | float | bool | str | bytes | list | dict, obj=message):
+        if not isinstance(message, MessageContentBaseType):
             raise VWMalformedActionException("Invalid message type: {} (allowed: {}).".format(type(message), MessageContentType))
 
     @staticmethod
