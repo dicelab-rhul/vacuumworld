@@ -31,14 +31,12 @@ class VWDifficultyButton(VWButton):
         '''
         Returns the appropriate `PhotoImage` for the selected `VWUserDifficulty`.
         '''
-        img_dif: Image.Image = Image.new("RGB", img.size)
+        img_dif: PILImage = Image.new("RGB", img.size)
         img_dif.paste(img)
 
-        rr, gg, bb = img_dif.split()
-        # TODO: fix this.
-        rr = rr.point(lambda p: p + int(red))
-
-        img_dif: Image.Image = Image.merge("RGB", (rr, gg, bb))
+        img_dif_channels: tuple[PILImage, ...] = img_dif.split()
+        red_img: PILImage = Image.new("RGB", img.size, (int(red), 0, 0))
+        img_dif: PILImage = Image.merge("RGB", (red_img.split()[0], img_dif_channels[1], img_dif_channels[2]))
 
         return PhotoImage(img_dif)
 

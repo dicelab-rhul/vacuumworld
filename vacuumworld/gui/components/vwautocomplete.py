@@ -1,6 +1,6 @@
 from tkinter import Entry, Frame, StringVar, Listbox, END, ACTIVE
 from re import match
-from typing import List, Any
+from typing import List, Any, cast
 from pyoptional.pyoptional import PyOptional
 
 
@@ -46,7 +46,7 @@ class VWAutocompleteEntry(Entry):
         '''
         return self.__var
 
-    def __changed(self, *_) -> None:
+    def __changed(self, *_: Any) -> None:
         if self.__var.get() == "":
             self.__lb.if_present(lambda x: x.destroy())
 
@@ -75,7 +75,7 @@ class VWAutocompleteEntry(Entry):
 
             self.__lb_up = False
 
-    def __selection(self, _) -> None:
+    def __selection(self, _: Any) -> None:
         if self.__lb_up:
             self.__var.set(self.__lb.or_else_raise().get(ACTIVE))
             self.__lb.or_else_raise().destroy()
@@ -84,9 +84,9 @@ class VWAutocompleteEntry(Entry):
 
             self.icursor(END)
 
-    def __up(self, _) -> None:
+    def __up(self, _: Any) -> None:
         if self.__lb_up and self.__lb.or_else_raise().curselection() != ():
-            index: int = self.__lb.or_else_raise().curselection()[0]
+            index: int = cast(int, self.__lb.or_else_raise().curselection()[0])
 
             if index >= 0:
                 self.__lb.or_else_raise().yview_scroll(-1, "units")
@@ -97,7 +97,7 @@ class VWAutocompleteEntry(Entry):
                 self.__lb.or_else_raise().selection_set(first=index_str)
                 self.__lb.or_else_raise().activate(index_str)
 
-    def __down(self, _) -> None:
+    def __down(self, _: Any) -> None:
         if self.__lb_up:
             if self.__lb.or_else_raise().curselection() == ():
                 self.__lb.or_else_raise().selection_set(first=0)
@@ -105,7 +105,7 @@ class VWAutocompleteEntry(Entry):
 
                 return
 
-            index: int = self.__lb.or_else_raise().curselection()[0]
+            index: int = cast(int, self.__lb.or_else_raise().curselection()[0])
 
             if int(index) + 1 < len(self.__lista):
                 if int(index) + 1 >= self.__height:
