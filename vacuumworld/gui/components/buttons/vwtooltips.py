@@ -27,14 +27,13 @@ class VWToolTip():
         if self.__tipwindow.is_present() or not self.__text:
             return
 
-        # TODO: fix this.
-        tmp: Any = self.__widget.bbox("insert")
-        x, y, _, cy = tmp if tmp else (0, 0, 0, 0)
+        bbox: Any = self.__widget.bbox()
+        x, y, _, cy = bbox if bbox else (0, 0, 0, 0)
         x: int = x + self.__widget.winfo_rootx() + 57
         y: int = y + cy + self.__widget.winfo_rooty() + 27
         tw = Toplevel(self.__widget)
-        # TODO: fix this.
-        tw.wm_overrideredirect(1)
+
+        tw.wm_overrideredirect(True)
         tw.wm_geometry("+%d+%d" % (x, y))
         self.__tipwindow = PyOptional[Toplevel].of(tw)
 
