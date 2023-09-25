@@ -8,6 +8,7 @@ from pystarworldsturbo.common.message import BccMessage
 from ....actions.vwactions import VWAction
 from ....actions.vwactions import VWPhysicalAction
 from ....actions.vwactions import VWCommunicativeAction
+from .....model.actor.appearance.vwactor_appearance import VWActorAppearance
 from .....common.vwobservation import VWObservation
 from .....common.vwcolour import VWColour
 from .....common.vworientation import VWOrientation
@@ -48,6 +49,12 @@ class VWActorMindSurrogate():
         '''
         return self.__latest_received_messages
 
+    def get_own_appearance(self) -> VWActorAppearance:
+        '''
+        Returns the `VWActorAppearance` of the `VWActor` this `VWActorMindSurrogate` is part of.
+        '''
+        return self.__latest_observation.get_center().or_else_raise().get_actor_appearance().or_else_raise()
+
     def get_own_id(self) -> str:
         '''
         Returns the `str` ID of the `VWActor` this `VWActorMindSurrogate` is part of.
@@ -58,13 +65,13 @@ class VWActorMindSurrogate():
         '''
         Returns the `VWColour` of the `VWActor` this `VWActorMindSurrogate` is part of.
         '''
-        return self.__latest_observation.get_center().or_else_raise().get_actor_appearance().or_else_raise().get_colour()
+        return self.get_own_appearance().get_colour()
 
     def get_own_orientation(self) -> VWOrientation:
         '''
         Returns the `VWOrientation` of the `VWActor` this `VWActorMindSurrogate` is part of.
         '''
-        return self.__latest_observation.get_center().or_else_raise().get_actor_appearance().or_else_raise().get_orientation()
+        return self.get_own_appearance().get_orientation()
 
     def get_own_position(self) -> VWCoord:
         '''
