@@ -9,7 +9,6 @@ from vacuumworld.model.actions.vwturn_action import VWTurnAction
 from vacuumworld.common.vwdirection import VWDirection
 from vacuumworld.model.actions.vweffort import VWActionEffort
 from vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate import VWActorMindSurrogate
-from vacuumworld.common.vworientation import VWOrientation
 
 
 class MyMind(VWActorMindSurrogate):
@@ -24,17 +23,17 @@ class MyMind(VWActorMindSurrogate):
         pass
 
     def __go_towards_east(self) -> Iterable[VWAction]:
-        if self.get_own_orientation() == VWOrientation.east:
+        if self.get_own_appearance().is_facing_east():
             return [VWMoveAction()]
-        elif self.get_own_orientation() == VWOrientation.north:
+        elif self.get_own_appearance().is_facing_north():
             return [VWTurnAction(VWDirection.right)]
         else:
             return [VWTurnAction(VWDirection.left)]
 
     def __go_towards_south(self) -> Iterable[VWAction]:
-        if self.get_own_orientation() == VWOrientation.south:
+        if self.get_own_appearance().is_facing_south():
             return [VWMoveAction()]
-        elif self.get_own_orientation() == VWOrientation.east:
+        elif self.get_own_appearance().is_facing_east():
             return [VWTurnAction(VWDirection.right)]
         else:
             return [VWTurnAction(VWDirection.left)]
