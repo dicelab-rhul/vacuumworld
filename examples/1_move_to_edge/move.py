@@ -6,6 +6,8 @@ from vacuumworld import run
 from vacuumworld.model.actions.vwactions import VWAction
 from vacuumworld.model.actions.vwmove_action import VWMoveAction
 from vacuumworld.model.actions.vwturn_action import VWTurnAction
+from vacuumworld.model.actions.vwbroadcast_action import VWBroadcastAction
+from vacuumworld.model.actions.vwidle_action import VWIdleAction
 from vacuumworld.common.vwdirection import VWDirection
 from vacuumworld.model.actions.vweffort import VWActionEffort
 from vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate import VWActorMindSurrogate
@@ -20,7 +22,9 @@ class MyMind(VWActorMindSurrogate):
     def revise(self) -> None:
         # Do something with the observation, the messages, and the effort instead of simply storing/printing them.
 
-        pass
+        print("Observation:", self.get_latest_observation().pretty_format())
+        print("Messages: {}".format([str(m) for m in self.get_latest_received_messages()]))
+        print("Current effort since the beginning of the simulation: {}.".format(self.get_effort()))
 
     def __go_towards_east(self) -> Iterable[VWAction]:
         if self.get_own_appearance().is_facing_east():
@@ -39,7 +43,10 @@ class MyMind(VWActorMindSurrogate):
             return [VWTurnAction(VWDirection.left)]
 
     def decide(self) -> Iterable[VWAction]:
-        if self.get_own_position().get_x() > self.get_own_position().get_y():
+        if self.get_latest_observation().is_wall_immediately_ahead():
+            return [VWIdleAction(), VWBroadcastAction(message="I am at the edge!", sender_id=self.get_own_id())]
+        # The following is potentially unoptimal, because it does not take into account the orientation.
+        elif self.get_own_position().get_x() > self.get_own_position().get_y():
             return self.__go_towards_east()
         else:
             return self.__go_towards_south()
