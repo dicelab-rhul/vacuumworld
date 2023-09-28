@@ -3,6 +3,7 @@ from time import sleep
 
 from .vwrunner import VWRunner
 from ..common.vwcolour import VWColour
+from ..common.vwexceptions import VWRunnerException
 from ..model.actor.mind.surrogate.vwactor_mind_surrogate import VWActorMindSurrogate
 from ..model.environment.vwenvironment import VWEnvironment
 
@@ -60,4 +61,4 @@ class VWGUIlessRunner(VWRunner):
 
     def __validate_load(self) -> None:
         if not self.get_config()["file_to_load"]:
-            raise ValueError("VacuumWorld cannot run GUI-less if no savestate file is provided via the `load` argument.")
+            raise VWRunnerException("VacuumWorld cannot run GUI-less if no savestate file is provided via the `load` argument.")

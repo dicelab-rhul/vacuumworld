@@ -75,5 +75,5 @@
     "debug_primes": [7, 11, 101],
     "debug_test": false,
     "debug_primes_test": [1, 1, 5],
-    "version_number": "4.3.0"
+    "version_number": "4.3.1"
 }

@@ -44,3 +44,11 @@ class VWEndOfCyclesException(Exception):
     '''
     def __init__(self, message: str) -> None:
         super(VWEndOfCyclesException, self).__init__(message)
+
+
+class VWRunnerException(Exception):
+    '''
+    This class specifies the `Exception` that is raised when a `VWRunner` cannot be instantiated.
+    '''
+    def __init__(self, message: str) -> None:
+        super(VWRunnerException, self).__init__(message)
