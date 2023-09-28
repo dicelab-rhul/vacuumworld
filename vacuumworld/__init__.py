@@ -12,7 +12,7 @@ from .model.actor.mind.surrogate.vwactor_mind_surrogate import VWActorMindSurrog
 from .model.actor.mind.surrogate.vwuser_mind_surrogate import VWUserMindSurrogate
 from .common.vwuser_difficulty import VWUserDifficulty
 from .common.vwcolour import VWColour
-from .common.vwexceptions import VWInternalError
+from .common.vwexceptions import VWInternalError, VWRunnerException
 from .runner.vwrunner import VWRunner
 from .runner.vwgui_runner import VWGUIRunner
 from .runner.vwguiless_runner import VWGUIlessRunner
@@ -185,6 +185,10 @@ class VacuumWorld():
     def __get_runner(self, runner_type: Type[VWRunner], minds: Dict[VWColour, VWActorMindSurrogate], **kwargs: Any) -> PyOptional[VWRunner]:
         try:
             return PyOptional.of(runner_type(config=self.__config, minds=minds, allowed_args=VacuumWorld.ALLOWED_RUN_ARGS, **kwargs))
+        except VWRunnerException as e:
+            print(e.args[0])
+
+            return PyOptional[VWRunner].empty()
         except Exception:
             return PyOptional[VWRunner].empty()
 

@@ -55,6 +55,12 @@ class VWActorAppearance(ActorAppearance):
         '''
         return self.__orientation == VWOrientation.west
 
+    def is_facing(self, orientation: VWOrientation) -> bool:
+        '''
+        Returns whether or not the `VWActor` this `VWActorAppearance` refers to is facing the `VWOrientation` passed as argument.
+        '''
+        return self.__orientation == orientation
+
     def get_previous_orientation(self) -> VWOrientation:
         '''
         Returns the backed-up `VWOrientation` of the `VWActor` this `VWActorAppearance` refers to.
