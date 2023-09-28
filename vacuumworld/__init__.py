@@ -6,6 +6,7 @@ from requests import get, Response
 from time import sleep
 from screeninfo import get_monitors
 from pyoptional.pyoptional import PyOptional
+from subprocess import call
 
 from .vwconfig_manager import VWConfigManager
 from .model.actor.mind.surrogate.vwactor_mind_surrogate import VWActorMindSurrogate
@@ -94,7 +95,28 @@ class VacuumWorld():
         version_number: str = self.__config["version_number"]
         remote_version_number: str = VacuumWorld.__get_remote_version_number()
 
-        VacuumWorld.__compare_version_numbers_and_print_message(version_number, remote_version_number)
+        outdated: bool = VacuumWorld.__compare_version_numbers_and_print_message(version_number, remote_version_number)
+
+        if outdated:
+            self.__attempt_auto_update()
+
+    def __attempt_auto_update(self) -> None:
+        print("Attempting to update VacuumWorld automatically...")
+
+        try:
+            result: int = call(["git", "pull"])
+
+            if result != 0:
+                raise IOError()
+
+            result = call(["pip", "install", "-e", "."])
+
+            if result != 0:
+                raise IOError()
+
+            print("Done.")
+        except Exception:
+            print("WARNING: Could not update VacuumWorld automatically. Please update VacuumWorld manually.")
 
     @staticmethod
     def __download_remote_config() -> str:
@@ -132,20 +154,26 @@ class VacuumWorld():
                 os.remove(remote_config_path)
 
     @staticmethod
-    def __compare_version_numbers_and_print_message(version_number: str, remote_version_number: str) -> None:
+    def __compare_version_numbers_and_print_message(version_number: str, remote_version_number: str) -> bool:
         if not version_number or "." not in version_number:
             print("WARNING: Could not check whether or not your version of VacuumWorld is up-to-date because the version number is malformed.\n")
 
-            return
+            return True  # Conservative approach (i.e., consider VW outdated).
 
         print("VacuumWorld version: {}.\n".format(version_number))
 
         if not remote_version_number or "." not in remote_version_number:
             print("WARNING: Could not check whether or not your version of VacuumWorld is up-to-date because it was not possible to get a well formed latest version number.\n")
+
+            return True  # Conservative approach (i.e., consider VW outdated).
         elif VacuumWorld.__outdated(version_number=version_number, remote_version_number=remote_version_number):
             print("WARNING: Your version of VacuumWorld is outdated. The latest version is {}.\n".format(remote_version_number))
+
+            return True
         else:
             print("Your version of VacuumWorld is up-to-date.\n")
+
+            return False
 
     @staticmethod
     def __outdated(version_number: str, remote_version_number: str) -> bool:
