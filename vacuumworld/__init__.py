@@ -5,6 +5,7 @@ from signal import signal as handle_signal
 from requests import get, Response
 from time import sleep
 from screeninfo import get_monitors
+from pymonitors import get_monitors as get_monitors_with_pymonitors
 from pyoptional.pyoptional import PyOptional
 from subprocess import call
 
@@ -69,7 +70,7 @@ class VacuumWorld():
     @staticmethod
     def __display_available() -> bool:
         try:
-            return len(get_monitors()) > 0
+            return len(get_monitors()) > 0 or len(get_monitors_with_pymonitors(print_info=False)) > 0
         except Exception:
             return False
 
@@ -98,9 +99,10 @@ class VacuumWorld():
         outdated: bool = VacuumWorld.__compare_version_numbers_and_print_message(version_number, remote_version_number)
 
         if outdated:
-            self.__attempt_auto_update()
+            VacuumWorld.__attempt_auto_update()
 
-    def __attempt_auto_update(self) -> None:
+    @staticmethod
+    def __attempt_auto_update() -> None:
         print("Attempting to update VacuumWorld automatically...")
 
         try:

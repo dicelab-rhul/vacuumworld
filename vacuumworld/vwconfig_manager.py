@@ -1,5 +1,6 @@
 from json import load
 from screeninfo import get_monitors, ScreenInfoError, Monitor
+from pymonitors import get_monitors as get_monitors_with_pymonitors
 from typing import Any
 
 import os
@@ -27,10 +28,11 @@ class VWConfigManager():
         try:
             # Assuming the first monitor is the one where VW is running.
             default_monitor_number: int = config["default_monitor_number"]
-            monitor: Monitor = get_monitors()[default_monitor_number]
 
-            config["screen_width"] = monitor.width
-            config["screen_height"] = monitor.height
+            width, height = VWConfigManager.__fetch_screen_dimensions(default_monitor_number=default_monitor_number)
+
+            config["screen_width"] = width
+            config["screen_height"] = height
             config["x_scale"] = float(config["screen_width"] / config["base_screen_width"])
             config["y_scale"] = float(config["screen_height"] / config["base_screen_height"])
 
@@ -51,3 +53,21 @@ class VWConfigManager():
                 assert entry and entry != -1
 
         return config
+
+    @staticmethod
+    def __fetch_screen_dimensions(default_monitor_number: int) -> tuple[int, int]:
+        monitors: list[Monitor] = get_monitors()
+
+        if len(monitors) == 0:
+            data: dict[str, int | bool] = get_monitors_with_pymonitors(print_info=False)[default_monitor_number].data
+
+            VWConfigManager.__validate_screen_dimensions_from_pymonitors(data=data)
+
+            return data["width"], data["height"]
+        else:
+            return monitors[default_monitor_number].width, monitors[default_monitor_number].height
+
+    @staticmethod
+    def __validate_screen_dimensions_from_pymonitors(data: dict[str, int | bool]) -> None:
+        if not data["successfully_parsed"]:
+            raise ScreenInfoError("The screen dimensions could not be determined.")
