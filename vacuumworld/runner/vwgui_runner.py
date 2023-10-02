@@ -37,7 +37,7 @@ class VWGUIRunner(VWRunner):
         '''
         try:
             self.__root: Tk = Tk()
-            self.__root.title("VacuumWorld v{}".format(self.get_config()["version_number"]))
+            self.__root.title(f"VacuumWorld v{self.get_config()['version_number']}")
             self.__root.protocol("WM_DELETE_WINDOW", self.kill)
             self.__root.configure(background=self.get_config()["bg_colour"])
 
@@ -94,7 +94,7 @@ class VWGUIRunner(VWRunner):
         open_new_tab(url=self.get_config()["project_wiki_url"])
 
     def __start(self, env: VWEnvironment) -> None:
-        if hasattr(self, "_{}__initial_window".format(type(self).__name__)) and self.__initial_window:
+        if hasattr(self, f"_{type(self).__name__}__initial_window") and self.__initial_window:
             self.__initial_window.forget()
             self.__initial_window.destroy()
             self.__root.withdraw()

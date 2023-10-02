@@ -22,7 +22,7 @@ class VWSaveStateManager():
     def __init__(self) -> None:
         self.__files_dir: str = os.path.join(os.getcwd(), "files")
         self.__vw_saved_state_extension: str = ".json"
-        self.__vw_file_regex: str = "^[a-zA-Z0-9]+{}$".format(self.__vw_saved_state_extension)  # With `.format()` the `.` is automatically treated as a character, rather than a regex symbol.
+        self.__vw_file_regex: str = f"^[a-zA-Z0-9]+{self.__vw_saved_state_extension}$"
         self.__random_file_name_length: int = 10
 
         self.__prepare_files_dir()
@@ -37,10 +37,10 @@ class VWSaveStateManager():
         if not os.path.exists(self.__files_dir):
             os.mkdir(self.__files_dir)
         elif not os.path.isdir(self.__files_dir):
-            raise IOError("Could not create the `{}` directory, because something with the same name that is not a directory already exists.".format(self.__files_dir))
+            raise IOError(f"Could not create the `{self.__files_dir}` directory, because something with the same name that is not a directory already exists.")
 
         if not os.path.isdir(self.__files_dir):  # The directory was not created.
-            raise IOError("Could not create the `{}` directory.".format(self.__files_dir))
+            raise IOError(f"Could not create the `{self.__files_dir}` directory.")
 
     def __file_exists(self, filename: str) -> bool:
         assert filename and isinstance(filename, str)

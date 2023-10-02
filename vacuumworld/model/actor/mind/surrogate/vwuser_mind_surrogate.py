@@ -73,7 +73,7 @@ class VWUserMindSurrogate(VWActorMindSurrogate):
         elif self.__difficulty_level == VWUserDifficulty.hard:
             return [self.__be_inconsiderate()]
         else:
-            raise ValueError("Unrecognised user difficulty level: {}.".format(self.__difficulty_level))
+            raise ValueError(f"Unrecognised user difficulty level: {self.__difficulty_level}.")
 
     def __be_kind(self) -> VWPhysicalAction:
         if self.get_latest_observation().is_wall_immediately_ahead():

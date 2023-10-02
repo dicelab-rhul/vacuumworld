@@ -132,22 +132,22 @@ class VWActorMindSurrogate():
 
         for fun_name, fun_info in VWActorMindSurrogate.MUST_BE_DEFINED.items():
             if fun_name not in set(dir(mind)):
-                raise VWInternalError("The {} mind surrogate must define the following method: `{}`".format(colour, fun_name))
+                raise VWInternalError(f"The {colour} mind surrogate must define the following method: `{fun_name}`")
 
             fun: Any = getattr(mind, fun_name)
 
             if not callable(fun):
-                raise VWInternalError("{} agent: {} must be callable".format(colour, fun_name))
+                raise VWInternalError(f"{colour} agent: {fun_name} must be callable")
 
             number_of_parameters: int = fun_info["number_of_params_excluding_self"]
 
             if len(signature(fun).parameters) != number_of_parameters:
-                raise VWInternalError("{} agent: `{}` must be defined with exactly {} parameters.".format(colour, fun_name, number_of_parameters))
+                raise VWInternalError(f"{colour} agent: `{fun_name}` must be defined with exactly {number_of_parameters} parameters.")
 
             return_type: List[Type[Any]] = fun_info["return_type"]
 
             if signature(fun).return_annotation not in return_type:
-                raise VWInternalError("{} agent: `{}` must be defined with a return type that is compatible with `{}`.".format(colour, fun_name, return_type))
+                raise VWInternalError(f"{colour} agent: `{fun_name}` must be defined with a return type that is compatible with `{return_type}`.")
 
     @staticmethod
     def load_from_file(surrogate_mind_file: str, surrogate_mind_class_name: str) -> VWActorMindSurrogate:
@@ -169,4 +169,4 @@ class VWActorMindSurrogate():
 
             return getattr(import_module(name=module_name), surrogate_mind_class_name)()
         except Exception:
-            raise VWLoadException("Could not load {} from {}.".format(surrogate_mind_class_name, surrogate_mind_file))
+            raise VWLoadException(f"Could not load {surrogate_mind_class_name} from {surrogate_mind_file}.")

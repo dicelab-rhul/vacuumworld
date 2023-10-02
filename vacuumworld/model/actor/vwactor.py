@@ -80,7 +80,7 @@ class VWActor(Actor):
 
     def __fetch_observations(self) -> List[VWObservation]:
         observations: List[VWObservation] = []
-        observation_sensor: VWObservationSensor = self.get_observation_sensor().or_else_raise(VWPerceptionException("No sensor found for {}.".format(VWObservation)))
+        observation_sensor: VWObservationSensor = self.get_observation_sensor().or_else_raise(VWPerceptionException(f"No sensor found for {VWObservation}."))
 
         # There can be more than one `VWObservation` if more than one `VWAction` has been attempted.
         while observation_sensor.has_perception():
@@ -143,8 +143,8 @@ class VWActor(Actor):
             action.set_actor_id(self.get_id())
 
             if isinstance(action, VWPhysicalAction):
-                self.get_physical_actuator().or_else_raise(VWActionAttemptException("No actuator found for {}.".format(type(action)))).sink(action=action)
+                self.get_physical_actuator().or_else_raise(VWActionAttemptException(f"No actuator found for {type(action)}.")).sink(action=action)
             elif isinstance(action, VWCommunicativeAction):
-                self.get_communicative_actuator().or_else_raise(VWActionAttemptException("No actuator found for {}.".format(type(action)))).sink(action=action)
+                self.get_communicative_actuator().or_else_raise(VWActionAttemptException(f"No actuator found for {type(action)}.")).sink(action=action)
             else:
-                raise VWActionAttemptException("Unsupported action type {}.".format(type(action)))
+                raise VWActionAttemptException(f"Unsupported action type {type(action)}.")

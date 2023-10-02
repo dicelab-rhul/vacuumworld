@@ -28,7 +28,7 @@ class VWGUIlessRunner(VWRunner):
         try:
             env: VWEnvironment = self.load_env()
 
-            print("Initial environment:\n\n{}\n".format(env))
+            print(f"Initial environment:\n\n{env}\n")
 
             self.__loop(env=env)
         except KeyboardInterrupt:
@@ -45,12 +45,12 @@ class VWGUIlessRunner(VWRunner):
 
     def __do_loop(self, env: VWEnvironment) -> None:
         if env.get_current_cycle_number() >= 0:
-            print("------------ Cycle {} ------------ ".format(env.get_current_cycle_number()))
+            print(f"------------ Cycle {env.get_current_cycle_number()} ------------ ")
 
         env.evolve()
 
         if env.get_current_cycle_number() >= 0:
-            print("\nEnvironment at the end of cycle {}:\n\n{}\n".format(env.get_current_cycle_number(), env))
+            print(f"\nEnvironment at the end of cycle {env.get_current_cycle_number()}:\n\n{env}\n")
 
         sleep(int(self.get_config()["time_step"]))
 

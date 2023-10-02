@@ -76,7 +76,7 @@ class TestSurrogate(TestCase):
         self.assertIsInstance(surrogate_mind, VWActorMindSurrogate)
 
         for colour in [c for c in VWColour if c != VWColour.user]:
-            VWActorMindSurrogate.validate(mind=surrogate_mind, colour=colour, surrogate_mind_type=VacuumWorld.ALLOWED_RUN_ARGS["{}_mind".format(str(colour))])
+            VWActorMindSurrogate.validate(mind=surrogate_mind, colour=colour, surrogate_mind_type=VacuumWorld.ALLOWED_RUN_ARGS[f"{str(colour)}_mind"])
 
 
 if __name__ == '__main__':

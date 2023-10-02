@@ -36,7 +36,7 @@ class WallMind(VWActorMindSurrogate):
         if self.__can_move():
             actions.append(VWMoveAction)
 
-        return VWBroadcastAction(message="Possible physical actions for me: {}".format([action.__name__ for action in actions]), sender_id=self.get_own_id())
+        return VWBroadcastAction(message=f"Possible physical actions for me: {[action.__name__ for action in actions]}", sender_id=self.get_own_id())
 
     def __random_physical_action(self) -> VWPhysicalAction:
         pool: List[Type[VWPhysicalAction]] = [VWTurnAction, VWTurnAction]

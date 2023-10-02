@@ -254,7 +254,7 @@ class VWLocation(LocationAppearance):
         return self.to_json(include_ids=include_ids)
 
     def __str__(self) -> str:
-        return "(coord: {}, actor: {}, dirt: {}, wall: {})".format(str(self.__coord), str(self.__actor_appearance), str(self.__dirt_appearance), str(self.__wall))
+        return f"(coord: {str(self.__coord)}, actor: {str(self.__actor_appearance)}, dirt: {str(self.__dirt_appearance)}, wall: {str(self.__wall)})"
 
     def __eq__(self, o: object) -> bool:
         if not o or VWValidator.does_type_match(obj=o, t=VWLocation):
@@ -298,16 +298,16 @@ class VWLocation(LocationAppearance):
         '''
         Returns an ASCII representation of this `VWLocation`.
         '''
-        s: str = chr(164) * 7 + "\n{}{}{}\n".format(chr(164), str(self.__coord).replace(" ", ""), chr(164))
+        s: str = chr(164) * 7 + f"\n{chr(164)}{str(self.__coord).replace(' ', '')}{chr(164)}\n"
 
         if self.is_empty():
             s += f"{chr(164)}     {chr(164)}\n"
         elif not self.has_actor() and self.has_dirt():
-            s += f"{chr(164)}  " + str(self.__dirt_appearance.map(lambda d: d.get_colour()).or_else_raise())[0] + f"  {chr(164)}\n"
+            s += f"{chr(164)}  {str(self.__dirt_appearance.map(lambda d: d.get_colour()).or_else_raise())[0]}  {chr(164)}\n"
         elif not self.has_dirt():
-            s += f"{chr(164)}  " + str(self.__actor_appearance.map(lambda a: a.get_colour()).or_else_raise())[0].upper() + f"  {chr(164)}\n"
+            s += f"{chr(164)}  {str(self.__actor_appearance.map(lambda a: a.get_colour()).or_else_raise())[0].upper()}  {chr(164)}\n"
         else:
-            s += f"{chr(164)} " + str(self.__actor_appearance.map(lambda a: a.get_colour()).or_else_raise())[0].upper() + "+" + str(self.__dirt_appearance.map(lambda d: d.get_colour()).or_else_raise())[0] + f" {chr(164)}\n"
+            s += f"{chr(164)} {str(self.__actor_appearance.map(lambda a: a.get_colour()).or_else_raise())[0].upper()}+{str(self.__dirt_appearance.map(lambda d: d.get_colour()).or_else_raise())[0]} {chr(164)}\n"
 
         return s + chr(164) * 7
 

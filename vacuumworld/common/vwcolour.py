@@ -29,9 +29,9 @@ class VWColour(Enum):
         Returns a `str` representation of this `VWColour` with the appropriate indefinite article in front of it, and a space between the two.
         '''
         if self == VWColour.orange:
-            return "an {}".format(self)
+            return f"an {self}"
         else:
-            return "a {}".format(self)
+            return f"a {self}"
 
     @classmethod
     def values(cls) -> list[str]:

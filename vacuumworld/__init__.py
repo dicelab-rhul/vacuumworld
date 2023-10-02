@@ -4,7 +4,8 @@ from traceback import print_exc
 from signal import signal as handle_signal
 from requests import get, Response
 from time import sleep
-from screeninfo import get_monitors
+from screeninfo import get_monitors as get_monitors_with_screeninfo, ScreenInfoError
+from pymonitors import get_monitors as get_monitors_with_pymonitors
 from pyoptional.pyoptional import PyOptional
 from subprocess import call
 
@@ -25,7 +26,7 @@ import signal as signal_module
 class VacuumWorld():
     CONFIG_FILE_NAME: str = "config.json"
     CONFIG_FILE_PATH: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), CONFIG_FILE_NAME)
-    MIN_PYTHON_VERSION: Tuple[int, int] = (3, 8)
+    MIN_PYTHON_VERSION: Tuple[int, int] = (3, 10)
     ALLOWED_RUN_ARGS: Dict[str, Type[Any]] = {
         "default_mind": VWActorMindSurrogate,
         "green_mind": VWActorMindSurrogate,
@@ -69,18 +70,25 @@ class VacuumWorld():
     @staticmethod
     def __display_available() -> bool:
         try:
-            return len(get_monitors()) > 0
+            if len(get_monitors_with_screeninfo()) > 0:
+                return True
+            else:
+                raise ScreenInfoError("No monitor found by `screeninfo`.")
         except Exception:
+            for monitor in get_monitors_with_pymonitors(print_info=False):
+                if monitor.data["successfully_parsed"] and all([dimension in monitor.data for dimension in ["width", "height"]]) and monitor.data["width"] > 0 and monitor.data["height"] > 0:
+                    return True
+
             return False
 
     @staticmethod
     def __python_version_check() -> None:
         if VacuumWorld.__unsupported_python_version():
-            print("VacuumWorld requires Python {}.{} or later. Please install Python {}.{} or later and try again.".format(VacuumWorld.MIN_PYTHON_VERSION[0], VacuumWorld.MIN_PYTHON_VERSION[1], VacuumWorld.MIN_PYTHON_VERSION[0], VacuumWorld.MIN_PYTHON_VERSION[1]))
+            print(f"VacuumWorld requires Python {VacuumWorld.MIN_PYTHON_VERSION[0]}.{VacuumWorld.MIN_PYTHON_VERSION[1]} or later. Please install Python {VacuumWorld.MIN_PYTHON_VERSION[0]}.{VacuumWorld.MIN_PYTHON_VERSION[1]} or later and try again.")
 
             exit(1)
         else:
-            print("Python version: {}.{}.{}. Good!".format(version_info.major, version_info.minor, version_info.micro))
+            print(f"Python version: {version_info.major}.{version_info.minor}.{version_info.micro}. Good!")
 
     @staticmethod
     def __unsupported_python_version() -> bool:
@@ -98,9 +106,10 @@ class VacuumWorld():
         outdated: bool = VacuumWorld.__compare_version_numbers_and_print_message(version_number, remote_version_number)
 
         if outdated:
-            self.__attempt_auto_update()
+            VacuumWorld.__attempt_auto_update()
 
-    def __attempt_auto_update(self) -> None:
+    @staticmethod
+    def __attempt_auto_update() -> None:
         print("Attempting to update VacuumWorld automatically...")
 
         try:
@@ -121,8 +130,8 @@ class VacuumWorld():
     @staticmethod
     def __download_remote_config() -> str:
         try:
-            remote_config_url: str = "https://raw.githubusercontent.com/dicelab-rhul/vacuumworld/main/vacuumworld/{}".format(VacuumWorld.CONFIG_FILE_NAME)
-            remote_config_downloaded_name: str = "remote_{}".format(VacuumWorld.CONFIG_FILE_NAME)
+            remote_config_url: str = f"https://raw.githubusercontent.com/dicelab-rhul/vacuumworld/main/vacuumworld/{VacuumWorld.CONFIG_FILE_NAME}"
+            remote_config_downloaded_name: str = f"remote_{VacuumWorld.CONFIG_FILE_NAME}"
 
             response: Response = get(remote_config_url, allow_redirects=True, timeout=5)
 
@@ -144,7 +153,7 @@ class VacuumWorld():
             return ""
 
         try:
-            remote_config: dict[str, Any] = VWConfigManager.load_config_from_file(config_file_path=remote_config_path)
+            remote_config: dict[str, Any] = VWConfigManager.load_config_from_file(config_file_path=remote_config_path, load_additional_config=False)
 
             return remote_config["version_number"]
         except Exception:
@@ -160,14 +169,14 @@ class VacuumWorld():
 
             return True  # Conservative approach (i.e., consider VW outdated).
 
-        print("VacuumWorld version: {}.\n".format(version_number))
+        print(f"VacuumWorld version: {version_number}.\n")
 
         if not remote_version_number or "." not in remote_version_number:
             print("WARNING: Could not check whether or not your version of VacuumWorld is up-to-date because it was not possible to get a well formed latest version number.\n")
 
             return True  # Conservative approach (i.e., consider VW outdated).
         elif VacuumWorld.__outdated(version_number=version_number, remote_version_number=remote_version_number):
-            print("WARNING: Your version of VacuumWorld is outdated. The latest version is {}.\n".format(remote_version_number))
+            print(f"WARNING: Your version of VacuumWorld is outdated. The latest version is {remote_version_number}.\n")
 
             return True
         else:

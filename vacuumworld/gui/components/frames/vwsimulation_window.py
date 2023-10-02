@@ -250,7 +250,7 @@ class VWSimulationWindow(Frame):
             coordinate: VWCoord = VWCoord(x=int(event.x / inc), y=int(event.y / inc))
 
             if print_message:
-                print("SELECT: selected location {}.".format(coordinate))
+                print(f"SELECT: selected location {coordinate}.")
 
             self.__selected = PyOptional.of(coordinate)
             xx: int = coordinate.get_x() * inc
@@ -359,7 +359,7 @@ class VWSimulationWindow(Frame):
             loaded_env = PyOptional.of(self.__load(load_menu))
         except Exception:
             if self.__config["file_to_load"] not in (None, ""):
-                print("Something went wrong. Could not load any grid from {}".format(self.__config["file_to_load"]))
+                print(f"Something went wrong. Could not load any grid from {self.__config['file_to_load']}")
             else:
                 print("Something went wrong. Could not load any grid.")
 
@@ -501,7 +501,7 @@ class VWSimulationWindow(Frame):
         if self.__bounds_manager.in_bounds(x=event.x, y=event.y):
             inc: int = self.__config["grid_size"] / self.__env.get_ambient().get_grid_dim()
 
-            self.__coordinate_text.set("({},{})".format(int(event.x / inc), int(event.y / inc)))
+            self.__coordinate_text.set(f"({int(event.x / inc)},{int(event.y / inc)})")
         else:
             self.__coordinate_text.set(self.__empty_location_coordinates_text)
 
@@ -550,7 +550,7 @@ class VWSimulationWindow(Frame):
         elif obj == "north":
             self.__drop_actor_facing_north(coord=coord, colour=colour, drag_manager=drag_manager)
         else:
-            raise ValueError("Unknown obj: {}.".format(obj))
+            raise ValueError(f"Unknown obj: {obj}.")
 
     def __drop_dirt(self, coord: VWCoord, colour: VWColour, drag_manager:  VWCanvasDragManager) -> None:
         message: str = ""
@@ -560,7 +560,7 @@ class VWSimulationWindow(Frame):
 
             self.__env.remove_dirt(coord=coord)
 
-            message += " (replacing {} dirt)".format(dirt_colour.str_with_article())
+            message += f" (replacing {dirt_colour.str_with_article()} dirt)"
 
         self.__env.drop_dirt(coord=coord, dirt_colour=colour)
 
@@ -570,7 +570,7 @@ class VWSimulationWindow(Frame):
         self.__canvas_dirts[coord] = drag_manager.get_drag()
         self.__canvas.tag_lower(self.__canvas_dirts[coord])
 
-        message = "INFO: dropped {} dirt at {}".format(colour.str_with_article(), coord) + message
+        message = f"INFO: dropped {colour.str_with_article()} dirt at {coord}{message}"
 
         print(message)
 
@@ -588,7 +588,7 @@ class VWSimulationWindow(Frame):
             # Removes the actor from the list of actors.
             self.__env.remove_actor(actor_id=actor_id)
 
-            message += " (replacing {} actor)".format(actor_colour.str_with_article())
+            message += f" (replacing {actor_colour.str_with_article()} actor)"
 
         self.__env.add_actor(actor=actor)
         self.__env.get_ambient().get_location_interface(coord=coord).add_actor(actor_appearance=actor_appearance)
@@ -599,7 +599,7 @@ class VWSimulationWindow(Frame):
 
         self.__canvas_agents[coord] = drag_manager.get_drag()
 
-        message = "INFO: dropped {} actor at {}".format(colour.str_with_article(), coord) + message
+        message = f"INFO: dropped {colour.str_with_article()} actor at {coord}{message}"
 
         print(message)
 
@@ -661,7 +661,7 @@ class VWSimulationWindow(Frame):
         try:
             if self.__running:
                 if self.__env.get_current_cycle_number() >= 0:
-                    print("------------ Cycle {} ------------ ".format(self.__env.get_current_cycle_number()))
+                    print(f"------------ Cycle {self.__env.get_current_cycle_number()} ------------ ")
 
                 self.__env.evolve()
                 self.__parent.after(0, self.redraw)
@@ -746,7 +746,7 @@ class VWSimulationWindow(Frame):
 
     @staticmethod
     def __print_simulation_speed_message(time_step: float) -> None:
-        print("INFO: simulation speed set to {:1.4f} s/cycle".format(time_step))
+        print(f"INFO: simulation speed set to {time_step:1.4f} s/cycle.")
 
     @staticmethod
     def __get_location_img_files(path: str) -> List[str]:

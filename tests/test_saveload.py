@@ -21,7 +21,7 @@ class TestSaveLoad(TestCase):
         super(TestSaveLoad, self).__init__(args)
 
         self.__save_state_manager = VWSaveStateManager()
-        self.__config: dict[str, Any] = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
+        self.__config: dict[str, Any] = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH, load_additional_config=False)
         self.__temp_file_deletion_after_error_message: str = "We are still deleting the temporary saved state."
 
     def test_save_to_file(self):

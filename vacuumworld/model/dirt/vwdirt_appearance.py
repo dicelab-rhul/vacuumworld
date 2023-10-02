@@ -69,7 +69,7 @@ class VWDirtAppearance(Identifiable):
         return self.__colour == obj.get_colour()
 
     def __str__(self) -> str:
-        return "dirt(colour: {})".format(self.__colour)
+        return f"dirt(colour: {self.__colour})"
 
     def __eq__(self, o: object) -> bool:
         if not o or not VWValidator.does_type_match(t=VWDirtAppearance, obj=o):
