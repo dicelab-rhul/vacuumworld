@@ -146,7 +146,7 @@ class VacuumWorld():
             return ""
 
         try:
-            remote_config: dict[str, Any] = VWConfigManager.load_config_from_file(config_file_path=remote_config_path)
+            remote_config: dict[str, Any] = VWConfigManager.load_config_from_file(config_file_path=remote_config_path, load_additional_config=False)
 
             return remote_config["version_number"]
         except Exception:
