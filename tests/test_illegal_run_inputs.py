@@ -16,6 +16,7 @@ from vacuumworld.model.actor.mind.surrogate.vwhysteretic_mind_surrogate import V
 from vacuumworld.model.actions.vwactions import VWAction
 from vacuumworld.model.actions.vwidle_action import VWIdleAction
 from vacuumworld.runner.vwguiless_runner import VWGUIlessRunner
+from vacuumworld.common.vwexceptions import VWRunnerException
 
 
 class EmptySurrogateMind():
@@ -293,7 +294,7 @@ class TestIllegalRunInputs(TestCase):
         '''
         for colour in VWColour:
             if colour != VWColour.user:
-                self.assertRaises(TypeError, VWGUIlessRunner, config=self.__config, minds={c: NoInheritanceMalformedSurrogateMind() for c in VWColour if c != VWColour.user}, allowed_args=VacuumWorld.ALLOWED_RUN_ARGS)
+                self.assertRaises(VWRunnerException, VWGUIlessRunner, config=self.__config, minds={c: NoInheritanceMalformedSurrogateMind() for c in VWColour if c != VWColour.user}, allowed_args=VacuumWorld.ALLOWED_RUN_ARGS)
 
 
 if __name__ == "__main__":
