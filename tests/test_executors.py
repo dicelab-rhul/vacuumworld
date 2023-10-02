@@ -56,7 +56,7 @@ class TestExecutors(TestCase):
     def __init__(self, args: Any) -> None:
         super(TestExecutors, self).__init__(args)
 
-        self.__config: dict[str, Any] = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
+        self.__config: dict[str, Any] = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH, load_additional_config=False)
         self.__randbytes: Callable[[int], bytes] = random_module.randbytes if hasattr(random_module, "randbytes") else os.urandom
         self.__message_content_list: List[MessageContentType] = [
             "Hello World!",

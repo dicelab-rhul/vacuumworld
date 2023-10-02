@@ -26,7 +26,7 @@ class TestEnvironment(TestCase):
     def __init__(self, args: Any) -> None:
         super(TestEnvironment, self).__init__(args)
 
-        self.__config: dict[str, Any] = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
+        self.__config: dict[str, Any] = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH, load_additional_config=False)
 
     def test_default_sized_empty_env(self) -> None:
         '''
