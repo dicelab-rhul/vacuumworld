@@ -82,5 +82,5 @@ class VWConfigManager():
 
     @staticmethod
     def __validate_screen_dimensions_from_pymonitors(data: dict[str, int | bool]) -> None:
-        if not data["successfully_parsed"]:
+        if not data["successfully_parsed"] or any([dimension not in data for dimension in ["width", "height"]]) or data["width"] < 0 or data["height"] < 0:
             raise ScreenInfoError("The screen dimensions could not be determined.")

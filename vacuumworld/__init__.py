@@ -4,7 +4,7 @@ from traceback import print_exc
 from signal import signal as handle_signal
 from requests import get, Response
 from time import sleep
-from screeninfo import get_monitors
+from screeninfo import get_monitors as get_monitors_with_screeninfo, ScreenInfoError
 from pymonitors import get_monitors as get_monitors_with_pymonitors
 from pyoptional.pyoptional import PyOptional
 from subprocess import call
@@ -70,8 +70,15 @@ class VacuumWorld():
     @staticmethod
     def __display_available() -> bool:
         try:
-            return len(get_monitors()) > 0 or len(get_monitors_with_pymonitors(print_info=False)) > 0
+            if len(get_monitors_with_screeninfo()) > 0:
+                return True
+            else:
+                raise ScreenInfoError("No monitor found by `screeninfo`.")
         except Exception:
+            for monitor in get_monitors_with_pymonitors(print_info=False):
+                if monitor.data["successfully_parsed"] and all([dimension in monitor.data for dimension in ["width", "height"]]) and monitor.data["width"] > 0 and monitor.data["height"] > 0:
+                    return True
+
             return False
 
     @staticmethod
