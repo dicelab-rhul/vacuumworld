@@ -223,10 +223,14 @@ class VacuumWorld():
         try:
             return PyOptional.of(runner_type(config=self.__config, minds=minds, allowed_args=VacuumWorld.ALLOWED_RUN_ARGS, **kwargs))
         except VWRunnerException as e:
-            print(e.args[0])
+            print(f"ERROR: {e.args[0] if len(e.args) > 0 and e.args[0] else 'Unknown error.'}\n")
+            print_exc()
 
             return PyOptional[VWRunner].empty()
         except Exception:
+            print("Unkonwn error.\n")
+            print_exc()
+
             return PyOptional[VWRunner].empty()
 
     @staticmethod

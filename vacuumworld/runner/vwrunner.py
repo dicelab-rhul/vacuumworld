@@ -6,7 +6,7 @@ from inspect import getsourcefile
 from signal import signal as handle_signal
 
 from ..common.vwcolour import VWColour
-from ..common.vwexceptions import VWInternalError
+from ..common.vwexceptions import VWInternalError, VWRunnerException
 from ..common.vwvalidator import VWValidator
 from ..model.actions.vwactions import VWAction, VWCommunicativeAction
 from ..model.actions.vweffort import VWActionEffort
@@ -147,14 +147,21 @@ class VWRunner(Process):
         raise NotImplementedError()
 
     def __validate_minds(self) -> None:
-        if not all(isinstance(self.__minds[colour], self.__allowed_args[str(colour) + "_mind"]) for colour in VWColour if colour != VWColour.user):
-            raise TypeError("One or more mind surrogates are not of the allowed type.")
+        try:
+            if not all(isinstance(self.__minds[colour], self.__allowed_args[str(colour) + "_mind"]) for colour in VWColour if colour != VWColour.user):
+                raise TypeError("One or more mind surrogates are not of the allowed type.")
 
-        for colour, mind in self.__minds.items():
-            if colour != VWColour.user:
-                VWActorMindSurrogate.validate(mind=mind, colour=colour, surrogate_mind_type=self.__allowed_args[str(colour) + "_mind"])
-            else:
-                VWActorMindSurrogate.validate(mind=mind, colour=colour, surrogate_mind_type=VWUserMindSurrogate)
+            for colour, mind in self.__minds.items():
+                if colour != VWColour.user:
+                    VWActorMindSurrogate.validate(mind=mind, colour=colour, surrogate_mind_type=self.__allowed_args[str(colour) + "_mind"])
+                else:
+                    VWActorMindSurrogate.validate(mind=mind, colour=colour, surrogate_mind_type=VWUserMindSurrogate)
+        except TypeError as e:
+            raise VWRunnerException(message="One or more mind surrogates are not of the allowed type.") from e
+        except VWInternalError as e:
+            raise VWRunnerException(message="Could not validate one or more mind surrogates.") from e
+        except Exception as e:
+            raise VWInternalError(message="Something went wrong while validating one or more mind surrogates.") from e
 
     def __validate_optional_args(self) -> None:
         self.__validate_play_load()
