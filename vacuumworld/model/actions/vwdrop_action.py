@@ -13,7 +13,7 @@ class VWDropAction(VWPhysicalAction):
         if not dirt_colour:
             raise VWMalformedActionException("No dirt colour was specified.")
         elif dirt_colour not in [VWColour.green, VWColour.orange]:
-            raise VWMalformedActionException("Invalid colour for dirt: {}.".format(dirt_colour))
+            raise VWMalformedActionException(f"Invalid colour for dirt: {dirt_colour}.")
         else:
             self.__dirt_colour: VWColour = dirt_colour
 

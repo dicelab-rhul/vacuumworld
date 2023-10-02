@@ -22,9 +22,9 @@ class MyMind(VWActorMindSurrogate):
     def revise(self) -> None:
         # Do something with the observation, the messages, and the effort instead of simply storing/printing them.
 
-        print("Observation:", self.get_latest_observation().pretty_format())
-        print("Messages: {}".format([str(m) for m in self.get_latest_received_messages()]))
-        print("Current effort since the beginning of the simulation: {}.".format(self.get_effort()))
+        print(f"Observation:\n{self.get_latest_observation().pretty_format()}")
+        print(f"Messages: {[str(m) for m in self.get_latest_received_messages()]}")
+        print(f"Current effort since the beginning of the simulation: {self.get_effort()}.")
 
     def __go_towards_east(self) -> Iterable[VWAction]:
         if self.get_own_appearance().is_facing_east():

@@ -38,7 +38,7 @@ class VWBroadcastExecutor(ActionExecutor):
         '''
         try:
             if not VWBroadcastAction.SENDER_ID_SPOOFING_ALLOWED and action.get_message().get_sender_id() != action.get_actor_id():
-                raise IdentityException("Sender ID spoofing detected: it should be {}, not {}.".format(action.get_actor_id(), action.get_message().get_sender_id()))
+                raise IdentityException(f"Sender ID spoofing detected: it should be {action.get_actor_id()}, not {action.get_message().get_sender_id()}.")
             else:
                 env.send_message_to_recipients(message=action.get_message(), check_sender_identity=not VWBroadcastAction.SENDER_ID_SPOOFING_ALLOWED)
 

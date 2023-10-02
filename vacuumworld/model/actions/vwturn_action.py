@@ -13,7 +13,7 @@ class VWTurnAction(VWPhysicalAction):
         if not direction:
             raise VWMalformedActionException("No turning direction was specified")
         elif direction not in [VWDirection.left, VWDirection.right]:
-            raise VWMalformedActionException("Invalid turning direction: {}.".format(direction))
+            raise VWMalformedActionException(f"Invalid turning direction: {direction}.")
         else:
             self.__direction: VWDirection = direction
 

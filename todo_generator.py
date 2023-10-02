@@ -12,22 +12,23 @@ import os
 
 INTERESTING_FILES_EXTENSIONS: List[str] = [".py"]
 FILES_EXCLUSION_LIST: List[str] = [os.path.basename(__file__)]
-DIR_EXCLUSION_LIST: List[str] = ["examples_not_to_commit"]
+DIR_EXCLUSION_LIST_PREFIX: str = os.path.dirname(os.path.dirname(__file__))
+DIR_EXCLUSION_LIST: list[str] = [os.path.join(DIR_EXCLUSION_LIST_PREFIX, directory) for directory in ["examples_not_to_commit", "build", ".git"]]
 TODO_FILE: str = "TODO.md"
-TODO_PATTERN: str = "TODO"
+TODO_PATTERN: str = "TODO:"
 TODO_HEADER: str = "# List of TODOs"
 
 
 def main() -> None:
     lines: List[str] = []
 
-    for dir, _, files in os.walk(os.getcwd()):
-        if os.path.basename(dir) in DIR_EXCLUSION_LIST:
+    for d, _, files in os.walk(os.getcwd()):
+        if any([d.startswith(excluded_dir) for excluded_dir in DIR_EXCLUSION_LIST]):
             continue
 
-        for f in filter(lambda candidate: any(filter(lambda ext: isinstance(ext, str) and candidate.endswith(ext), INTERESTING_FILES_EXTENSIONS)), files):
+        for f in filter(lambda candidate: any([candidate.endswith(ext) for ext in INTERESTING_FILES_EXTENSIONS]), files):
             if f not in FILES_EXCLUSION_LIST:
-                lines += __look_for_todos(os.path.join(dir, f))
+                lines += __look_for_todos(os.path.join(d, f))
 
     with open(TODO_FILE, "w") as f:
         f.write(TODO_HEADER + "\n")

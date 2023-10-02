@@ -72,7 +72,7 @@ class VWObservation(Perception):
         return to_return
 
     def __format_latest_action_results(self) -> str:
-        return ", ".join(["{}: {}".format(action_type.__name__, action_result.get_outcome()) for action_type, action_result in self.__action_results])
+        return ", ".join([f"{action_type.__name__}: {action_result.get_outcome()}" for action_type, action_result in self.__action_results])
 
     def merge_action_result_with_previous_observations(self, observations: Iterable[VWObservation]) -> None:
         '''
@@ -304,10 +304,10 @@ class VWObservation(Perception):
             yield location
 
     def __str__(self) -> str:
-        return "Actions outcomes: [{}]. Perceived locations: {}".format(self.__format_latest_action_results(), self.__format_perceived_locations())
+        return f"Actions outcomes: [{self.__format_latest_action_results()}]. Perceived locations: {self.__format_perceived_locations()}"
 
     def __format_perceived_locations(self) -> List[str]:
-        return ["{}: {}".format(pos.name, loc) for pos, loc in self.__locations.items()]
+        return [f"{pos.name}: {loc}" for pos, loc in self.__locations.items()]
 
     def pretty_format(self) -> str:
         '''

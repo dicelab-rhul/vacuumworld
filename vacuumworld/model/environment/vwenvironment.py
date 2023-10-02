@@ -127,13 +127,13 @@ class VWEnvironment(Environment):
         if len(actions) == 0:
             raise VWActionAttemptException("No actions were attempted. At least 1 action must be attempted per cycle.")
         elif len(actions) > n:
-            raise VWActionAttemptException("Too many actions were attempted. There is a hard limit of {} actions per actor per cycle.".format(n))
+            raise VWActionAttemptException(f"Too many actions were attempted. There is a hard limit of {n} actions per actor per cycle.")
 
     @staticmethod
     def __validate_action_types(actions: List[Action]) -> None:
         for action in actions:
             if not isinstance(action, VWPhysicalAction) and not isinstance(action, VWCommunicativeAction):
-                raise VWMalformedActionException("Unrecognised action: {}.".format(type(action)))
+                raise VWMalformedActionException(f"Unrecognised action: {type(action)}.")
 
     def __validate_pool_of_actions(self, actions: List[Action]) -> None:
         n: int = self.__config["max_number_of_actions_per_actor_per_cycle"]
@@ -147,10 +147,10 @@ class VWEnvironment(Environment):
         assert 0 < len(actions) <= n
 
         if sum(map(lambda action: isinstance(action, VWPhysicalAction), actions)) > n_physical:
-            raise VWActionAttemptException("Too many physical actions were attempted. There is a hard limit of {} physical action, and {} communicative action per actor per cycle.".format(n_physical, n_communicative))
+            raise VWActionAttemptException(f"Too many physical actions were attempted. There is a hard limit of {n_physical} physical action, and {n_communicative} communicative action per actor per cycle.")
 
         if sum(map(lambda action: isinstance(action, VWCommunicativeAction), actions)) > n_communicative:
-            raise VWActionAttemptException("Too many communicative actions were attempted. There is a hard limit of {} physical action, and {} communicative action per actor per cycle.".format(n_physical, n_communicative))
+            raise VWActionAttemptException(f"Too many communicative actions were attempted. There is a hard limit of {n_physical} physical action, and {n_communicative} communicative action per actor per cycle.")
 
     def get_executor_for(self, action: Action) -> PyOptional[ActionExecutor]:
         '''
@@ -276,7 +276,7 @@ class VWEnvironment(Environment):
             if l.has_actor() and l.get_actor_appearance().or_else_raise().get_id() == actor_id:
                 return c, l
 
-        raise VWInternalError("Actor {} not found: there is an inconsistency between the grid and the list of actors.".format(actor_id))
+        raise VWInternalError(f"VWActor {actor_id} not found: there is an inconsistency between the grid and the list of actors.")
 
     def get_actor_orientation(self, actor_id: str) -> VWOrientation:
         '''

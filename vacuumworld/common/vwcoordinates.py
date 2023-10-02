@@ -204,7 +204,7 @@ class VWCoord():
         return self.__floordiv__(other)
 
     def __str__(self) -> str:
-        return "({}, {})".format(self.__x, self.__y)
+        return f"({self.__x}, {self.__y})"
 
     def __eq__(self, other: object) -> bool:
         if not other or not isinstance(other, VWCoord):

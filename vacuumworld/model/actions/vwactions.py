@@ -54,7 +54,7 @@ class VWCommunicativeAction(VWAction):
         VWValidator.validate_not_none(obj=message)
 
         if not isinstance(message, MessageContentBaseType):
-            raise VWMalformedActionException("Invalid message type: {} (allowed: {}).".format(type(message), MessageContentType))
+            raise VWMalformedActionException(f"Invalid message type: {type(message)} (allowed: {MessageContentType}).")
 
     @staticmethod
     def __validate_recipients(recipients: Iterable[str]) -> None:
