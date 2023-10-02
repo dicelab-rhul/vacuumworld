@@ -74,13 +74,8 @@ class VWConfigManager():
         except ScreenInfoError:
             print("INFO: no monitor found by `screeninfo`. Trying with `pymonitors`...")
 
-            data: dict[str, int | bool] = get_monitors_with_pymonitors(print_info=False)[default_monitor_number].data
+            for monitor in get_monitors_with_pymonitors(print_info=False):
+                if monitor.data["successfully_parsed"] and all([dimension in monitor.data for dimension in ["width", "height"]]) and monitor.data["width"] > 0 and monitor.data["height"] > 0:
+                    return monitor.data["width"], monitor.data["height"]
 
-            VWConfigManager.__validate_screen_dimensions_from_pymonitors(data=data)
-
-            return data["width"], data["height"]
-
-    @staticmethod
-    def __validate_screen_dimensions_from_pymonitors(data: dict[str, int | bool]) -> None:
-        if not data["successfully_parsed"] or any([dimension not in data for dimension in ["width", "height"]]) or data["width"] < 0 or data["height"] < 0:
             raise ScreenInfoError("The screen dimensions could not be determined.")
