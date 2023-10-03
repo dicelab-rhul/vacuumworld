@@ -6,7 +6,7 @@ from inspect import getsourcefile
 from signal import signal as handle_signal
 
 from ..common.vwcolour import VWColour
-from ..common.vwexceptions import VWInternalError
+from ..common.vwexceptions import VWSurrogateMindException, VWRunnerException, VWInternalError
 from ..common.vwvalidator import VWValidator
 from ..model.actions.vwactions import VWAction, VWCommunicativeAction
 from ..model.actions.vweffort import VWActionEffort
@@ -147,14 +147,37 @@ class VWRunner(Process):
         raise NotImplementedError()
 
     def __validate_minds(self) -> None:
-        if not all(isinstance(self.__minds[colour], self.__allowed_args[str(colour) + "_mind"]) for colour in VWColour if colour != VWColour.user):
-            raise TypeError("One or more mind surrogates are not of the allowed type.")
+        try:
+            if not all(isinstance(self.__minds[colour], self.__allowed_args[str(colour) + "_mind"]) for colour in VWColour if colour != VWColour.user):
+                allowed_minds: dict[str, type] = {str(colour): self.__allowed_args[str(colour) + "_mind"] for colour in VWColour if colour != VWColour.user}
 
-        for colour, mind in self.__minds.items():
-            if colour != VWColour.user:
-                VWActorMindSurrogate.validate(mind=mind, colour=colour, surrogate_mind_type=self.__allowed_args[str(colour) + "_mind"])
-            else:
-                VWActorMindSurrogate.validate(mind=mind, colour=colour, surrogate_mind_type=VWUserMindSurrogate)
+                raise TypeError(f"One or more mind surrogates are not subclasses of the allowed types: {allowed_minds}.")
+
+            for colour, mind in self.__minds.items():
+                if colour != VWColour.user:
+                    VWActorMindSurrogate.validate(mind=mind, colour=colour, surrogate_mind_type=self.__allowed_args[str(colour) + "_mind"])
+                else:
+                    VWActorMindSurrogate.validate(mind=mind, colour=colour, surrogate_mind_type=VWUserMindSurrogate)
+        except TypeError as e:
+            VWRunner.__print_sub_error_message(message=e.args[0])
+
+            raise VWRunnerException(message="One or more mind surrogates are not of the allowed type. Please check the error message above.") from e
+        except VWSurrogateMindException as e:
+            VWRunner.__print_sub_error_message(message=e.args[0])
+
+            raise VWRunnerException(message="Could not validate one or more mind surrogates. Please check the error message above.") from e
+        except Exception as e:
+            VWRunner.__print_sub_error_message(message=e.args[0])
+
+            raise VWInternalError(message="Unknown error while validating one or more mind surrogates. Please check the error message above.") from e
+
+    @staticmethod
+    def __print_sub_error_message(message: str) -> None:
+        full_message: str = message if message else "Unknown error."
+        full_message = f"ERROR: {full_message}" if not full_message.startswith("ERROR: ") else full_message
+        full_message = f"{full_message}\n" if not full_message.endswith("\n") else full_message
+
+        print(full_message)
 
     def __validate_optional_args(self) -> None:
         self.__validate_play_load()
