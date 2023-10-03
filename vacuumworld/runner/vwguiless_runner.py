@@ -1,4 +1,4 @@
-from typing import Dict, Type, Any
+from typing import Type, Any
 from time import sleep
 
 from .vwrunner import VWRunner
@@ -12,7 +12,7 @@ class VWGUIlessRunner(VWRunner):
     '''
     This class is responsible for running VacuumWorld without a GUI.
     '''
-    def __init__(self, config: dict[str, Any], minds: Dict[VWColour, VWActorMindSurrogate], allowed_args: Dict[str, Type[Any]], **kwargs: Any) -> None:
+    def __init__(self, config: dict[str, Any], minds: dict[VWColour, VWActorMindSurrogate], allowed_args: dict[str, Type[Any]], **kwargs: Any) -> None:
         super(VWGUIlessRunner, self).__init__(config=config, minds=minds, allowed_args=allowed_args, **kwargs)
 
         self.__validate_load()

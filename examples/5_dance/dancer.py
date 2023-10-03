@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from random import randint, choice
-from typing import Iterable, List, cast
+from typing import Iterable, cast
 from pyoptional.pyoptional import PyOptional
 
 from pystarworldsturbo.common.content_type import MessageContentType
@@ -29,7 +29,7 @@ class ColourMind(DanceMind):
         super(ColourMind, self).__init__()
 
         self.__target_loc: PyOptional[VWCoord] = PyOptional.empty()  # The location to move to.
-        self.__dance_time: List[int] = []  # Time interval where the agent should be dancing.
+        self.__dance_time: list[int] = []  # Time interval where the agent should be dancing.
 
     def sub_revise(self) -> None:
         '''
@@ -147,7 +147,7 @@ class ColourMind(DanceMind):
             return [VWIdleAction()]
 
     @staticmethod
-    def __gen_meeting_locs(max_n: int=8) -> List[VWCoord]:
+    def __gen_meeting_locs(max_n: int=8) -> list[VWCoord]:
         '''
         A function to generate a meeting point, a default grid size of 8 is assumed.
         Picks a random point that isn't on the grid perimeter (adjacent to a wall).
@@ -155,7 +155,7 @@ class ColourMind(DanceMind):
         '''
         x1: int = randint(1, max_n-2)
         y1: int = randint(1, max_n-2)
-        offset: List[int] = choice([[1, 0], [-1, 0], [0, 1], [0, -1]])
+        offset: list[int] = choice([[1, 0], [-1, 0], [0, 1], [0, -1]])
         x2: int = x1 + offset[0]
         y2: int = y1 + offset[1]
 
@@ -250,7 +250,7 @@ class ColourMind(DanceMind):
     def __dance_enjoyment_declaration() -> str:
         ''' Superfluous '''
 
-        strs: List[str] = [
+        strs: list[str] = [
             "I love dancing!",
             "Boogy time!",
             "This song is great!",

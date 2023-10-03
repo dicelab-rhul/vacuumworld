@@ -1,4 +1,4 @@
-from typing import List, Iterable
+from typing import Iterable
 from random import random
 from itertools import accumulate
 
@@ -116,22 +116,22 @@ class VWUserMindSurrogate(VWActorMindSurrogate):
             return VWDropAction(dirt_colour=VWColour.orange)
 
     @staticmethod
-    def __move_randomly(weights: List[float]=[1/3, 1/3, 1/3]) -> VWPhysicalAction:
+    def __move_randomly(weights: list[float]=[1/3, 1/3, 1/3]) -> VWPhysicalAction:
         assert isinstance(weights, list) and len(weights) == 3 and sum(weights) == 1.0
 
         return VWUserMindSurrogate.__act_randomly(weights=[0.0, 0.0, weights[0], weights[1], weights[2]])
 
     @staticmethod
-    def __move_or_drop_randomly(weights: List[float]=[1/3, 1/3, 1/3]) -> VWPhysicalAction:
+    def __move_or_drop_randomly(weights: list[float]=[1/3, 1/3, 1/3]) -> VWPhysicalAction:
         assert isinstance(weights, list) and len(weights) == 3 and sum(weights) == 1.0
 
         return VWUserMindSurrogate.__act_randomly(weights=[weights[0], weights[1], weights[2], 0.0, 0.0])
 
     @staticmethod
-    def __act_randomly(weights: List[float]=[0.2, 0.2, 0.2, 0.2, 0.2]) -> VWPhysicalAction:
+    def __act_randomly(weights: list[float]=[0.2, 0.2, 0.2, 0.2, 0.2]) -> VWPhysicalAction:
         assert isinstance(weights, list) and len(weights) == 5 and sum(weights) == 1.0
 
-        rng_thresholds: List[float] = list(accumulate(weights))
+        rng_thresholds: list[float] = list(accumulate(weights))
 
         random_number: float = random()
 

@@ -1,6 +1,6 @@
 from tkinter import Entry, Frame, StringVar, Listbox, END, ACTIVE
 from re import match
-from typing import List, Any, cast
+from typing import Any, cast
 from pyoptional.pyoptional import PyOptional
 
 
@@ -9,11 +9,11 @@ class VWAutocompleteEntry(Entry):
     '''
     This class specifies an `Entry` with autocomplete functionality.
     '''
-    def __init__(self, lista: List[str], height: int, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, lista: list[str], height: int, *args: Any, **kwargs: Any) -> None:
         super(VWAutocompleteEntry, self).__init__(*args, **kwargs)
 
         self.__dropdown_parent: Frame = args[0]
-        self.__lista: List[str] = lista
+        self.__lista: list[str] = lista
         self.__var: StringVar = self["textvariable"] if "textvariable" in kwargs else StringVar()
         self.__font: tuple[Any] = kwargs.get("font", None)
 
@@ -29,11 +29,11 @@ class VWAutocompleteEntry(Entry):
         self.__lb: PyOptional[Listbox] = PyOptional[Listbox].empty()
         self.__lb_up: bool = False
 
-    def set_list_a(self, list_a: List[str]) -> None:
+    def set_list_a(self, list_a: list[str]) -> None:
         '''
         Sets the list of words to be used for autocomplete from the `list_a` argument.
 
-        This method assumes (via assertions) that the `list_a` argument is a `List[str]`.
+        This method assumes (via assertions) that the `list_a` argument is a `list[str]`.
         '''
         assert isinstance(list_a, list)
         assert all(isinstance(x, str) for x in list_a)
@@ -118,5 +118,5 @@ class VWAutocompleteEntry(Entry):
                 self.__lb.or_else_raise().selection_set(first=index_str)
                 self.__lb.or_else_raise().activate(index_str)
 
-    def __comparison(self) -> List[str]:
+    def __comparison(self) -> list[str]:
         return [w for w in self.__lista if match(".*" + self.__var.get() + ".*", w)]

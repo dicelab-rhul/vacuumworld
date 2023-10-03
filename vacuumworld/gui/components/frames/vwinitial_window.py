@@ -1,5 +1,5 @@
 from tkinter import Tk, Frame, Canvas
-from typing import Callable, Dict, Any
+from typing import Callable, Any
 from PIL import Image
 from PIL.Image import Image as PILImage
 from PIL.ImageTk import PhotoImage
@@ -41,7 +41,7 @@ class VWInitialWindow(Frame):
         self.__button_frame: Frame = Frame(self)
 
         self.__canvas.pack()
-        self.__buttons: Dict[str, VWButton] = {}
+        self.__buttons: dict[str, VWButton] = {}
 
         for button_name in ("start", "guide", "exit"):
             self.__buttons[button_name] = self.__build_button(button_name=button_name, parent=self.__button_frame)

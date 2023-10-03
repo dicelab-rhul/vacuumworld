@@ -1,4 +1,4 @@
-from typing import Dict, Type, Any
+from typing import Type, Any
 from tkinter import Tk
 from webbrowser import open_new_tab
 from json import load
@@ -21,7 +21,7 @@ class VWGUIRunner(VWRunner):
 
     The VacuumWorld GUI is built on the top of the `tkinter` library.
     '''
-    def __init__(self, config: dict[str, Any], minds: Dict[VWColour, VWActorMindSurrogate], allowed_args: Dict[str, Type[Any]], **kwargs: Any) -> None:
+    def __init__(self, config: dict[str, Any], minds: dict[VWColour, VWActorMindSurrogate], allowed_args: dict[str, Type[Any]], **kwargs: Any) -> None:
         super(VWGUIRunner, self).__init__(config=config, minds=minds, allowed_args=allowed_args, **kwargs)
 
         self.__button_data: dict[str, dict[str, str]] = self.__load_button_data()

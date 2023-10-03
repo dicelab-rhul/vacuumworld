@@ -1,4 +1,4 @@
-from typing import Iterable, List
+from typing import Iterable
 
 from pystarworldsturbo.common.action import Action
 from pystarworldsturbo.common.message import Message
@@ -67,8 +67,8 @@ class VWCommunicativeAction(VWAction):
         '''
         return self.__message
 
-    def get_recipients(self) -> List[str]:
+    def get_recipients(self) -> list[str]:
         '''
-        Returns the `List[str]` of recipients of this `VWCommunicativeAction`.
+        Returns the `list[str]` of recipients of this `VWCommunicativeAction`.
         '''
         return self.__message.get_recipients_ids()

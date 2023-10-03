@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from typing import Iterable, List, Type, cast
+from typing import Iterable, Type, cast
 from random import randint
 
 from vacuumworld import run
@@ -31,7 +31,7 @@ class WallMind(VWActorMindSurrogate):
         '''
         This method broadcasts the possible physical actions that the sender `VWCleaningAgent` can perform.
         '''
-        actions: List[Type[VWPhysicalAction]] = [VWIdleAction, VWTurnAction]
+        actions: list[Type[VWPhysicalAction]] = [VWIdleAction, VWTurnAction]
 
         if self.__can_move():
             actions.append(VWMoveAction)
@@ -39,7 +39,7 @@ class WallMind(VWActorMindSurrogate):
         return VWBroadcastAction(message=f"Possible physical actions for me: {[action.__name__ for action in actions]}", sender_id=self.get_own_id())
 
     def __random_physical_action(self) -> VWPhysicalAction:
-        pool: List[Type[VWPhysicalAction]] = [VWTurnAction, VWTurnAction]
+        pool: list[Type[VWPhysicalAction]] = [VWTurnAction, VWTurnAction]
 
         if self.__can_move():
             pool.append(VWMoveAction)

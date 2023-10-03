@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import cast, Dict
+from typing import cast
 
 from pystarworldsturbo.common.identifiable import Identifiable
 
@@ -34,7 +34,7 @@ class VWDirtAppearance(Identifiable):
         '''
         return VWDirtAppearance(dirt_id=self.get_id(), progressive_id=self.get_progressive_id(), colour=self.__colour)
 
-    def to_json(self) -> Dict[str, str]:
+    def to_json(self) -> dict[str, str]:
         '''
         Returns a JSON representation of this `VWDirtAppearance`.
 
@@ -44,7 +44,7 @@ class VWDirtAppearance(Identifiable):
             "colour": str(self.__colour)
         }
 
-    def to_json_with_ids(self) -> Dict[str, str]:
+    def to_json_with_ids(self) -> dict[str, str]:
         '''
         Returns a JSON representation of this `VWDirtAppearance`, including its ID and progressive ID.
         '''

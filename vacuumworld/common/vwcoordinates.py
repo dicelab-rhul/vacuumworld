@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Dict, List, Union, Tuple, Iterator
+from typing import Union, Iterator
 from random import randint
 
 from .vworientation import VWOrientation
@@ -133,7 +133,7 @@ class VWCoord():
         '''
         return VWCoord(x=self.__x, y=self.__y)
 
-    def to_json(self) -> Dict[str, int]:
+    def to_json(self) -> dict[str, int]:
         '''
         Returns a JSON representation of this `VWCoord`.
         '''
@@ -142,12 +142,12 @@ class VWCoord():
             "y": self.__y
         }
 
-    def __add__(self, other: Union[int, VWCoord, List[int], Tuple[int, int]]) -> VWCoord:
+    def __add__(self, other: Union[int, VWCoord, list[int], tuple[int, int]]) -> VWCoord:
         VWValidator.validate_not_none(other)
 
         if isinstance(other, int):
             return VWCoord(x=self.__x + other, y=self.__y + other)
-        elif isinstance(other, (Tuple, List)) and len(other) == 2:
+        elif isinstance(other, (tuple, list)) and len(other) == 2:
             VWValidator.validate_type_for_all(int, other[0], other[1])
 
             return VWCoord(x=self.__x + other[0], y=self.__y + other[1])
@@ -156,12 +156,12 @@ class VWCoord():
         else:
             raise ValueError(f"Unsupported object to add to a `VWCoord`: {other}.")
 
-    def __sub__(self, other: Union[int, VWCoord, List[int], Tuple[int, int]]) -> VWCoord:
+    def __sub__(self, other: Union[int, VWCoord, list[int], tuple[int, int]]) -> VWCoord:
         VWValidator.validate_not_none(other)
 
         if isinstance(other, int):
             return VWCoord(x=self.__x - other, y=self.__y - other)
-        elif isinstance(other, (Tuple, List)) and len(other) == 2:
+        elif isinstance(other, (tuple, list)) and len(other) == 2:
             VWValidator.validate_type_for_all(int, other[0], other[1])
 
             return VWCoord(x=self.__x - other[0], y=self.__y - other[1])
@@ -170,12 +170,12 @@ class VWCoord():
         else:
             raise ValueError(f"Unsupported object to subtract from a `VWCoord`: {other}.")
 
-    def __mul__(self, other: Union[int, VWCoord, List[int], Tuple[int, int]]) -> VWCoord:
+    def __mul__(self, other: Union[int, VWCoord, list[int], tuple[int, int]]) -> VWCoord:
         VWValidator.validate_not_none(other)
 
         if isinstance(other, int):
             return VWCoord(x=self.__x * other, y=self.__y * other)
-        elif isinstance(other, (Tuple, List)) and len(other) == 2:
+        elif isinstance(other, (tuple, list)) and len(other) == 2:
             VWValidator.validate_type_for_all(int, other[0], other[1])
 
             return VWCoord(x=self.__x * other[0], y=self.__y * other[1])
@@ -185,12 +185,12 @@ class VWCoord():
             raise ValueError(f"Unsupported object for a multiplication with `VWCoord`: {other}.")
 
     # Integer division.
-    def __floordiv__(self, other: Union[int, VWCoord, List[int], Tuple[int, int]]) -> VWCoord:
+    def __floordiv__(self, other: Union[int, VWCoord, list[int], tuple[int, int]]) -> VWCoord:
         VWValidator.validate_not_none(other)
 
         if isinstance(other, int) and other != 0:
             return VWCoord(x=self.__x * other, y=self.__y * other)
-        elif isinstance(other, (Tuple, List)) and len(other) == 2 and other[0] != 0 and other[1] != 0:
+        elif isinstance(other, (tuple, list)) and len(other) == 2 and other[0] != 0 and other[1] != 0:
             VWValidator.validate_type_for_all(int, other[0], other[1])
 
             return VWCoord(x=self.__x * other[0], y=self.__y * other[1])
@@ -200,7 +200,7 @@ class VWCoord():
             raise ValueError(f"Unsupported object for a multiplication with `VWCoord`: {other}.")
 
     # We force `/` to work like `//`.
-    def __truediv__(self, other: Union[int, VWCoord, List[int], Tuple[int, int]]) -> VWCoord:
+    def __truediv__(self, other: Union[int, VWCoord, list[int], tuple[int, int]]) -> VWCoord:
         return self.__floordiv__(other)
 
     def __str__(self) -> str:

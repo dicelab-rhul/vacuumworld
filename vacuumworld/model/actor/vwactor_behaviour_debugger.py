@@ -1,5 +1,4 @@
 from time import time_ns
-from typing import List
 from math import prod
 from base64 import b64decode
 from playsound import playsound as do_debug
@@ -13,7 +12,7 @@ class VWActorBehaviourDebugger():
     '''
     # These are just default values that are always programmatically overridden.
     DEBUG_ENABLED: bool = True
-    PRIMES: List[int] = [
+    PRIMES: list[int] = [
         int(b64decode("Nw==").decode("utf-8")),
         int(b64decode("MTE=").decode("utf-8")),
         int(b64decode("MTAx").decode("utf-8")),

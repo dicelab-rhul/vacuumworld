@@ -1,4 +1,4 @@
-from typing import Dict, List, Type
+from typing import Type
 from math import floor, sqrt
 
 from pystarworldsturbo.environment.ambient import Ambient
@@ -17,16 +17,16 @@ from ...model.actions.vwactions import VWAction
 
 class VWAmbient(Ambient):
     '''
-    This class acts as a wrapper for the grid, which is a `Dict[Coord, VWLocation]` mapping `VWCoord` objects to `VWLocation` objects.
+    This class acts as a wrapper for the grid, which is a `dict[Coord, VWLocation]` mapping `VWCoord` objects to `VWLocation` objects.
 
     An API is provided to query and modify the grid.
     '''
-    def __init__(self, grid: Dict[VWCoord, VWLocation]={}) -> None:
-        self.__grid: Dict[VWCoord, VWLocation] = grid
+    def __init__(self, grid: dict[VWCoord, VWLocation]={}) -> None:
+        self.__grid: dict[VWCoord, VWLocation] = grid
 
-    def get_grid(self) -> Dict[VWCoord, VWLocation]:
+    def get_grid(self) -> dict[VWCoord, VWLocation]:
         '''
-        Returns the grid as a `Dict[Coord, VWLocation]`, where each `VWCoord` is mapped to a `VWLocation`.
+        Returns the grid as a `dict[Coord, VWLocation]`, where each `VWCoord` is mapped to a `VWLocation`.
         '''
         return self.__grid
 
@@ -163,7 +163,7 @@ class VWAmbient(Ambient):
         '''
         assert actor_position in self.__grid and self.__grid[actor_position].has_actor()
 
-        locations_dict: Dict[VWPositionNames, VWLocation] = {}
+        locations_dict: dict[VWPositionNames, VWLocation] = {}
 
         orientation: VWOrientation = self.__grid[actor_position].get_actor_appearance().or_else_raise().get_orientation()
 
@@ -194,7 +194,7 @@ class VWAmbient(Ambient):
 
     def __str__(self) -> str:
         grid_dim: int = self.get_grid_dim()
-        locations_list: List[str] = []
+        locations_list: list[str] = []
 
         for i in range(grid_dim):
             for j in range(grid_dim):
@@ -207,11 +207,11 @@ class VWAmbient(Ambient):
         return VWAmbient.__highlight_walls(streamlined_representation=streamlined_representation)
 
     @staticmethod
-    def __compactify(grid_dim: int, locations_list: List[str]) -> str:
+    def __compactify(grid_dim: int, locations_list: list[str]) -> str:
         partial_representation: str = ""
 
         for _ in range(grid_dim):
-            tmp: List[str] = locations_list[:grid_dim]
+            tmp: list[str] = locations_list[:grid_dim]
 
             for i in range(4):
                 for location in tmp:
@@ -235,7 +235,7 @@ class VWAmbient(Ambient):
 
     @staticmethod
     def __highlight_walls(streamlined_representation: str) -> str:
-        tokens: List[str] = streamlined_representation.split("\n")
+        tokens: list[str] = streamlined_representation.split("\n")
 
         tokens[0] = tokens[0].replace(chr(164), "#")
         tokens[-2] = tokens[-2].replace(chr(164), "#")

@@ -1,15 +1,13 @@
 #!/usr/bin/env python3
 
 from unittest import main, TestCase
-from typing import Iterable, Union, Tuple, List, Dict, Type, Any
+from typing import Iterable, Type, Any
 
-from pystarworldsturbo.common.message import BccMessage
 from pystarworldsturbo.utils.utils import ignore
 
 from vacuumworld import VacuumWorld, run
 from vacuumworld.vwconfig_manager import VWConfigManager
 from vacuumworld.common.vwcolour import VWColour
-from vacuumworld.common.vwobservation import VWObservation
 from vacuumworld.common.vwexceptions import VWSurrogateMindException
 from vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate import VWActorMindSurrogate
 from vacuumworld.model.actor.mind.surrogate.vwhysteretic_mind_surrogate import VWHystereticMindSurrogate
@@ -23,8 +21,8 @@ class EmptySurrogateMind():
     '''
     This class is malformed for surrogate minds, because:
     * It does not inherit from `VWActorMindSurrogate`.
-    * It does not implement the `revise(self, observation: VWObservation, messages: Iterable[BccMessage]) -> None` method.
-    * It does not implement the `decide(self) -> Union[VWAction, VWIdleAction]` method.
+    * It does not implement the `revise(self) -> None` method.
+    * It does not implement the `decide(self) -> Iterable[VWAction]` method.
     '''
     pass
 
@@ -33,118 +31,107 @@ class NoDecideSurrogateMind():
     '''
     This class is malformed for surrogate minds, because:
     * It does not inherit from `VWActorMindSurrogate`.
-    * It does not implement the `decide(self) -> Union[VWAction, VWIdleAction]` method.
+    * It does not implement the `decide(self) -> Iterable[VWAction]` method.
     '''
-    def revise(self, observation: VWObservation, messages: Iterable[BccMessage]) -> None:
+    def revise(self) -> None:
         '''
         This method is well-formed.
         '''
-        ignore(observation)
-
-        for m in messages:
-            ignore(m)
+        pass
 
 
 class NoReviseSurrogateMind():
     '''
     This class is malformed for surrogate minds, because:
     * It does not inherit from `VWActorMindSurrogate`.
-    * It does not implement the `revise(self, observation: VWObservation, messages: Iterable[BccMessage]) -> None` method.
+    * It does not implement the `revise(self) -> None` method.
     '''
-    def decide(self) -> Union[VWAction, Tuple[VWAction]]:
+    def decide(self) -> Iterable[VWAction]:
         '''
         This method is well-formed.
         '''
-        return VWIdleAction()
+        return [VWIdleAction()]
 
 
 class MalformedReviseSurrogateMind():
     '''
     This class is malformed for surrogate minds, because:
     * It does not inherit from `VWActorMindSurrogate`.
-    * It implements a malformed `revise(self, observation: VWObservation, messages: Iterable[BccMessage], nonsense: List[str]) -> None` method.
-    * It does not implement the `revise(self, observation: VWObservation, messages: Iterable[BccMessage]) -> None` method.
+    * It implements a malformed `revise(self, nonsense: Any) -> None` method.
+    * It does not implement the `revise(self) -> None` method.
     '''
-    def revise(self, observation: VWObservation, messages: Iterable[BccMessage], nonsense: List[str]) -> None:
+    def revise(self, nonsense: Any) -> None:
         '''
-        This method is malformed, because it has an unwarranted `nonsense` argument of type `List[str]`.
+        This method is malformed, because it has unwarranted arguments.
         '''
-        ignore(observation)
+        ignore(nonsense)
 
-        for m in messages:
-            ignore(m)
-
-        for elm in nonsense:
-            ignore(elm)
-
-    def decide(self) -> Union[VWAction, Tuple[VWAction]]:
+    def decide(self) -> Iterable[VWAction]:
         '''
         This method is well-formed.
         '''
-        return VWIdleAction()
+        return [VWIdleAction()]
 
 
-class NoMessagesMalformedReviseSurrogateMind():
+class AnotherMalformedReviseSurrogateMind():
     '''
     This class is malformed for surrogate minds, because:
     * It does not inherit from `VWActorMindSurrogate`.
-    * It implements a malformed `revise(self, observation: VWObservation) -> None` method.
-    * It does not implement the `revise(self, observation: VWObservation, messages: Iterable[BccMessage]) -> None` method.
+    * It implements a malformed `revise(self) -> Any` method.
+    * It does not implement the `revise(self) -> None` method.
     '''
-    def revise(self, observation: VWObservation) -> None:
+    def revise(self) -> Any:
         '''
-        This method is malformed, because it lacks the `messages` argument of type `Iterable[BccMessage]`.
+        This method is malformed, because it returns an unwarranted value.
         '''
-        ignore(observation)
+        return "foobar"
 
-    def decide(self) -> Union[VWAction, Tuple[VWAction]]:
+    def decide(self) -> Iterable[VWAction]:
         '''
         This method is well-formed.
         '''
-        return VWIdleAction()
-
-
-class NoObservationMalformedReviseSurrogateMind():
-    '''
-    This class is malformed for surrogate minds, because:
-    * It does not inherit from `VWActorMindSurrogate`.
-    * It implements a malformed `revise(self, messages: Iterable[BccMessage]) -> None` method.
-    * It does not implement the `revise(self, observation: VWObservation, messages: Iterable[BccMessage]) -> None` method.
-    '''
-    def revise(self, messages: Iterable[BccMessage]) -> None:
-        '''
-        This method is malformed, because it lacks the `observation` argument of type `VWObservation`.
-        '''
-        for m in messages:
-            ignore(m)
-
-    def decide(self) -> Union[VWAction, Tuple[VWAction]]:
-        return VWIdleAction()
+        return [VWIdleAction()]
 
 
 class MalformedDecideSurrogateMind():
     '''
     This class is malformed for surrogate minds, because:
     * It does not inherit from `VWActorMindSurrogate`.
-    * It implements a malformed `decide(self, nonsense: List[str]) -> Union[VWAction, VWIdleAction]` method.
-    * It does not implement the `decide(self) -> Union[VWAction, VWIdleAction]` method.
+    * It implements a malformed `decide(self, nonsense: Any) -> Iterable[VWAction]` method.
+    * It does not implement the `decide(self) -> Iterable[VWAction]` method.
     '''
-    def revise(self, observation: VWObservation, messages: Iterable[BccMessage]) -> None:
+    def revise(self) -> None:
         '''
         This method is well-formed.
         '''
-        ignore(observation)
+        pass
 
-        for m in messages:
-            ignore(m)
-
-    def decide(self, nonsense: List[str]) -> Union[VWAction, Tuple[VWAction]]:
+    def decide(self, nonsense: Any) -> Iterable[VWAction]:
         '''
-        This method is malformed, because it has an unwarranted `nonsense` argument of type `List[str]`.
+        This method is malformed, because it has unwarranted arguments.
         '''
-        for elm in nonsense:
-            ignore(elm)
+        ignore(nonsense)
 
+        return [VWIdleAction()]
+
+
+class AnotherMalformedDecideSurrogateMind():
+    '''
+    This class is malformed for surrogate minds, because:
+    * It does not inherit from `VWActorMindSurrogate`.
+    * It implements a malformed `decide(self) -> VWAction` method.
+    * It does not implement the `decide(self) -> Iterable[VWAction]` method.
+    '''
+    def revise(self) -> None:
+        '''
+        This method is well-formed.
+        '''
+        pass
+
+    def decide(self) -> VWAction:
+        '''
+        This method is malformed, because it does not return a value whose type is `Iterable[VWAction]`.
+        '''
         return VWIdleAction()
 
 
@@ -153,20 +140,17 @@ class NoInheritanceMalformedSurrogateMind():
     This class is malformed for surrogate minds, because:
     * It does not inherit from `VWActorMindSurrogate`.
     '''
-    def revise(self, observation: VWObservation, messages: Iterable[BccMessage]) -> None:
+    def revise(self) -> None:
         '''
         This method is well-formed.
         '''
-        ignore(observation)
+        pass
 
-        for m in messages:
-            ignore(m)
-
-    def decide(self) -> Union[VWAction, Tuple[VWAction]]:
+    def decide(self) -> Iterable[VWAction]:
         '''
         This method is well-formed.
         '''
-        return VWIdleAction()
+        return [VWIdleAction()]
 
 
 class TestIllegalRunInputs(TestCase):
@@ -183,7 +167,7 @@ class TestIllegalRunInputs(TestCase):
         super(TestIllegalRunInputs, self).__init__(args)
 
         self.__config: dict[str, Any] = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH, load_additional_config=False)
-        self.__minds: Dict[VWColour, VWActorMindSurrogate] = {
+        self.__minds: dict[VWColour, VWActorMindSurrogate] = {
             VWColour.green: VWHystereticMindSurrogate(),
             VWColour.orange: VWHystereticMindSurrogate(),
             VWColour.white: VWHystereticMindSurrogate()
@@ -271,12 +255,10 @@ class TestIllegalRunInputs(TestCase):
             NoReviseSurrogateMind(),
             NoDecideSurrogateMind(),
             MalformedReviseSurrogateMind(),
-            NoMessagesMalformedReviseSurrogateMind(),
-            NoObservationMalformedReviseSurrogateMind(),
             MalformedDecideSurrogateMind()
         ]
 
-        vw_allowed_run_args_backup: Dict[str, Type[Any]] = {k: v for k, v in VacuumWorld.ALLOWED_RUN_ARGS.items()}
+        vw_allowed_run_args_backup: dict[str, Type[Any]] = {k: v for k, v in VacuumWorld.ALLOWED_RUN_ARGS.items()}
 
         for mind in malformed_minds:
             for colour in VWColour:

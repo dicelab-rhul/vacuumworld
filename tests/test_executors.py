@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from unittest import main, TestCase
-from typing import List, Callable, Any
+from typing import Callable, Any
 from random import randint
 from pyoptional.pyoptional import PyOptional
 
@@ -58,7 +58,7 @@ class TestExecutors(TestCase):
 
         self.__config: dict[str, Any] = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH, load_additional_config=False)
         self.__randbytes: Callable[[int], bytes] = random_module.randbytes if hasattr(random_module, "randbytes") else os.urandom
-        self.__message_content_list: List[MessageContentType] = [
+        self.__message_content_list: list[MessageContentType] = [
             "Hello World!",
             ["Hello", "World", "!"],
             {
@@ -116,12 +116,12 @@ class TestExecutors(TestCase):
         self.__test_messages_delivery(messages=self.__message_content_list, speak_executor=speak_executor, env=env, custom_sender_id=custom_sender_id, recipients=[a_id for a_id in env.get_actors()])
         self.__test_messages_delivery(messages=self.__message_content_list, speak_executor=speak_executor, env=env, custom_sender_id=custom_sender_id, recipients=[])
 
-    def __test_messages_delivery(self, messages: List[Any], speak_executor: VWSpeakExecutor, env: VWEnvironment, custom_sender_id: PyOptional[str], recipients: List[str]) -> None:
+    def __test_messages_delivery(self, messages: list[Any], speak_executor: VWSpeakExecutor, env: VWEnvironment, custom_sender_id: PyOptional[str], recipients: list[str]) -> None:
         for message in messages:
             for real_sender_id in env.get_actors():
                 self.__test_message_delivery(speak_executor=speak_executor, env=env, message=message, real_sender_id=real_sender_id, custom_sender_id=custom_sender_id, recipients=[r_id for r_id in recipients if r_id != real_sender_id])
 
-    def __test_message_delivery(self, speak_executor: VWSpeakExecutor, env: VWEnvironment, message: MessageContentType, real_sender_id: str, custom_sender_id: PyOptional[str]=PyOptional.empty(), recipients: List[str]=[]) -> None:
+    def __test_message_delivery(self, speak_executor: VWSpeakExecutor, env: VWEnvironment, message: MessageContentType, real_sender_id: str, custom_sender_id: PyOptional[str]=PyOptional.empty(), recipients: list[str]=[]) -> None:
         sender_id: str = custom_sender_id.or_else(real_sender_id)
         action: VWSpeakAction = VWSpeakAction(message=message, sender_id=sender_id, recipients=recipients)
         action.set_actor_id(actor_id=real_sender_id)
@@ -138,7 +138,7 @@ class TestExecutors(TestCase):
         else:
             self.assertTrue(result.get_outcome() == ActionOutcome.failure)
 
-    def __test_message_received(self, env: VWEnvironment, message: MessageContentType, sender_id: str, recipients: List[str]) -> None:
+    def __test_message_received(self, env: VWEnvironment, message: MessageContentType, sender_id: str, recipients: list[str]) -> None:
         for recipient_id in recipients:
             fake_observation: VWObservation = VWObservation(action_type=VWIdleAction, action_result=ActionResult(outcome=ActionOutcome.impossible), locations_dict={})
             recipient_actor: VWActor = env.get_actor(actor_id=recipient_id).or_else_raise()

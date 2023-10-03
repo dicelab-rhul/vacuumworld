@@ -1,4 +1,4 @@
-from typing import Callable, List
+from typing import Callable
 from PIL import Image
 from PIL.ImageTk import PhotoImage
 from PIL.Image import Image as PILImage
@@ -19,7 +19,7 @@ class VWDifficultyButton(VWButton):
 
         self.__rfun: Callable[..., None] = fun
         self.__difficulty: int = config["default_user_mind_level"]
-        self.__imgs: List[PhotoImage] = [PhotoImage(img)]
+        self.__imgs: list[PhotoImage] = [PhotoImage(img)]
 
         self.__imgs.extend([VWDifficultyButton.next_image(img, i * (255/(len(config["user_mind_levels"])-1))) for i in range(1, len(config["user_mind_levels"]))])
 

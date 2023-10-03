@@ -1,4 +1,4 @@
-from typing import Iterable, List, Type, cast
+from typing import Iterable, Type, cast
 from pyoptional.pyoptional import PyOptional
 
 from pystarworldsturbo.elements.sensor import Sensor
@@ -11,7 +11,7 @@ class VWSensor(Sensor):
     '''
     This class specifies the sensor for `VWActor`. It is a subclass of `Sensor`.
     '''
-    def __init__(self, subscribed_events: List[Type[VWObservation | BccMessage]]) -> None:
+    def __init__(self, subscribed_events: list[Type[VWObservation | BccMessage]]) -> None:
         super(VWSensor, self).__init__(subscribed_events=subscribed_events)
 
 

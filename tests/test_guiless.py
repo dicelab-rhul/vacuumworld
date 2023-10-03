@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from unittest import main, TestCase
-from typing import List, Any
+from typing import Any
 from random import choice, randint
 from string import ascii_letters, digits
 
@@ -25,7 +25,7 @@ class TestGUIless(TestCase):
         self.__min_number_of_cycles: int = 1
         self.__max_number_of_cycles: int = 100
         self.__number_of_runs: int = 10
-        self.__list_of_max_cycles_per_run: List[int] = [randint(self.__min_number_of_cycles, self.__max_number_of_cycles) for _ in range(self.__number_of_runs)]
+        self.__list_of_max_cycles_per_run: list[int] = [randint(self.__min_number_of_cycles, self.__max_number_of_cycles) for _ in range(self.__number_of_runs)]
 
     def test_guiless(self) -> None:
         '''

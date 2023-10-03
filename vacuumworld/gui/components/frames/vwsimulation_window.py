@@ -1,5 +1,5 @@
 from tkinter import Event, Tk, Frame, Canvas, Label, StringVar, W, E, X
-from typing import Callable, Dict, List, Tuple, Any
+from typing import Callable, Any
 from PIL import Image
 from PIL.Image import Image as PILImage
 from PIL.ImageTk import PhotoImage
@@ -52,7 +52,7 @@ class VWSimulationWindow(Frame):
 
     * Handling mouse movements.
     '''
-    def __init__(self, parent: Tk, config: dict[str, Any], buttons: dict[str, Any], minds: Dict[VWColour, VWActorMindSurrogate], env: VWEnvironment, _guide: Callable[..., None], _save: Callable[..., None], _load: Callable[[VWAutocompleteEntry], VWEnvironment], _exit: Callable[..., None], _error: Callable[..., None]) -> None:
+    def __init__(self, parent: Tk, config: dict[str, Any], buttons: dict[str, Any], minds: dict[VWColour, VWActorMindSurrogate], env: VWEnvironment, _guide: Callable[..., None], _save: Callable[..., None], _load: Callable[[VWAutocompleteEntry], VWEnvironment], _exit: Callable[..., None], _error: Callable[..., None]) -> None:
         super(VWSimulationWindow, self).__init__(parent)
 
         self.__parent: Tk = parent
@@ -68,15 +68,15 @@ class VWSimulationWindow(Frame):
         self.__after_hook: PyOptional[str] = PyOptional.empty()
         self.__save_state_manager: VWSaveStateManager = VWSaveStateManager()
         self.__empty_location_coordinates_text: str = "(-,-)"
-        self.__agent_minds: Dict[VWColour, VWActorMindSurrogate] = minds
+        self.__agent_minds: dict[VWColour, VWActorMindSurrogate] = minds
         self.__running: bool = False
         self.__rectangle_selected: PyOptional[int] = PyOptional.empty()
         self.__selected: PyOptional[VWCoord] = PyOptional.empty()
-        self.__canvas_dirts: Dict[VWCoord, int] = {}
-        self.__canvas_agents: Dict[VWCoord, int] = {}
-        self.__all_images: Dict[Tuple[str, str], PILImage] = {}  # Will store all PIL images.
-        self.__all_images_tk: Dict[Tuple[str, str], PhotoImage] = {}  # Will store all tk images.
-        self.__all_images_tk_scaled: Dict[Tuple[str, str], PhotoImage] = {}  # Will store all tk images scaled to fit grid.
+        self.__canvas_dirts: dict[VWCoord, int] = {}
+        self.__canvas_agents: dict[VWCoord, int] = {}
+        self.__all_images: dict[tuple[str, str], PILImage] = {}  # Will store all PIL images.
+        self.__all_images_tk: dict[tuple[str, str], PhotoImage] = {}  # Will store all tk images.
+        self.__all_images_tk_scaled: dict[tuple[str, str], PhotoImage] = {}  # Will store all tk images scaled to fit grid.
         self.__grid_lines: list[int] = []  # Will store line objects.
 
         self.__create_and_display()
@@ -168,7 +168,7 @@ class VWSimulationWindow(Frame):
             self.__buttons[button_name] = self.__build_textless_button(button_name=button_name, parent=saveload_frame)
 
         # Entry box.
-        files: List[str] = self.__save_state_manager.get_ordered_list_of_filenames_in_save_directory()
+        files: list[str] = self.__save_state_manager.get_ordered_list_of_filenames_in_save_directory()
         self.__load_menu: VWAutocompleteEntry = VWAutocompleteEntry(files, 3, self.__mid_frame, font=self.__config["root_font"], bg=self.__config["autocomplete_entry_bg_colour"], fg=self.__config["fg_colour"])
         self.__load_menu.bind("<Button-1>", lambda _: self.__deselect())
         self.__load_menu.pack(side="top")
@@ -202,7 +202,7 @@ class VWSimulationWindow(Frame):
         self.__button_frame.grid(row=1, column=0, pady=3, sticky=W+E)
 
     def __init_buttons(self) -> None:
-        self.__buttons: Dict[str, VWButton] = {}
+        self.__buttons: dict[str, VWButton] = {}
 
         self.__set_button_actions()
 
@@ -222,9 +222,9 @@ class VWSimulationWindow(Frame):
 
     def __init_dragables(self) -> None:
         # Load all images.
-        keys: List[Tuple[str, str]] = [("white", "north"), ("orange", "north"), ("green", "north"), ("user", "north"), ("orange", "dirt"), ("green", "dirt")]
+        keys: list[tuple[str, str]] = [("white", "north"), ("orange", "north"), ("green", "north"), ("user", "north"), ("orange", "dirt"), ("green", "dirt")]
 
-        self.__dragables: Dict[int, Tuple[VWCanvasDragManager, Tuple[str, str]]] = {}
+        self.__dragables: dict[int, tuple[VWCanvasDragManager, tuple[str, str]]] = {}
 
         ix: int = self.__config["grid_size"] + self.__config["location_size"] / 2 + 2
         iy: int = self.__config["location_size"] / 2 + 4
@@ -429,15 +429,15 @@ class VWSimulationWindow(Frame):
             x += inc
 
     @staticmethod
-    def __get_image_key(name: str) -> Tuple[str, str]:
+    def __get_image_key(name: str) -> tuple[str, str]:
         s = name.split("_")
 
         return (s[0], s[1])
 
     def __init_images(self) -> None:
         # Agents
-        files: List[str] = VWSimulationWindow.__get_location_img_files(self.__config["location_agent_images_path"])
-        image_names: List[str] = [file.split(".")[0] for file in files]
+        files: list[str] = VWSimulationWindow.__get_location_img_files(self.__config["location_agent_images_path"])
+        image_names: list[str] = [file.split(".")[0] for file in files]
 
         for img_name in image_names:
             file_path: str = os.path.join(self.__config["location_agent_images_path"], img_name) + ".png"
@@ -445,20 +445,20 @@ class VWSimulationWindow(Frame):
             images: OrderedDict[str, PILImage] = VWSimulationWindow.__construct_images(img, img_name + "_")
 
             for img_name, img in images.items():
-                img_key: Tuple[str, str] = VWSimulationWindow.__get_image_key(img_name)
+                img_key: tuple[str, str] = VWSimulationWindow.__get_image_key(img_name)
                 tk_img: PhotoImage = PhotoImage(img)
 
                 self.__all_images[img_key] = img
                 self.__all_images_tk[img_key] = tk_img
 
         # Dirts
-        files: List[str] = VWSimulationWindow.__get_location_img_files(self.__config["location_dirt_images_path"])
-        images_names: List[str] = [file.split(".")[0] for file in files]
+        files: list[str] = VWSimulationWindow.__get_location_img_files(self.__config["location_dirt_images_path"])
+        images_names: list[str] = [file.split(".")[0] for file in files]
 
         for name in images_names:
             file_path: str = os.path.join(self.__config["location_dirt_images_path"], name) + ".png"
             img: PILImage = VWSimulationWindow.__scale(Image.open(file_path), self.__config["location_size"])
-            img_key: Tuple[str, str] = VWSimulationWindow.__get_image_key(name)
+            img_key: tuple[str, str] = VWSimulationWindow.__get_image_key(name)
             tk_img: PhotoImage = PhotoImage(img)
 
             self.__all_images[img_key] = img
@@ -749,5 +749,5 @@ class VWSimulationWindow(Frame):
         print(f"INFO: simulation speed set to {time_step:1.4f} s/cycle.")
 
     @staticmethod
-    def __get_location_img_files(path: str) -> List[str]:
+    def __get_location_img_files(path: str) -> list[str]:
         return [file for file in os.listdir(path) if file.endswith(".png")]

@@ -1,4 +1,4 @@
-from typing import Dict, Union, Type, Any, cast
+from typing import Union, Type, Any, cast
 from traceback import print_exc
 from multiprocessing import Process, Event
 from multiprocessing.synchronize import Event as EventType
@@ -27,13 +27,13 @@ class VWRunner(Process):
 
     All the arguments passed to `VacuumWorld.run()`are stored and validated here, together with their default values.
     '''
-    def __init__(self, config: dict[str, Any], minds: Dict[VWColour, VWActorMindSurrogate], allowed_args: Dict[str, Type[Any]], **kwargs: Any) -> None:
+    def __init__(self, config: dict[str, Any], minds: dict[VWColour, VWActorMindSurrogate], allowed_args: dict[str, Type[Any]], **kwargs: Any) -> None:
         super(VWRunner, self).__init__()
 
-        self.__config: Dict[str, Any] = config
-        self.__minds: Dict[VWColour, VWActorMindSurrogate] = minds
-        self.__allowed_args: Dict[str, Type[Any]] = allowed_args
-        self.__args: Dict[str, Union[bool, int, float, str, Dict[str, int], Dict[Type[VWAction], int]]] = {
+        self.__config: dict[str, Any] = config
+        self.__minds: dict[VWColour, VWActorMindSurrogate] = minds
+        self.__allowed_args: dict[str, Type[Any]] = allowed_args
+        self.__args: dict[str, Union[bool, int, float, str, dict[str, int], dict[Type[VWAction], int]]] = {
             "gui": kwargs.get("gui", True),
             "skip": kwargs.get("skip", False),
             "play": kwargs.get("play", False),
@@ -65,15 +65,15 @@ class VWRunner(Process):
         '''
         return self.__config
 
-    def get_minds(self) -> Dict[VWColour, VWActorMindSurrogate]:
+    def get_minds(self) -> dict[VWColour, VWActorMindSurrogate]:
         '''
-        Returns a `Dict[Colour, ActorMindSurrogate]` mapping each `VWColour` to a `VWActorMindSurrogate` that will be given to each `VWActor` exhibiting that particular `VWColour`.
+        Returns a `dict[Colour, ActorMindSurrogate]` mapping each `VWColour` to a `VWActorMindSurrogate` that will be given to each `VWActor` exhibiting that particular `VWColour`.
         '''
         return self.__minds
 
-    def get_arg(self, arg: str) -> Union[bool, int, float, str, Dict[str, int], Dict[Type[VWAction], int]]:
+    def get_arg(self, arg: str) -> Union[bool, int, float, str, dict[str, int], dict[Type[VWAction], int]]:
         '''
-        Returns the value of the argument `arg` as a `Union[bool, int, float, Dict[str, int]]`.
+        Returns the value of the argument `arg` as a `Union[bool, int, float, str, dict[str, int], dict[Type[VWAction], int]]`.
         '''
         return self.__args[arg]
 
@@ -232,11 +232,11 @@ class VWRunner(Process):
 
     def __validate_efforts(self) -> None:
         if not isinstance(self.__args["efforts"], dict):
-            raise TypeError(f"Invalid type for argument `efforts`: it should be `Dict[str, int]`, but it is `{type(self.__args['efforts'])}`")
+            raise TypeError(f"Invalid type for argument `efforts`: it should be `dict[str, int]`, but it is `{type(self.__args['efforts'])}`")
         elif not VWValidator.does_type_match_for_all_elements(t=str, iterable=[key for key in self.__args["efforts"].keys()]):
-            raise TypeError("Invalid type for argument `efforts`: it should be `Dict[str, int]`, but there is at least a key that is not a `str`")
+            raise TypeError("Invalid type for argument `efforts`: it should be `dict[str, int]`, but there is at least a key that is not a `str`")
         elif not VWValidator.does_type_match_for_all_elements(t=int, iterable=[value for value in self.__args["efforts"].values()]):
-            raise TypeError("Invalid type for argument `efforts`: it should be `Dict[str, int]`, but there is at least a value that is not an `int`")
+            raise TypeError("Invalid type for argument `efforts`: it should be `dict[str, int]`, but there is at least a value that is not an `int`")
         elif not all([effort_name in VWActionEffort.EFFORTS for effort_name in self.__args["efforts"]]):
             raise ValueError(f"Invalid effort name: it should be one of {[k for k in VWActionEffort.EFFORTS]}, but it is `{[e for e in self.__args['efforts'] if e not in VWActionEffort.EFFORTS][0]}`")
 
