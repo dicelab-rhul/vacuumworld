@@ -1,6 +1,6 @@
 class VWException(Exception):
     '''
-    This class specifies a generic `Exception` from which all other VW exceptions inherit.
+    This class specifies a generic `Exception` for all other VW exceptions to inherit from.
     '''
     def __init__(self, message: str) -> None:
         super(VWException, self).__init__(message)
@@ -56,7 +56,7 @@ class VWPerceptionException(VWException):
 
 class VWLoadException(VWException):
     '''
-    This class specifies the `Exception` that is raised when an error occurs while loading a `VWEnvironment` from a file.
+    This class specifies the `VWException` that is raised when an error occurs while loading a `VWEnvironment` from a file.
     '''
     def __init__(self, message: str) -> None:
         super(VWLoadException, self).__init__(message)
@@ -64,7 +64,7 @@ class VWLoadException(VWException):
 
 class VWInternalError(VWException):
     '''
-    This class specifies the `VWException` that is raised when a generic internal error occurs.
+    This class specifies the `VWException` that is raised when a generic or unknown internal error occurs.
     '''
     def __init__(self, message: str) -> None:
         super(VWInternalError, self).__init__(message)
