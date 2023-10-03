@@ -208,13 +208,17 @@ class VacuumWorld():
                 runner.or_else_raise().start()
                 runner.or_else_raise().join()
             else:
-                raise VWInternalError("Could not create runner.")
+                raise VWRunnerException("Could not create runner.")
         except KeyboardInterrupt:
             print("Received a SIGINT (possibly via CTRL+C). Stopping...")
 
             if runner.is_present():
                 runner.or_else_raise().propagate_stop_signal()
                 runner.or_else_raise().join()
+        except VWRunnerException:
+            print("ERROR: Could not create runner. Please check the error message above.")
+        except VWInternalError:
+            print("ERROR: An internal error occurred. Please check the error message above.")
         except Exception:
             print_exc()
             print("Fatal error. Bye")
@@ -224,7 +228,6 @@ class VacuumWorld():
             return PyOptional.of(runner_type(config=self.__config, minds=minds, allowed_args=VacuumWorld.ALLOWED_RUN_ARGS, **kwargs))
         except VWRunnerException as e:
             print(f"ERROR: {e.args[0] if len(e.args) > 0 and e.args[0] else 'Unknown error.'}\n")
-            print_exc()
 
             return PyOptional[VWRunner].empty()
         except Exception:

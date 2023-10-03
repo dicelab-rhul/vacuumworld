@@ -13,7 +13,7 @@ from .....common.vwobservation import VWObservation
 from .....common.vwcolour import VWColour
 from .....common.vworientation import VWOrientation
 from .....common.vwcoordinates import VWCoord
-from .....common.vwexceptions import VWInternalError, VWLoadException
+from .....common.vwexceptions import VWLoadException, VWSurrogateMindException
 
 import os
 import sys
@@ -132,22 +132,22 @@ class VWActorMindSurrogate():
 
         for fun_name, fun_info in VWActorMindSurrogate.MUST_BE_DEFINED.items():
             if fun_name not in set(dir(mind)):
-                raise VWInternalError(f"The {colour} mind surrogate must define the following method: `{fun_name}`")
+                raise VWSurrogateMindException(f"The {colour} mind surrogate must define the following method: `{fun_name}`")
 
             fun: Any = getattr(mind, fun_name)
 
             if not callable(fun):
-                raise VWInternalError(f"{colour} agent: {fun_name} must be callable")
+                raise VWSurrogateMindException(f"{colour} agent: {fun_name} must be callable")
 
             number_of_parameters: int = fun_info["number_of_params_excluding_self"]
 
             if len(signature(fun).parameters) != number_of_parameters:
-                raise VWInternalError(f"{colour} agent: `{fun_name}` must be defined with exactly {number_of_parameters} parameters.")
+                raise VWSurrogateMindException(f"{colour} agent: `{fun_name}` must be defined with exactly {number_of_parameters} parameters.")
 
             return_type: List[Type[Any]] = fun_info["return_type"]
 
             if signature(fun).return_annotation not in return_type:
-                raise VWInternalError(f"{colour} agent: `{fun_name}` must be defined with a return type that is compatible with `{return_type}`.")
+                raise VWSurrogateMindException(f"{colour} agent: `{fun_name}` must be defined with a return type that is compatible with `{return_type}`.")
 
     @staticmethod
     def load_from_file(surrogate_mind_file: str, surrogate_mind_class_name: str) -> VWActorMindSurrogate:
