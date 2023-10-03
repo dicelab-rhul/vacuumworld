@@ -1,4 +1,4 @@
-from typing import Tuple, Dict, Type, List, Optional, Any
+from typing import Type, Optional, Any
 from sys import version_info
 from traceback import print_exc
 from signal import signal as handle_signal
@@ -26,8 +26,8 @@ import signal as signal_module
 class VacuumWorld():
     CONFIG_FILE_NAME: str = "config.json"
     CONFIG_FILE_PATH: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), CONFIG_FILE_NAME)
-    MIN_PYTHON_VERSION: Tuple[int, int] = (3, 10)
-    ALLOWED_RUN_ARGS: Dict[str, Type[Any]] = {
+    MIN_PYTHON_VERSION: tuple[int, int] = (3, 10)
+    ALLOWED_RUN_ARGS: dict[str, Type[Any]] = {
         "default_mind": VWActorMindSurrogate,
         "green_mind": VWActorMindSurrogate,
         "orange_mind": VWActorMindSurrogate,
@@ -39,7 +39,7 @@ class VacuumWorld():
         "speed": float,
         "scale": float,
         "tooltips": bool,
-        "efforts": Dict[str, int],
+        "efforts": dict[str, int],
         "total_cycles": int,
         "debug_enabled": bool
     }
@@ -53,7 +53,7 @@ class VacuumWorld():
         self.__vw_version_check()
 
     def run(self, default_mind: PyOptional[VWActorMindSurrogate]=PyOptional.empty(), white_mind: PyOptional[VWActorMindSurrogate]=PyOptional.empty(), green_mind: PyOptional[VWActorMindSurrogate]=PyOptional.empty(), orange_mind: PyOptional[VWActorMindSurrogate]=PyOptional.empty(), **kwargs: Any) -> None:
-        minds: Dict[VWColour, VWActorMindSurrogate] = VacuumWorld.__process_minds(default_mind=default_mind, white_mind=white_mind, green_mind=green_mind, orange_mind=orange_mind)
+        minds: dict[VWColour, VWActorMindSurrogate] = VacuumWorld.__process_minds(default_mind=default_mind, white_mind=white_mind, green_mind=green_mind, orange_mind=orange_mind)
         minds[VWColour.user] = VWUserMindSurrogate(difficulty_level=VWUserDifficulty(self.__config["default_user_mind_level"]))
 
         if "gui" in kwargs and type(kwargs.get("gui")) == VacuumWorld.ALLOWED_RUN_ARGS["gui"] and not kwargs.get("gui"):
@@ -189,8 +189,8 @@ class VacuumWorld():
         assert version_number and remote_version_number
         assert "." in version_number and "." in remote_version_number
 
-        version_number_parts: List[str] = version_number.split(".")
-        remote_version_number_parts: List[str] = remote_version_number.split(".")
+        version_number_parts: list[str] = version_number.split(".")
+        remote_version_number_parts: list[str] = remote_version_number.split(".")
 
         for i in range(len(version_number_parts)):
             if int(version_number_parts[i]) < int(remote_version_number_parts[i]):
@@ -200,7 +200,7 @@ class VacuumWorld():
 
         return False
 
-    def __run(self, runner_type: Type[VWRunner], minds: Dict[VWColour, VWActorMindSurrogate], **kwargs: Any) -> None:
+    def __run(self, runner_type: Type[VWRunner], minds: dict[VWColour, VWActorMindSurrogate], **kwargs: Any) -> None:
         runner: PyOptional[VWRunner] = self.__get_runner(runner_type=runner_type, minds=minds, **kwargs)
 
         try:
@@ -223,7 +223,7 @@ class VacuumWorld():
             print_exc()
             print("Fatal error. Bye")
 
-    def __get_runner(self, runner_type: Type[VWRunner], minds: Dict[VWColour, VWActorMindSurrogate], **kwargs: Any) -> PyOptional[VWRunner]:
+    def __get_runner(self, runner_type: Type[VWRunner], minds: dict[VWColour, VWActorMindSurrogate], **kwargs: Any) -> PyOptional[VWRunner]:
         try:
             return PyOptional.of(runner_type(config=self.__config, minds=minds, allowed_args=VacuumWorld.ALLOWED_RUN_ARGS, **kwargs))
         except VWRunnerException as e:
@@ -237,7 +237,7 @@ class VacuumWorld():
             return PyOptional[VWRunner].empty()
 
     @staticmethod
-    def __process_minds(default_mind: PyOptional[VWActorMindSurrogate]=PyOptional.empty(), white_mind: PyOptional[VWActorMindSurrogate]=PyOptional.empty(), green_mind: PyOptional[VWActorMindSurrogate]=PyOptional.empty(), orange_mind: PyOptional[VWActorMindSurrogate]=PyOptional.empty()) -> Dict[VWColour, VWActorMindSurrogate]:
+    def __process_minds(default_mind: PyOptional[VWActorMindSurrogate]=PyOptional.empty(), white_mind: PyOptional[VWActorMindSurrogate]=PyOptional.empty(), green_mind: PyOptional[VWActorMindSurrogate]=PyOptional.empty(), orange_mind: PyOptional[VWActorMindSurrogate]=PyOptional.empty()) -> dict[VWColour, VWActorMindSurrogate]:
         if default_mind.is_empty() and any(m.is_empty() for m in [white_mind, green_mind, orange_mind]):
             raise ValueError("You must provide a `default_mind` surrogate, or all coloured mind surrogates (i.e., `green_mind`, `orange_mind`, and `white_mind`).")
 

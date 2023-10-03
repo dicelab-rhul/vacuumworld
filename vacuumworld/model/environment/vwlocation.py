@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import cast, Dict, Union, Any
+from typing import cast, Union, Any
 from random import randint
 from pyoptional.pyoptional import PyOptional
 
@@ -29,13 +29,13 @@ class VWLocation(LocationAppearance):
 
     Each of the four sides of `VWLocation` may contain a (`bool`) wall. However, the sides exhibiting a wall must be consecutive.
     '''
-    def __init__(self, coord: VWCoord, actor_appearance: PyOptional[VWActorAppearance]=PyOptional.empty(), dirt_appearance: PyOptional[VWDirtAppearance]=PyOptional.empty(), wall: Dict[VWOrientation, bool]={orientation: False for orientation in VWOrientation}) -> None:
+    def __init__(self, coord: VWCoord, actor_appearance: PyOptional[VWActorAppearance]=PyOptional.empty(), dirt_appearance: PyOptional[VWDirtAppearance]=PyOptional.empty(), wall: dict[VWOrientation, bool]={orientation: False for orientation in VWOrientation}) -> None:
         assert coord is not None
 
         self.__coord: VWCoord = coord
         self.__actor_appearance: PyOptional[VWActorAppearance] = actor_appearance
         self.__dirt_appearance: PyOptional[VWDirtAppearance] = dirt_appearance
-        self.__wall: Dict[VWOrientation, bool] = wall
+        self.__wall: dict[VWOrientation, bool] = wall
 
     def get_coord(self) -> VWCoord:
         '''
@@ -135,9 +135,9 @@ class VWLocation(LocationAppearance):
         '''
         return self.__dirt_appearance.is_present()
 
-    def get_wall_info(self) -> Dict[VWOrientation, bool]:
+    def get_wall_info(self) -> dict[VWOrientation, bool]:
         '''
-        Returns a `Dict` mapping each `VWOrientation` to a `bool` specifying whether or not there is a wall on the side of this `VWLocation` identified by that particular `VWOrientation`.
+        Returns a `dict` mapping each `VWOrientation` to a `bool` specifying whether or not there is a wall on the side of this `VWLocation` identified by that particular `VWOrientation`.
         '''
         return self.__wall
 
@@ -221,13 +221,13 @@ class VWLocation(LocationAppearance):
         else:
             return VWLocation(coord=self.__coord, actor_appearance=self.__actor_appearance.map(lambda a: a.deep_copy()), dirt_appearance=self.__dirt_appearance.map(lambda d: d.deep_copy()), wall=self.__wall)
 
-    def to_json(self, include_ids: bool=False) -> Dict[str, Dict[str, Any]]:
+    def to_json(self, include_ids: bool=False) -> dict[str, dict[str, Any]]:
         '''
         Returns a JSON representation of this `VWLocation`.
 
         No `VWActor` IDs, no `VWActor` progressive IDs, and no `VWUserDifficulty` are included.
         '''
-        location: Dict[str, Dict[str, Any]] = {
+        location: dict[str, dict[str, Any]] = {
             "coords": self.__coord.to_json(),
             "wall": {
                 str(VWOrientation.north): self.has_wall_on_north(),
@@ -245,7 +245,7 @@ class VWLocation(LocationAppearance):
 
         return location
 
-    def pretty_format(self, include_ids: bool=True) -> Dict[str, Union[Dict[str, str], Dict[str, int], Dict[str, bool]]]:
+    def pretty_format(self, include_ids: bool=True) -> dict[str, Union[dict[str, str], dict[str, int], dict[str, bool]]]:
         '''
         Returns a pretty-formatted JSON string representation of this `VWLocation`.
 
@@ -312,13 +312,13 @@ class VWLocation(LocationAppearance):
         return s + chr(164) * 7
 
     @staticmethod
-    def random_wall() -> Dict[VWOrientation, bool]:
+    def random_wall() -> dict[VWOrientation, bool]:
         '''
         WARNING: this method is for testing only. It is not part of the `VWLocation` API.
 
-        Generates and returns a random `Dict` mapping each `VWOrientation` to a `bool` specifying whether or not there is a wall on the side identified by that particular `VWOrientation`.
+        Generates and returns a random `dict` mapping each `VWOrientation` to a `bool` specifying whether or not there is a wall on the side identified by that particular `VWOrientation`.
         '''
-        wall: Dict[VWOrientation, bool] = {orientation: False for orientation in VWOrientation}
+        wall: dict[VWOrientation, bool] = {orientation: False for orientation in VWOrientation}
         roll: int = randint(1, 8)
 
         if roll == 1:

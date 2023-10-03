@@ -1,4 +1,4 @@
-from typing import Iterable, List
+from typing import Iterable
 
 from pystarworldsturbo.elements.mind import Mind
 from pystarworldsturbo.common.message import BccMessage
@@ -31,7 +31,7 @@ class VWMind(Mind):
         self.__surrogate: VWActorMindSurrogate = self._clone_surrogate(surrogate=surrogate)
         del surrogate
 
-        self.__next_actions: List[VWAction] = []
+        self.__next_actions: list[VWAction] = []
 
     def get_surrogate(self) -> VWActorMindSurrogate:
         '''
@@ -92,7 +92,7 @@ class VWMind(Mind):
         self.__store_actions_for_next_cycle(actions=actions)
 
     def __store_actions_for_next_cycle(self, actions: Iterable[VWAction]) -> None:
-        sanitised_actions: List[VWAction] = []
+        sanitised_actions: list[VWAction] = []
 
         for action in actions:
             VWValidator.validate_not_none(action)
@@ -102,9 +102,9 @@ class VWMind(Mind):
 
         self.__next_actions = sanitised_actions
 
-    def execute(self) -> List[VWAction]:
+    def execute(self) -> Iterable[VWAction]:
         '''
-        Returns a `List[VWAction]` consisting of each `VWAction` to be attempted.
+        Returns a `list[VWAction]` consisting of each `VWAction` to be attempted.
 
         This method assumes (via assertion) that at least one `VWAction` is returned.
         '''

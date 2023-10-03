@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, Iterable, Type, Dict, List
+from typing import Any, Iterable, Type
 from inspect import signature
 from importlib import import_module
 
@@ -23,7 +23,7 @@ class VWActorMindSurrogate():
     '''
     This class specifies the surrogate for the `VWMind` of a `VWActor`. It is an abstract class.
     '''
-    MUST_BE_DEFINED: Dict[str, Any] = {
+    MUST_BE_DEFINED: dict[str, Any] = {
         "revise": {"number_of_params_excluding_self": 0, "return_type": [None, "None", "NoneType"]},
         "decide": {"number_of_params_excluding_self": 0, "return_type": [Iterable[VWAction], Iterable[VWPhysicalAction], Iterable[VWCommunicativeAction]]},
     }
@@ -144,7 +144,7 @@ class VWActorMindSurrogate():
             if len(signature(fun).parameters) != number_of_parameters:
                 raise VWSurrogateMindException(f"{colour} agent: `{fun_name}` must be defined with exactly {number_of_parameters} parameters.")
 
-            return_type: List[Type[Any]] = fun_info["return_type"]
+            return_type: list[Type[Any]] = fun_info["return_type"]
 
             if signature(fun).return_annotation not in return_type:
                 raise VWSurrogateMindException(f"{colour} agent: `{fun_name}` must be defined with a return type that is compatible with `{return_type}`.")

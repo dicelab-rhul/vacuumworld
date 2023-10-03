@@ -1,13 +1,10 @@
-from typing import Dict
-
-
 class VWActionEffort():
     '''
     This class specifies the effort of each kind of `VWAction`.
 
     The effort of a kind `VWAction` is an `int` number that specifies how intensive such kind `VWAction` is to attempt.
     '''
-    __DEFAULT_EFFORTS: Dict[str, int] = {
+    __DEFAULT_EFFORTS: dict[str, int] = {
         "VWBroadcastAction": 1,
         "VWCleanAction": 1,
         "VWDropAction": 1,
@@ -17,7 +14,7 @@ class VWActionEffort():
         "VWTurnAction": 1
     }
 
-    REASONABLE_EFFORTS: Dict[str, int] = {
+    REASONABLE_EFFORTS: dict[str, int] = {
         "VWBroadcastAction": 5,  # Broadcasting is a costly operation, and needs to be used strategically.
         "VWCleanAction": 1,  # Not 0, because we want to discourage any unnecessary attempt.
         "VWDropAction": 1,  # Does not really matter for cleaning agents.
@@ -27,7 +24,7 @@ class VWActionEffort():
         "VWTurnAction": 5  # We want to discourage any unnecessary turns.
     }
 
-    EFFORTS: Dict[str, int] = __DEFAULT_EFFORTS
+    EFFORTS: dict[str, int] = __DEFAULT_EFFORTS
     DEFAULT_EFFORT_FOR_OTHER_ACTIONS: int = 1
 
     @staticmethod

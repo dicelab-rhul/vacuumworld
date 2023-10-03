@@ -1,4 +1,4 @@
-from typing import Iterable, List, Type
+from typing import Iterable, Type
 
 from pystarworldsturbo.elements.actuator import Actuator
 
@@ -16,7 +16,7 @@ class VWActuator(Actuator):
     '''
     This class specifies the actuator for `VWActor`. It is a subclass of `Actuator`.
     '''
-    def __init__(self, subscribed_events: List[Type[VWAction]]) -> None:
+    def __init__(self, subscribed_events: list[Type[VWAction]]) -> None:
         super(VWActuator, self).__init__(subscribed_events=subscribed_events)
 
     def source(self) -> Iterable[VWAction]:

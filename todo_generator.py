@@ -5,13 +5,11 @@ Please run this file as ./todo_generator.py from within its parent directory.
 Otherwise, the paths will not be generated/printed correctly.
 '''
 
-from typing import List
-
 import os
 
 
-INTERESTING_FILES_EXTENSIONS: List[str] = [".py"]
-FILES_EXCLUSION_LIST: List[str] = [os.path.basename(__file__)]
+INTERESTING_FILES_EXTENSIONS: list[str] = [".py"]
+FILES_EXCLUSION_LIST: list[str] = [os.path.basename(__file__)]
 DIR_EXCLUSION_LIST_PREFIX: str = os.path.dirname(os.path.dirname(__file__))
 DIR_EXCLUSION_LIST: list[str] = [os.path.join(DIR_EXCLUSION_LIST_PREFIX, directory) for directory in ["examples_not_to_commit", "build", ".git"]]
 TODO_FILE: str = "TODO.md"
@@ -20,7 +18,7 @@ TODO_HEADER: str = "# List of TODOs"
 
 
 def main() -> None:
-    lines: List[str] = []
+    lines: list[str] = []
 
     for d, _, files in os.walk(os.getcwd()):
         if any([d.startswith(excluded_dir) for excluded_dir in DIR_EXCLUSION_LIST]):
@@ -42,11 +40,11 @@ def main() -> None:
         f.flush()
 
 
-def __look_for_todos(path: str) -> List[str]:
-    to_add: List[str] = []
+def __look_for_todos(path: str) -> list[str]:
+    to_add: list[str] = []
     path_to_print: str = __get_relative_path(absolute_path=path)
     prefix: str = "* File {} - line ".format(path_to_print)
-    lines: List[str] = []
+    lines: list[str] = []
 
     with open(path, "r") as f:
         lines = f.readlines()
@@ -61,7 +59,7 @@ def __look_for_todos(path: str) -> List[str]:
 
 
 def __get_relative_path(absolute_path: str) -> str:
-    tokens: List[str] = absolute_path.split(os.path.sep)
+    tokens: list[str] = absolute_path.split(os.path.sep)
     vw_top_dir: str = os.path.basename(os.getcwd())
 
     while tokens[0] != vw_top_dir:

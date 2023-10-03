@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Dict, Iterable, List, Type, Tuple, Iterator, Any
+from typing import Iterable, Type, Iterator, Any
 from json import dumps
 from pyoptional.pyoptional import PyOptional
 
@@ -17,9 +17,9 @@ class VWObservation(Perception):
     '''
     This class specifies the `VWObservation` API.
 
-    An `VWObservation` is a wrapper for a 3x2 (or 2x3, or 2x2, or 2x1, or 1x2, or 1x1, depending on the boundaries) slice of a `VWEnvironment` grid, and a `List` of `ActionResult` elements, each related to an attempted `VWAction` by a certain `VWActor` in the last environmental cycle.
+    An `VWObservation` is a wrapper for a 3x2 (or 2x3, or 2x2, or 2x1, or 1x2, or 1x1, depending on the boundaries) slice of a `VWEnvironment` grid, and a `list` of `ActionResult` elements, each related to an attempted `VWAction` by a certain `VWActor` in the last environmental cycle.
     '''
-    def __init__(self, action_type: Type[VWAction], action_result: ActionResult, locations_dict: Dict[VWPositionNames, VWLocation]={}) -> None:
+    def __init__(self, action_type: Type[VWAction], action_result: ActionResult, locations_dict: dict[VWPositionNames, VWLocation]={}) -> None:
         super(VWObservation, self).__init__()
 
         assert locations_dict is not None
@@ -28,8 +28,8 @@ class VWObservation(Perception):
             assert position_name in VWPositionNames
             assert locations_dict[position_name] is not None
 
-        self.__locations: Dict[VWPositionNames, VWLocation] = locations_dict
-        self.__action_results: List[Tuple[Type[VWAction], ActionResult]] = [(action_type, action_result)]
+        self.__locations: dict[VWPositionNames, VWLocation] = locations_dict
+        self.__action_results: list[tuple[Type[VWAction], ActionResult]] = [(action_type, action_result)]
 
     def get_observer_id(self) -> PyOptional[str]:
         '''
@@ -42,21 +42,21 @@ class VWObservation(Perception):
         else:
             return PyOptional.of(self.__locations[VWPositionNames.center].get_actor_appearance().or_else_raise().get_id())
 
-    def get_latest_actions_results(self) -> List[Tuple[Type[VWAction], ActionResult]]:
+    def get_latest_actions_results(self) -> list[tuple[Type[VWAction], ActionResult]]:
         '''
-        Returns a `List` of the results of each `VWAction` that was attempted by the `VWActor` during the last cycle.
+        Returns a `list` of the results of each `VWAction` that was attempted by the `VWActor` during the last cycle.
 
-        Each result is represented by a `Tuple[Type[VWAction], ActionResult]`, so to preserve both the order of attempt, and the mapping between the kind of `VWAction` and its `ActionResult`.
+        Each result is represented by a `tuple[Type[VWAction], ActionResult]`, so to preserve both the order of attempt, and the mapping between the kind of `VWAction` and its `ActionResult`.
         '''
         return self.__action_results
 
-    def get_latest_actions_outcomes_as_dict(self) -> Dict[Type[VWAction], List[ActionOutcome]]:
+    def get_latest_actions_outcomes_as_dict(self) -> dict[Type[VWAction], list[ActionOutcome]]:
         '''
-        Returns a `Dict` mapping each kind of `VWAction` that was attempted by the `VWActor` during the last cycle to its `List[ActionOutcome]`.
+        Returns a `dict` mapping each kind of `VWAction` that was attempted by the `VWActor` during the last cycle to its `list[ActionOutcome]`.
 
-        The attempt order is not preserved in general, because the returned `Dict` exhibits no particular ordering for the keys.
+        The attempt order is not preserved in general, because the returned `dict` exhibits no particular ordering for the keys.
         '''
-        to_return: Dict[Type[VWAction], List[ActionOutcome]] = {}
+        to_return: dict[Type[VWAction], list[ActionOutcome]] = {}
 
         for elm in self.__action_results:
             action_type: Type[VWAction] = elm[0]
@@ -86,7 +86,7 @@ class VWObservation(Perception):
         '''
         assert len(self.__action_results) == 1
 
-        previous_results: List[Tuple[Type[VWAction], ActionResult]] = []
+        previous_results: list[tuple[Type[VWAction], ActionResult]] = []
 
         for observation in observations:
             assert len(observation.get_latest_actions_results()) == 1
@@ -103,11 +103,11 @@ class VWObservation(Perception):
 
         return len(self.__locations) == 0
 
-    def get_locations(self) -> Dict[VWPositionNames, VWLocation]:
+    def get_locations(self) -> dict[VWPositionNames, VWLocation]:
         '''
-        Returns a `Dict` mapping each `VWPositionNames` to the `VWLocation` at that position.
+        Returns a `dict` mapping each `VWPositionNames` to the `VWLocation` at that position.
 
-        If there is no `VWLocation` at a given position, then the corresponding key is not present in the returned `Dict`.
+        If there is no `VWLocation` at a given position, then the corresponding key is not present in the returned `dict`.
         '''
         return self.__locations
 
@@ -117,9 +117,9 @@ class VWObservation(Perception):
         '''
         return PyOptional.of(self.__locations[position_name]) if position_name in self.__locations else PyOptional[VWLocation].empty()
 
-    def get_locations_in_order(self) -> List[PyOptional[VWLocation]]:
+    def get_locations_in_order(self) -> list[PyOptional[VWLocation]]:
         '''
-        Returns a `List` of the `VWLocation` objects in this `VWObservation`, in the following order:
+        Returns a `list` of the `VWLocation` objects in this `VWObservation`, in the following order:
         * `VWPositionNames.center`
         * `VWPositionNames.forward`
         * `VWPositionNames.left`
@@ -306,7 +306,7 @@ class VWObservation(Perception):
     def __str__(self) -> str:
         return f"Actions outcomes: [{self.__format_latest_action_results()}]. Perceived locations: {self.__format_perceived_locations()}"
 
-    def __format_perceived_locations(self) -> List[str]:
+    def __format_perceived_locations(self) -> list[str]:
         return [f"{pos.name}: {loc}" for pos, loc in self.__locations.items()]
 
     def pretty_format(self) -> str:

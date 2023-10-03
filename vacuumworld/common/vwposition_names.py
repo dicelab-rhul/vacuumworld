@@ -1,6 +1,5 @@
 from __future__ import annotations
 from enum import Enum
-from typing import List
 
 
 class VWPositionNames(Enum):
@@ -41,9 +40,9 @@ class VWPositionNames(Enum):
         return [position_name.value for position_name in cls]
 
     @staticmethod
-    def elements_in_order() -> List[VWPositionNames]:
+    def elements_in_order() -> list[VWPositionNames]:
         '''
-        Returns an ordered `List` of all the elements of this `Enum`.
+        Returns an ordered `list` of all the elements of this `Enum`.
 
         The order is as follows:
         * `VWPositionNames.center`

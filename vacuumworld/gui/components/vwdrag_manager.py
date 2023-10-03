@@ -1,5 +1,5 @@
 from tkinter import Canvas, Event
-from typing import Callable, Tuple, Any
+from typing import Callable, Any
 from math import floor
 from PIL.ImageTk import PhotoImage
 
@@ -10,7 +10,7 @@ class VWCanvasDragManager():
     '''
     This class speficies the behaviour of a drag manager for a `Canvas` object.
     '''
-    def __init__(self, config: dict[str, Any], key: Tuple[str, str], grid_dim: int, canvas: Canvas, item: int, on_start_callback: Callable[..., None], on_drop_callback: Callable[..., None]) -> None:
+    def __init__(self, config: dict[str, Any], key: tuple[str, str], grid_dim: int, canvas: Canvas, item: int, on_start_callback: Callable[..., None], on_drop_callback: Callable[..., None]) -> None:
         self.__config: dict[str, Any] = config
         self.__bounds_manager: VWBoundsManager = VWBoundsManager(config=config)
 
@@ -26,7 +26,7 @@ class VWCanvasDragManager():
         self.__canvas.tag_bind(item, "<B1-Motion>", self.on_drag)
         self.__canvas.tag_bind(item, "<ButtonRelease-1>", self.on_drop)
 
-        self.__key: Tuple[str, str] = key
+        self.__key: tuple[str, str] = key
         self.__dragging: bool = False
 
     def on_start(self, event: Event) -> None:
@@ -75,9 +75,9 @@ class VWCanvasDragManager():
 
         self.__dragging = False
 
-    def get_key(self) -> Tuple[str, str]:
+    def get_key(self) -> tuple[str, str]:
         '''
-        Returns the key of the `Image` objectas a `Tuple[str, str]`.
+        Returns the key of the `Image` objectas a `tuple[str, str]`.
         '''
         return self.__key
 

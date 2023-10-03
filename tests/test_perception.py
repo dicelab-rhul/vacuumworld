@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from unittest import main, TestCase
-from typing import Dict, List, Type, Callable, Any, cast
+from typing import Type, Callable, Any, cast
 from random import choice, randint, random as randfloat
 from uuid import uuid4
 from sys import maxsize, float_info
@@ -82,26 +82,26 @@ class TestPerception(TestCase):
 
     def __test_observation(self, test_function: Callable[..., None]) -> None:
         grid_size: int = randint(self.__min_grid_size, self.__max_grid_size)
-        coords: List[VWCoord] = self.__generate_random_coords(grid_size=grid_size)
-        actors: List[PyOptional[VWActorAppearance]] = self.__generate_random_actor_appearances()
-        dirts: List[PyOptional[VWDirtAppearance]] = self.__generate_random_dirt_appearances()
-        perceived_locations: Dict[VWPositionNames, VWLocation] = self.__generate_locations_dict(grid_size=grid_size, coords=coords, actors=actors, dirts=dirts)
+        coords: list[VWCoord] = self.__generate_random_coords(grid_size=grid_size)
+        actors: list[PyOptional[VWActorAppearance]] = self.__generate_random_actor_appearances()
+        dirts: list[PyOptional[VWDirtAppearance]] = self.__generate_random_dirt_appearances()
+        perceived_locations: dict[VWPositionNames, VWLocation] = self.__generate_locations_dict(grid_size=grid_size, coords=coords, actors=actors, dirts=dirts)
 
         test_function(perceived_locations=perceived_locations, coords=coords, actors=actors, dirts=dirts)
 
         self.__progressive_id = 0
 
-    def __test_observation_coming_from_physical_action(self, perceived_locations: Dict[VWPositionNames, VWLocation], coords: List[VWCoord], actors: List[PyOptional[VWActorAppearance]], dirts: List[PyOptional[VWDirtAppearance]]) -> None:
+    def __test_observation_coming_from_physical_action(self, perceived_locations: dict[VWPositionNames, VWLocation], coords: list[VWCoord], actors: list[PyOptional[VWActorAppearance]], dirts: list[PyOptional[VWDirtAppearance]]) -> None:
         for action_type in [VWCleanAction, VWDropAction, VWIdleAction, VWMoveAction, VWTurnAction]:
             for action_outcome in (ActionOutcome.impossible, ActionOutcome.success, ActionOutcome.failure):
                 self.__test_observation_coming_from_single_action(perceived_locations=perceived_locations, coords=coords, actors=actors, dirts=dirts, action_type=action_type, action_outcome=action_outcome)
 
-    def __test_observation_coming_from_communicative_action(self, perceived_locations: Dict[VWPositionNames, VWLocation], coords: List[VWCoord], actors: List[PyOptional[VWActorAppearance]], dirts: List[PyOptional[VWDirtAppearance]]) -> None:
+    def __test_observation_coming_from_communicative_action(self, perceived_locations: dict[VWPositionNames, VWLocation], coords: list[VWCoord], actors: list[PyOptional[VWActorAppearance]], dirts: list[PyOptional[VWDirtAppearance]]) -> None:
         for action_type in [VWSpeakAction, VWBroadcastAction]:
             for action_outcome in (ActionOutcome.impossible, ActionOutcome.success, ActionOutcome.failure):
                 self.__test_observation_coming_from_single_action(perceived_locations=perceived_locations, coords=coords, actors=actors, dirts=dirts, action_type=action_type, action_outcome=action_outcome)
 
-    def __test_observation_coming_from_multiple_actions(self, perceived_locations: Dict[VWPositionNames, VWLocation], coords: List[VWCoord], actors: List[PyOptional[VWActorAppearance]], dirts: List[PyOptional[VWDirtAppearance]]) -> None:
+    def __test_observation_coming_from_multiple_actions(self, perceived_locations: dict[VWPositionNames, VWLocation], coords: list[VWCoord], actors: list[PyOptional[VWActorAppearance]], dirts: list[PyOptional[VWDirtAppearance]]) -> None:
         for physical_action_type in [VWCleanAction, VWDropAction, VWIdleAction, VWMoveAction, VWTurnAction]:
             for communicative_action_type in [VWSpeakAction, VWBroadcastAction]:
                 for physical_action_outcome in (ActionOutcome.impossible, ActionOutcome.success, ActionOutcome.failure):
@@ -114,7 +114,7 @@ class TestPerception(TestCase):
 
                         self.__check_locations(o=communicative_observation, positions=VWPositionNames.elements(), coords=coords, actors=actors, dirts=dirts)
 
-                        actions_outcomes: Dict[Type[VWAction], List[ActionOutcome]] = communicative_observation.get_latest_actions_outcomes_as_dict()
+                        actions_outcomes: dict[Type[VWAction], list[ActionOutcome]] = communicative_observation.get_latest_actions_outcomes_as_dict()
 
                         self.assertTrue(len(actions_outcomes) == 2)
                         self.assertTrue(physical_action_type in actions_outcomes)
@@ -126,24 +126,24 @@ class TestPerception(TestCase):
                         self.assertIn(physical_action_outcome, actions_outcomes[physical_action_type])
                         self.assertIn(communicative_action_outcome, actions_outcomes[communicative_action_type])
 
-    def __test_observation_coming_from_single_action(self, perceived_locations: Dict[VWPositionNames, VWLocation], coords: List[VWCoord], actors: List[PyOptional[VWActorAppearance]], dirts: List[PyOptional[VWDirtAppearance]], action_type: Type[VWAction], action_outcome: ActionOutcome) -> None:
+    def __test_observation_coming_from_single_action(self, perceived_locations: dict[VWPositionNames, VWLocation], coords: list[VWCoord], actors: list[PyOptional[VWActorAppearance]], dirts: list[PyOptional[VWDirtAppearance]], action_type: Type[VWAction], action_outcome: ActionOutcome) -> None:
         result: ActionResult = ActionResult(outcome=action_outcome)
         o: VWObservation = VWObservation(action_type=action_type, action_result=result, locations_dict=perceived_locations)
 
         self.__check_locations(o=o, positions=VWPositionNames.elements(), coords=coords, actors=actors, dirts=dirts)
 
-        actions_outcomes: Dict[Type[VWAction], List[ActionOutcome]] = o.get_latest_actions_outcomes_as_dict()
+        actions_outcomes: dict[Type[VWAction], list[ActionOutcome]] = o.get_latest_actions_outcomes_as_dict()
 
         self.assertTrue(len(actions_outcomes) == 1)
         self.assertTrue(action_type in actions_outcomes)
 
-        action_outcomes: List[ActionOutcome] = actions_outcomes[action_type]
+        action_outcomes: list[ActionOutcome] = actions_outcomes[action_type]
 
         self.assertTrue(VWValidator.does_type_match(t=list, obj=action_outcomes))
         self.assertTrue(all([VWValidator.does_type_match(t=ActionOutcome, obj=action_outcome) for action_outcome in action_outcomes]))
         self.assertIn(action_outcome, action_outcomes)
 
-    def __check_locations(self, o: VWObservation, positions: List[VWPositionNames], coords: List[VWCoord], actors: List[PyOptional[VWActorAppearance]], dirts: List[PyOptional[VWDirtAppearance]]) -> None:
+    def __check_locations(self, o: VWObservation, positions: list[VWPositionNames], coords: list[VWCoord], actors: list[PyOptional[VWActorAppearance]], dirts: list[PyOptional[VWDirtAppearance]]) -> None:
         for i in range(len(positions)):
             self.__check_location(o=o, position=positions[i], coord=coords[i], actor_appearance=actors[i], dirt_appearance=dirts[i])
 
@@ -173,10 +173,10 @@ class TestPerception(TestCase):
             else:
                 self.assertTrue(location.or_else_raise().get_dirt_appearance().is_empty())
 
-    def __generate_random_coords(self, grid_size: int) -> List[VWCoord]:
+    def __generate_random_coords(self, grid_size: int) -> list[VWCoord]:
         return [VWCoord(x=randint(0, grid_size - 1), y=randint(0, grid_size - 1)) for _ in range(self.__number_of_locations)]
 
-    def __generate_random_actor_appearances(self) -> List[PyOptional[VWActorAppearance]]:
+    def __generate_random_actor_appearances(self) -> list[PyOptional[VWActorAppearance]]:
         # The `VWLocation` at `PositionNames.center` must always have a `VWActorAppearance` (i.e., the observer) in it.
         # In particular, the first element of this list must be a `VWActorAppearance`.
         return [PyOptional.empty() if randfloat() < 0.5 and i > 0 else PyOptional.of(self.__generate_random_actor_appearance()) for i in range(self.__number_of_locations)]
@@ -189,7 +189,7 @@ class TestPerception(TestCase):
 
         return VWActorAppearance(actor_id=actor_id, progressive_id=str(self.__progressive_id), colour=colour, orientation=orientation)
 
-    def __generate_random_dirt_appearances(self) -> List[PyOptional[VWDirtAppearance]]:
+    def __generate_random_dirt_appearances(self) -> list[PyOptional[VWDirtAppearance]]:
         return [PyOptional.empty() if randfloat() < 0.5 else PyOptional.of(self.__generate_random_dirt_appearance()) for _ in range(self.__number_of_locations)]
 
     def __generate_random_dirt_appearance(self) -> VWDirtAppearance:
@@ -199,8 +199,8 @@ class TestPerception(TestCase):
 
         return VWDirtAppearance(dirt_id=dirt_id, progressive_id=str(self.__progressive_id), colour=colour)
 
-    def __generate_locations_dict(self, grid_size: int, coords: List[VWCoord], actors: List[PyOptional[VWActorAppearance]], dirts: List[PyOptional[VWDirtAppearance]]) -> Dict[VWPositionNames, VWLocation]:
-        locations_dict: Dict[VWPositionNames, PyOptional[VWLocation]] = {}
+    def __generate_locations_dict(self, grid_size: int, coords: list[VWCoord], actors: list[PyOptional[VWActorAppearance]], dirts: list[PyOptional[VWDirtAppearance]]) -> dict[VWPositionNames, VWLocation]:
+        locations_dict: dict[VWPositionNames, PyOptional[VWLocation]] = {}
 
         for i in range(len(coords)):
             coord: VWCoord = coords[i]
@@ -213,7 +213,7 @@ class TestPerception(TestCase):
         '''
         Tests various instances of `BccMessage` whose content is an `int`.
         '''
-        contents: List[int] = [randint(-maxsize + 1, maxsize) for _ in range(self.__number_of_runs)]
+        contents: list[int] = [randint(-maxsize + 1, maxsize) for _ in range(self.__number_of_runs)]
 
         for content in contents:
             sender_id: str = str(uuid4())
@@ -225,7 +225,7 @@ class TestPerception(TestCase):
         '''
         Tests various instances of `BccMessage` whose content is a `float`.
         '''
-        contents: List[float] = [randfloat() * float_info.max for _ in range(self.__number_of_runs)]
+        contents: list[float] = [randfloat() * float_info.max for _ in range(self.__number_of_runs)]
 
         for content in contents:
             sender_id: str = str(uuid4())
@@ -237,7 +237,7 @@ class TestPerception(TestCase):
         '''
         Tests various instances of `BccMessage` whose content is a `str`.
         '''
-        contents: List[str] = [self.__randbytes(randint(0, 2**16 - 1)).hex() for _ in range(self.__number_of_runs)]
+        contents: list[str] = [self.__randbytes(randint(0, 2**16 - 1)).hex() for _ in range(self.__number_of_runs)]
 
         for content in contents:
             sender_id: str = str(uuid4())
@@ -249,7 +249,7 @@ class TestPerception(TestCase):
         '''
         Tests various instances of `BccMessage` whose content is a `bytes` value.
         '''
-        contents: List[bytes] = [self.__randbytes(randint(0, 2**16 - 1)) for _ in range(self.__number_of_runs)]
+        contents: list[bytes] = [self.__randbytes(randint(0, 2**16 - 1)) for _ in range(self.__number_of_runs)]
 
         for content in contents:
             sender_id: str = str(uuid4())
@@ -261,7 +261,7 @@ class TestPerception(TestCase):
         '''
         Tests various instances of `BccMessage` whose content is a `list`.
         '''
-        contents: List[List[MessageContentType]] = [self.__generate_random_list() for _ in range(self.__number_of_runs)]
+        contents: list[list[MessageContentType]] = [self.__generate_random_list() for _ in range(self.__number_of_runs)]
 
         for content in contents:
             sender_id: str = str(uuid4())
@@ -273,7 +273,7 @@ class TestPerception(TestCase):
         '''
         Tests various instances of `BccMessage` whose content is a `dict`.
         '''
-        contents: List[Dict[MessageContentSimpleType, MessageContentType]] = [self.__generate_random_dict() for _ in range(self.__number_of_runs)]
+        contents: list[dict[MessageContentSimpleType, MessageContentType]] = [self.__generate_random_dict() for _ in range(self.__number_of_runs)]
 
         for content in contents:
             sender_id: str = str(uuid4())
@@ -301,10 +301,10 @@ class TestPerception(TestCase):
         self.assertEqual(len(message.get_recipients_ids()), 1)
         self.assertIn(recipient_id, message.get_recipients_ids())
 
-    def __generate_random_list(self) -> List[MessageContentType]:
+    def __generate_random_list(self) -> list[MessageContentType]:
         return [self.__generate_random_element() for _ in range(randint(0, self.__collection_size))]
 
-    def __generate_random_dict(self) -> Dict[MessageContentSimpleType, MessageContentType]:
+    def __generate_random_dict(self) -> dict[MessageContentSimpleType, MessageContentType]:
         return {self.__generate_random_key(): self.__generate_random_element() for _ in range(randint(0, self.__collection_size))}
 
     def __generate_random_element(self) -> MessageContentType:

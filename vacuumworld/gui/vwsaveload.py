@@ -3,7 +3,7 @@ from re import match
 from random import choice
 from string import ascii_letters
 from tkinter.filedialog import asksaveasfile, askopenfile
-from typing import List, Any
+from typing import Any
 from pyoptional.pyoptional import PyOptional
 
 from ..model.environment.vwenvironment import VWEnvironment
@@ -129,14 +129,14 @@ class VWSaveStateManager():
             filename += self.__vw_saved_state_extension
         return filename
 
-    def get_ordered_list_of_filenames_in_save_directory(self) -> List[str]:
+    def get_ordered_list_of_filenames_in_save_directory(self) -> list[str]:
         '''
-        Returns a `List[str]` of the filenames in the save directory, sorted in ascending order.
+        Returns a `list[str]` of the filenames in the save directory, sorted in ascending order.
 
-        If an error occurs, an empty `List` is returned.
+        If an error occurs, an empty `list` is returned.
         '''
         try:
-            f: List[str] = [file for file in os.listdir(self.__files_dir) if file.endswith(self.__vw_saved_state_extension)]
+            f: list[str] = [file for file in os.listdir(self.__files_dir) if file.endswith(self.__vw_saved_state_extension)]
 
             f.sort()
 

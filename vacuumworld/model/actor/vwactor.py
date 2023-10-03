@@ -1,4 +1,4 @@
-from typing import List, Tuple, Iterable, cast
+from typing import Iterable, cast
 from pyoptional.pyoptional import PyOptional
 
 from pystarworldsturbo.common.message import BccMessage
@@ -22,7 +22,7 @@ class VWActor(Actor):
     '''
     This abstract class specifies the actors in the VacuumWorld universe.
     '''
-    def __init__(self, mind: VWMind, sensors: List[VWSensor]=[], actuators: List[VWActuator]=[]) -> None:
+    def __init__(self, mind: VWMind, sensors: list[VWSensor]=[], actuators: list[VWActuator]=[]) -> None:
         super(VWActor, self).__init__(mind=mind, sensors=[s for s in sensors if VWValidator.does_type_match(t=Sensor, obj=s)], actuators=[a for a in actuators if VWValidator.does_type_match(t=Actuator, obj=a)])
 
     def get_mind(self) -> VWMind:
@@ -58,18 +58,18 @@ class VWActor(Actor):
         '''
         return super(VWActor, self).get_actuator_for(event_type=VWSpeakAction).filter(lambda a: isinstance(a, VWCommunicativeActuator)).map(lambda a: cast(VWCommunicativeActuator, a)).filter(lambda a: a.is_subscribed_to(event_type=VWBroadcastAction))
 
-    def test_get_percepts(self) -> Tuple[VWObservation, Iterable[BccMessage]]:
+    def test_get_percepts(self) -> tuple[VWObservation, Iterable[BccMessage]]:
         '''
         WARNING: this method is only used for testing purposes. It must be public.
         '''
         return self.__get_percepts()
 
-    def __get_percepts(self) -> Tuple[VWObservation, Iterable[BccMessage]]:
+    def __get_percepts(self) -> tuple[VWObservation, Iterable[BccMessage]]:
         '''
-        Returns the `List[Observation]` and the `List[BccMessage]` that are available for this `VWActor` during this cycle.
+        Returns the `list[Observation]` and the `list[BccMessage]` that are available for this `VWActor` during this cycle.
         '''
-        observations: List[VWObservation] = self.__fetch_observations()
-        messages: List[BccMessage] = self.__fetch_messages()
+        observations: list[VWObservation] = self.__fetch_observations()
+        messages: list[BccMessage] = self.__fetch_messages()
 
         assert len(observations) > 0
 
@@ -78,8 +78,8 @@ class VWActor(Actor):
         else:
             return observations[0], messages
 
-    def __fetch_observations(self) -> List[VWObservation]:
-        observations: List[VWObservation] = []
+    def __fetch_observations(self) -> list[VWObservation]:
+        observations: list[VWObservation] = []
         observation_sensor: VWObservationSensor = self.get_observation_sensor().or_else_raise(VWPerceptionException(f"No sensor found for {VWObservation}."))
 
         # There can be more than one `VWObservation` if more than one `VWAction` has been attempted.
@@ -88,8 +88,8 @@ class VWActor(Actor):
 
         return observations
 
-    def __fetch_messages(self) -> List[BccMessage]:
-        messages: List[BccMessage] = []
+    def __fetch_messages(self) -> list[BccMessage]:
+        messages: list[BccMessage] = []
 
         listening_sensor: PyOptional[VWListeningSensor] = self.get_listening_sensor()
 
@@ -99,7 +99,7 @@ class VWActor(Actor):
 
         return messages
 
-    def __merge_observations(self, observations: List[VWObservation]) -> VWObservation:
+    def __merge_observations(self, observations: list[VWObservation]) -> VWObservation:
         assert len(observations) > 1
 
         observations[-1].merge_action_result_with_previous_observations(observations=observations[:-1])
@@ -127,16 +127,16 @@ class VWActor(Actor):
         # Revise the internal state/beliefs based on the perceptions.
         self.get_mind().revise()
 
-        # Decide the next `VWAction` or `List[VWAction]` to attempt.
+        # Decide the next `VWAction` or `list[VWAction]` to attempt.
         self.get_mind().decide()
 
-        # Attempt the execution of the `List[VWAction]` decided by the mind.
-        actions_to_attempt: List[VWAction] = self.get_mind().execute()
+        # Attempt the execution of the `list[VWAction]` decided by the mind.
+        actions_to_attempt: list[VWAction] = self.get_mind().execute()
 
-        # Attempt `List[VWAction]`.
+        # Attempt `list[VWAction]`.
         self.__attempt_actions(actions=actions_to_attempt)
 
-    def __attempt_actions(self, actions: List[VWAction]) -> None:
+    def __attempt_actions(self, actions: list[VWAction]) -> None:
         for action in actions:
             self.get_mind().get_surrogate().update_effort(increment=action.get_effort())
 
