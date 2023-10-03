@@ -10,7 +10,7 @@ from vacuumworld import VacuumWorld, run
 from vacuumworld.vwconfig_manager import VWConfigManager
 from vacuumworld.common.vwcolour import VWColour
 from vacuumworld.common.vwobservation import VWObservation
-from vacuumworld.common.vwexceptions import VWInternalError
+from vacuumworld.common.vwexceptions import VWSurrogateMindException
 from vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate import VWActorMindSurrogate
 from vacuumworld.model.actor.mind.surrogate.vwhysteretic_mind_surrogate import VWHystereticMindSurrogate
 from vacuumworld.model.actions.vwactions import VWAction
@@ -284,7 +284,7 @@ class TestIllegalRunInputs(TestCase):
                     VacuumWorld.ALLOWED_RUN_ARGS["default_mind"] = type(mind)
                     VacuumWorld.ALLOWED_RUN_ARGS[str(colour) + "_mind"] = type(mind)
 
-                self.assertRaises(VWInternalError, VWActorMindSurrogate.validate, mind=mind, colour=colour, surrogate_mind_type=type(mind))
+                self.assertRaises(VWSurrogateMindException, VWActorMindSurrogate.validate, mind=mind, colour=colour, surrogate_mind_type=type(mind))
 
         VacuumWorld.ALLOWED_RUN_ARGS = vw_allowed_run_args_backup
 
