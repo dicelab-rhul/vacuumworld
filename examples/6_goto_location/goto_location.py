@@ -6,7 +6,6 @@ from vacuumworld import run
 from vacuumworld.model.actions.vwactions import VWAction
 from vacuumworld.model.actions.vwidle_action import VWIdleAction
 from vacuumworld.model.actions.vwmove_action import VWMoveAction
-from vacuumworld.model.actions.vweffort import VWActionEffort
 from vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate import VWActorMindSurrogate
 from vacuumworld.common.vworientation import VWOrientation
 from vacuumworld.common.vwcoordinates import VWCoord
