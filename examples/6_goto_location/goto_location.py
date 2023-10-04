@@ -99,4 +99,4 @@ class MyMind(VWActorMindSurrogate):
 
 
 if __name__ == "__main__":
-    run(default_mind=MyMind(), efforts=VWActionEffort.REASONABLE_EFFORTS)
+    run(default_mind=MyMind())
