@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 INVENV=$(python -c 'import sys; print ("1" if sys.prefix != sys.base_prefix else "0")')
 
