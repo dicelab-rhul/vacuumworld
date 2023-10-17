@@ -8,11 +8,11 @@ Otherwise, the paths will not be generated/printed correctly.
 import os
 
 
-INTERESTING_FILES_EXTENSIONS: list[str] = [".py"]
-FILES_EXCLUSION_LIST: list[str] = [os.path.basename(__file__)]
+TODO_FILE: str = "TODO.md"
+INTERESTING_FILES_EXTENSIONS: list[str] = [".py", ".md", ".txt", ".sh", ".json"]
+FILES_EXCLUSION_LIST: list[str] = [os.path.basename(__file__), TODO_FILE]
 DIR_EXCLUSION_LIST_PREFIX: str = os.path.dirname(os.path.dirname(__file__))
 DIR_EXCLUSION_LIST: list[str] = [os.path.join(DIR_EXCLUSION_LIST_PREFIX, directory) for directory in ["examples_not_to_commit", "build", ".git"]]
-TODO_FILE: str = "TODO.md"
 TODO_PATTERN: str = "TODO:"
 TODO_HEADER: str = "# List of TODOs"
 
