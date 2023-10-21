@@ -141,6 +141,7 @@ cw3.py
 part1.py
 part2.py
 part3.py
+find_n.py
 run_local_tests.sh
 
 # VW saved states

@@ -1,0 +1,238 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html lang="en">
+<head><title>Python: module vacuumworld.gui.vwsaveload</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body bgcolor="#f0f0f8">
+<table class="heading">
+    <tr style="background-color: #7799ee;">
+        <td class="title" style="vertical-align: bottom">&nbsp;<br>
+            <span style="color: #ffffff; font-family: helvetica, arial,sans-serif;">
+            &nbsp;<br><big><big><strong><a href="vacuumworld.html"><span style="color:">vacuumworld</span></a>.<a href="vacuumworld.gui.html"><span style="color:">gui</span></a>.vwsaveload</strong></big></big>
+            </span>
+        </td>
+        <td style="vertical-align: bottom; text-align: right;">
+            <span style="color: #ffffff; font-family: helvetica, arial,sans-serif;">
+                <a href=".">index</a><br><a href="file:../vacuumworld/gui/vwsaveload.py">../vacuumworld/gui/vwsaveload.py</a>
+            </span>
+        </td>
+    </tr>
+</table>
+
+
+
+
+
+
+
+
+
+
+<p></p>
+
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#aa55cc">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#aa55cc"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><table width="100%%" summary="list"><tr><td width="25%" valign=top><a href="os.html">os</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#aa55cc">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>`from` Modules</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#aa55cc"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><table width="100%%" summary="list"><tr><td width="25%" valign=top><a href="tkinter.filedialog.html">tkinter.filedialog</a><br>
+<a href="json.html">json</a><br>
+</td><td width="25%" valign=top><a href="pyoptional.pyoptional.html">pyoptional.pyoptional</a><br>
+<a href="vacuumworld.model.environment.vwenvironment.html">vacuumworld.model.environment.vwenvironment</a><br>
+</td><td width="25%" valign=top><a href="re.html">re</a><br>
+<a href="random.html">random</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ee77aa">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#ee77aa"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><dl>
+<dt><span style="font-family:helvetica, arial, sans-serif"><a href="builtins.html#object">builtins.object</a>
+</span></dt><dd>
+<dl>
+<dt><span style="font-family:helvetica, arial, sans-serif"><a href="vacuumworld.gui.vwsaveload.html#VWSaveStateManager">VWSaveStateManager</a>(<a href="builtins.html#object">builtins.object</a>)
+</span></dt></dl>
+</dd>
+</dl>
+ 
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ffc8d8">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#000000" face="helvetica, arial"><a name="VWSaveStateManager">class <strong>VWSaveStateManager</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td>
+    </tr>
+
+    
+        <tr bgcolor="#ffc8d8">
+            <td rowspan=2><tt></tt></td>
+            <td colspan=2><tt><a href="#VWSaveStateManager">VWSaveStateManager</a>()&nbsp;-&gt;&nbsp;None<br>
+&nbsp;<br>
+This&nbsp;class&nbsp;is&nbsp;responsible&nbsp;for&nbsp;saving&nbsp;and&nbsp;loading&nbsp;the&nbsp;state&nbsp;of&nbsp;a&nbsp;`VWEnvironment`.<br>
+&nbsp;<br>
+It&nbsp;supports&nbsp;saving&nbsp;and&nbsp;loading&nbsp;to&nbsp;and&nbsp;from&nbsp;a&nbsp;file,&nbsp;both&nbsp;with&nbsp;a&nbsp;saveload&nbsp;dialog&nbsp;and&nbsp;without&nbsp;it.<br>
+&nbsp;<br>
+The&nbsp;format&nbsp;of&nbsp;the&nbsp;saved&nbsp;states&nbsp;is&nbsp;JSON.<br>&nbsp;</tt></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            
+    <td width="100%%">Methods defined here:<br>
+<dl><dt><a name="VWSaveStateManager-__init__"><strong>__init__</strong></a>(self) -&gt; None</dt></dl>
+
+<dl><dt><a name="VWSaveStateManager-add_vw_extension_to_filename_string_if_missing"><strong>add_vw_extension_to_filename_string_if_missing</strong></a>(self, filename: str) -&gt; str</dt><dd><tt>Amends&nbsp;the&nbsp;given&nbsp;`filename`&nbsp;`str`&nbsp;with&nbsp;the&nbsp;extension&nbsp;of&nbsp;the&nbsp;saved&nbsp;states&nbsp;if&nbsp;it&nbsp;is&nbsp;missing,&nbsp;then&nbsp;returns&nbsp;the&nbsp;amented&nbsp;`str`.</tt></dd></dl>
+
+<dl><dt><a name="VWSaveStateManager-get_ordered_list_of_filenames_in_save_directory"><strong>get_ordered_list_of_filenames_in_save_directory</strong></a>(self) -&gt; list[str]</dt><dd><tt>Returns&nbsp;a&nbsp;`list[str]`&nbsp;of&nbsp;the&nbsp;filenames&nbsp;in&nbsp;the&nbsp;save&nbsp;directory,&nbsp;sorted&nbsp;in&nbsp;ascending&nbsp;order.<br>
+&nbsp;<br>
+If&nbsp;an&nbsp;error&nbsp;occurs,&nbsp;an&nbsp;empty&nbsp;`list`&nbsp;is&nbsp;returned.</tt></dd></dl>
+
+<dl><dt><a name="VWSaveStateManager-get_vw_saved_state_extension"><strong>get_vw_saved_state_extension</strong></a>(self) -&gt; str</dt><dd><tt>Returns&nbsp;the&nbsp;extension&nbsp;of&nbsp;the&nbsp;saved&nbsp;states.</tt></dd></dl>
+
+<dl><dt><a name="VWSaveStateManager-load_state"><strong>load_state</strong></a>(self, filename: str = '', no_gui: bool = False) -&gt; dict[str, typing.Any]</dt><dd><tt>Loads&nbsp;the&nbsp;state&nbsp;of&nbsp;a&nbsp;`VWEnvironment`&nbsp;from&nbsp;a&nbsp;file.<br>
+&nbsp;<br>
+It&nbsp;supports&nbsp;loading&nbsp;from&nbsp;a&nbsp;file&nbsp;both&nbsp;with&nbsp;a&nbsp;saveload&nbsp;dialog&nbsp;and&nbsp;without&nbsp;it.</tt></dd></dl>
+
+<dl><dt><a name="VWSaveStateManager-remove_saved_state"><strong>remove_saved_state</strong></a>(self, filename: str) -&gt; None</dt><dd><tt>Removes&nbsp;the&nbsp;saved&nbsp;state&nbsp;with&nbsp;the&nbsp;given&nbsp;`filename`&nbsp;from&nbsp;the&nbsp;save&nbsp;directory.<br>
+&nbsp;<br>
+If&nbsp;an&nbsp;error&nbsp;occurs,&nbsp;nothing&nbsp;happens.</tt></dd></dl>
+
+<dl><dt><a name="VWSaveStateManager-save_state"><strong>save_state</strong></a>(self, env: vacuumworld.model.environment.vwenvironment.VWEnvironment, filename: str) -&gt; bool</dt><dd><tt>Saves&nbsp;the&nbsp;state&nbsp;of&nbsp;the&nbsp;given&nbsp;`VWEnvironment`&nbsp;to&nbsp;a&nbsp;file.<br>
+&nbsp;<br>
+It&nbsp;supports&nbsp;saving&nbsp;to&nbsp;a&nbsp;file&nbsp;both&nbsp;with&nbsp;a&nbsp;saveload&nbsp;dialog&nbsp;and&nbsp;without&nbsp;it.</tt></dd></dl>
+
+</td></tr>
+</table></td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#eeaa77">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#eeaa77"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><dl><dt><a name="-askopenfile"><strong>askopenfile</strong></a>(mode='r', **options)</dt><dd><tt>Ask&nbsp;for&nbsp;a&nbsp;filename&nbsp;to&nbsp;open,&nbsp;and&nbsp;returned&nbsp;the&nbsp;opened&nbsp;file</tt></dd></dl>
+ <dl><dt><a name="-asksaveasfile"><strong>asksaveasfile</strong></a>(mode='w', **options)</dt><dd><tt>Ask&nbsp;for&nbsp;a&nbsp;filename&nbsp;to&nbsp;save&nbsp;as,&nbsp;and&nbsp;returned&nbsp;the&nbsp;opened&nbsp;file</tt></dd></dl>
+ <dl><dt><a name="-choice"><strong>choice</strong></a>(seq)<span style="color:#909090"><span style="font-family:helvetica, arial, sans-serif"> method of <a href="random.html#Random">random.Random</a> instance</span></span></dt><dd><tt>Choose&nbsp;a&nbsp;random&nbsp;element&nbsp;from&nbsp;a&nbsp;non-empty&nbsp;sequence.</tt></dd></dl>
+ <dl><dt><a name="-dump"><strong>dump</strong></a>(obj, fp, *, skipkeys=False, ensure_ascii=True, check_circular=True, allow_nan=True, cls=None, indent=None, separators=None, default=None, sort_keys=False, **kw)</dt><dd><tt>Serialize&nbsp;``obj``&nbsp;as&nbsp;a&nbsp;JSON&nbsp;formatted&nbsp;stream&nbsp;to&nbsp;``fp``&nbsp;(a<br>
+``.write()``-supporting&nbsp;file-like&nbsp;<a href="builtins.html#object">object</a>).<br>
+&nbsp;<br>
+If&nbsp;``skipkeys``&nbsp;is&nbsp;true&nbsp;then&nbsp;``dict``&nbsp;keys&nbsp;that&nbsp;are&nbsp;not&nbsp;basic&nbsp;types<br>
+(``str``,&nbsp;``int``,&nbsp;``float``,&nbsp;``bool``,&nbsp;``None``)&nbsp;will&nbsp;be&nbsp;skipped<br>
+instead&nbsp;of&nbsp;raising&nbsp;a&nbsp;``TypeError``.<br>
+&nbsp;<br>
+If&nbsp;``ensure_ascii``&nbsp;is&nbsp;false,&nbsp;then&nbsp;the&nbsp;strings&nbsp;written&nbsp;to&nbsp;``fp``&nbsp;can<br>
+contain&nbsp;non-ASCII&nbsp;characters&nbsp;if&nbsp;they&nbsp;appear&nbsp;in&nbsp;strings&nbsp;contained&nbsp;in<br>
+``obj``.&nbsp;Otherwise,&nbsp;all&nbsp;such&nbsp;characters&nbsp;are&nbsp;escaped&nbsp;in&nbsp;JSON&nbsp;strings.<br>
+&nbsp;<br>
+If&nbsp;``check_circular``&nbsp;is&nbsp;false,&nbsp;then&nbsp;the&nbsp;circular&nbsp;reference&nbsp;check<br>
+for&nbsp;container&nbsp;types&nbsp;will&nbsp;be&nbsp;skipped&nbsp;and&nbsp;a&nbsp;circular&nbsp;reference&nbsp;will<br>
+result&nbsp;in&nbsp;an&nbsp;``RecursionError``&nbsp;(or&nbsp;worse).<br>
+&nbsp;<br>
+If&nbsp;``allow_nan``&nbsp;is&nbsp;false,&nbsp;then&nbsp;it&nbsp;will&nbsp;be&nbsp;a&nbsp;``ValueError``&nbsp;to<br>
+serialize&nbsp;out&nbsp;of&nbsp;range&nbsp;``float``&nbsp;values&nbsp;(``nan``,&nbsp;``inf``,&nbsp;``-inf``)<br>
+in&nbsp;strict&nbsp;compliance&nbsp;of&nbsp;the&nbsp;JSON&nbsp;specification,&nbsp;instead&nbsp;of&nbsp;using&nbsp;the<br>
+JavaScript&nbsp;equivalents&nbsp;(``NaN``,&nbsp;``Infinity``,&nbsp;``-Infinity``).<br>
+&nbsp;<br>
+If&nbsp;``indent``&nbsp;is&nbsp;a&nbsp;non-negative&nbsp;integer,&nbsp;then&nbsp;JSON&nbsp;array&nbsp;elements&nbsp;and<br>
+<a href="builtins.html#object">object</a>&nbsp;members&nbsp;will&nbsp;be&nbsp;pretty-printed&nbsp;with&nbsp;that&nbsp;indent&nbsp;level.&nbsp;An&nbsp;indent<br>
+level&nbsp;of&nbsp;0&nbsp;will&nbsp;only&nbsp;insert&nbsp;newlines.&nbsp;``None``&nbsp;is&nbsp;the&nbsp;most&nbsp;compact<br>
+representation.<br>
+&nbsp;<br>
+If&nbsp;specified,&nbsp;``separators``&nbsp;should&nbsp;be&nbsp;an&nbsp;``(item_separator,&nbsp;key_separator)``<br>
+tuple.&nbsp;&nbsp;The&nbsp;default&nbsp;is&nbsp;``(',&nbsp;',&nbsp;':&nbsp;')``&nbsp;if&nbsp;*indent*&nbsp;is&nbsp;``None``&nbsp;and<br>
+``(',',&nbsp;':&nbsp;')``&nbsp;otherwise.&nbsp;&nbsp;To&nbsp;get&nbsp;the&nbsp;most&nbsp;compact&nbsp;JSON&nbsp;representation,<br>
+you&nbsp;should&nbsp;specify&nbsp;``(',',&nbsp;':')``&nbsp;to&nbsp;eliminate&nbsp;whitespace.<br>
+&nbsp;<br>
+``default(obj)``&nbsp;is&nbsp;a&nbsp;function&nbsp;that&nbsp;should&nbsp;return&nbsp;a&nbsp;serializable&nbsp;version<br>
+of&nbsp;obj&nbsp;or&nbsp;raise&nbsp;TypeError.&nbsp;The&nbsp;default&nbsp;simply&nbsp;raises&nbsp;TypeError.<br>
+&nbsp;<br>
+If&nbsp;*sort_keys*&nbsp;is&nbsp;true&nbsp;(default:&nbsp;``False``),&nbsp;then&nbsp;the&nbsp;output&nbsp;of<br>
+dictionaries&nbsp;will&nbsp;be&nbsp;sorted&nbsp;by&nbsp;key.<br>
+&nbsp;<br>
+To&nbsp;use&nbsp;a&nbsp;custom&nbsp;``JSONEncoder``&nbsp;subclass&nbsp;(e.g.&nbsp;one&nbsp;that&nbsp;overrides&nbsp;the<br>
+``.default()``&nbsp;method&nbsp;to&nbsp;serialize&nbsp;additional&nbsp;types),&nbsp;specify&nbsp;it&nbsp;with<br>
+the&nbsp;``cls``&nbsp;kwarg;&nbsp;otherwise&nbsp;``JSONEncoder``&nbsp;is&nbsp;used.</tt></dd></dl>
+ <dl><dt><a name="-load"><strong>load</strong></a>(fp, *, cls=None, object_hook=None, parse_float=None, parse_int=None, parse_constant=None, object_pairs_hook=None, **kw)</dt><dd><tt>Deserialize&nbsp;``fp``&nbsp;(a&nbsp;``.read()``-supporting&nbsp;file-like&nbsp;<a href="builtins.html#object">object</a>&nbsp;containing<br>
+a&nbsp;JSON&nbsp;document)&nbsp;to&nbsp;a&nbsp;Python&nbsp;<a href="builtins.html#object">object</a>.<br>
+&nbsp;<br>
+``object_hook``&nbsp;is&nbsp;an&nbsp;optional&nbsp;function&nbsp;that&nbsp;will&nbsp;be&nbsp;called&nbsp;with&nbsp;the<br>
+result&nbsp;of&nbsp;any&nbsp;<a href="builtins.html#object">object</a>&nbsp;literal&nbsp;decode&nbsp;(a&nbsp;``dict``).&nbsp;The&nbsp;return&nbsp;value&nbsp;of<br>
+``object_hook``&nbsp;will&nbsp;be&nbsp;used&nbsp;instead&nbsp;of&nbsp;the&nbsp;``dict``.&nbsp;This&nbsp;feature<br>
+can&nbsp;be&nbsp;used&nbsp;to&nbsp;implement&nbsp;custom&nbsp;decoders&nbsp;(e.g.&nbsp;JSON-RPC&nbsp;class&nbsp;hinting).<br>
+&nbsp;<br>
+``object_pairs_hook``&nbsp;is&nbsp;an&nbsp;optional&nbsp;function&nbsp;that&nbsp;will&nbsp;be&nbsp;called&nbsp;with&nbsp;the<br>
+result&nbsp;of&nbsp;any&nbsp;<a href="builtins.html#object">object</a>&nbsp;literal&nbsp;decoded&nbsp;with&nbsp;an&nbsp;ordered&nbsp;list&nbsp;of&nbsp;pairs.&nbsp;&nbsp;The<br>
+return&nbsp;value&nbsp;of&nbsp;``object_pairs_hook``&nbsp;will&nbsp;be&nbsp;used&nbsp;instead&nbsp;of&nbsp;the&nbsp;``dict``.<br>
+This&nbsp;feature&nbsp;can&nbsp;be&nbsp;used&nbsp;to&nbsp;implement&nbsp;custom&nbsp;decoders.&nbsp;&nbsp;If&nbsp;``object_hook``<br>
+is&nbsp;also&nbsp;defined,&nbsp;the&nbsp;``object_pairs_hook``&nbsp;takes&nbsp;priority.<br>
+&nbsp;<br>
+To&nbsp;use&nbsp;a&nbsp;custom&nbsp;``JSONDecoder``&nbsp;subclass,&nbsp;specify&nbsp;it&nbsp;with&nbsp;the&nbsp;``cls``<br>
+kwarg;&nbsp;otherwise&nbsp;``JSONDecoder``&nbsp;is&nbsp;used.</tt></dd></dl>
+ <dl><dt><a name="-match"><strong>match</strong></a>(pattern, string, flags=0)</dt><dd><tt>Try&nbsp;to&nbsp;apply&nbsp;the&nbsp;pattern&nbsp;at&nbsp;the&nbsp;start&nbsp;of&nbsp;the&nbsp;string,&nbsp;returning<br>
+a&nbsp;Match&nbsp;<a href="builtins.html#object">object</a>,&nbsp;or&nbsp;None&nbsp;if&nbsp;no&nbsp;match&nbsp;was&nbsp;found.</tt></dd></dl>
+</td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#55aa55">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#55aa55"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><strong>ascii_letters</strong> = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'</td></tr>
+</table>
+</body>
+</html>

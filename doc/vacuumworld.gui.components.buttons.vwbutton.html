@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html lang="en">
+<head><title>Python: module vacuumworld.gui.components.buttons.vwbutton</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body bgcolor="#f0f0f8">
+<table class="heading">
+    <tr style="background-color: #7799ee;">
+        <td class="title" style="vertical-align: bottom">&nbsp;<br>
+            <span style="color: #ffffff; font-family: helvetica, arial,sans-serif;">
+            &nbsp;<br><big><big><strong><a href="vacuumworld.html"><span style="color:">vacuumworld</span></a>.<a href="vacuumworld.gui.html"><span style="color:">gui</span></a>.<a href="vacuumworld.gui.components.html"><span style="color:">components</span></a>.<a href="vacuumworld.gui.components.buttons.html"><span style="color:">buttons</span></a>.vwbutton</strong></big></big>
+            </span>
+        </td>
+        <td style="vertical-align: bottom; text-align: right;">
+            <span style="color: #ffffff; font-family: helvetica, arial,sans-serif;">
+                <a href=".">index</a><br><a href="file:../vacuumworld/gui/components/buttons/vwbutton.py">../vacuumworld/gui/components/buttons/vwbutton.py</a>
+            </span>
+        </td>
+    </tr>
+</table>
+
+
+
+
+
+
+
+
+
+
+<p></p>
+
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#aa55cc">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>`from` Modules</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#aa55cc"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><table width="100%%" summary="list"><tr><td width="25%" valign=top><a href="vacuumworld.gui.components.buttons.vwtooltips.html">vacuumworld.gui.components.buttons.vwtooltips</a><br>
+</td><td width="25%" valign=top><a href="PIL.Image.html">PIL.Image</a><br>
+</td><td width="25%" valign=top><a href="PIL.ImageTk.html">PIL.ImageTk</a><br>
+</td><td width="25%" valign=top><a href="tkinter.html">tkinter</a><br>
+</td></tr></table></td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ee77aa">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#ee77aa"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><dl>
+<dt><span style="font-family:helvetica, arial, sans-serif"><a href="builtins.html#object">builtins.object</a>
+</span></dt><dd>
+<dl>
+<dt><span style="font-family:helvetica, arial, sans-serif"><a href="vacuumworld.gui.components.buttons.vwbutton.html#VWButton">VWButton</a>(<a href="builtins.html#object">builtins.object</a>)
+</span></dt></dl>
+</dd>
+</dl>
+ 
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ffc8d8">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#000000" face="helvetica, arial"><a name="VWButton">class <strong>VWButton</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td>
+    </tr>
+
+    
+        <tr bgcolor="#ffc8d8">
+            <td rowspan=2><tt></tt></td>
+            <td colspan=2><tt><a href="#VWButton">VWButton</a>(parent:&nbsp;tkinter.Frame,&nbsp;config:&nbsp;dict[str,&nbsp;typing.Any],&nbsp;img:&nbsp;PIL.Image.Image,&nbsp;fun:&nbsp;Callable[...,&nbsp;Any],&nbsp;text:&nbsp;str&nbsp;=&nbsp;'',&nbsp;tip_text:&nbsp;str&nbsp;=&nbsp;'')&nbsp;-&gt;&nbsp;None<br>
+&nbsp;<br>
+This&nbsp;class&nbsp;is&nbsp;a&nbsp;wrapper&nbsp;around&nbsp;`Button`&nbsp;that&nbsp;specifies&nbsp;the&nbsp;buttons&nbsp;for&nbsp;the&nbsp;VacuumWorld&nbsp;GUI.<br>
+&nbsp;<br>
+A&nbsp;`<a href="#VWButton">VWButton</a>`&nbsp;has&nbsp;a&nbsp;text,&nbsp;an&nbsp;image,&nbsp;a&nbsp;function&nbsp;to&nbsp;be&nbsp;executed&nbsp;when&nbsp;it&nbsp;is&nbsp;clicked&nbsp;and&nbsp;a&nbsp;tooltip&nbsp;text.<br>&nbsp;</tt></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            
+    <td width="100%%">Methods defined here:<br>
+<dl><dt><a name="VWButton-__init__"><strong>__init__</strong></a>(self, parent: tkinter.Frame, config: dict[str, typing.Any], img: PIL.Image.Image, fun: Callable[..., Any], text: str = '', tip_text: str = '') -&gt; None</dt></dl>
+
+<dl><dt><a name="VWButton-get_button"><strong>get_button</strong></a>(self) -&gt; tkinter.Button</dt><dd><tt>Returns&nbsp;the&nbsp;proper&nbsp;`Button`&nbsp;<a href="builtins.html#object">object</a>&nbsp;that&nbsp;this&nbsp;class&nbsp;wraps.</tt></dd></dl>
+
+<dl><dt><a name="VWButton-get_img"><strong>get_img</strong></a>(self) -&gt; PIL.ImageTk.PhotoImage</dt><dd><tt>Returns&nbsp;the&nbsp;`PhotoImage`&nbsp;of&nbsp;the&nbsp;wrapped&nbsp;`Button`.</tt></dd></dl>
+
+<dl><dt><a name="VWButton-pack"><strong>pack</strong></a>(self, side: Literal['left', 'right', 'top', 'bottom']) -&gt; None</dt><dd><tt>Packs&nbsp;the&nbsp;wrapped&nbsp;`Button`&nbsp;into&nbsp;the&nbsp;parent&nbsp;`Frame`,&nbsp;according&nbsp;to&nbsp;the&nbsp;provided&nbsp;`side`.</tt></dd></dl>
+
+<dl><dt><a name="VWButton-set_img"><strong>set_img</strong></a>(self, img: PIL.ImageTk.PhotoImage) -&gt; None</dt><dd><tt>Sets&nbsp;the&nbsp;image&nbsp;of&nbsp;the&nbsp;wrapped&nbsp;`Button`&nbsp;to&nbsp;the&nbsp;provided&nbsp;`PhotoImage`.</tt></dd></dl>
+
+</td></tr>
+</table></td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#eeaa77">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#eeaa77"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><dl><dt><a name="-create_tooltip"><strong>create_tooltip</strong></a>(widget: tkinter.Button, text: str, config: dict[str, typing.Any]) -&gt; None</dt><dd><tt>Creates&nbsp;the&nbsp;tooltip&nbsp;for&nbsp;the&nbsp;given&nbsp;`widget`&nbsp;with&nbsp;the&nbsp;given&nbsp;`text`.<br>
+&nbsp;<br>
+It&nbsp;also&nbsp;binds&nbsp;the&nbsp;`showtip()`&nbsp;and&nbsp;`hidetip()`&nbsp;methods&nbsp;to&nbsp;the&nbsp;`&lt;Enter&gt;`&nbsp;and&nbsp;`&lt;Leave&gt;`&nbsp;events.</tt></dd></dl>
+</td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#55aa55">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#55aa55"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><strong>Callable</strong> = typing.Callable<br>
+<strong>Literal</strong> = typing.Literal</td></tr>
+</table>
+</body>
+</html>

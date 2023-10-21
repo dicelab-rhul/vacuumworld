@@ -1,0 +1,210 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html lang="en">
+<head><title>Python: module vacuumworld.model.actor.mind.surrogate.vwuser_mind_surrogate</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body bgcolor="#f0f0f8">
+<table class="heading">
+    <tr style="background-color: #7799ee;">
+        <td class="title" style="vertical-align: bottom">&nbsp;<br>
+            <span style="color: #ffffff; font-family: helvetica, arial,sans-serif;">
+            &nbsp;<br><big><big><strong><a href="vacuumworld.html"><span style="color:">vacuumworld</span></a>.<a href="vacuumworld.model.html"><span style="color:">model</span></a>.<a href="vacuumworld.model.actor.html"><span style="color:">actor</span></a>.<a href="vacuumworld.model.actor.mind.html"><span style="color:">mind</span></a>.<a href="vacuumworld.model.actor.mind.surrogate.html"><span style="color:">surrogate</span></a>.vwuser_mind_surrogate</strong></big></big>
+            </span>
+        </td>
+        <td style="vertical-align: bottom; text-align: right;">
+            <span style="color: #ffffff; font-family: helvetica, arial,sans-serif;">
+                <a href=".">index</a><br><a href="file:../vacuumworld/model/actor/mind/surrogate/vwuser_mind_surrogate.py">../vacuumworld/model/actor/mind/surrogate/vwuser_mind_surrogate.py</a>
+            </span>
+        </td>
+    </tr>
+</table>
+
+
+
+
+
+
+
+
+
+
+<p></p>
+
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#aa55cc">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>`from` Modules</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#aa55cc"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><table width="100%%" summary="list"><tr><td width="25%" valign=top><a href="vacuumworld.common.vwuser_difficulty.html">vacuumworld.common.vwuser_difficulty</a><br>
+<a href="vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.html">vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate</a><br>
+<a href="vacuumworld.common.vwcolour.html">vacuumworld.common.vwcolour</a><br>
+</td><td width="25%" valign=top><a href="vacuumworld.common.vwdirection.html">vacuumworld.common.vwdirection</a><br>
+<a href="vacuumworld.model.actions.vwidle_action.html">vacuumworld.model.actions.vwidle_action</a><br>
+<a href="vacuumworld.model.actions.vwturn_action.html">vacuumworld.model.actions.vwturn_action</a><br>
+</td><td width="25%" valign=top><a href="vacuumworld.model.actions.vwmove_action.html">vacuumworld.model.actions.vwmove_action</a><br>
+<a href="vacuumworld.model.actions.vwactions.html">vacuumworld.model.actions.vwactions</a><br>
+<a href="vacuumworld.model.actions.vwdrop_action.html">vacuumworld.model.actions.vwdrop_action</a><br>
+</td><td width="25%" valign=top><a href="itertools.html">itertools</a><br>
+</td></tr></table></td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ee77aa">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#ee77aa"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><dl>
+<dt><span style="font-family:helvetica, arial, sans-serif"><a href="vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.html#VWActorMindSurrogate">vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.VWActorMindSurrogate</a>(<a href="builtins.html#object">builtins.object</a>)
+</span></dt><dd>
+<dl>
+<dt><span style="font-family:helvetica, arial, sans-serif"><a href="vacuumworld.model.actor.mind.surrogate.vwuser_mind_surrogate.html#VWUserMindSurrogate">VWUserMindSurrogate</a>(<a href="vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.html#VWActorMindSurrogate">vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.VWActorMindSurrogate</a>)
+</span></dt></dl>
+</dd>
+</dl>
+ 
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ffc8d8">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#000000" face="helvetica, arial"><a name="VWUserMindSurrogate">class <strong>VWUserMindSurrogate</strong></a>(<a href="vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.html#VWActorMindSurrogate">vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.VWActorMindSurrogate</a>)</font></td>
+    </tr>
+
+    
+        <tr bgcolor="#ffc8d8">
+            <td rowspan=2><tt></tt></td>
+            <td colspan=2><tt><a href="#VWUserMindSurrogate">VWUserMindSurrogate</a>(difficulty_level:&nbsp;vacuumworld.common.vwuser_difficulty.VWUserDifficulty&nbsp;=&nbsp;0)&nbsp;-&gt;&nbsp;None<br>
+&nbsp;<br>
+This&nbsp;class&nbsp;specifies&nbsp;the&nbsp;surrogate&nbsp;of&nbsp;a&nbsp;`VWUserMind`&nbsp;of&nbsp;a&nbsp;`VWUser`.<br>
+&nbsp;<br>
+It&nbsp;is&nbsp;used&nbsp;to&nbsp;simulate&nbsp;the&nbsp;behaviour&nbsp;of&nbsp;a&nbsp;`VWUser`&nbsp;in&nbsp;the&nbsp;`VWEnvironment`.<br>&nbsp;</tt></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            
+    <td width="100%%"><dl><dt>Method resolution order:</dt>
+<dd><a href="vacuumworld.model.actor.mind.surrogate.vwuser_mind_surrogate.html#VWUserMindSurrogate">VWUserMindSurrogate</a></dd>
+<dd><a href="vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.html#VWActorMindSurrogate">vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.VWActorMindSurrogate</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="VWUserMindSurrogate-__init__"><strong>__init__</strong></a>(self, difficulty_level: vacuumworld.common.vwuser_difficulty.VWUserDifficulty = 0) -&gt; None</dt></dl>
+
+<dl><dt><a name="VWUserMindSurrogate-decide"><strong>decide</strong></a>(self) -&gt; Iterable[vacuumworld.model.actions.vwactions.VWPhysicalAction]</dt><dd><tt>Decides&nbsp;the&nbsp;next&nbsp;`VWPhysicalAction`&nbsp;to&nbsp;be&nbsp;attempted&nbsp;by&nbsp;the&nbsp;`VWUser`&nbsp;associated&nbsp;with&nbsp;this&nbsp;`<a href="#VWUserMindSurrogate">VWUserMindSurrogate</a>`.<br>
+&nbsp;<br>
+*&nbsp;If&nbsp;no&nbsp;`VWObservation`&nbsp;has&nbsp;been&nbsp;received&nbsp;yet,&nbsp;returns&nbsp;`VWIdleAction`.<br>
+&nbsp;<br>
+*&nbsp;If&nbsp;the&nbsp;`VWUserDifficulty`&nbsp;of&nbsp;this&nbsp;`<a href="#VWUserMindSurrogate">VWUserMindSurrogate</a>`&nbsp;is&nbsp;`VWUserDifficulty.easy`,&nbsp;then&nbsp;the&nbsp;`VWUser`&nbsp;will&nbsp;not&nbsp;try&nbsp;to&nbsp;avoid&nbsp;any&nbsp;other&nbsp;`VWActor`.<br>
+&nbsp;<br>
+*&nbsp;If&nbsp;the&nbsp;`VWUserDifficulty`&nbsp;of&nbsp;this&nbsp;`<a href="#VWUserMindSurrogate">VWUserMindSurrogate</a>`&nbsp;is&nbsp;`VWUserDifficulty.hard`,&nbsp;then&nbsp;the&nbsp;`VWUser`&nbsp;will&nbsp;try&nbsp;to&nbsp;avoid&nbsp;each&nbsp;`VWActor`&nbsp;that&nbsp;comes&nbsp;too&nbsp;close.</tt></dd></dl>
+
+<dl><dt><a name="VWUserMindSurrogate-get_difficulty_level"><strong>get_difficulty_level</strong></a>(self) -&gt; vacuumworld.common.vwuser_difficulty.VWUserDifficulty</dt><dd><tt>Returns&nbsp;the&nbsp;`VWUserDifficulty`&nbsp;of&nbsp;this&nbsp;`<a href="#VWUserMindSurrogate">VWUserMindSurrogate</a>`.</tt></dd></dl>
+
+<dl><dt><a name="VWUserMindSurrogate-revise"><strong>revise</strong></a>(self) -&gt; None</dt><dd><tt>The&nbsp;`VWUser`&nbsp;does&nbsp;not&nbsp;need&nbsp;to&nbsp;revise&nbsp;anything.</tt></dd></dl>
+
+<dl><dt><a name="VWUserMindSurrogate-set_difficulty_level"><strong>set_difficulty_level</strong></a>(self, difficulty_level: vacuumworld.common.vwuser_difficulty.VWUserDifficulty) -&gt; None</dt><dd><tt>Sets&nbsp;the&nbsp;`VWUserDifficulty`&nbsp;of&nbsp;this&nbsp;`<a href="#VWUserMindSurrogate">VWUserMindSurrogate</a>`.</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__annotations__</strong> = {}</dl>
+
+<hr>
+Methods inherited from <a href="vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.html#VWActorMindSurrogate">vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.VWActorMindSurrogate</a>:<br>
+<dl><dt><a name="VWUserMindSurrogate-get_effort"><strong>get_effort</strong></a>(self) -&gt; 'int'</dt><dd><tt>Returns&nbsp;the&nbsp;cumulative&nbsp;effort&nbsp;of&nbsp;the&nbsp;`VWActor`&nbsp;up&nbsp;until&nbsp;now.</tt></dd></dl>
+
+<dl><dt><a name="VWUserMindSurrogate-get_latest_observation"><strong>get_latest_observation</strong></a>(self) -&gt; 'VWObservation'</dt><dd><tt>Returns&nbsp;the&nbsp;last&nbsp;`VWObservation`&nbsp;perceived&nbsp;by&nbsp;the&nbsp;`VWActor`.</tt></dd></dl>
+
+<dl><dt><a name="VWUserMindSurrogate-get_latest_received_messages"><strong>get_latest_received_messages</strong></a>(self) -&gt; 'Iterable[BccMessage]'</dt><dd><tt>Returns&nbsp;the&nbsp;last&nbsp;`Iterable[BccMessage]`&nbsp;received&nbsp;by&nbsp;the&nbsp;`VWActor`.</tt></dd></dl>
+
+<dl><dt><a name="VWUserMindSurrogate-get_own_appearance"><strong>get_own_appearance</strong></a>(self) -&gt; 'VWActorAppearance'</dt><dd><tt>Returns&nbsp;the&nbsp;`VWActorAppearance`&nbsp;of&nbsp;the&nbsp;`VWActor`&nbsp;this&nbsp;`<a href="vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.html#VWActorMindSurrogate">VWActorMindSurrogate</a>`&nbsp;is&nbsp;part&nbsp;of.</tt></dd></dl>
+
+<dl><dt><a name="VWUserMindSurrogate-get_own_colour"><strong>get_own_colour</strong></a>(self) -&gt; 'VWColour'</dt><dd><tt>Returns&nbsp;the&nbsp;`VWColour`&nbsp;of&nbsp;the&nbsp;`VWActor`&nbsp;this&nbsp;`<a href="vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.html#VWActorMindSurrogate">VWActorMindSurrogate</a>`&nbsp;is&nbsp;part&nbsp;of.</tt></dd></dl>
+
+<dl><dt><a name="VWUserMindSurrogate-get_own_id"><strong>get_own_id</strong></a>(self) -&gt; 'str'</dt><dd><tt>Returns&nbsp;the&nbsp;`str`&nbsp;ID&nbsp;of&nbsp;the&nbsp;`VWActor`&nbsp;this&nbsp;`<a href="vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.html#VWActorMindSurrogate">VWActorMindSurrogate</a>`&nbsp;is&nbsp;part&nbsp;of.</tt></dd></dl>
+
+<dl><dt><a name="VWUserMindSurrogate-get_own_orientation"><strong>get_own_orientation</strong></a>(self) -&gt; 'VWOrientation'</dt><dd><tt>Returns&nbsp;the&nbsp;`VWOrientation`&nbsp;of&nbsp;the&nbsp;`VWActor`&nbsp;this&nbsp;`<a href="vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.html#VWActorMindSurrogate">VWActorMindSurrogate</a>`&nbsp;is&nbsp;part&nbsp;of.</tt></dd></dl>
+
+<dl><dt><a name="VWUserMindSurrogate-get_own_position"><strong>get_own_position</strong></a>(self) -&gt; 'VWCoord'</dt><dd><tt>Returns&nbsp;the&nbsp;position&nbsp;(as&nbsp;a&nbsp;`VWCoord`&nbsp;object)&nbsp;of&nbsp;the&nbsp;`VWActor`&nbsp;this&nbsp;`<a href="vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.html#VWActorMindSurrogate">VWActorMindSurrogate</a>`&nbsp;is&nbsp;part&nbsp;of.</tt></dd></dl>
+
+<dl><dt><a name="VWUserMindSurrogate-perceive"><strong>perceive</strong></a>(self, observation: 'VWObservation', messages: 'Iterable[BccMessage]') -&gt; 'None'</dt><dd><tt>WARNING:&nbsp;This&nbsp;method&nbsp;must&nbsp;be&nbsp;public,&nbsp;but&nbsp;it&nbsp;is&nbsp;not&nbsp;part&nbsp;of&nbsp;the&nbsp;public&nbsp;`<a href="vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.html#VWActorMindSurrogate">VWActorMindSurrogate</a>`&nbsp;API.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;is&nbsp;automatically&nbsp;called&nbsp;by&nbsp;a&nbsp;`VWActor`&nbsp;to&nbsp;store&nbsp;the&nbsp;received&nbsp;`VWObservation`&nbsp;and&nbsp;`Iterable[BccMessage]`.</tt></dd></dl>
+
+<dl><dt><a name="VWUserMindSurrogate-update_effort"><strong>update_effort</strong></a>(self, increment: 'int') -&gt; 'None'</dt><dd><tt>WARNING:&nbsp;This&nbsp;method&nbsp;must&nbsp;be&nbsp;public,&nbsp;but&nbsp;it&nbsp;is&nbsp;not&nbsp;part&nbsp;of&nbsp;the&nbsp;public&nbsp;`<a href="vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.html#VWActorMindSurrogate">VWActorMindSurrogate</a>`&nbsp;API.<br>
+&nbsp;<br>
+Updates&nbsp;the&nbsp;cumulative&nbsp;effort&nbsp;of&nbsp;the&nbsp;`VWActor`&nbsp;by&nbsp;`increment`.</tt></dd></dl>
+
+<hr>
+Static methods inherited from <a href="vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.html#VWActorMindSurrogate">vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.VWActorMindSurrogate</a>:<br>
+<dl><dt><a name="VWUserMindSurrogate-load_from_file"><strong>load_from_file</strong></a>(surrogate_mind_file: 'str', surrogate_mind_class_name: 'str') -&gt; 'VWActorMindSurrogate'</dt><dd><tt>WARNING:&nbsp;This&nbsp;method&nbsp;must&nbsp;be&nbsp;public,&nbsp;but&nbsp;it&nbsp;is&nbsp;not&nbsp;part&nbsp;of&nbsp;the&nbsp;public&nbsp;`<a href="vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.html#VWActorMindSurrogate">VWActorMindSurrogate</a>`&nbsp;API.<br>
+&nbsp;<br>
+Loads&nbsp;the&nbsp;`<a href="vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.html#VWActorMindSurrogate">VWActorMindSurrogate</a>`&nbsp;class&nbsp;from&nbsp;the&nbsp;Python&nbsp;file&nbsp;whose&nbsp;path&nbsp;is&nbsp;specified&nbsp;by&nbsp;`surrogate_mind_file`&nbsp;and&nbsp;returns&nbsp;an&nbsp;instance&nbsp;of&nbsp;it.</tt></dd></dl>
+
+<dl><dt><a name="VWUserMindSurrogate-validate"><strong>validate</strong></a>(mind: 'VWActorMindSurrogate', colour: 'VWColour', surrogate_mind_type: 'Type[Any]') -&gt; 'None'</dt><dd><tt>WARNING:&nbsp;This&nbsp;method&nbsp;must&nbsp;be&nbsp;public,&nbsp;but&nbsp;it&nbsp;is&nbsp;not&nbsp;part&nbsp;of&nbsp;the&nbsp;public&nbsp;`<a href="vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.html#VWActorMindSurrogate">VWActorMindSurrogate</a>`&nbsp;API.<br>
+&nbsp;<br>
+Validates&nbsp;the&nbsp;`<a href="vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.html#VWActorMindSurrogate">VWActorMindSurrogate</a>`&nbsp;`mind`&nbsp;by&nbsp;checking&nbsp;that&nbsp;all&nbsp;the&nbsp;methods&nbsp;specified&nbsp;in&nbsp;`<a href="vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.html#VWActorMindSurrogate">VWActorMindSurrogate</a>.MUST_BE_DEFINED`&nbsp;are&nbsp;defined,&nbsp;together&nbsp;with&nbsp;the&nbsp;correct&nbsp;arguments.<br>
+&nbsp;<br>
+The&nbsp;type&nbsp;check&nbsp;on&nbsp;`mind`&nbsp;is&nbsp;replaced&nbsp;with&nbsp;an&nbsp;assertion,&nbsp;as&nbsp;the&nbsp;actual&nbsp;check&nbsp;is&nbsp;performed&nbsp;by&nbsp;the&nbsp;`VWRunner`&nbsp;constructor.</tt></dd></dl>
+
+<hr>
+Data and other attributes inherited from <a href="vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.html#VWActorMindSurrogate">vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.VWActorMindSurrogate</a>:<br>
+<dl><dt><strong>MUST_BE_DEFINED</strong> = {'decide': {'number_of_params_excluding_self': 0, 'return_type': [typing.Iterable[vacuumworld.model.actions.vwactions.VWAction], typing.Iterable[vacuumworld.model.actions.vwactions.VWPhysicalAction], typing.Iterable[vacuumworld.model.actions.vwactions.VWCommunicativeAction]]}, 'revise': {'number_of_params_excluding_self': 0, 'return_type': [None, 'None', 'NoneType']}}</dl>
+
+</td></tr>
+</table></td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#eeaa77">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#eeaa77"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><dl><dt><a name="-random"><strong>random</strong></a>()<span style="color:#909090"><span style="font-family:helvetica, arial, sans-serif"> method of <a href="random.html#Random">random.Random</a> instance</span></span></dt><dd><tt><a href="#-random">random</a>()&nbsp;-&gt;&nbsp;x&nbsp;in&nbsp;the&nbsp;interval&nbsp;[0,&nbsp;1).</tt></dd></dl>
+</td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#55aa55">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#55aa55"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><strong>Iterable</strong> = typing.Iterable</td></tr>
+</table>
+</body>
+</html>

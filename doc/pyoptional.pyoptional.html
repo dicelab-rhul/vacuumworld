@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html lang="en">
+<head><title>Python: module pyoptional.pyoptional</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body bgcolor="#f0f0f8">
+<table class="heading">
+    <tr style="background-color: #7799ee;">
+        <td class="title" style="vertical-align: bottom">&nbsp;<br>
+            <span style="color: #ffffff; font-family: helvetica, arial,sans-serif;">
+            &nbsp;<br><big><big><strong><a href="pyoptional.html"><span style="color:">pyoptional</span></a>.pyoptional</strong></big></big>
+            </span>
+        </td>
+        <td style="vertical-align: bottom; text-align: right;">
+            <span style="color: #ffffff; font-family: helvetica, arial,sans-serif;">
+                <a href=".">index</a><br><a href="file:../../../envs/vw4/lib/python3.11/site-packages/pyoptional/pyoptional.py">../../../envs/vw4/lib/python3.11/site-packages/pyoptional/pyoptional.py</a>
+            </span>
+        </td>
+    </tr>
+</table>
+
+
+
+
+
+
+
+
+
+
+<p></p>
+
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ee77aa">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#ee77aa"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><dl>
+<dt><span style="font-family:helvetica, arial, sans-serif"><a href="typing.html#Generic">typing.Generic</a>(<a href="builtins.html#object">builtins.object</a>)
+</span></dt><dd>
+<dl>
+<dt><span style="font-family:helvetica, arial, sans-serif"><a href="pyoptional.pyoptional.html#PyOptional">PyOptional</a>(<a href="typing.html#Generic">typing.Generic</a>)
+</span></dt></dl>
+</dd>
+</dl>
+ 
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ffc8d8">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#000000" face="helvetica, arial"><a name="PyOptional">class <strong>PyOptional</strong></a>(<a href="typing.html#Generic">typing.Generic</a>)</font></td>
+    </tr>
+
+    
+        <tr bgcolor="#ffc8d8">
+            <td rowspan=2><tt></tt></td>
+            <td colspan=2><tt><a href="#PyOptional">PyOptional</a>(key:&nbsp;'Any',&nbsp;val:&nbsp;'Opt[T]'&nbsp;=&nbsp;None)&nbsp;-&gt;&nbsp;'None'<br>
+&nbsp;<br>
+A&nbsp;container&nbsp;object&nbsp;which&nbsp;may&nbsp;or&nbsp;may&nbsp;not&nbsp;contain&nbsp;a&nbsp;non-`None`&nbsp;value.&nbsp;If&nbsp;a&nbsp;value&nbsp;is&nbsp;present,&nbsp;`<a href="#PyOptional-is_present">is_present</a>()`&nbsp;returns&nbsp;`True`.&nbsp;If&nbsp;no&nbsp;value&nbsp;is&nbsp;present,&nbsp;the&nbsp;object&nbsp;is&nbsp;considered&nbsp;empty&nbsp;and&nbsp;`<a href="#PyOptional-is_present">is_present</a>()`&nbsp;returns&nbsp;`False`.<br>
+&nbsp;<br>
+Additional&nbsp;methods&nbsp;that&nbsp;depend&nbsp;on&nbsp;the&nbsp;presence&nbsp;or&nbsp;absence&nbsp;of&nbsp;a&nbsp;contained&nbsp;value&nbsp;are&nbsp;provided,&nbsp;such&nbsp;as&nbsp;`<a href="#PyOptional-or_else">or_else</a>()`&nbsp;(returns&nbsp;a&nbsp;default&nbsp;value&nbsp;if&nbsp;no&nbsp;value&nbsp;is&nbsp;present)&nbsp;and&nbsp;`<a href="#PyOptional-if_present">if_present</a>()`&nbsp;(performs&nbsp;an&nbsp;action&nbsp;if&nbsp;a&nbsp;value&nbsp;is&nbsp;present).<br>&nbsp;</tt></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            
+    <td width="100%%"><dl><dt>Method resolution order:</dt>
+<dd><a href="pyoptional.pyoptional.html#PyOptional">PyOptional</a></dd>
+<dd><a href="typing.html#Generic">typing.Generic</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="PyOptional-__eq__"><strong>__eq__</strong></a>(self, o: 'Any') -&gt; 'bool'</dt><dd><tt>Returns&nbsp;`True`&nbsp;if&nbsp;`o`&nbsp;is&nbsp;equal&nbsp;to&nbsp;this&nbsp;`<a href="#PyOptional">PyOptional</a>`,&nbsp;`False`&nbsp;otherwise.<br>
+&nbsp;<br>
+Two&nbsp;`<a href="#PyOptional">PyOptional</a>`&nbsp;instances&nbsp;are&nbsp;equal&nbsp;if&nbsp;and&nbsp;only&nbsp;if&nbsp;they&nbsp;are&nbsp;both&nbsp;empty&nbsp;or&nbsp;both&nbsp;are&nbsp;non-empty&nbsp;and&nbsp;their&nbsp;values&nbsp;are&nbsp;equal.</tt></dd></dl>
+
+<dl><dt><a name="PyOptional-__hash__"><strong>__hash__</strong></a>(self) -&gt; 'int'</dt><dd><tt>Returns&nbsp;the&nbsp;`int`&nbsp;hash&nbsp;code&nbsp;of&nbsp;the&nbsp;value,&nbsp;if&nbsp;present,&nbsp;otherwise&nbsp;0&nbsp;(zero)&nbsp;if&nbsp;no&nbsp;value&nbsp;is&nbsp;present.</tt></dd></dl>
+
+<dl><dt><a name="PyOptional-__init__"><strong>__init__</strong></a>(self, key: 'Any', val: 'Opt[T]' = None) -&gt; 'None'</dt></dl>
+
+<dl><dt><a name="PyOptional-__repr__"><strong>__repr__</strong></a>(self) -&gt; 'str'</dt><dd><tt>Returns&nbsp;a&nbsp;non-empty&nbsp;string&nbsp;representation&nbsp;of&nbsp;this&nbsp;`<a href="#PyOptional">PyOptional</a>`.</tt></dd></dl>
+
+<dl><dt><a name="PyOptional-__str__"><strong>__str__</strong></a>(self) -&gt; 'str'</dt><dd><tt>Returns&nbsp;a&nbsp;non-empty&nbsp;string&nbsp;representation&nbsp;of&nbsp;this&nbsp;`<a href="#PyOptional">PyOptional</a>`.</tt></dd></dl>
+
+<dl><dt><a name="PyOptional-filter"><strong>filter</strong></a>(self, fn: 'Callable[[T], bool]') -&gt; 'PyOptional[T]'</dt><dd><tt>If&nbsp;a&nbsp;value&nbsp;is&nbsp;present,&nbsp;and&nbsp;the&nbsp;value&nbsp;matches&nbsp;the&nbsp;given&nbsp;predicate,&nbsp;returns&nbsp;a&nbsp;`<a href="#PyOptional">PyOptional</a>`&nbsp;describing&nbsp;the&nbsp;value,&nbsp;otherwise&nbsp;returns&nbsp;an&nbsp;empty&nbsp;`<a href="#PyOptional">PyOptional</a>`.</tt></dd></dl>
+
+<dl><dt><a name="PyOptional-flat_map"><strong>flat_map</strong></a>(self, fn: 'Callable[[T], R]') -&gt; 'PyOptional[R]'</dt><dd><tt>If&nbsp;a&nbsp;value&nbsp;is&nbsp;present,&nbsp;returns&nbsp;the&nbsp;result&nbsp;of&nbsp;applying&nbsp;the&nbsp;given&nbsp;`<a href="#PyOptional">PyOptional</a>`-bearing&nbsp;mapping&nbsp;function&nbsp;(i.e.,&nbsp;`fn`)&nbsp;to&nbsp;the&nbsp;value,&nbsp;otherwise&nbsp;returns&nbsp;an&nbsp;empty&nbsp;`<a href="#PyOptional">PyOptional</a>`.<br>
+&nbsp;<br>
+In&nbsp;practice,&nbsp;this&nbsp;method&nbsp;does&nbsp;not&nbsp;wrap&nbsp;the&nbsp;result&nbsp;of&nbsp;the&nbsp;mapping&nbsp;function&nbsp;in&nbsp;an&nbsp;`<a href="#PyOptional">PyOptional</a>`&nbsp;instance&nbsp;if&nbsp;such&nbsp;result&nbsp;is&nbsp;already&nbsp;a&nbsp;`<a href="#PyOptional">PyOptional</a>`.</tt></dd></dl>
+
+<dl><dt><a name="PyOptional-get"><strong>get</strong></a>(self) -&gt; 'T'</dt><dd><tt>If&nbsp;a&nbsp;value&nbsp;is&nbsp;present,&nbsp;returns&nbsp;the&nbsp;value,&nbsp;otherwise&nbsp;raises&nbsp;a&nbsp;`ValueError`.</tt></dd></dl>
+
+<dl><dt><a name="PyOptional-if_present"><strong>if_present</strong></a>(self, fn: 'Callable[[T], Any]') -&gt; 'None'</dt><dd><tt>If&nbsp;a&nbsp;value&nbsp;is&nbsp;present,&nbsp;performs&nbsp;the&nbsp;given&nbsp;action&nbsp;(i.e.,&nbsp;applies&nbsp;`fn`)&nbsp;with&nbsp;the&nbsp;value,&nbsp;otherwise&nbsp;does&nbsp;nothing.</tt></dd></dl>
+
+<dl><dt><a name="PyOptional-if_present_or_else"><strong>if_present_or_else</strong></a>(self, fn: 'Callable[[T], Any]', empty_fn: 'Callable[[], None]') -&gt; 'None'</dt><dd><tt>If&nbsp;a&nbsp;value&nbsp;is&nbsp;present,&nbsp;calls&nbsp;`fn`&nbsp;with&nbsp;the&nbsp;value&nbsp;as&nbsp;argument,&nbsp;otherwise&nbsp;calls&nbsp;`empty_fn`&nbsp;with&nbsp;no&nbsp;arguments.</tt></dd></dl>
+
+<dl><dt><a name="PyOptional-is_empty"><strong>is_empty</strong></a>(self) -&gt; 'bool'</dt><dd><tt>If&nbsp;a&nbsp;value&nbsp;is&nbsp;not&nbsp;present,&nbsp;returns&nbsp;`True`,&nbsp;otherwise&nbsp;`False`.</tt></dd></dl>
+
+<dl><dt><a name="PyOptional-is_present"><strong>is_present</strong></a>(self) -&gt; 'bool'</dt><dd><tt>If&nbsp;a&nbsp;value&nbsp;is&nbsp;present,&nbsp;returns&nbsp;`True`,&nbsp;otherwise&nbsp;`False`.</tt></dd></dl>
+
+<dl><dt><a name="PyOptional-map"><strong>map</strong></a>(self, fn: 'Callable[[T], R]') -&gt; 'PyOptional[R]'</dt><dd><tt>If&nbsp;a&nbsp;value&nbsp;is&nbsp;present,&nbsp;returns&nbsp;a&nbsp;`<a href="#PyOptional">PyOptional</a>`&nbsp;describing&nbsp;(as&nbsp;if&nbsp;by&nbsp;`<a href="#PyOptional-of_nullable">of_nullable</a>(T)`)&nbsp;the&nbsp;result&nbsp;of&nbsp;applying&nbsp;the&nbsp;given&nbsp;mapping&nbsp;function&nbsp;(i.e.,&nbsp;`fn`)&nbsp;to&nbsp;the&nbsp;value,&nbsp;otherwise&nbsp;returns&nbsp;an&nbsp;empty&nbsp;`<a href="#PyOptional">PyOptional</a>`.</tt></dd></dl>
+
+<dl><dt><a name="PyOptional-or_else"><strong>or_else</strong></a>(self, default: 'T') -&gt; 'T'</dt><dd><tt>If&nbsp;a&nbsp;value&nbsp;is&nbsp;present,&nbsp;returns&nbsp;the&nbsp;value,&nbsp;otherwise&nbsp;returns&nbsp;`default`.<br>
+&nbsp;<br>
+It&nbsp;is&nbsp;possible&nbsp;for&nbsp;`default`&nbsp;to&nbsp;be&nbsp;`None`.<br>
+&nbsp;<br>
+WARNING:&nbsp;`type(default)`&nbsp;can&nbsp;be&nbsp;anything.</tt></dd></dl>
+
+<dl><dt><a name="PyOptional-or_else_get"><strong>or_else_get</strong></a>(self, fn: 'Callable[[], T]') -&gt; 'T'</dt><dd><tt>If&nbsp;a&nbsp;value&nbsp;is&nbsp;present,&nbsp;returns&nbsp;the&nbsp;value,&nbsp;otherwise&nbsp;returns&nbsp;the&nbsp;result&nbsp;produced&nbsp;by&nbsp;the&nbsp;supplying&nbsp;function&nbsp;(i.e.,&nbsp;`fn`).<br>
+&nbsp;<br>
+WARNING:&nbsp;the&nbsp;type&nbsp;of&nbsp;the&nbsp;return&nbsp;value&nbsp;of&nbsp;`fn`&nbsp;can&nbsp;be&nbsp;anything.</tt></dd></dl>
+
+<dl><dt><a name="PyOptional-or_else_raise"><strong>or_else_raise</strong></a>(self, exception: 'Opt[Exception | Any]' = None) -&gt; 'T'</dt><dd><tt>If&nbsp;a&nbsp;value&nbsp;is&nbsp;present,&nbsp;returns&nbsp;the&nbsp;value,&nbsp;otherwise&nbsp;raises&nbsp;the&nbsp;exception&nbsp;provided&nbsp;(i.e.,&nbsp;`exception`)&nbsp;or&nbsp;`ValueError`&nbsp;if&nbsp;no&nbsp;`exception`&nbsp;is&nbsp;provided&nbsp;(or&nbsp;is&nbsp;`None`).</tt></dd></dl>
+
+<dl><dt><a name="PyOptional-or_else_throw"><strong>or_else_throw</strong></a> = <a href="#PyOptional-or_else_raise">or_else_raise</a>(self, exception: 'Opt[Exception | Any]' = None) -&gt; 'T'</dt></dl>
+
+<dl><dt><a name="PyOptional-or_new_pyoptional"><strong>or_new_pyoptional</strong></a>(self, fn: 'Callable[[], PyOptional[T]]') -&gt; 'PyOptional[T]'</dt><dd><tt>If&nbsp;a&nbsp;value&nbsp;is&nbsp;present,&nbsp;returns&nbsp;a&nbsp;`<a href="#PyOptional">PyOptional</a>`&nbsp;describing&nbsp;the&nbsp;value,&nbsp;otherwise&nbsp;returns&nbsp;a&nbsp;`<a href="#PyOptional">PyOptional</a>`&nbsp;produced&nbsp;by&nbsp;the&nbsp;supplying&nbsp;function&nbsp;(i.e,&nbsp;`fn`).</tt></dd></dl>
+
+<hr>
+Class methods defined here:<br>
+<dl><dt><a name="PyOptional-empty"><strong>empty</strong></a>() -&gt; 'PyOptional[T]'<span style="color:#909090"><span style="font-family:helvetica, arial, sans-serif"> from <a href="builtins.html#type">builtins.type</a></span></span></dt><dd><tt>Returns&nbsp;an&nbsp;empty&nbsp;`<a href="#PyOptional">PyOptional</a>`&nbsp;instance.<br>
+&nbsp;<br>
+There&nbsp;is&nbsp;no&nbsp;guarantee&nbsp;that&nbsp;a&nbsp;call&nbsp;to&nbsp;`<a href="#PyOptional">PyOptional</a>.<a href="#PyOptional-empty">empty</a>()`&nbsp;will&nbsp;return&nbsp;a&nbsp;new&nbsp;instance&nbsp;or&nbsp;the&nbsp;same&nbsp;instance&nbsp;each&nbsp;time.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;`cls:&nbsp;(Type[<a href="#PyOptional">PyOptional</a>[T]])`:&nbsp;The&nbsp;type&nbsp;of&nbsp;the&nbsp;non-existent&nbsp;value.<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;An&nbsp;empty&nbsp;`<a href="#PyOptional">PyOptional</a>[T]`.</tt></dd></dl>
+
+<dl><dt><a name="PyOptional-of"><strong>of</strong></a>(val: 'T') -&gt; 'PyOptional[T]'<span style="color:#909090"><span style="font-family:helvetica, arial, sans-serif"> from <a href="builtins.html#type">builtins.type</a></span></span></dt><dd><tt>Returns&nbsp;a&nbsp;`<a href="#PyOptional">PyOptional</a>`&nbsp;describing&nbsp;the&nbsp;given&nbsp;non-`None`&nbsp;value.<br>
+&nbsp;<br>
+If&nbsp;the&nbsp;given&nbsp;value&nbsp;is&nbsp;`None`,&nbsp;an&nbsp;`ValueError`&nbsp;is&nbsp;raised.</tt></dd></dl>
+
+<dl><dt><a name="PyOptional-of_nullable"><strong>of_nullable</strong></a>(val: 'Opt[T]') -&gt; 'PyOptional[T]'<span style="color:#909090"><span style="font-family:helvetica, arial, sans-serif"> from <a href="builtins.html#type">builtins.type</a></span></span></dt><dd><tt>Returns&nbsp;a&nbsp;`<a href="#PyOptional">PyOptional</a>`&nbsp;describing&nbsp;the&nbsp;given&nbsp;value&nbsp;if&nbsp;such&nbsp;value&nbsp;is&nbsp;non-`None`,&nbsp;otherwise&nbsp;returns&nbsp;an&nbsp;empty&nbsp;`<a href="#PyOptional">PyOptional</a>`.</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__annotations__</strong> = {'_PyOptional__CREATE_KEY': 'Any'}</dl>
+
+<dl><dt><strong>__orig_bases__</strong> = (typing.Generic[~T],)</dl>
+
+<dl><dt><strong>__parameters__</strong> = (~T,)</dl>
+
+<hr>
+Class methods inherited from <a href="typing.html#Generic">typing.Generic</a>:<br>
+<dl><dt><a name="PyOptional-__class_getitem__"><strong>__class_getitem__</strong></a>(params)<span style="color:#909090"><span style="font-family:helvetica, arial, sans-serif"> from <a href="builtins.html#type">builtins.type</a></span></span></dt><dd><tt>Parameterizes&nbsp;a&nbsp;generic&nbsp;class.<br>
+&nbsp;<br>
+At&nbsp;least,&nbsp;parameterizing&nbsp;a&nbsp;generic&nbsp;class&nbsp;is&nbsp;the&nbsp;*main*&nbsp;thing&nbsp;this&nbsp;method<br>
+does.&nbsp;For&nbsp;example,&nbsp;for&nbsp;some&nbsp;generic&nbsp;class&nbsp;`Foo`,&nbsp;this&nbsp;is&nbsp;called&nbsp;when&nbsp;we<br>
+do&nbsp;`Foo[int]`&nbsp;-&nbsp;there,&nbsp;with&nbsp;`cls=Foo`&nbsp;and&nbsp;`params=int`.<br>
+&nbsp;<br>
+However,&nbsp;note&nbsp;that&nbsp;this&nbsp;method&nbsp;is&nbsp;also&nbsp;called&nbsp;when&nbsp;defining&nbsp;generic<br>
+classes&nbsp;in&nbsp;the&nbsp;first&nbsp;place&nbsp;with&nbsp;`class&nbsp;Foo(<a href="typing.html#Generic">Generic</a>[T]):&nbsp;...`.</tt></dd></dl>
+
+<dl><dt><a name="PyOptional-__init_subclass__"><strong>__init_subclass__</strong></a>(*args, **kwargs)<span style="color:#909090"><span style="font-family:helvetica, arial, sans-serif"> from <a href="builtins.html#type">builtins.type</a></span></span></dt></dl>
+
+</td></tr>
+</table></td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#eeaa77">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#eeaa77"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><dl><dt><a name="-cast"><strong>cast</strong></a>(typ, val)</dt><dd><tt>Cast&nbsp;a&nbsp;value&nbsp;to&nbsp;a&nbsp;type.<br>
+&nbsp;<br>
+This&nbsp;returns&nbsp;the&nbsp;value&nbsp;unchanged.&nbsp;&nbsp;To&nbsp;the&nbsp;type&nbsp;checker&nbsp;this<br>
+signals&nbsp;that&nbsp;the&nbsp;return&nbsp;value&nbsp;has&nbsp;the&nbsp;designated&nbsp;type,&nbsp;but&nbsp;at<br>
+runtime&nbsp;we&nbsp;intentionally&nbsp;don't&nbsp;check&nbsp;anything&nbsp;(we&nbsp;want&nbsp;this<br>
+to&nbsp;be&nbsp;as&nbsp;fast&nbsp;as&nbsp;possible).</tt></dd></dl>
+</td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#55aa55">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#55aa55"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><strong>Callable</strong> = typing.Callable<br>
+<strong>Opt</strong> = typing.Optional<br>
+<strong>R</strong> = ~R<br>
+<strong>T</strong> = ~T<br>
+<strong>Type</strong> = typing.Type<br>
+<strong>annotations</strong> = _Feature((3, 7, 0, 'beta', 1), None, 16777216)</td></tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html lang="en">
+<head><title>Python: module vacuumworld.vwconfig_manager</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body bgcolor="#f0f0f8">
+<table class="heading">
+    <tr style="background-color: #7799ee;">
+        <td class="title" style="vertical-align: bottom">&nbsp;<br>
+            <span style="color: #ffffff; font-family: helvetica, arial,sans-serif;">
+            &nbsp;<br><big><big><strong><a href="vacuumworld.html"><span style="color:">vacuumworld</span></a>.vwconfig_manager</strong></big></big>
+            </span>
+        </td>
+        <td style="vertical-align: bottom; text-align: right;">
+            <span style="color: #ffffff; font-family: helvetica, arial,sans-serif;">
+                <a href=".">index</a><br><a href="file:../vacuumworld/vwconfig_manager.py">../vacuumworld/vwconfig_manager.py</a>
+            </span>
+        </td>
+    </tr>
+</table>
+
+
+
+
+
+
+
+
+
+
+<p></p>
+
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#aa55cc">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#aa55cc"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><table width="100%%" summary="list"><tr><td width="25%" valign=top><a href="os.html">os</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#aa55cc">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>`from` Modules</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#aa55cc"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><table width="100%%" summary="list"><tr><td width="25%" valign=top><a href="pymonitors.html">pymonitors</a><br>
+</td><td width="25%" valign=top><a href="screeninfo.screeninfo.html">screeninfo.screeninfo</a><br>
+</td><td width="25%" valign=top><a href="json.html">json</a><br>
+</td><td width="25%" valign=top><a href="screeninfo.common.html">screeninfo.common</a><br>
+</td></tr></table></td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ee77aa">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#ee77aa"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><dl>
+<dt><span style="font-family:helvetica, arial, sans-serif"><a href="builtins.html#object">builtins.object</a>
+</span></dt><dd>
+<dl>
+<dt><span style="font-family:helvetica, arial, sans-serif"><a href="vacuumworld.vwconfig_manager.html#VWConfigManager">VWConfigManager</a>(<a href="builtins.html#object">builtins.object</a>)
+</span></dt></dl>
+</dd>
+</dl>
+ 
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ffc8d8">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#000000" face="helvetica, arial"><a name="VWConfigManager">class <strong>VWConfigManager</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td>
+    </tr>
+
+    
+        <tr bgcolor="#ffc8d8">
+            <td rowspan=2><tt></tt></td>
+            <td colspan=2><tt>This&nbsp;class&nbsp;is&nbsp;responsible&nbsp;for&nbsp;loading&nbsp;the&nbsp;configuration&nbsp;of&nbsp;the&nbsp;application.<br>&nbsp;</tt></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            
+    <td width="100%%">Static methods defined here:<br>
+<dl><dt><a name="VWConfigManager-load_config_from_file"><strong>load_config_from_file</strong></a>(config_file_path: str, load_additional_config: bool = True) -&gt; dict[str, typing.Any]</dt><dd><tt>Loads&nbsp;the&nbsp;configuration&nbsp;from&nbsp;the&nbsp;file&nbsp;identified&nbsp;by&nbsp;`config_file_path`,&nbsp;and&nbsp;returns&nbsp;it&nbsp;as&nbsp;a&nbsp;`dict`.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;assumes&nbsp;(via&nbsp;assertions)&nbsp;that&nbsp;`config_file_path`&nbsp;points&nbsp;to&nbsp;an&nbsp;existing&nbsp;file.<br>
+&nbsp;<br>
+If&nbsp;something&nbsp;goes&nbsp;wrong&nbsp;during&nbsp;the&nbsp;I/O&nbsp;operations,&nbsp;the&nbsp;resulting&nbsp;`IOError`&nbsp;is&nbsp;not&nbsp;caught&nbsp;(and&nbsp;thus&nbsp;automatically&nbsp;propagated).</tt></dd></dl>
+
+</td></tr>
+</table></td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#eeaa77">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#eeaa77"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><dl><dt><a name="-get_monitors_with_pymonitors"><strong>get_monitors_with_pymonitors</strong></a> = get_monitors(print_info: bool) -&gt; list[pymonitors.common.monitor.Monitor]</dt></dl>
+ <dl><dt><a name="-get_monitors_with_screeninfo"><strong>get_monitors_with_screeninfo</strong></a> = get_monitors(name: Union[screeninfo.common.Enumerator, str, NoneType] = None) -&gt; List[screeninfo.common.Monitor]</dt><dd><tt>Returns&nbsp;a&nbsp;list&nbsp;of&nbsp;:class:`Monitor`&nbsp;objects&nbsp;based&nbsp;on&nbsp;active&nbsp;monitors.</tt></dd></dl>
+ <dl><dt><a name="-load"><strong>load</strong></a>(fp, *, cls=None, object_hook=None, parse_float=None, parse_int=None, parse_constant=None, object_pairs_hook=None, **kw)</dt><dd><tt>Deserialize&nbsp;``fp``&nbsp;(a&nbsp;``.read()``-supporting&nbsp;file-like&nbsp;<a href="builtins.html#object">object</a>&nbsp;containing<br>
+a&nbsp;JSON&nbsp;document)&nbsp;to&nbsp;a&nbsp;Python&nbsp;<a href="builtins.html#object">object</a>.<br>
+&nbsp;<br>
+``object_hook``&nbsp;is&nbsp;an&nbsp;optional&nbsp;function&nbsp;that&nbsp;will&nbsp;be&nbsp;called&nbsp;with&nbsp;the<br>
+result&nbsp;of&nbsp;any&nbsp;<a href="builtins.html#object">object</a>&nbsp;literal&nbsp;decode&nbsp;(a&nbsp;``dict``).&nbsp;The&nbsp;return&nbsp;value&nbsp;of<br>
+``object_hook``&nbsp;will&nbsp;be&nbsp;used&nbsp;instead&nbsp;of&nbsp;the&nbsp;``dict``.&nbsp;This&nbsp;feature<br>
+can&nbsp;be&nbsp;used&nbsp;to&nbsp;implement&nbsp;custom&nbsp;decoders&nbsp;(e.g.&nbsp;JSON-RPC&nbsp;class&nbsp;hinting).<br>
+&nbsp;<br>
+``object_pairs_hook``&nbsp;is&nbsp;an&nbsp;optional&nbsp;function&nbsp;that&nbsp;will&nbsp;be&nbsp;called&nbsp;with&nbsp;the<br>
+result&nbsp;of&nbsp;any&nbsp;<a href="builtins.html#object">object</a>&nbsp;literal&nbsp;decoded&nbsp;with&nbsp;an&nbsp;ordered&nbsp;list&nbsp;of&nbsp;pairs.&nbsp;&nbsp;The<br>
+return&nbsp;value&nbsp;of&nbsp;``object_pairs_hook``&nbsp;will&nbsp;be&nbsp;used&nbsp;instead&nbsp;of&nbsp;the&nbsp;``dict``.<br>
+This&nbsp;feature&nbsp;can&nbsp;be&nbsp;used&nbsp;to&nbsp;implement&nbsp;custom&nbsp;decoders.&nbsp;&nbsp;If&nbsp;``object_hook``<br>
+is&nbsp;also&nbsp;defined,&nbsp;the&nbsp;``object_pairs_hook``&nbsp;takes&nbsp;priority.<br>
+&nbsp;<br>
+To&nbsp;use&nbsp;a&nbsp;custom&nbsp;``JSONDecoder``&nbsp;subclass,&nbsp;specify&nbsp;it&nbsp;with&nbsp;the&nbsp;``cls``<br>
+kwarg;&nbsp;otherwise&nbsp;``JSONDecoder``&nbsp;is&nbsp;used.</tt></dd></dl>
+</td></tr>
+</table>
+</body>
+</html>

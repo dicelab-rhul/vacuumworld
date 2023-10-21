@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html lang="en">
+<head><title>Python: module vacuumworld.model.actions.vweffort</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body bgcolor="#f0f0f8">
+<table class="heading">
+    <tr style="background-color: #7799ee;">
+        <td class="title" style="vertical-align: bottom">&nbsp;<br>
+            <span style="color: #ffffff; font-family: helvetica, arial,sans-serif;">
+            &nbsp;<br><big><big><strong><a href="vacuumworld.html"><span style="color:">vacuumworld</span></a>.<a href="vacuumworld.model.html"><span style="color:">model</span></a>.<a href="vacuumworld.model.actions.html"><span style="color:">actions</span></a>.vweffort</strong></big></big>
+            </span>
+        </td>
+        <td style="vertical-align: bottom; text-align: right;">
+            <span style="color: #ffffff; font-family: helvetica, arial,sans-serif;">
+                <a href=".">index</a><br><a href="file:../vacuumworld/model/actions/vweffort.py">../vacuumworld/model/actions/vweffort.py</a>
+            </span>
+        </td>
+    </tr>
+</table>
+
+
+
+
+
+
+
+
+
+
+<p></p>
+
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ee77aa">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#ee77aa"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><dl>
+<dt><span style="font-family:helvetica, arial, sans-serif"><a href="builtins.html#object">builtins.object</a>
+</span></dt><dd>
+<dl>
+<dt><span style="font-family:helvetica, arial, sans-serif"><a href="vacuumworld.model.actions.vweffort.html#VWActionEffort">VWActionEffort</a>(<a href="builtins.html#object">builtins.object</a>)
+</span></dt></dl>
+</dd>
+</dl>
+ 
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ffc8d8">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#000000" face="helvetica, arial"><a name="VWActionEffort">class <strong>VWActionEffort</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td>
+    </tr>
+
+    
+        <tr bgcolor="#ffc8d8">
+            <td rowspan=2><tt></tt></td>
+            <td colspan=2><tt>This&nbsp;class&nbsp;specifies&nbsp;the&nbsp;effort&nbsp;of&nbsp;each&nbsp;kind&nbsp;of&nbsp;`VWAction`.<br>
+&nbsp;<br>
+The&nbsp;effort&nbsp;of&nbsp;a&nbsp;kind&nbsp;`VWAction`&nbsp;is&nbsp;an&nbsp;`int`&nbsp;number&nbsp;that&nbsp;specifies&nbsp;how&nbsp;intensive&nbsp;such&nbsp;kind&nbsp;`VWAction`&nbsp;is&nbsp;to&nbsp;attempt.<br>&nbsp;</tt></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            
+    <td width="100%%">Static methods defined here:<br>
+<dl><dt><a name="VWActionEffort-override_default_effort_for_action"><strong>override_default_effort_for_action</strong></a>(action_name: str, new_effort: int) -&gt; None</dt><dd><tt>Overrides&nbsp;the&nbsp;default&nbsp;effort&nbsp;of&nbsp;the&nbsp;specified&nbsp;`action_name`&nbsp;with&nbsp;the&nbsp;specified&nbsp;`new_effort`.<br>
+&nbsp;<br>
+If&nbsp;the&nbsp;specified&nbsp;`action_name`&nbsp;is&nbsp;not&nbsp;a&nbsp;valid&nbsp;`VWAction`&nbsp;name,&nbsp;then&nbsp;nothing&nbsp;happens.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;assumes&nbsp;(via&nbsp;assertion)&nbsp;that&nbsp;`action_name`&nbsp;is&nbsp;a&nbsp;`str`,&nbsp;and&nbsp;`new_effort`&nbsp;is&nbsp;an&nbsp;`int`.</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>DEFAULT_EFFORT_FOR_OTHER_ACTIONS</strong> = 1</dl>
+
+<dl><dt><strong>EFFORTS</strong> = {'VWBroadcastAction': 1, 'VWCleanAction': 1, 'VWDropAction': 1, 'VWIdleAction': 1, ...}</dl>
+
+<dl><dt><strong>REASONABLE_EFFORTS</strong> = {'VWBroadcastAction': 5, 'VWCleanAction': 1, 'VWDropAction': 1, 'VWIdleAction': 1, ...}</dl>
+
+<dl><dt><strong>__annotations__</strong> = {'DEFAULT_EFFORT_FOR_OTHER_ACTIONS': &lt;class 'int'&gt;, 'EFFORTS': dict[str, int], 'REASONABLE_EFFORTS': dict[str, int], '_VWActionEffort__DEFAULT_EFFORTS': dict[str, int]}</dl>
+
+</td></tr>
+</table></td></tr>
+</table>
+</body>
+</html>

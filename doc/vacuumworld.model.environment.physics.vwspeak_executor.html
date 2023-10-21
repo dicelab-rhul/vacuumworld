@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html lang="en">
+<head><title>Python: module vacuumworld.model.environment.physics.vwspeak_executor</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body bgcolor="#f0f0f8">
+<table class="heading">
+    <tr style="background-color: #7799ee;">
+        <td class="title" style="vertical-align: bottom">&nbsp;<br>
+            <span style="color: #ffffff; font-family: helvetica, arial,sans-serif;">
+            &nbsp;<br><big><big><strong><a href="vacuumworld.html"><span style="color:">vacuumworld</span></a>.<a href="vacuumworld.model.html"><span style="color:">model</span></a>.<a href="vacuumworld.model.environment.html"><span style="color:">environment</span></a>.<a href="vacuumworld.model.environment.physics.html"><span style="color:">physics</span></a>.vwspeak_executor</strong></big></big>
+            </span>
+        </td>
+        <td style="vertical-align: bottom; text-align: right;">
+            <span style="color: #ffffff; font-family: helvetica, arial,sans-serif;">
+                <a href=".">index</a><br><a href="file:../vacuumworld/model/environment/physics/vwspeak_executor.py">../vacuumworld/model/environment/physics/vwspeak_executor.py</a>
+            </span>
+        </td>
+    </tr>
+</table>
+
+
+
+
+
+
+
+
+
+
+<p></p>
+
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#aa55cc">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>`from` Modules</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#aa55cc"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><table width="100%%" summary="list"><tr><td width="25%" valign=top><a href="pystarworldsturbo.utils.utils.html">pystarworldsturbo.utils.utils</a><br>
+<a href="vacuumworld.model.actions.vwspeak_action.html">vacuumworld.model.actions.vwspeak_action</a><br>
+</td><td width="25%" valign=top><a href="pystarworldsturbo.common.exceptions.html">pystarworldsturbo.common.exceptions</a><br>
+<a href="pystarworldsturbo.common.action_outcome.html">pystarworldsturbo.common.action_outcome</a><br>
+</td><td width="25%" valign=top><a href="pystarworldsturbo.common.action_result.html">pystarworldsturbo.common.action_result</a><br>
+<a href="pystarworldsturbo.environment.physics.action_executor.html">pystarworldsturbo.environment.physics.action_executor</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ee77aa">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#ee77aa"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><dl>
+<dt><span style="font-family:helvetica, arial, sans-serif"><a href="pystarworldsturbo.environment.physics.action_executor.html#ActionExecutor">pystarworldsturbo.environment.physics.action_executor.ActionExecutor</a>(<a href="builtins.html#object">builtins.object</a>)
+</span></dt><dd>
+<dl>
+<dt><span style="font-family:helvetica, arial, sans-serif"><a href="vacuumworld.model.environment.physics.vwspeak_executor.html#VWSpeakExecutor">VWSpeakExecutor</a>(<a href="pystarworldsturbo.environment.physics.action_executor.html#ActionExecutor">pystarworldsturbo.environment.physics.action_executor.ActionExecutor</a>)
+</span></dt></dl>
+</dd>
+</dl>
+ 
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ffc8d8">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#000000" face="helvetica, arial"><a name="VWSpeakExecutor">class <strong>VWSpeakExecutor</strong></a>(<a href="pystarworldsturbo.environment.physics.action_executor.html#ActionExecutor">pystarworldsturbo.environment.physics.action_executor.ActionExecutor</a>)</font></td>
+    </tr>
+
+    
+        <tr bgcolor="#ffc8d8">
+            <td rowspan=2><tt></tt></td>
+            <td colspan=2><tt>This&nbsp;class&nbsp;is&nbsp;an&nbsp;`<a href="pystarworldsturbo.environment.physics.action_executor.html#ActionExecutor">ActionExecutor</a>`&nbsp;for&nbsp;`VWSpeakAction`.<br>&nbsp;</tt></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            
+    <td width="100%%"><dl><dt>Method resolution order:</dt>
+<dd><a href="vacuumworld.model.environment.physics.vwspeak_executor.html#VWSpeakExecutor">VWSpeakExecutor</a></dd>
+<dd><a href="pystarworldsturbo.environment.physics.action_executor.html#ActionExecutor">pystarworldsturbo.environment.physics.action_executor.ActionExecutor</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="VWSpeakExecutor-attempt"><strong>attempt</strong></a>(self, env: 'VWEnvironment', action: 'VWSpeakAction') -&gt; 'ActionResult'</dt><dd><tt>Attempts&nbsp;to&nbsp;execute&nbsp;`action`&nbsp;in&nbsp;`env`,&nbsp;returning&nbsp;a&nbsp;provisional&nbsp;`ActionResult`.<br>
+&nbsp;<br>
+If&nbsp;an&nbsp;`Exception`&nbsp;is&nbsp;raised,&nbsp;the&nbsp;provisional&nbsp;`ActionResult`&nbsp;will&nbsp;have&nbsp;an&nbsp;`ActionOutcome`&nbsp;of&nbsp;`ActionOutcome.failure`.<br>
+&nbsp;<br>
+Otherwise,&nbsp;the&nbsp;provisional&nbsp;`ActionResult`&nbsp;will&nbsp;have&nbsp;an&nbsp;`ActionOutcome`&nbsp;of&nbsp;`ActionOutcome.success`.</tt></dd></dl>
+
+<dl><dt><a name="VWSpeakExecutor-is_possible"><strong>is_possible</strong></a>(self, env: 'VWEnvironment', action: 'VWSpeakAction') -&gt; 'bool'</dt><dd><tt>Returns&nbsp;whether&nbsp;or&nbsp;not&nbsp;`action`&nbsp;is&nbsp;possible&nbsp;in&nbsp;`env`.<br>
+&nbsp;<br>
+In&nbsp;any&nbsp;`VWEnvironment`&nbsp;a&nbsp;`VWSpeakAction`&nbsp;is&nbsp;always&nbsp;possible.&nbsp;Therefore&nbsp;`True`&nbsp;is&nbsp;always&nbsp;returned.</tt></dd></dl>
+
+<dl><dt><a name="VWSpeakExecutor-succeeded"><strong>succeeded</strong></a>(self, env: 'VWEnvironment', action: 'VWSpeakAction') -&gt; 'bool'</dt><dd><tt>Returns&nbsp;whether&nbsp;or&nbsp;not&nbsp;the&nbsp;post-conditions&nbsp;of&nbsp;`action`&nbsp;are&nbsp;satisfied&nbsp;in&nbsp;`env`.<br>
+&nbsp;<br>
+There&nbsp;are&nbsp;no&nbsp;post-conditions&nbsp;for&nbsp;`VWSpeakAction`&nbsp;to&nbsp;check&nbsp;in&nbsp;`VWEnvironment`,&nbsp;so&nbsp;`True`&nbsp;is&nbsp;always&nbsp;returned.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="pystarworldsturbo.environment.physics.action_executor.html#ActionExecutor">pystarworldsturbo.environment.physics.action_executor.ActionExecutor</a>:<br>
+<dl><dt><a name="VWSpeakExecutor-execute"><strong>execute</strong></a>(self, env: 'Environment', action: 'Action') -&gt; 'ActionResult'</dt></dl>
+
+</td></tr>
+</table></td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#eeaa77">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#eeaa77"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><dl><dt><a name="-ignore"><strong>ignore</strong></a>(obj: Union[Any, Iterable[Any], Iterator[Any]]) -&gt; None</dt></dl>
+</td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#55aa55">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#55aa55"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><strong>TYPE_CHECKING</strong> = False<br>
+<strong>annotations</strong> = _Feature((3, 7, 0, 'beta', 1), None, 16777216)</td></tr>
+</table>
+</body>
+</html>

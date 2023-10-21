@@ -53,6 +53,9 @@ class VacuumWorld():
         self.__vw_version_check()
 
     def run(self, default_mind: PyOptional[VWActorMindSurrogate]=PyOptional.empty(), white_mind: PyOptional[VWActorMindSurrogate]=PyOptional.empty(), green_mind: PyOptional[VWActorMindSurrogate]=PyOptional.empty(), orange_mind: PyOptional[VWActorMindSurrogate]=PyOptional.empty(), **kwargs: Any) -> None:
+        '''
+        Loads the mind surrogates, and selects the appropriate VacuumWorld runner. Then, it loads the configuration options, and starts the loaded runner.
+        '''
         minds: dict[VWColour, VWActorMindSurrogate] = VacuumWorld.__process_minds(default_mind=default_mind, white_mind=white_mind, green_mind=green_mind, orange_mind=orange_mind)
         minds[VWColour.user] = VWUserMindSurrogate(difficulty_level=VWUserDifficulty(self.__config["default_user_mind_level"]))
 
@@ -260,9 +263,39 @@ class VacuumWorld():
             handle_signal(SIGTSTP, lambda num, _: print(f"SIGTSTP (signal number {num}) received and ignored."))
 
 
-# For back-compatibility with 4.2.5.
 def run(default_mind: Optional[VWActorMindSurrogate]=None, white_mind: Optional[VWActorMindSurrogate]=None, green_mind: Optional[VWActorMindSurrogate]=None, orange_mind: Optional[VWActorMindSurrogate]=None, **kwargs: Any) -> None:
+    '''
+    The entry point of VacuumWorld.
+
+    Arguments:
+
+    - `default_mind`: the mind surrogate to be used by all agents, if no specific mind surrogate is provided for them. This argument is mandatory, unless all of the following arguments are provided: `white_mind`, `green_mind`, and `orange_mind`.
+
+    - `green_mind`: the mind surrogate to be used by all green agent. If not provided, `default_mind` will be used.
+
+    - `orange_mind`: the mind surrogate to be used by all orange agent. If not provided, `default_mind` will be used.
+
+    - `white_mind`: the mind surrogate to be used by all white agents. If not provided, `default_mind` will be used.
+
+    - `gui`: if `True`, the GUI will be used. If `False`, the GUI will not be used. If not provided, the GUI will be used if a display is available, and not used otherwise. Please note that `load` must be provided if `gui` is `False`, or if no displays are available.
+
+    - `skip`: if `True`, the initial GUI window will be skipped. If `False`, it will not be skipped. If not provided, it will not be skipped. Please note that this argument is only relevant if `gui` is `True`.
+
+    - `play`: must be used in conjunction with `load`. If `True`, the simulation will start automatically (past the initial window) with the provided state. If `False`, the simulation will not start automatically. If not provided, the simulation will not start automatically.
+
+    - `load`: the path to a file containing a state to be loaded. If not provided, an empty gird will be loaded. In both cases, the grid can be further customised via the GUI (unless a `play` is provided with a `True` value).
+
+    - `speed`: the `float` speed modifier of the simulation. It must be `>= 0` and `< 1`. The higher the number, the lower the latency between cycles. If not provided, `0` will be used. *WARNING*: Python will approximate a value with too many 9s to 1 (e.g., 0.99999999999999999999).
+
+    - `scale`: the `float` scale modifier of the GUI. It must be `>= 0`. It must be `>= 0` and `< 2.5`. The higher the number, the bigger the GUI. If not provided, `1` will be used. A `0` value will be ignored, and `1` will be used.
+
+    - `tooltips`: if `True`, the button tooltips will be shown. If `False`, tooltips will not be shown. If not provided, tooltips will be shown.
+
+    - `efforts`: a `dict[str, int]` containing the efforts of each action type. The keys are the action names, and the values are the efforts. If not provided, the default efforts will be used.
+
+    - `total_cycles`: the total number of cycles to be executed. It must be `> 0`. If not provided, the simulation will run indefinitely. A `0` value will be ignored, and the simulation will run indefinitely.
+    '''
+    # The use of `Optional` instead of `PyOptional` for the arguments is intentional, so that the user can avoid wrapping the minds in `PyOptional`.
     vw: VacuumWorld = VacuumWorld()
 
-    # The use of `Optional` instead of `PyOptional` is intentional, so that the user can avoid wrapping the minds in `PyOptional`.
     vw.run(default_mind=PyOptional.of_nullable(default_mind), white_mind=PyOptional.of_nullable(white_mind), green_mind=PyOptional.of_nullable(green_mind), orange_mind=PyOptional.of_nullable(orange_mind), **kwargs)

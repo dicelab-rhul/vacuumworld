@@ -10,6 +10,9 @@ from ....common.vwvalidator import VWValidator
 
 
 class VWActorAppearance(ActorAppearance):
+    '''
+    This class represents the appearance of a `VWActor`.
+    '''
     def __init__(self, actor_id: str, progressive_id: str, colour: VWColour, orientation: VWOrientation) -> None:
         super(VWActorAppearance, self).__init__(actor_id=actor_id, progressive_id=progressive_id)
 
