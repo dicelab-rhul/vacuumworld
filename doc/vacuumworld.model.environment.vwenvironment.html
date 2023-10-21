@@ -1,0 +1,327 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html lang="en">
+<head><title>Python: module vacuumworld.model.environment.vwenvironment</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body bgcolor="#f0f0f8">
+<table class="heading">
+    <tr style="background-color: #7799ee;">
+        <td class="title" style="vertical-align: bottom">&nbsp;<br>
+            <span style="color: #ffffff; font-family: helvetica, arial,sans-serif;">
+            &nbsp;<br><big><big><strong><a href="vacuumworld.html"><span style="color:">vacuumworld</span></a>.<a href="vacuumworld.model.html"><span style="color:">model</span></a>.<a href="vacuumworld.model.environment.html"><span style="color:">environment</span></a>.vwenvironment</strong></big></big>
+            </span>
+        </td>
+        <td style="vertical-align: bottom; text-align: right;">
+            <span style="color: #ffffff; font-family: helvetica, arial,sans-serif;">
+                <a href=".">index</a><br><a href="file:../vacuumworld/model/environment/vwenvironment.py">../vacuumworld/model/environment/vwenvironment.py</a>
+            </span>
+        </td>
+    </tr>
+</table>
+
+
+
+
+
+
+
+
+
+
+<p></p>
+
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#aa55cc">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>`from` Modules</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#aa55cc"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><table width="100%%" summary="list"><tr><td width="25%" valign=top><a href="vacuumworld.common.vwuser_difficulty.html">vacuumworld.common.vwuser_difficulty</a><br>
+<a href="pystarworldsturbo.common.action_outcome.html">pystarworldsturbo.common.action_outcome</a><br>
+<a href="itertools.html">itertools</a><br>
+<a href="vacuumworld.common.vwcoordinates.html">vacuumworld.common.vwcoordinates</a><br>
+<a href="vacuumworld.model.dirt.vwdirt_appearance.html">vacuumworld.model.dirt.vwdirt_appearance</a><br>
+<a href="random.html">random</a><br>
+<a href="inspect.html">inspect</a><br>
+<a href="vacuumworld.common.vwdirection.html">vacuumworld.common.vwdirection</a><br>
+</td><td width="25%" valign=top><a href="vacuumworld.common.vwvalidator.html">vacuumworld.common.vwvalidator</a><br>
+<a href="vacuumworld.common.vwexceptions.html">vacuumworld.common.vwexceptions</a><br>
+<a href="vacuumworld.model.actor.vwactor.html">vacuumworld.model.actor.vwactor</a><br>
+<a href="vacuumworld.model.dirt.vwdirt.html">vacuumworld.model.dirt.vwdirt</a><br>
+<a href="vacuumworld.model.actor.vwactor_factories.html">vacuumworld.model.actor.vwactor_factories</a><br>
+<a href="pystarworldsturbo.common.action.html">pystarworldsturbo.common.action</a><br>
+<a href="vacuumworld.model.actor.appearance.vwactor_appearance.html">vacuumworld.model.actor.appearance.vwactor_appearance</a><br>
+<a href="vacuumworld.model.actions.vwactions.html">vacuumworld.model.actions.vwactions</a><br>
+</td><td width="25%" valign=top><a href="vacuumworld.model.actor.vwuser.html">vacuumworld.model.actor.vwuser</a><br>
+<a href="pystarworldsturbo.common.action_result.html">pystarworldsturbo.common.action_result</a><br>
+<a href="vacuumworld.model.environment.vwambient.html">vacuumworld.model.environment.vwambient</a><br>
+<a href="pystarworldsturbo.environment.physics.action_executor.html">pystarworldsturbo.environment.physics.action_executor</a><br>
+<a href="pystarworldsturbo.elements.body.html">pystarworldsturbo.elements.body</a><br>
+<a href="vacuumworld.common.vwcolour.html">vacuumworld.common.vwcolour</a><br>
+<a href="math.html">math</a><br>
+<a href="pyoptional.pyoptional.html">pyoptional.pyoptional</a><br>
+</td><td width="25%" valign=top><a href="pystarworldsturbo.environment.environment.html">pystarworldsturbo.environment.environment</a><br>
+<a href="vacuumworld.model.environment.physics.vwexecutor_factory.html">vacuumworld.model.environment.physics.vwexecutor_factory</a><br>
+<a href="vacuumworld.common.vworientation.html">vacuumworld.common.vworientation</a><br>
+<a href="vacuumworld.model.actor.mind.surrogate.vwhysteretic_mind_surrogate.html">vacuumworld.model.actor.mind.surrogate.vwhysteretic_mind_surrogate</a><br>
+<a href="vacuumworld.common.vwobservation.html">vacuumworld.common.vwobservation</a><br>
+<a href="vacuumworld.model.environment.vwlocation.html">vacuumworld.model.environment.vwlocation</a><br>
+<a href="pystarworldsturbo.elements.actor.html">pystarworldsturbo.elements.actor</a><br>
+</td></tr></table></td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ee77aa">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#ee77aa"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><dl>
+<dt><span style="font-family:helvetica, arial, sans-serif"><a href="pystarworldsturbo.environment.environment.html#Environment">pystarworldsturbo.environment.environment.Environment</a>(<a href="builtins.html#object">builtins.object</a>)
+</span></dt><dd>
+<dl>
+<dt><span style="font-family:helvetica, arial, sans-serif"><a href="vacuumworld.model.environment.vwenvironment.html#VWEnvironment">VWEnvironment</a>(<a href="pystarworldsturbo.environment.environment.html#Environment">pystarworldsturbo.environment.environment.Environment</a>)
+</span></dt></dl>
+</dd>
+</dl>
+ 
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ffc8d8">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#000000" face="helvetica, arial"><a name="VWEnvironment">class <strong>VWEnvironment</strong></a>(<a href="pystarworldsturbo.environment.environment.html#Environment">pystarworldsturbo.environment.environment.Environment</a>)</font></td>
+    </tr>
+
+    
+        <tr bgcolor="#ffc8d8">
+            <td rowspan=2><tt></tt></td>
+            <td colspan=2><tt><a href="#VWEnvironment">VWEnvironment</a>(config:&nbsp;'dict[str,&nbsp;Any]',&nbsp;ambient:&nbsp;'VWAmbient',&nbsp;initial_actors:&nbsp;'list[VWActor]'&nbsp;=&nbsp;[],&nbsp;initial_dirts:&nbsp;'list[VWDirt]'&nbsp;=&nbsp;[])&nbsp;-&gt;&nbsp;'None'<br>
+&nbsp;<br>
+This&nbsp;class&nbsp;represents&nbsp;the&nbsp;environment&nbsp;in&nbsp;which&nbsp;the&nbsp;simulation&nbsp;takes&nbsp;place.<br>
+&nbsp;<br>
+A&nbsp;`<a href="#VWEnvironment">VWEnvironment</a>`&nbsp;is&nbsp;made&nbsp;of:<br>
+&nbsp;<br>
+*&nbsp;A&nbsp;`VWAmbient`&nbsp;(itself&nbsp;a&nbsp;wrapper&nbsp;for&nbsp;a&nbsp;grid&nbsp;mapping&nbsp;`VWCoord`&nbsp;objects&nbsp;to&nbsp;`VWLocation`&nbsp;objects)<br>
+&nbsp;<br>
+*&nbsp;A&nbsp;collection&nbsp;of&nbsp;`VWActor`&nbsp;objects.<br>
+&nbsp;<br>
+*&nbsp;A&nbsp;collection&nbsp;of&nbsp;`VWDirt`&nbsp;objects.<br>
+&nbsp;<br>
+An&nbsp;API&nbsp;is&nbsp;provided&nbsp;to&nbsp;interact&nbsp;with&nbsp;the&nbsp;`VWAmbient`,&nbsp;the&nbsp;`VWActor`&nbsp;objects,&nbsp;and&nbsp;the&nbsp;`VWDirt`&nbsp;objects.<br>
+&nbsp;<br>
+A&nbsp;`<a href="#VWEnvironment">VWEnvironment</a>`&nbsp;evolves&nbsp;in&nbsp;cycles,&nbsp;starting&nbsp;at&nbsp;cycle&nbsp;`0`.&nbsp;Each&nbsp;environmental&nbsp;cycle&nbsp;is&nbsp;composed&nbsp;of:<br>
+&nbsp;<br>
+*&nbsp;A&nbsp;feedback&nbsp;phase,&nbsp;in&nbsp;which&nbsp;the&nbsp;`<a href="#VWEnvironment">VWEnvironment</a>`&nbsp;sends&nbsp;to&nbsp;each&nbsp;`VWActor`&nbsp;a&nbsp;`VWObservation`&nbsp;of&nbsp;the&nbsp;surroundings&nbsp;of&nbsp;such&nbsp;`VWActor`&nbsp;and&nbsp;pending&nbsp;messages&nbsp;from&nbsp;other&nbsp;`VWActor`&nbsp;instances.<br>
+&nbsp;<br>
+*&nbsp;A&nbsp;physical/communicative&nbsp;evolution&nbsp;phase,&nbsp;in&nbsp;which&nbsp;each&nbsp;`VWActor`&nbsp;potentially&nbsp;attempts&nbsp;to&nbsp;modify&nbsp;the&nbsp;`<a href="#VWEnvironment">VWEnvironment</a>`&nbsp;via&nbsp;a&nbsp;`VWPhysicalAction`,&nbsp;and&nbsp;potentially&nbsp;engages&nbsp;in&nbsp;communications&nbsp;via&nbsp;a&nbsp;`VWCommunicativeAction`.<br>
+Only&nbsp;one&nbsp;`VWPhysicalAction`&nbsp;and&nbsp;one&nbsp;`VWCommunicativeAction`&nbsp;can&nbsp;be&nbsp;attempted&nbsp;per&nbsp;cycle&nbsp;per&nbsp;`VWActor`.<br>&nbsp;</tt></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            
+    <td width="100%%"><dl><dt>Method resolution order:</dt>
+<dd><a href="vacuumworld.model.environment.vwenvironment.html#VWEnvironment">VWEnvironment</a></dd>
+<dd><a href="pystarworldsturbo.environment.environment.html#Environment">pystarworldsturbo.environment.environment.Environment</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="VWEnvironment-__init__"><strong>__init__</strong></a>(self, config: 'dict[str, Any]', ambient: 'VWAmbient', initial_actors: 'list[VWActor]' = [], initial_dirts: 'list[VWDirt]' = []) -&gt; 'None'</dt></dl>
+
+<dl><dt><a name="VWEnvironment-__str__"><strong>__str__</strong></a>(self) -&gt; 'str'</dt></dl>
+
+<dl><dt><a name="VWEnvironment-can_evolve"><strong>can_evolve</strong></a>(self) -&gt; 'bool'</dt><dd><tt>Returns&nbsp;whether&nbsp;or&nbsp;not&nbsp;this&nbsp;`<a href="#VWEnvironment">VWEnvironment</a>`&nbsp;can&nbsp;evolve.<br>
+&nbsp;<br>
+The&nbsp;`<a href="#VWEnvironment">VWEnvironment</a>`&nbsp;can&nbsp;evolve&nbsp;if&nbsp;the&nbsp;(potentially&nbsp;infinite)&nbsp;upper&nbsp;limit&nbsp;on&nbsp;the&nbsp;number&nbsp;of&nbsp;cycles&nbsp;has&nbsp;not&nbsp;been&nbsp;reached&nbsp;yet.</tt></dd></dl>
+
+<dl><dt><a name="VWEnvironment-drop_dirt"><strong>drop_dirt</strong></a>(self, coord: 'VWCoord', dirt_colour: 'VWColour') -&gt; 'None'</dt><dd><tt>Drops&nbsp;a&nbsp;`VWDirt`&nbsp;of&nbsp;the&nbsp;specified&nbsp;`dirt_colour`&nbsp;onto&nbsp;the&nbsp;`VWLocation`&nbsp;whose&nbsp;`VWCoord`&nbsp;matches&nbsp;`coord`,&nbsp;if&nbsp;possible.<br>
+&nbsp;<br>
+Both&nbsp;the&nbsp;`VWAmbient`&nbsp;grid,&nbsp;and&nbsp;the&nbsp;collection&nbsp;of&nbsp;`VWDirt`&nbsp;objects&nbsp;are&nbsp;updated.</tt></dd></dl>
+
+<dl><dt><a name="VWEnvironment-evolve"><strong>evolve</strong></a>(self) -&gt; 'None'</dt><dd><tt>Evolves&nbsp;this&nbsp;`<a href="#VWEnvironment">VWEnvironment</a>`&nbsp;by&nbsp;one&nbsp;cycle.</tt></dd></dl>
+
+<dl><dt><a name="VWEnvironment-force_initial_perception_to_new_actor_after_stop"><strong>force_initial_perception_to_new_actor_after_stop</strong></a>(self, actor_id: 'str') -&gt; 'None'</dt></dl>
+
+<dl><dt><a name="VWEnvironment-generate_perception_for_actor"><strong>generate_perception_for_actor</strong></a>(self, actor_id: 'str', action_type: 'Type[VWAction]', action_result: 'ActionResult') -&gt; 'PyOptional[VWObservation]'</dt><dd><tt>Generates&nbsp;and&nbsp;returns&nbsp;a&nbsp;`PyOptional`&nbsp;wrapping&nbsp;a&nbsp;`VWObservation`&nbsp;perception&nbsp;for&nbsp;the&nbsp;`VWActor`&nbsp;with&nbsp;the&nbsp;specified&nbsp;`actor_id`&nbsp;as&nbsp;a&nbsp;result&nbsp;of&nbsp;the&nbsp;execution&nbsp;of&nbsp;the&nbsp;specified&nbsp;`action_type`&nbsp;with&nbsp;the&nbsp;specified&nbsp;`action_result`.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;assumes&nbsp;(via&nbsp;assertion)&nbsp;that&nbsp;the&nbsp;`VWActor`&nbsp;with&nbsp;the&nbsp;specified&nbsp;`actor_id`&nbsp;exists&nbsp;in&nbsp;the&nbsp;`<a href="#VWEnvironment">VWEnvironment</a>`.</tt></dd></dl>
+
+<dl><dt><a name="VWEnvironment-get_actor"><strong>get_actor</strong></a>(self, actor_id: 'str') -&gt; 'PyOptional[VWActor]'</dt><dd><tt>Returns&nbsp;a&nbsp;`PyOptional`&nbsp;wrapping&nbsp;the&nbsp;`VWActor`&nbsp;with&nbsp;the&nbsp;given&nbsp;`actor_id`&nbsp;if&nbsp;it&nbsp;exists,&nbsp;otherwise&nbsp;returns&nbsp;an&nbsp;empty&nbsp;`PyOptional`.</tt></dd></dl>
+
+<dl><dt><a name="VWEnvironment-get_actor_colour"><strong>get_actor_colour</strong></a>(self, actor_id: 'str') -&gt; 'VWColour'</dt><dd><tt>Returns&nbsp;the&nbsp;`VWColour`&nbsp;of&nbsp;the&nbsp;`VWActor`&nbsp;with&nbsp;the&nbsp;specified&nbsp;`actor_id`.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;assumes&nbsp;(via&nbsp;assertion)&nbsp;that&nbsp;the&nbsp;`VWActor`&nbsp;with&nbsp;the&nbsp;specified&nbsp;`actor_id`&nbsp;exists&nbsp;in&nbsp;the&nbsp;`<a href="#VWEnvironment">VWEnvironment</a>`.</tt></dd></dl>
+
+<dl><dt><a name="VWEnvironment-get_actor_location"><strong>get_actor_location</strong></a>(self, actor_id: 'str') -&gt; 'VWLocation'</dt><dd><tt>Returns&nbsp;the&nbsp;`VWLocation`&nbsp;containing&nbsp;the&nbsp;`VWActor`&nbsp;with&nbsp;the&nbsp;specified&nbsp;`actor_id`.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;assumes&nbsp;(via&nbsp;assertion)&nbsp;that&nbsp;the&nbsp;`VWActor`&nbsp;with&nbsp;the&nbsp;specified&nbsp;`actor_id`&nbsp;exists&nbsp;in&nbsp;the&nbsp;`<a href="#VWEnvironment">VWEnvironment</a>`.</tt></dd></dl>
+
+<dl><dt><a name="VWEnvironment-get_actor_orientation"><strong>get_actor_orientation</strong></a>(self, actor_id: 'str') -&gt; 'VWOrientation'</dt><dd><tt>Returns&nbsp;the&nbsp;`VWOrientation`&nbsp;of&nbsp;the&nbsp;`VWActor`&nbsp;with&nbsp;the&nbsp;specified&nbsp;`actor_id`.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;assumes&nbsp;(via&nbsp;assertion)&nbsp;that&nbsp;the&nbsp;`VWActor`&nbsp;with&nbsp;the&nbsp;specified&nbsp;`actor_id`&nbsp;exists&nbsp;in&nbsp;the&nbsp;`<a href="#VWEnvironment">VWEnvironment</a>`.</tt></dd></dl>
+
+<dl><dt><a name="VWEnvironment-get_actor_position"><strong>get_actor_position</strong></a>(self, actor_id: 'str') -&gt; 'VWCoord'</dt><dd><tt>Returns&nbsp;the&nbsp;`VWCoord`&nbsp;of&nbsp;the&nbsp;`VWLocation`&nbsp;containing&nbsp;the&nbsp;`VWActor`&nbsp;with&nbsp;the&nbsp;specified&nbsp;`actor_id`.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;assumes&nbsp;(via&nbsp;assertion)&nbsp;that&nbsp;the&nbsp;`VWActor`&nbsp;with&nbsp;the&nbsp;specified&nbsp;`actor_id`&nbsp;exists&nbsp;in&nbsp;the&nbsp;`<a href="#VWEnvironment">VWEnvironment</a>`.</tt></dd></dl>
+
+<dl><dt><a name="VWEnvironment-get_actor_previous_orientation"><strong>get_actor_previous_orientation</strong></a>(self, actor_id: 'str') -&gt; 'VWOrientation'</dt><dd><tt>Returns&nbsp;the&nbsp;backed-up&nbsp;(before&nbsp;a&nbsp;turn&nbsp;left/right)&nbsp;`VWOrientation`&nbsp;of&nbsp;the&nbsp;`VWActor`&nbsp;with&nbsp;the&nbsp;specified&nbsp;`actor_id`.<br>
+&nbsp;<br>
+If&nbsp;the&nbsp;`VWActor`&nbsp;with&nbsp;the&nbsp;specified&nbsp;`actor_id`&nbsp;has&nbsp;never&nbsp;turned&nbsp;left/right,&nbsp;then&nbsp;the&nbsp;returned&nbsp;`VWOrientation`&nbsp;should&nbsp;match&nbsp;the&nbsp;current&nbsp;`VWOrientation`.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;assumes&nbsp;(via&nbsp;assertion)&nbsp;that&nbsp;the&nbsp;`VWActor`&nbsp;with&nbsp;the&nbsp;specified&nbsp;`actor_id`&nbsp;exists&nbsp;in&nbsp;the&nbsp;`<a href="#VWEnvironment">VWEnvironment</a>`.</tt></dd></dl>
+
+<dl><dt><a name="VWEnvironment-get_actors"><strong>get_actors</strong></a>(self) -&gt; 'dict[str, VWActor]'</dt><dd><tt>Returns&nbsp;a&nbsp;`dict[str,&nbsp;VWActor]`&nbsp;mapping&nbsp;`VWActor`&nbsp;IDs&nbsp;to&nbsp;`VWActor`&nbsp;objects&nbsp;for&nbsp;each&nbsp;`VWActor`&nbsp;in&nbsp;the&nbsp;`<a href="#VWEnvironment">VWEnvironment</a>`.</tt></dd></dl>
+
+<dl><dt><a name="VWEnvironment-get_ambient"><strong>get_ambient</strong></a>(self) -&gt; 'VWAmbient'</dt><dd><tt>Returns&nbsp;the&nbsp;`VWAmbient`&nbsp;of&nbsp;this&nbsp;`<a href="#VWEnvironment">VWEnvironment</a>`.</tt></dd></dl>
+
+<dl><dt><a name="VWEnvironment-get_current_cycle_number"><strong>get_current_cycle_number</strong></a>(self) -&gt; 'int'</dt><dd><tt>Returns&nbsp;the&nbsp;current&nbsp;cycle&nbsp;number&nbsp;as&nbsp;an&nbsp;`int`.</tt></dd></dl>
+
+<dl><dt><a name="VWEnvironment-get_executor_for"><strong>get_executor_for</strong></a>(self, action: 'Action') -&gt; 'PyOptional[ActionExecutor]'</dt><dd><tt>Returns&nbsp;the&nbsp;`ActionExecutor`&nbsp;that&nbsp;can&nbsp;execute&nbsp;the&nbsp;given&nbsp;`Action`&nbsp;if&nbsp;it&nbsp;exists,&nbsp;`None`&nbsp;otherwise.</tt></dd></dl>
+
+<dl><dt><a name="VWEnvironment-get_user"><strong>get_user</strong></a>(self, user_id: 'str') -&gt; 'PyOptional[VWUser]'</dt><dd><tt>Returns&nbsp;a&nbsp;`PyOptional`&nbsp;wrapping&nbsp;the&nbsp;`VWUser`&nbsp;with&nbsp;the&nbsp;given&nbsp;`user_id`&nbsp;if&nbsp;it&nbsp;exists,&nbsp;otherwise&nbsp;returns&nbsp;an&nbsp;empty&nbsp;`PyOptional`.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;assumes&nbsp;(via&nbsp;assertion)&nbsp;that&nbsp;the&nbsp;potential&nbsp;`VWActor`&nbsp;whose&nbsp;ID&nbsp;matches&nbsp;`user_id`&nbsp;is&nbsp;a&nbsp;`VWUser`.</tt></dd></dl>
+
+<dl><dt><a name="VWEnvironment-move_actor"><strong>move_actor</strong></a>(self, from_coord: 'VWCoord', to_coord: 'VWCoord') -&gt; 'None'</dt><dd><tt>Moves&nbsp;the&nbsp;`VWActor`&nbsp;curently&nbsp;at&nbsp;the&nbsp;`VWLocation`&nbsp;whose&nbsp;`VWCoord`&nbsp;matches&nbsp;`from_coord`&nbsp;to&nbsp;the&nbsp;`VWLocation`&nbsp;whose&nbsp;`VWCoord`&nbsp;matches&nbsp;`to_coord`,&nbsp;if&nbsp;possible.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;is&nbsp;a&nbsp;wrapper&nbsp;around&nbsp;the&nbsp;`<a href="#VWEnvironment-move_actor">move_actor</a>()`&nbsp;method&nbsp;of&nbsp;`VWAmbient`.</tt></dd></dl>
+
+<dl><dt><a name="VWEnvironment-remove_dirt"><strong>remove_dirt</strong></a>(self, coord: 'VWCoord') -&gt; 'None'</dt><dd><tt>Removes&nbsp;the&nbsp;dirt&nbsp;currently&nbsp;on&nbsp;the&nbsp;`VWLocation`&nbsp;whose&nbsp;`VWCoord`&nbsp;matches&nbsp;`coord`,&nbsp;if&nbsp;possible.<br>
+&nbsp;<br>
+Both&nbsp;the&nbsp;`VWAmbient`&nbsp;grid,&nbsp;and&nbsp;the&nbsp;collection&nbsp;of&nbsp;`VWDirt`&nbsp;objects&nbsp;are&nbsp;updated.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;assumes&nbsp;(via&nbsp;assertion)&nbsp;that&nbsp;there&nbsp;is&nbsp;a&nbsp;`VWDirt`&nbsp;on&nbsp;the&nbsp;`VWLocation`&nbsp;whose&nbsp;`VWCoord`&nbsp;matches&nbsp;`coord`.</tt></dd></dl>
+
+<dl><dt><a name="VWEnvironment-to_json"><strong>to_json</strong></a>(self) -&gt; 'dict[str, list[dict[str, Any]]]'</dt><dd><tt>Returns&nbsp;a&nbsp;JSON&nbsp;representation&nbsp;of&nbsp;the&nbsp;`<a href="#VWEnvironment">VWEnvironment</a>`.<br>
+&nbsp;<br>
+No&nbsp;`VWActor`&nbsp;IDs,&nbsp;`VWActor`&nbsp;progressive&nbsp;IDs,&nbsp;or&nbsp;`VWUserDifficulty`&nbsp;are&nbsp;stored.</tt></dd></dl>
+
+<dl><dt><a name="VWEnvironment-turn_actor"><strong>turn_actor</strong></a>(self, coord: 'VWCoord', direction: 'VWDirection') -&gt; 'None'</dt><dd><tt>Turns&nbsp;the&nbsp;`VWActor`&nbsp;curently&nbsp;at&nbsp;the&nbsp;`VWLocation`&nbsp;whose&nbsp;`VWCoord`&nbsp;matches&nbsp;`coord`&nbsp;as&nbsp;specified&nbsp;by&nbsp;`direction`,&nbsp;if&nbsp;possible.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;is&nbsp;a&nbsp;wrapper&nbsp;around&nbsp;the&nbsp;`<a href="#VWEnvironment-turn_actor">turn_actor</a>()`&nbsp;method&nbsp;of&nbsp;`VWAmbient`.</tt></dd></dl>
+
+<dl><dt><a name="VWEnvironment-validate_actions"><strong>validate_actions</strong></a>(self, actions: 'list[Action]') -&gt; 'None'</dt><dd><tt>Validates&nbsp;the&nbsp;pool&nbsp;of&nbsp;`VWAction`&nbsp;instances&nbsp;attempted&nbsp;by&nbsp;a&nbsp;certain&nbsp;`VWActor`&nbsp;in&nbsp;this&nbsp;cycle,&nbsp;before&nbsp;the&nbsp;proper&nbsp;attempts&nbsp;can&nbsp;begin.<br>
+&nbsp;<br>
+In&nbsp;particular,&nbsp;this&nbsp;method&nbsp;checks&nbsp;that:<br>
+&nbsp;<br>
+*&nbsp;The&nbsp;number&nbsp;of&nbsp;actions&nbsp;attempted&nbsp;is&nbsp;within&nbsp;the&nbsp;allowed&nbsp;range.<br>
+&nbsp;<br>
+*&nbsp;Each&nbsp;attempted&nbsp;`VWAction`&nbsp;is&nbsp;compatible&nbsp;with&nbsp;the&nbsp;`<a href="#VWEnvironment">VWEnvironment</a>`.<br>
+&nbsp;<br>
+*&nbsp;The&nbsp;correct&nbsp;mix&nbsp;of&nbsp;`VWPhysicalAction`&nbsp;and&nbsp;`VWCommunicativeAction`&nbsp;is&nbsp;attempted.</tt></dd></dl>
+
+<hr>
+Static methods defined here:<br>
+<dl><dt><a name="VWEnvironment-from_json"><strong>from_json</strong></a>(data: 'dict[str, list[dict[str, Any]]]', config: 'dict[str, Any]') -&gt; 'VWEnvironment'</dt><dd><tt>Creates&nbsp;and&nbsp;returns&nbsp;a&nbsp;`<a href="#VWEnvironment">VWEnvironment</a>`&nbsp;from&nbsp;the&nbsp;specified&nbsp;JSON&nbsp;representation&nbsp;(`data`)&nbsp;and&nbsp;`config`.<br>
+&nbsp;<br>
+Each&nbsp;`VWActor`&nbsp;will&nbsp;have&nbsp;a&nbsp;fresh&nbsp;ID&nbsp;and&nbsp;progressive&nbsp;ID,&nbsp;each&nbsp;`VWUser`&nbsp;will&nbsp;be&nbsp;in&nbsp;whatever&nbsp;mode&nbsp;is&nbsp;the&nbsp;default&nbsp;one.</tt></dd></dl>
+
+<dl><dt><a name="VWEnvironment-generate_empty_env"><strong>generate_empty_env</strong></a>(config: 'dict[str, Any]', forced_line_dim: 'int' = -1) -&gt; 'VWEnvironment'</dt><dd><tt>Generates&nbsp;and&nbsp;returns&nbsp;an&nbsp;empty&nbsp;`<a href="#VWEnvironment">VWEnvironment</a>`&nbsp;from&nbsp;the&nbsp;specified&nbsp;`config`.</tt></dd></dl>
+
+<dl><dt><a name="VWEnvironment-generate_empty_env_for_testing"><strong>generate_empty_env_for_testing</strong></a>(custom_grid_size: 'bool', config: 'dict[str, Any]') -&gt; 'tuple[VWEnvironment, int]'</dt><dd><tt>Generates&nbsp;and&nbsp;returns&nbsp;an&nbsp;empty&nbsp;`<a href="#VWEnvironment">VWEnvironment</a>`&nbsp;for&nbsp;testing&nbsp;purposes,&nbsp;given&nbsp;`config`.<br>
+&nbsp;<br>
+If&nbsp;`custom_grid_size`&nbsp;is&nbsp;`True`,&nbsp;the&nbsp;grid&nbsp;size&nbsp;will&nbsp;be&nbsp;randomly&nbsp;generated&nbsp;between&nbsp;`config["min_environment_dim"]`&nbsp;and&nbsp;`config["max_environment_dim"]`&nbsp;(both&nbsp;inclusive).</tt></dd></dl>
+
+<dl><dt><a name="VWEnvironment-generate_mutually_exclusive_coordinates_for_testing"><strong>generate_mutually_exclusive_coordinates_for_testing</strong></a>(amount: 'int', grid_size: 'int') -&gt; 'list[VWCoord]'</dt><dd><tt>Generates&nbsp;and&nbsp;returns&nbsp;a&nbsp;list&nbsp;of&nbsp;`amount`&nbsp;mutually&nbsp;exclusive&nbsp;`VWCoord`&nbsp;for&nbsp;testing&nbsp;purposes,&nbsp;all&nbsp;compatible&nbsp;with&nbsp;`grid_size`.</tt></dd></dl>
+
+<dl><dt><a name="VWEnvironment-generate_random_env_for_testing"><strong>generate_random_env_for_testing</strong></a>(config: 'dict[str, Any]', custom_grid_size: 'bool') -&gt; 'tuple[VWEnvironment, int]'</dt><dd><tt>Generates&nbsp;and&nbsp;returns&nbsp;a&nbsp;random&nbsp;`<a href="#VWEnvironment">VWEnvironment</a>`&nbsp;for&nbsp;testing&nbsp;purposes,&nbsp;given&nbsp;`config`.<br>
+&nbsp;<br>
+If&nbsp;`custom_grid_size`&nbsp;is&nbsp;`True`,&nbsp;the&nbsp;grid&nbsp;size&nbsp;will&nbsp;be&nbsp;randomly&nbsp;generated&nbsp;between&nbsp;`config["min_environment_dim"]`&nbsp;and&nbsp;`config["max_environment_dim"]`&nbsp;(both&nbsp;inclusive).</tt></dd></dl>
+
+<dl><dt><a name="VWEnvironment-generate_wall_from_coordinates"><strong>generate_wall_from_coordinates</strong></a>(coord: 'VWCoord', grid_size: 'int') -&gt; 'dict[VWOrientation, bool]'</dt><dd><tt>Generates&nbsp;and&nbsp;returns&nbsp;a&nbsp;`dict[Orientation,&nbsp;bool]`&nbsp;wall&nbsp;for&nbsp;the&nbsp;specified&nbsp;`coord`,&nbsp;given&nbsp;`grid_size`.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="pystarworldsturbo.environment.environment.html#Environment">pystarworldsturbo.environment.environment.Environment</a>:<br>
+<dl><dt><a name="VWEnvironment-add_actor"><strong>add_actor</strong></a>(self, actor: pystarworldsturbo.elements.actor.Actor) -&gt; None</dt></dl>
+
+<dl><dt><a name="VWEnvironment-add_passive_body"><strong>add_passive_body</strong></a>(self, passive_body: pystarworldsturbo.elements.body.Body) -&gt; None</dt></dl>
+
+<dl><dt><a name="VWEnvironment-execute_action"><strong>execute_action</strong></a>(self, action: pystarworldsturbo.common.action.Action) -&gt; None</dt></dl>
+
+<dl><dt><a name="VWEnvironment-execute_cycle_actions"><strong>execute_cycle_actions</strong></a>(self) -&gt; None</dt></dl>
+
+<dl><dt><a name="VWEnvironment-get_actors_list"><strong>get_actors_list</strong></a>(self) -&gt; list[pystarworldsturbo.elements.actor.Actor]</dt></dl>
+
+<dl><dt><a name="VWEnvironment-get_passive_bodies"><strong>get_passive_bodies</strong></a>(self) -&gt; dict[str, pystarworldsturbo.elements.body.Body]</dt></dl>
+
+<dl><dt><a name="VWEnvironment-get_passive_bodies_list"><strong>get_passive_bodies_list</strong></a>(self) -&gt; list[pystarworldsturbo.elements.body.Body]</dt></dl>
+
+<dl><dt><a name="VWEnvironment-get_passive_body"><strong>get_passive_body</strong></a>(self, passive_body_id: str) -&gt; pyoptional.pyoptional.PyOptional[pystarworldsturbo.elements.body.Body]</dt></dl>
+
+<dl><dt><a name="VWEnvironment-remove_actor"><strong>remove_actor</strong></a>(self, actor_id: str) -&gt; None</dt></dl>
+
+<dl><dt><a name="VWEnvironment-remove_passive_body"><strong>remove_passive_body</strong></a>(self, passive_body_id: str) -&gt; None</dt></dl>
+
+<dl><dt><a name="VWEnvironment-send_message_to_recipients"><strong>send_message_to_recipients</strong></a>(self, message: pystarworldsturbo.common.message.Message, check_sender_identity: bool = True) -&gt; None</dt></dl>
+
+<dl><dt><a name="VWEnvironment-send_perception_to_actor"><strong>send_perception_to_actor</strong></a>(self, perception: pystarworldsturbo.common.perception.Perception, actor_id: str) -&gt; None</dt></dl>
+
+</td></tr>
+</table></td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#eeaa77">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#eeaa77"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><dl><dt><a name="-cast"><strong>cast</strong></a>(typ, val)</dt><dd><tt>Cast&nbsp;a&nbsp;value&nbsp;to&nbsp;a&nbsp;type.<br>
+&nbsp;<br>
+This&nbsp;returns&nbsp;the&nbsp;value&nbsp;unchanged.&nbsp;&nbsp;To&nbsp;the&nbsp;type&nbsp;checker&nbsp;this<br>
+signals&nbsp;that&nbsp;the&nbsp;return&nbsp;value&nbsp;has&nbsp;the&nbsp;designated&nbsp;type,&nbsp;but&nbsp;at<br>
+runtime&nbsp;we&nbsp;intentionally&nbsp;don't&nbsp;check&nbsp;anything&nbsp;(we&nbsp;want&nbsp;this<br>
+to&nbsp;be&nbsp;as&nbsp;fast&nbsp;as&nbsp;possible).</tt></dd></dl>
+ <dl><dt><a name="-floor"><strong>floor</strong></a>(x, /)</dt><dd><tt>Return&nbsp;the&nbsp;floor&nbsp;of&nbsp;x&nbsp;as&nbsp;an&nbsp;Integral.<br>
+&nbsp;<br>
+This&nbsp;is&nbsp;the&nbsp;largest&nbsp;integer&nbsp;&lt;=&nbsp;x.</tt></dd></dl>
+ <dl><dt><a name="-getsourcefile"><strong>getsourcefile</strong></a>(object)</dt><dd><tt>Return&nbsp;the&nbsp;filename&nbsp;that&nbsp;can&nbsp;be&nbsp;used&nbsp;to&nbsp;locate&nbsp;an&nbsp;object's&nbsp;source.<br>
+Return&nbsp;None&nbsp;if&nbsp;no&nbsp;way&nbsp;can&nbsp;be&nbsp;identified&nbsp;to&nbsp;get&nbsp;the&nbsp;source.</tt></dd></dl>
+ <dl><dt><a name="-randint"><strong>randint</strong></a>(a, b)<span style="color:#909090"><span style="font-family:helvetica, arial, sans-serif"> method of <a href="random.html#Random">random.Random</a> instance</span></span></dt><dd><tt>Return&nbsp;random&nbsp;integer&nbsp;in&nbsp;range&nbsp;[a,&nbsp;b],&nbsp;including&nbsp;both&nbsp;end&nbsp;points.</tt></dd></dl>
+ <dl><dt><a name="-sqrt"><strong>sqrt</strong></a>(x, /)</dt><dd><tt>Return&nbsp;the&nbsp;square&nbsp;root&nbsp;of&nbsp;x.</tt></dd></dl>
+</td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#55aa55">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#55aa55"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><strong>Type</strong> = typing.Type<br>
+<strong>annotations</strong> = _Feature((3, 7, 0, 'beta', 1), None, 16777216)</td></tr>
+</table>
+</body>
+</html>

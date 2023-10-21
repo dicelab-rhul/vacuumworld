@@ -1,0 +1,962 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html lang="en">
+<head><title>Python: module vacuumworld.gui.components.vwslider</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body bgcolor="#f0f0f8">
+<table class="heading">
+    <tr style="background-color: #7799ee;">
+        <td class="title" style="vertical-align: bottom">&nbsp;<br>
+            <span style="color: #ffffff; font-family: helvetica, arial,sans-serif;">
+            &nbsp;<br><big><big><strong><a href="vacuumworld.html"><span style="color:">vacuumworld</span></a>.<a href="vacuumworld.gui.html"><span style="color:">gui</span></a>.<a href="vacuumworld.gui.components.html"><span style="color:">components</span></a>.vwslider</strong></big></big>
+            </span>
+        </td>
+        <td style="vertical-align: bottom; text-align: right;">
+            <span style="color: #ffffff; font-family: helvetica, arial,sans-serif;">
+                <a href=".">index</a><br><a href="file:../vacuumworld/gui/components/vwslider.py">../vacuumworld/gui/components/vwslider.py</a>
+            </span>
+        </td>
+    </tr>
+</table>
+
+
+
+
+
+
+
+
+
+
+<p></p>
+
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#aa55cc">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>`from` Modules</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#aa55cc"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><table width="100%%" summary="list"><tr><td width="25%" valign=top><a href="math.html">math</a><br>
+</td><td width="25%" valign=top><a href="pystarworldsturbo.utils.utils.html">pystarworldsturbo.utils.utils</a><br>
+</td><td width="25%" valign=top><a href="tkinter.html">tkinter</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ee77aa">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#ee77aa"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><dl>
+<dt><span style="font-family:helvetica, arial, sans-serif"><a href="tkinter.html#Canvas">tkinter.Canvas</a>(<a href="tkinter.html#Widget">tkinter.Widget</a>, <a href="tkinter.html#XView">tkinter.XView</a>, <a href="tkinter.html#YView">tkinter.YView</a>)
+</span></dt><dd>
+<dl>
+<dt><span style="font-family:helvetica, arial, sans-serif"><a href="vacuumworld.gui.components.vwslider.html#VWSlider">VWSlider</a>(<a href="tkinter.html#Canvas">tkinter.Canvas</a>)
+</span></dt></dl>
+</dd>
+</dl>
+ 
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ffc8d8">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#000000" face="helvetica, arial"><a name="VWSlider">class <strong>VWSlider</strong></a>(<a href="tkinter.html#Canvas">tkinter.Canvas</a>)</font></td>
+    </tr>
+
+    
+        <tr bgcolor="#ffc8d8">
+            <td rowspan=2><tt></tt></td>
+            <td colspan=2><tt><a href="#VWSlider">VWSlider</a>(parent:&nbsp;tkinter.Frame,&nbsp;config:&nbsp;dict[str,&nbsp;typing.Any],&nbsp;release_callback:&nbsp;Callable[...,&nbsp;Any],&nbsp;slide_callback:&nbsp;Callable[...,&nbsp;Any],&nbsp;width:&nbsp;float,&nbsp;height:&nbsp;float,&nbsp;increments:&nbsp;int&nbsp;=&nbsp;0,&nbsp;slider_width:&nbsp;float&nbsp;=&nbsp;8,&nbsp;start:&nbsp;float&nbsp;=&nbsp;0,&nbsp;**kwargs:&nbsp;Any)&nbsp;-&gt;&nbsp;None<br>
+&nbsp;<br>
+This&nbsp;class&nbsp;specifies&nbsp;a&nbsp;slider&nbsp;widget&nbsp;for&nbsp;the&nbsp;VacuumWorld&nbsp;GUI.<br>&nbsp;</tt></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            
+    <td width="100%%"><dl><dt>Method resolution order:</dt>
+<dd><a href="vacuumworld.gui.components.vwslider.html#VWSlider">VWSlider</a></dd>
+<dd><a href="tkinter.html#Canvas">tkinter.Canvas</a></dd>
+<dd><a href="tkinter.html#Widget">tkinter.Widget</a></dd>
+<dd><a href="tkinter.html#BaseWidget">tkinter.BaseWidget</a></dd>
+<dd><a href="tkinter.html#Misc">tkinter.Misc</a></dd>
+<dd><a href="tkinter.html#Pack">tkinter.Pack</a></dd>
+<dd><a href="tkinter.html#Place">tkinter.Place</a></dd>
+<dd><a href="tkinter.html#Grid">tkinter.Grid</a></dd>
+<dd><a href="tkinter.tix.html#Form">tkinter.tix.Form</a></dd>
+<dd><a href="tkinter.html#XView">tkinter.XView</a></dd>
+<dd><a href="tkinter.html#YView">tkinter.YView</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="VWSlider-__init__"><strong>__init__</strong></a>(self, parent: tkinter.Frame, config: dict[str, typing.Any], release_callback: Callable[..., Any], slide_callback: Callable[..., Any], width: float, height: float, increments: int = 0, slider_width: float = 8, start: float = 0, **kwargs: Any) -&gt; None</dt></dl>
+
+<dl><dt><a name="VWSlider-on_drag"><strong>on_drag</strong></a>(self, event: tkinter.Event) -&gt; None</dt><dd><tt>This&nbsp;method&nbsp;is&nbsp;called&nbsp;when&nbsp;the&nbsp;user&nbsp;is&nbsp;dragging&nbsp;the&nbsp;slider.<br>
+&nbsp;<br>
+Keeps&nbsp;moving&nbsp;the&nbsp;slider&nbsp;to&nbsp;the&nbsp;position&nbsp;of&nbsp;the&nbsp;mouse.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-on_drop"><strong>on_drop</strong></a>(self, event: tkinter.Event) -&gt; None</dt><dd><tt>This&nbsp;method&nbsp;is&nbsp;called&nbsp;when&nbsp;the&nbsp;user&nbsp;stops&nbsp;dragging&nbsp;the&nbsp;slider.<br>
+&nbsp;<br>
+Calls&nbsp;the&nbsp;release&nbsp;callback.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-on_start"><strong>on_start</strong></a>(self, event: tkinter.Event) -&gt; None</dt><dd><tt>This&nbsp;method&nbsp;is&nbsp;called&nbsp;when&nbsp;the&nbsp;user&nbsp;starts&nbsp;dragging&nbsp;the&nbsp;slider.<br>
+&nbsp;<br>
+Moves&nbsp;the&nbsp;slider&nbsp;to&nbsp;the&nbsp;position&nbsp;of&nbsp;the&nbsp;mouse.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-set_position"><strong>set_position</strong></a>(self, inc: int, callback: bool = True) -&gt; None</dt><dd><tt>Sets&nbsp;the&nbsp;position&nbsp;of&nbsp;the&nbsp;slider&nbsp;by&nbsp;moving&nbsp;it&nbsp;by&nbsp;`inc`.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="tkinter.html#Canvas">tkinter.Canvas</a>:<br>
+<dl><dt><a name="VWSlider-addtag"><strong>addtag</strong></a>(self, *args)</dt><dd><tt>Internal&nbsp;function.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-addtag_above"><strong>addtag_above</strong></a>(self, newtag, tagOrId)</dt><dd><tt>Add&nbsp;tag&nbsp;NEWTAG&nbsp;to&nbsp;all&nbsp;items&nbsp;above&nbsp;TAGORID.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-addtag_all"><strong>addtag_all</strong></a>(self, newtag)</dt><dd><tt>Add&nbsp;tag&nbsp;NEWTAG&nbsp;to&nbsp;all&nbsp;items.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-addtag_below"><strong>addtag_below</strong></a>(self, newtag, tagOrId)</dt><dd><tt>Add&nbsp;tag&nbsp;NEWTAG&nbsp;to&nbsp;all&nbsp;items&nbsp;below&nbsp;TAGORID.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-addtag_closest"><strong>addtag_closest</strong></a>(self, newtag, x, y, halo=None, start=None)</dt><dd><tt>Add&nbsp;tag&nbsp;NEWTAG&nbsp;to&nbsp;item&nbsp;which&nbsp;is&nbsp;closest&nbsp;to&nbsp;pixel&nbsp;at&nbsp;X,&nbsp;Y.<br>
+If&nbsp;several&nbsp;match&nbsp;take&nbsp;the&nbsp;top-most.<br>
+All&nbsp;items&nbsp;closer&nbsp;than&nbsp;HALO&nbsp;are&nbsp;considered&nbsp;overlapping&nbsp;(all&nbsp;are<br>
+closest).&nbsp;If&nbsp;START&nbsp;is&nbsp;specified&nbsp;the&nbsp;next&nbsp;below&nbsp;this&nbsp;tag&nbsp;is&nbsp;taken.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-addtag_enclosed"><strong>addtag_enclosed</strong></a>(self, newtag, x1, y1, x2, y2)</dt><dd><tt>Add&nbsp;tag&nbsp;NEWTAG&nbsp;to&nbsp;all&nbsp;items&nbsp;in&nbsp;the&nbsp;rectangle&nbsp;defined<br>
+by&nbsp;X1,Y1,X2,Y2.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-addtag_overlapping"><strong>addtag_overlapping</strong></a>(self, newtag, x1, y1, x2, y2)</dt><dd><tt>Add&nbsp;tag&nbsp;NEWTAG&nbsp;to&nbsp;all&nbsp;items&nbsp;which&nbsp;overlap&nbsp;the&nbsp;rectangle<br>
+defined&nbsp;by&nbsp;X1,Y1,X2,Y2.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-addtag_withtag"><strong>addtag_withtag</strong></a>(self, newtag, tagOrId)</dt><dd><tt>Add&nbsp;tag&nbsp;NEWTAG&nbsp;to&nbsp;all&nbsp;items&nbsp;with&nbsp;TAGORID.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-bbox"><strong>bbox</strong></a>(self, *args)</dt><dd><tt>Return&nbsp;a&nbsp;tuple&nbsp;of&nbsp;X1,Y1,X2,Y2&nbsp;coordinates&nbsp;for&nbsp;a&nbsp;rectangle<br>
+which&nbsp;encloses&nbsp;all&nbsp;items&nbsp;with&nbsp;tags&nbsp;specified&nbsp;as&nbsp;arguments.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-canvasx"><strong>canvasx</strong></a>(self, screenx, gridspacing=None)</dt><dd><tt>Return&nbsp;the&nbsp;canvas&nbsp;x&nbsp;coordinate&nbsp;of&nbsp;pixel&nbsp;position&nbsp;SCREENX&nbsp;rounded<br>
+to&nbsp;nearest&nbsp;multiple&nbsp;of&nbsp;GRIDSPACING&nbsp;units.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-canvasy"><strong>canvasy</strong></a>(self, screeny, gridspacing=None)</dt><dd><tt>Return&nbsp;the&nbsp;canvas&nbsp;y&nbsp;coordinate&nbsp;of&nbsp;pixel&nbsp;position&nbsp;SCREENY&nbsp;rounded<br>
+to&nbsp;nearest&nbsp;multiple&nbsp;of&nbsp;GRIDSPACING&nbsp;units.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-coords"><strong>coords</strong></a>(self, *args)</dt><dd><tt>Return&nbsp;a&nbsp;list&nbsp;of&nbsp;coordinates&nbsp;for&nbsp;the&nbsp;item&nbsp;given&nbsp;in&nbsp;ARGS.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-create_arc"><strong>create_arc</strong></a>(self, *args, **kw)</dt><dd><tt>Create&nbsp;arc&nbsp;shaped&nbsp;region&nbsp;with&nbsp;coordinates&nbsp;x1,y1,x2,y2.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-create_bitmap"><strong>create_bitmap</strong></a>(self, *args, **kw)</dt><dd><tt>Create&nbsp;bitmap&nbsp;with&nbsp;coordinates&nbsp;x1,y1.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-create_image"><strong>create_image</strong></a>(self, *args, **kw)</dt><dd><tt>Create&nbsp;image&nbsp;item&nbsp;with&nbsp;coordinates&nbsp;x1,y1.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-create_line"><strong>create_line</strong></a>(self, *args, **kw)</dt><dd><tt>Create&nbsp;line&nbsp;with&nbsp;coordinates&nbsp;x1,y1,...,xn,yn.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-create_oval"><strong>create_oval</strong></a>(self, *args, **kw)</dt><dd><tt>Create&nbsp;oval&nbsp;with&nbsp;coordinates&nbsp;x1,y1,x2,y2.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-create_polygon"><strong>create_polygon</strong></a>(self, *args, **kw)</dt><dd><tt>Create&nbsp;polygon&nbsp;with&nbsp;coordinates&nbsp;x1,y1,...,xn,yn.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-create_rectangle"><strong>create_rectangle</strong></a>(self, *args, **kw)</dt><dd><tt>Create&nbsp;rectangle&nbsp;with&nbsp;coordinates&nbsp;x1,y1,x2,y2.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-create_text"><strong>create_text</strong></a>(self, *args, **kw)</dt><dd><tt>Create&nbsp;text&nbsp;with&nbsp;coordinates&nbsp;x1,y1.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-create_window"><strong>create_window</strong></a>(self, *args, **kw)</dt><dd><tt>Create&nbsp;window&nbsp;with&nbsp;coordinates&nbsp;x1,y1,x2,y2.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-dchars"><strong>dchars</strong></a>(self, *args)</dt><dd><tt>Delete&nbsp;characters&nbsp;of&nbsp;text&nbsp;items&nbsp;identified&nbsp;by&nbsp;tag&nbsp;or&nbsp;id&nbsp;in&nbsp;ARGS&nbsp;(possibly<br>
+several&nbsp;times)&nbsp;from&nbsp;FIRST&nbsp;to&nbsp;LAST&nbsp;character&nbsp;(including).</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-delete"><strong>delete</strong></a>(self, *args)</dt><dd><tt>Delete&nbsp;items&nbsp;identified&nbsp;by&nbsp;all&nbsp;tag&nbsp;or&nbsp;ids&nbsp;contained&nbsp;in&nbsp;ARGS.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-dtag"><strong>dtag</strong></a>(self, *args)</dt><dd><tt>Delete&nbsp;tag&nbsp;or&nbsp;id&nbsp;given&nbsp;as&nbsp;last&nbsp;arguments&nbsp;in&nbsp;ARGS&nbsp;from&nbsp;items<br>
+identified&nbsp;by&nbsp;first&nbsp;argument&nbsp;in&nbsp;ARGS.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-find"><strong>find</strong></a>(self, *args)</dt><dd><tt>Internal&nbsp;function.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-find_above"><strong>find_above</strong></a>(self, tagOrId)</dt><dd><tt>Return&nbsp;items&nbsp;above&nbsp;TAGORID.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-find_all"><strong>find_all</strong></a>(self)</dt><dd><tt>Return&nbsp;all&nbsp;items.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-find_below"><strong>find_below</strong></a>(self, tagOrId)</dt><dd><tt>Return&nbsp;all&nbsp;items&nbsp;below&nbsp;TAGORID.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-find_closest"><strong>find_closest</strong></a>(self, x, y, halo=None, start=None)</dt><dd><tt>Return&nbsp;item&nbsp;which&nbsp;is&nbsp;closest&nbsp;to&nbsp;pixel&nbsp;at&nbsp;X,&nbsp;Y.<br>
+If&nbsp;several&nbsp;match&nbsp;take&nbsp;the&nbsp;top-most.<br>
+All&nbsp;items&nbsp;closer&nbsp;than&nbsp;HALO&nbsp;are&nbsp;considered&nbsp;overlapping&nbsp;(all&nbsp;are<br>
+closest).&nbsp;If&nbsp;START&nbsp;is&nbsp;specified&nbsp;the&nbsp;next&nbsp;below&nbsp;this&nbsp;tag&nbsp;is&nbsp;taken.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-find_enclosed"><strong>find_enclosed</strong></a>(self, x1, y1, x2, y2)</dt><dd><tt>Return&nbsp;all&nbsp;items&nbsp;in&nbsp;rectangle&nbsp;defined<br>
+by&nbsp;X1,Y1,X2,Y2.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-find_overlapping"><strong>find_overlapping</strong></a>(self, x1, y1, x2, y2)</dt><dd><tt>Return&nbsp;all&nbsp;items&nbsp;which&nbsp;overlap&nbsp;the&nbsp;rectangle<br>
+defined&nbsp;by&nbsp;X1,Y1,X2,Y2.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-find_withtag"><strong>find_withtag</strong></a>(self, tagOrId)</dt><dd><tt>Return&nbsp;all&nbsp;items&nbsp;with&nbsp;TAGORID.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-focus"><strong>focus</strong></a>(self, *args)</dt><dd><tt>Set&nbsp;focus&nbsp;to&nbsp;the&nbsp;first&nbsp;item&nbsp;specified&nbsp;in&nbsp;ARGS.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-gettags"><strong>gettags</strong></a>(self, *args)</dt><dd><tt>Return&nbsp;tags&nbsp;associated&nbsp;with&nbsp;the&nbsp;first&nbsp;item&nbsp;specified&nbsp;in&nbsp;ARGS.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-icursor"><strong>icursor</strong></a>(self, *args)</dt><dd><tt>Set&nbsp;cursor&nbsp;at&nbsp;position&nbsp;POS&nbsp;in&nbsp;the&nbsp;item&nbsp;identified&nbsp;by&nbsp;TAGORID.<br>
+In&nbsp;ARGS&nbsp;TAGORID&nbsp;must&nbsp;be&nbsp;first.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-index"><strong>index</strong></a>(self, *args)</dt><dd><tt>Return&nbsp;position&nbsp;of&nbsp;cursor&nbsp;as&nbsp;integer&nbsp;in&nbsp;item&nbsp;specified&nbsp;in&nbsp;ARGS.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-insert"><strong>insert</strong></a>(self, *args)</dt><dd><tt>Insert&nbsp;TEXT&nbsp;in&nbsp;item&nbsp;TAGORID&nbsp;at&nbsp;position&nbsp;POS.&nbsp;ARGS&nbsp;must<br>
+be&nbsp;TAGORID&nbsp;POS&nbsp;TEXT.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-itemcget"><strong>itemcget</strong></a>(self, tagOrId, option)</dt><dd><tt>Return&nbsp;the&nbsp;resource&nbsp;value&nbsp;for&nbsp;an&nbsp;OPTION&nbsp;for&nbsp;item&nbsp;TAGORID.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-itemconfig"><strong>itemconfig</strong></a> = <a href="#VWSlider-itemconfigure">itemconfigure</a>(self, tagOrId, cnf=None, **kw)</dt></dl>
+
+<dl><dt><a name="VWSlider-itemconfigure"><strong>itemconfigure</strong></a>(self, tagOrId, cnf=None, **kw)</dt><dd><tt>Configure&nbsp;resources&nbsp;of&nbsp;an&nbsp;item&nbsp;TAGORID.<br>
+&nbsp;<br>
+The&nbsp;values&nbsp;for&nbsp;resources&nbsp;are&nbsp;specified&nbsp;as&nbsp;keyword<br>
+arguments.&nbsp;To&nbsp;get&nbsp;an&nbsp;overview&nbsp;about<br>
+the&nbsp;allowed&nbsp;keyword&nbsp;arguments&nbsp;call&nbsp;the&nbsp;method&nbsp;without&nbsp;arguments.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-lift"><strong>lift</strong></a> = <a href="#VWSlider-tag_raise">tag_raise</a>(self, *args)</dt></dl>
+
+<dl><dt><a name="VWSlider-lower"><strong>lower</strong></a> = <a href="#VWSlider-tag_lower">tag_lower</a>(self, *args)</dt></dl>
+
+<dl><dt><a name="VWSlider-move"><strong>move</strong></a>(self, *args)</dt><dd><tt>Move&nbsp;an&nbsp;item&nbsp;TAGORID&nbsp;given&nbsp;in&nbsp;ARGS.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-moveto"><strong>moveto</strong></a>(self, tagOrId, x='', y='')</dt><dd><tt>Move&nbsp;the&nbsp;items&nbsp;given&nbsp;by&nbsp;TAGORID&nbsp;in&nbsp;the&nbsp;canvas&nbsp;coordinate<br>
+space&nbsp;so&nbsp;that&nbsp;the&nbsp;first&nbsp;coordinate&nbsp;pair&nbsp;of&nbsp;the&nbsp;bottommost<br>
+item&nbsp;with&nbsp;tag&nbsp;TAGORID&nbsp;is&nbsp;located&nbsp;at&nbsp;position&nbsp;(X,Y).<br>
+X&nbsp;and&nbsp;Y&nbsp;may&nbsp;be&nbsp;the&nbsp;empty&nbsp;string,&nbsp;in&nbsp;which&nbsp;case&nbsp;the<br>
+corresponding&nbsp;coordinate&nbsp;will&nbsp;be&nbsp;unchanged.&nbsp;All&nbsp;items&nbsp;matching<br>
+TAGORID&nbsp;remain&nbsp;in&nbsp;the&nbsp;same&nbsp;positions&nbsp;relative&nbsp;to&nbsp;each&nbsp;other.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-postscript"><strong>postscript</strong></a>(self, cnf={}, **kw)</dt><dd><tt>Print&nbsp;the&nbsp;contents&nbsp;of&nbsp;the&nbsp;canvas&nbsp;to&nbsp;a&nbsp;postscript<br>
+file.&nbsp;Valid&nbsp;options:&nbsp;colormap,&nbsp;colormode,&nbsp;file,&nbsp;fontmap,<br>
+height,&nbsp;pageanchor,&nbsp;pageheight,&nbsp;pagewidth,&nbsp;pagex,&nbsp;pagey,<br>
+rotate,&nbsp;width,&nbsp;x,&nbsp;y.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-scale"><strong>scale</strong></a>(self, *args)</dt><dd><tt>Scale&nbsp;item&nbsp;TAGORID&nbsp;with&nbsp;XORIGIN,&nbsp;YORIGIN,&nbsp;XSCALE,&nbsp;YSCALE.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-scan_dragto"><strong>scan_dragto</strong></a>(self, x, y, gain=10)</dt><dd><tt>Adjust&nbsp;the&nbsp;view&nbsp;of&nbsp;the&nbsp;canvas&nbsp;to&nbsp;GAIN&nbsp;times&nbsp;the<br>
+difference&nbsp;between&nbsp;X&nbsp;and&nbsp;Y&nbsp;and&nbsp;the&nbsp;coordinates&nbsp;given&nbsp;in<br>
+scan_mark.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-scan_mark"><strong>scan_mark</strong></a>(self, x, y)</dt><dd><tt>Remember&nbsp;the&nbsp;current&nbsp;X,&nbsp;Y&nbsp;coordinates.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-select_adjust"><strong>select_adjust</strong></a>(self, tagOrId, index)</dt><dd><tt>Adjust&nbsp;the&nbsp;end&nbsp;of&nbsp;the&nbsp;selection&nbsp;near&nbsp;the&nbsp;cursor&nbsp;of&nbsp;an&nbsp;item&nbsp;TAGORID&nbsp;to&nbsp;index.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-select_clear"><strong>select_clear</strong></a>(self)</dt><dd><tt>Clear&nbsp;the&nbsp;selection&nbsp;if&nbsp;it&nbsp;is&nbsp;in&nbsp;this&nbsp;widget.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-select_from"><strong>select_from</strong></a>(self, tagOrId, index)</dt><dd><tt>Set&nbsp;the&nbsp;fixed&nbsp;end&nbsp;of&nbsp;a&nbsp;selection&nbsp;in&nbsp;item&nbsp;TAGORID&nbsp;to&nbsp;INDEX.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-select_item"><strong>select_item</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;item&nbsp;which&nbsp;has&nbsp;the&nbsp;selection.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-select_to"><strong>select_to</strong></a>(self, tagOrId, index)</dt><dd><tt>Set&nbsp;the&nbsp;variable&nbsp;end&nbsp;of&nbsp;a&nbsp;selection&nbsp;in&nbsp;item&nbsp;TAGORID&nbsp;to&nbsp;INDEX.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-tag_bind"><strong>tag_bind</strong></a>(self, tagOrId, sequence=None, func=None, add=None)</dt><dd><tt>Bind&nbsp;to&nbsp;all&nbsp;items&nbsp;with&nbsp;TAGORID&nbsp;at&nbsp;event&nbsp;SEQUENCE&nbsp;a&nbsp;call&nbsp;to&nbsp;function&nbsp;FUNC.<br>
+&nbsp;<br>
+An&nbsp;additional&nbsp;boolean&nbsp;parameter&nbsp;ADD&nbsp;specifies&nbsp;whether&nbsp;FUNC&nbsp;will&nbsp;be<br>
+called&nbsp;additionally&nbsp;to&nbsp;the&nbsp;other&nbsp;bound&nbsp;function&nbsp;or&nbsp;whether&nbsp;it&nbsp;will<br>
+replace&nbsp;the&nbsp;previous&nbsp;function.&nbsp;See&nbsp;bind&nbsp;for&nbsp;the&nbsp;return&nbsp;value.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-tag_lower"><strong>tag_lower</strong></a>(self, *args)</dt><dd><tt>Lower&nbsp;an&nbsp;item&nbsp;TAGORID&nbsp;given&nbsp;in&nbsp;ARGS<br>
+(optional&nbsp;below&nbsp;another&nbsp;item).</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-tag_raise"><strong>tag_raise</strong></a>(self, *args)</dt><dd><tt>Raise&nbsp;an&nbsp;item&nbsp;TAGORID&nbsp;given&nbsp;in&nbsp;ARGS<br>
+(optional&nbsp;above&nbsp;another&nbsp;item).</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-tag_unbind"><strong>tag_unbind</strong></a>(self, tagOrId, sequence, funcid=None)</dt><dd><tt>Unbind&nbsp;for&nbsp;all&nbsp;items&nbsp;with&nbsp;TAGORID&nbsp;for&nbsp;event&nbsp;SEQUENCE&nbsp;&nbsp;the<br>
+function&nbsp;identified&nbsp;with&nbsp;FUNCID.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-tkraise"><strong>tkraise</strong></a> = <a href="#VWSlider-tag_raise">tag_raise</a>(self, *args)</dt></dl>
+
+<dl><dt><a name="VWSlider-type"><strong>type</strong></a>(self, tagOrId)</dt><dd><tt>Return&nbsp;the&nbsp;type&nbsp;of&nbsp;the&nbsp;item&nbsp;TAGORID.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="tkinter.html#BaseWidget">tkinter.BaseWidget</a>:<br>
+<dl><dt><a name="VWSlider-destroy"><strong>destroy</strong></a>(self)</dt><dd><tt>Destroy&nbsp;this&nbsp;and&nbsp;all&nbsp;descendants&nbsp;widgets.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="tkinter.html#Misc">tkinter.Misc</a>:<br>
+<dl><dt><a name="VWSlider-__getitem__"><strong>__getitem__</strong></a> = <a href="#VWSlider-cget">cget</a>(self, key)</dt></dl>
+
+<dl><dt><a name="VWSlider-__repr__"><strong>__repr__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="VWSlider-__setitem__"><strong>__setitem__</strong></a>(self, key, value)</dt></dl>
+
+<dl><dt><a name="VWSlider-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;window&nbsp;path&nbsp;name&nbsp;of&nbsp;this&nbsp;widget.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-after"><strong>after</strong></a>(self, ms, func=None, *args)</dt><dd><tt>Call&nbsp;function&nbsp;once&nbsp;after&nbsp;given&nbsp;time.<br>
+&nbsp;<br>
+MS&nbsp;specifies&nbsp;the&nbsp;time&nbsp;in&nbsp;milliseconds.&nbsp;FUNC&nbsp;gives&nbsp;the<br>
+function&nbsp;which&nbsp;shall&nbsp;be&nbsp;called.&nbsp;Additional&nbsp;parameters<br>
+are&nbsp;given&nbsp;as&nbsp;parameters&nbsp;to&nbsp;the&nbsp;function&nbsp;call.&nbsp;&nbsp;Return<br>
+identifier&nbsp;to&nbsp;cancel&nbsp;scheduling&nbsp;with&nbsp;after_cancel.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-after_cancel"><strong>after_cancel</strong></a>(self, id)</dt><dd><tt>Cancel&nbsp;scheduling&nbsp;of&nbsp;function&nbsp;identified&nbsp;with&nbsp;ID.<br>
+&nbsp;<br>
+Identifier&nbsp;returned&nbsp;by&nbsp;after&nbsp;or&nbsp;after_idle&nbsp;must&nbsp;be<br>
+given&nbsp;as&nbsp;first&nbsp;parameter.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-after_idle"><strong>after_idle</strong></a>(self, func, *args)</dt><dd><tt>Call&nbsp;FUNC&nbsp;once&nbsp;if&nbsp;the&nbsp;Tcl&nbsp;main&nbsp;loop&nbsp;has&nbsp;no&nbsp;event&nbsp;to<br>
+process.<br>
+&nbsp;<br>
+Return&nbsp;an&nbsp;identifier&nbsp;to&nbsp;cancel&nbsp;the&nbsp;scheduling&nbsp;with<br>
+after_cancel.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-anchor"><strong>anchor</strong></a> = <a href="#VWSlider-grid_anchor">grid_anchor</a>(self, anchor=None)</dt></dl>
+
+<dl><dt><a name="VWSlider-bell"><strong>bell</strong></a>(self, displayof=0)</dt><dd><tt>Ring&nbsp;a&nbsp;display's&nbsp;bell.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-bind"><strong>bind</strong></a>(self, sequence=None, func=None, add=None)</dt><dd><tt>Bind&nbsp;to&nbsp;this&nbsp;widget&nbsp;at&nbsp;event&nbsp;SEQUENCE&nbsp;a&nbsp;call&nbsp;to&nbsp;function&nbsp;FUNC.<br>
+&nbsp;<br>
+SEQUENCE&nbsp;is&nbsp;a&nbsp;string&nbsp;of&nbsp;concatenated&nbsp;event<br>
+patterns.&nbsp;An&nbsp;event&nbsp;pattern&nbsp;is&nbsp;of&nbsp;the&nbsp;form<br>
+&lt;MODIFIER-MODIFIER-TYPE-DETAIL&gt;&nbsp;where&nbsp;MODIFIER&nbsp;is&nbsp;one<br>
+of&nbsp;Control,&nbsp;Mod2,&nbsp;M2,&nbsp;Shift,&nbsp;Mod3,&nbsp;M3,&nbsp;Lock,&nbsp;Mod4,&nbsp;M4,<br>
+Button1,&nbsp;B1,&nbsp;Mod5,&nbsp;M5&nbsp;Button2,&nbsp;B2,&nbsp;Meta,&nbsp;M,&nbsp;Button3,<br>
+B3,&nbsp;Alt,&nbsp;Button4,&nbsp;B4,&nbsp;Double,&nbsp;Button5,&nbsp;B5&nbsp;Triple,<br>
+Mod1,&nbsp;M1.&nbsp;TYPE&nbsp;is&nbsp;one&nbsp;of&nbsp;Activate,&nbsp;Enter,&nbsp;Map,<br>
+ButtonPress,&nbsp;Button,&nbsp;Expose,&nbsp;Motion,&nbsp;ButtonRelease<br>
+FocusIn,&nbsp;MouseWheel,&nbsp;Circulate,&nbsp;FocusOut,&nbsp;Property,<br>
+Colormap,&nbsp;Gravity&nbsp;Reparent,&nbsp;Configure,&nbsp;KeyPress,&nbsp;Key,<br>
+Unmap,&nbsp;Deactivate,&nbsp;KeyRelease&nbsp;Visibility,&nbsp;Destroy,<br>
+Leave&nbsp;and&nbsp;DETAIL&nbsp;is&nbsp;the&nbsp;button&nbsp;number&nbsp;for&nbsp;ButtonPress,<br>
+ButtonRelease&nbsp;and&nbsp;DETAIL&nbsp;is&nbsp;the&nbsp;Keysym&nbsp;for&nbsp;KeyPress&nbsp;and<br>
+KeyRelease.&nbsp;Examples&nbsp;are<br>
+&lt;Control-Button-1&gt;&nbsp;for&nbsp;pressing&nbsp;Control&nbsp;and&nbsp;mouse&nbsp;button&nbsp;1&nbsp;or<br>
+&lt;Alt-A&gt;&nbsp;for&nbsp;pressing&nbsp;A&nbsp;and&nbsp;the&nbsp;Alt&nbsp;key&nbsp;(KeyPress&nbsp;can&nbsp;be&nbsp;omitted).<br>
+An&nbsp;event&nbsp;pattern&nbsp;can&nbsp;also&nbsp;be&nbsp;a&nbsp;virtual&nbsp;event&nbsp;of&nbsp;the&nbsp;form<br>
+&lt;&lt;AString&gt;&gt;&nbsp;where&nbsp;AString&nbsp;can&nbsp;be&nbsp;arbitrary.&nbsp;This<br>
+event&nbsp;can&nbsp;be&nbsp;generated&nbsp;by&nbsp;event_generate.<br>
+If&nbsp;events&nbsp;are&nbsp;concatenated&nbsp;they&nbsp;must&nbsp;appear&nbsp;shortly<br>
+after&nbsp;each&nbsp;other.<br>
+&nbsp;<br>
+FUNC&nbsp;will&nbsp;be&nbsp;called&nbsp;if&nbsp;the&nbsp;event&nbsp;sequence&nbsp;occurs&nbsp;with&nbsp;an<br>
+instance&nbsp;of&nbsp;Event&nbsp;as&nbsp;argument.&nbsp;If&nbsp;the&nbsp;return&nbsp;value&nbsp;of&nbsp;FUNC&nbsp;is<br>
+"break"&nbsp;no&nbsp;further&nbsp;bound&nbsp;function&nbsp;is&nbsp;invoked.<br>
+&nbsp;<br>
+An&nbsp;additional&nbsp;boolean&nbsp;parameter&nbsp;ADD&nbsp;specifies&nbsp;whether&nbsp;FUNC&nbsp;will<br>
+be&nbsp;called&nbsp;additionally&nbsp;to&nbsp;the&nbsp;other&nbsp;bound&nbsp;function&nbsp;or&nbsp;whether<br>
+it&nbsp;will&nbsp;replace&nbsp;the&nbsp;previous&nbsp;function.<br>
+&nbsp;<br>
+Bind&nbsp;will&nbsp;return&nbsp;an&nbsp;identifier&nbsp;to&nbsp;allow&nbsp;deletion&nbsp;of&nbsp;the&nbsp;bound&nbsp;function&nbsp;with<br>
+unbind&nbsp;without&nbsp;memory&nbsp;leak.<br>
+&nbsp;<br>
+If&nbsp;FUNC&nbsp;or&nbsp;SEQUENCE&nbsp;is&nbsp;omitted&nbsp;the&nbsp;bound&nbsp;function&nbsp;or&nbsp;list<br>
+of&nbsp;bound&nbsp;events&nbsp;are&nbsp;returned.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-bind_all"><strong>bind_all</strong></a>(self, sequence=None, func=None, add=None)</dt><dd><tt>Bind&nbsp;to&nbsp;all&nbsp;widgets&nbsp;at&nbsp;an&nbsp;event&nbsp;SEQUENCE&nbsp;a&nbsp;call&nbsp;to&nbsp;function&nbsp;FUNC.<br>
+An&nbsp;additional&nbsp;boolean&nbsp;parameter&nbsp;ADD&nbsp;specifies&nbsp;whether&nbsp;FUNC&nbsp;will<br>
+be&nbsp;called&nbsp;additionally&nbsp;to&nbsp;the&nbsp;other&nbsp;bound&nbsp;function&nbsp;or&nbsp;whether<br>
+it&nbsp;will&nbsp;replace&nbsp;the&nbsp;previous&nbsp;function.&nbsp;See&nbsp;bind&nbsp;for&nbsp;the&nbsp;return&nbsp;value.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-bind_class"><strong>bind_class</strong></a>(self, className, sequence=None, func=None, add=None)</dt><dd><tt>Bind&nbsp;to&nbsp;widgets&nbsp;with&nbsp;bindtag&nbsp;CLASSNAME&nbsp;at&nbsp;event<br>
+SEQUENCE&nbsp;a&nbsp;call&nbsp;of&nbsp;function&nbsp;FUNC.&nbsp;An&nbsp;additional<br>
+boolean&nbsp;parameter&nbsp;ADD&nbsp;specifies&nbsp;whether&nbsp;FUNC&nbsp;will&nbsp;be<br>
+called&nbsp;additionally&nbsp;to&nbsp;the&nbsp;other&nbsp;bound&nbsp;function&nbsp;or<br>
+whether&nbsp;it&nbsp;will&nbsp;replace&nbsp;the&nbsp;previous&nbsp;function.&nbsp;See&nbsp;bind&nbsp;for<br>
+the&nbsp;return&nbsp;value.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-bindtags"><strong>bindtags</strong></a>(self, tagList=None)</dt><dd><tt>Set&nbsp;or&nbsp;get&nbsp;the&nbsp;list&nbsp;of&nbsp;bindtags&nbsp;for&nbsp;this&nbsp;widget.<br>
+&nbsp;<br>
+With&nbsp;no&nbsp;argument&nbsp;return&nbsp;the&nbsp;list&nbsp;of&nbsp;all&nbsp;bindtags&nbsp;associated&nbsp;with<br>
+this&nbsp;widget.&nbsp;With&nbsp;a&nbsp;list&nbsp;of&nbsp;strings&nbsp;as&nbsp;argument&nbsp;the&nbsp;bindtags&nbsp;are<br>
+set&nbsp;to&nbsp;this&nbsp;list.&nbsp;The&nbsp;bindtags&nbsp;determine&nbsp;in&nbsp;which&nbsp;order&nbsp;events&nbsp;are<br>
+processed&nbsp;(see&nbsp;bind).</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-cget"><strong>cget</strong></a>(self, key)</dt><dd><tt>Return&nbsp;the&nbsp;resource&nbsp;value&nbsp;for&nbsp;a&nbsp;KEY&nbsp;given&nbsp;as&nbsp;string.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-clipboard_append"><strong>clipboard_append</strong></a>(self, string, **kw)</dt><dd><tt>Append&nbsp;STRING&nbsp;to&nbsp;the&nbsp;Tk&nbsp;clipboard.<br>
+&nbsp;<br>
+A&nbsp;widget&nbsp;specified&nbsp;at&nbsp;the&nbsp;optional&nbsp;displayof&nbsp;keyword<br>
+argument&nbsp;specifies&nbsp;the&nbsp;target&nbsp;display.&nbsp;The&nbsp;clipboard<br>
+can&nbsp;be&nbsp;retrieved&nbsp;with&nbsp;selection_get.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-clipboard_clear"><strong>clipboard_clear</strong></a>(self, **kw)</dt><dd><tt>Clear&nbsp;the&nbsp;data&nbsp;in&nbsp;the&nbsp;Tk&nbsp;clipboard.<br>
+&nbsp;<br>
+A&nbsp;widget&nbsp;specified&nbsp;for&nbsp;the&nbsp;optional&nbsp;displayof&nbsp;keyword<br>
+argument&nbsp;specifies&nbsp;the&nbsp;target&nbsp;display.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-clipboard_get"><strong>clipboard_get</strong></a>(self, **kw)</dt><dd><tt>Retrieve&nbsp;data&nbsp;from&nbsp;the&nbsp;clipboard&nbsp;on&nbsp;window's&nbsp;display.<br>
+&nbsp;<br>
+The&nbsp;window&nbsp;keyword&nbsp;defaults&nbsp;to&nbsp;the&nbsp;root&nbsp;window&nbsp;of&nbsp;the&nbsp;Tkinter<br>
+application.<br>
+&nbsp;<br>
+The&nbsp;type&nbsp;keyword&nbsp;specifies&nbsp;the&nbsp;form&nbsp;in&nbsp;which&nbsp;the&nbsp;data&nbsp;is<br>
+to&nbsp;be&nbsp;returned&nbsp;and&nbsp;should&nbsp;be&nbsp;an&nbsp;atom&nbsp;name&nbsp;such&nbsp;as&nbsp;STRING<br>
+or&nbsp;FILE_NAME.&nbsp;&nbsp;Type&nbsp;defaults&nbsp;to&nbsp;STRING,&nbsp;except&nbsp;on&nbsp;X11,&nbsp;where&nbsp;the&nbsp;default<br>
+is&nbsp;to&nbsp;try&nbsp;UTF8_STRING&nbsp;and&nbsp;fall&nbsp;back&nbsp;to&nbsp;STRING.<br>
+&nbsp;<br>
+This&nbsp;command&nbsp;is&nbsp;equivalent&nbsp;to:<br>
+&nbsp;<br>
+<a href="#VWSlider-selection_get">selection_get</a>(CLIPBOARD)</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-columnconfigure"><strong>columnconfigure</strong></a> = <a href="#VWSlider-grid_columnconfigure">grid_columnconfigure</a>(self, index, cnf={}, **kw)</dt></dl>
+
+<dl><dt><a name="VWSlider-config"><strong>config</strong></a> = <a href="#VWSlider-configure">configure</a>(self, cnf=None, **kw)</dt></dl>
+
+<dl><dt><a name="VWSlider-configure"><strong>configure</strong></a>(self, cnf=None, **kw)</dt><dd><tt>Configure&nbsp;resources&nbsp;of&nbsp;a&nbsp;widget.<br>
+&nbsp;<br>
+The&nbsp;values&nbsp;for&nbsp;resources&nbsp;are&nbsp;specified&nbsp;as&nbsp;keyword<br>
+arguments.&nbsp;To&nbsp;get&nbsp;an&nbsp;overview&nbsp;about<br>
+the&nbsp;allowed&nbsp;keyword&nbsp;arguments&nbsp;call&nbsp;the&nbsp;method&nbsp;keys.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-deletecommand"><strong>deletecommand</strong></a>(self, name)</dt><dd><tt>Internal&nbsp;function.<br>
+&nbsp;<br>
+Delete&nbsp;the&nbsp;Tcl&nbsp;command&nbsp;provided&nbsp;in&nbsp;NAME.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-event_add"><strong>event_add</strong></a>(self, virtual, *sequences)</dt><dd><tt>Bind&nbsp;a&nbsp;virtual&nbsp;event&nbsp;VIRTUAL&nbsp;(of&nbsp;the&nbsp;form&nbsp;&lt;&lt;Name&gt;&gt;)<br>
+to&nbsp;an&nbsp;event&nbsp;SEQUENCE&nbsp;such&nbsp;that&nbsp;the&nbsp;virtual&nbsp;event&nbsp;is&nbsp;triggered<br>
+whenever&nbsp;SEQUENCE&nbsp;occurs.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-event_delete"><strong>event_delete</strong></a>(self, virtual, *sequences)</dt><dd><tt>Unbind&nbsp;a&nbsp;virtual&nbsp;event&nbsp;VIRTUAL&nbsp;from&nbsp;SEQUENCE.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-event_generate"><strong>event_generate</strong></a>(self, sequence, **kw)</dt><dd><tt>Generate&nbsp;an&nbsp;event&nbsp;SEQUENCE.&nbsp;Additional<br>
+keyword&nbsp;arguments&nbsp;specify&nbsp;parameter&nbsp;of&nbsp;the&nbsp;event<br>
+(e.g.&nbsp;x,&nbsp;y,&nbsp;rootx,&nbsp;rooty).</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-event_info"><strong>event_info</strong></a>(self, virtual=None)</dt><dd><tt>Return&nbsp;a&nbsp;list&nbsp;of&nbsp;all&nbsp;virtual&nbsp;events&nbsp;or&nbsp;the&nbsp;information<br>
+about&nbsp;the&nbsp;SEQUENCE&nbsp;bound&nbsp;to&nbsp;the&nbsp;virtual&nbsp;event&nbsp;VIRTUAL.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-focus_displayof"><strong>focus_displayof</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;widget&nbsp;which&nbsp;has&nbsp;currently&nbsp;the&nbsp;focus&nbsp;on&nbsp;the<br>
+display&nbsp;where&nbsp;this&nbsp;widget&nbsp;is&nbsp;located.<br>
+&nbsp;<br>
+Return&nbsp;None&nbsp;if&nbsp;the&nbsp;application&nbsp;does&nbsp;not&nbsp;have&nbsp;the&nbsp;focus.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-focus_force"><strong>focus_force</strong></a>(self)</dt><dd><tt>Direct&nbsp;input&nbsp;focus&nbsp;to&nbsp;this&nbsp;widget&nbsp;even&nbsp;if&nbsp;the<br>
+application&nbsp;does&nbsp;not&nbsp;have&nbsp;the&nbsp;focus.&nbsp;Use&nbsp;with<br>
+caution!</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-focus_get"><strong>focus_get</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;widget&nbsp;which&nbsp;has&nbsp;currently&nbsp;the&nbsp;focus&nbsp;in&nbsp;the<br>
+application.<br>
+&nbsp;<br>
+Use&nbsp;focus_displayof&nbsp;to&nbsp;allow&nbsp;working&nbsp;with&nbsp;several<br>
+displays.&nbsp;Return&nbsp;None&nbsp;if&nbsp;application&nbsp;does&nbsp;not&nbsp;have<br>
+the&nbsp;focus.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-focus_lastfor"><strong>focus_lastfor</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;widget&nbsp;which&nbsp;would&nbsp;have&nbsp;the&nbsp;focus&nbsp;if&nbsp;top&nbsp;level<br>
+for&nbsp;this&nbsp;widget&nbsp;gets&nbsp;the&nbsp;focus&nbsp;from&nbsp;the&nbsp;window&nbsp;manager.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-focus_set"><strong>focus_set</strong></a>(self)</dt><dd><tt>Direct&nbsp;input&nbsp;focus&nbsp;to&nbsp;this&nbsp;widget.<br>
+&nbsp;<br>
+If&nbsp;the&nbsp;application&nbsp;currently&nbsp;does&nbsp;not&nbsp;have&nbsp;the&nbsp;focus<br>
+this&nbsp;widget&nbsp;will&nbsp;get&nbsp;the&nbsp;focus&nbsp;if&nbsp;the&nbsp;application&nbsp;gets<br>
+the&nbsp;focus&nbsp;through&nbsp;the&nbsp;window&nbsp;manager.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-getboolean"><strong>getboolean</strong></a>(self, s)</dt><dd><tt>Return&nbsp;a&nbsp;boolean&nbsp;value&nbsp;for&nbsp;Tcl&nbsp;boolean&nbsp;values&nbsp;true&nbsp;and&nbsp;false&nbsp;given&nbsp;as&nbsp;parameter.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-getdouble"><strong>getdouble</strong></a>(self, s)</dt></dl>
+
+<dl><dt><a name="VWSlider-getint"><strong>getint</strong></a>(self, s)</dt></dl>
+
+<dl><dt><a name="VWSlider-getvar"><strong>getvar</strong></a>(self, name='PY_VAR')</dt><dd><tt>Return&nbsp;value&nbsp;of&nbsp;Tcl&nbsp;variable&nbsp;NAME.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-grab_current"><strong>grab_current</strong></a>(self)</dt><dd><tt>Return&nbsp;widget&nbsp;which&nbsp;has&nbsp;currently&nbsp;the&nbsp;grab&nbsp;in&nbsp;this&nbsp;application<br>
+or&nbsp;None.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-grab_release"><strong>grab_release</strong></a>(self)</dt><dd><tt>Release&nbsp;grab&nbsp;for&nbsp;this&nbsp;widget&nbsp;if&nbsp;currently&nbsp;set.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-grab_set"><strong>grab_set</strong></a>(self)</dt><dd><tt>Set&nbsp;grab&nbsp;for&nbsp;this&nbsp;widget.<br>
+&nbsp;<br>
+A&nbsp;grab&nbsp;directs&nbsp;all&nbsp;events&nbsp;to&nbsp;this&nbsp;and&nbsp;descendant<br>
+widgets&nbsp;in&nbsp;the&nbsp;application.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-grab_set_global"><strong>grab_set_global</strong></a>(self)</dt><dd><tt>Set&nbsp;global&nbsp;grab&nbsp;for&nbsp;this&nbsp;widget.<br>
+&nbsp;<br>
+A&nbsp;global&nbsp;grab&nbsp;directs&nbsp;all&nbsp;events&nbsp;to&nbsp;this&nbsp;and<br>
+descendant&nbsp;widgets&nbsp;on&nbsp;the&nbsp;display.&nbsp;Use&nbsp;with&nbsp;caution&nbsp;-<br>
+other&nbsp;applications&nbsp;do&nbsp;not&nbsp;get&nbsp;events&nbsp;anymore.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-grab_status"><strong>grab_status</strong></a>(self)</dt><dd><tt>Return&nbsp;None,&nbsp;"local"&nbsp;or&nbsp;"global"&nbsp;if&nbsp;this&nbsp;widget&nbsp;has<br>
+no,&nbsp;a&nbsp;local&nbsp;or&nbsp;a&nbsp;global&nbsp;grab.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-grid_anchor"><strong>grid_anchor</strong></a>(self, anchor=None)</dt><dd><tt>The&nbsp;anchor&nbsp;value&nbsp;controls&nbsp;how&nbsp;to&nbsp;place&nbsp;the&nbsp;grid&nbsp;within&nbsp;the<br>
+master&nbsp;when&nbsp;no&nbsp;row/column&nbsp;has&nbsp;any&nbsp;weight.<br>
+&nbsp;<br>
+The&nbsp;default&nbsp;anchor&nbsp;is&nbsp;nw.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-grid_bbox"><strong>grid_bbox</strong></a>(self, column=None, row=None, col2=None, row2=None)</dt><dd><tt>Return&nbsp;a&nbsp;tuple&nbsp;of&nbsp;integer&nbsp;coordinates&nbsp;for&nbsp;the&nbsp;bounding<br>
+box&nbsp;of&nbsp;this&nbsp;widget&nbsp;controlled&nbsp;by&nbsp;the&nbsp;geometry&nbsp;manager&nbsp;grid.<br>
+&nbsp;<br>
+If&nbsp;COLUMN,&nbsp;ROW&nbsp;is&nbsp;given&nbsp;the&nbsp;bounding&nbsp;box&nbsp;applies&nbsp;from<br>
+the&nbsp;cell&nbsp;with&nbsp;row&nbsp;and&nbsp;column&nbsp;0&nbsp;to&nbsp;the&nbsp;specified<br>
+cell.&nbsp;If&nbsp;COL2&nbsp;and&nbsp;ROW2&nbsp;are&nbsp;given&nbsp;the&nbsp;bounding&nbsp;box<br>
+starts&nbsp;at&nbsp;that&nbsp;cell.<br>
+&nbsp;<br>
+The&nbsp;returned&nbsp;integers&nbsp;specify&nbsp;the&nbsp;offset&nbsp;of&nbsp;the&nbsp;upper&nbsp;left<br>
+corner&nbsp;in&nbsp;the&nbsp;master&nbsp;widget&nbsp;and&nbsp;the&nbsp;width&nbsp;and&nbsp;height.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-grid_columnconfigure"><strong>grid_columnconfigure</strong></a>(self, index, cnf={}, **kw)</dt><dd><tt>Configure&nbsp;column&nbsp;INDEX&nbsp;of&nbsp;a&nbsp;grid.<br>
+&nbsp;<br>
+Valid&nbsp;resources&nbsp;are&nbsp;minsize&nbsp;(minimum&nbsp;size&nbsp;of&nbsp;the&nbsp;column),<br>
+weight&nbsp;(how&nbsp;much&nbsp;does&nbsp;additional&nbsp;space&nbsp;propagate&nbsp;to&nbsp;this&nbsp;column)<br>
+and&nbsp;pad&nbsp;(how&nbsp;much&nbsp;space&nbsp;to&nbsp;let&nbsp;additionally).</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-grid_location"><strong>grid_location</strong></a>(self, x, y)</dt><dd><tt>Return&nbsp;a&nbsp;tuple&nbsp;of&nbsp;column&nbsp;and&nbsp;row&nbsp;which&nbsp;identify&nbsp;the&nbsp;cell<br>
+at&nbsp;which&nbsp;the&nbsp;pixel&nbsp;at&nbsp;position&nbsp;X&nbsp;and&nbsp;Y&nbsp;inside&nbsp;the&nbsp;master<br>
+widget&nbsp;is&nbsp;located.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-grid_propagate"><strong>grid_propagate</strong></a>(self, flag=['_noarg_'])</dt><dd><tt>Set&nbsp;or&nbsp;get&nbsp;the&nbsp;status&nbsp;for&nbsp;propagation&nbsp;of&nbsp;geometry&nbsp;information.<br>
+&nbsp;<br>
+A&nbsp;boolean&nbsp;argument&nbsp;specifies&nbsp;whether&nbsp;the&nbsp;geometry&nbsp;information<br>
+of&nbsp;the&nbsp;slaves&nbsp;will&nbsp;determine&nbsp;the&nbsp;size&nbsp;of&nbsp;this&nbsp;widget.&nbsp;If&nbsp;no&nbsp;argument<br>
+is&nbsp;given,&nbsp;the&nbsp;current&nbsp;setting&nbsp;will&nbsp;be&nbsp;returned.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-grid_rowconfigure"><strong>grid_rowconfigure</strong></a>(self, index, cnf={}, **kw)</dt><dd><tt>Configure&nbsp;row&nbsp;INDEX&nbsp;of&nbsp;a&nbsp;grid.<br>
+&nbsp;<br>
+Valid&nbsp;resources&nbsp;are&nbsp;minsize&nbsp;(minimum&nbsp;size&nbsp;of&nbsp;the&nbsp;row),<br>
+weight&nbsp;(how&nbsp;much&nbsp;does&nbsp;additional&nbsp;space&nbsp;propagate&nbsp;to&nbsp;this&nbsp;row)<br>
+and&nbsp;pad&nbsp;(how&nbsp;much&nbsp;space&nbsp;to&nbsp;let&nbsp;additionally).</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-grid_size"><strong>grid_size</strong></a>(self)</dt><dd><tt>Return&nbsp;a&nbsp;tuple&nbsp;of&nbsp;the&nbsp;number&nbsp;of&nbsp;column&nbsp;and&nbsp;rows&nbsp;in&nbsp;the&nbsp;grid.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-grid_slaves"><strong>grid_slaves</strong></a>(self, row=None, column=None)</dt><dd><tt>Return&nbsp;a&nbsp;list&nbsp;of&nbsp;all&nbsp;slaves&nbsp;of&nbsp;this&nbsp;widget<br>
+in&nbsp;its&nbsp;packing&nbsp;order.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-image_names"><strong>image_names</strong></a>(self)</dt><dd><tt>Return&nbsp;a&nbsp;list&nbsp;of&nbsp;all&nbsp;existing&nbsp;image&nbsp;names.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-image_types"><strong>image_types</strong></a>(self)</dt><dd><tt>Return&nbsp;a&nbsp;list&nbsp;of&nbsp;all&nbsp;available&nbsp;image&nbsp;types&nbsp;(e.g.&nbsp;photo&nbsp;bitmap).</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-info_patchlevel"><strong>info_patchlevel</strong></a>(self)</dt><dd><tt>Returns&nbsp;the&nbsp;exact&nbsp;version&nbsp;of&nbsp;the&nbsp;Tcl&nbsp;library.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-keys"><strong>keys</strong></a>(self)</dt><dd><tt>Return&nbsp;a&nbsp;list&nbsp;of&nbsp;all&nbsp;resource&nbsp;names&nbsp;of&nbsp;this&nbsp;widget.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-mainloop"><strong>mainloop</strong></a>(self, n=0)</dt><dd><tt>Call&nbsp;the&nbsp;mainloop&nbsp;of&nbsp;Tk.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-nametowidget"><strong>nametowidget</strong></a>(self, name)</dt><dd><tt>Return&nbsp;the&nbsp;Tkinter&nbsp;instance&nbsp;of&nbsp;a&nbsp;widget&nbsp;identified&nbsp;by<br>
+its&nbsp;Tcl&nbsp;name&nbsp;NAME.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-option_add"><strong>option_add</strong></a>(self, pattern, value, priority=None)</dt><dd><tt>Set&nbsp;a&nbsp;VALUE&nbsp;(second&nbsp;parameter)&nbsp;for&nbsp;an&nbsp;option<br>
+PATTERN&nbsp;(first&nbsp;parameter).<br>
+&nbsp;<br>
+An&nbsp;optional&nbsp;third&nbsp;parameter&nbsp;gives&nbsp;the&nbsp;numeric&nbsp;priority<br>
+(defaults&nbsp;to&nbsp;80).</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-option_clear"><strong>option_clear</strong></a>(self)</dt><dd><tt>Clear&nbsp;the&nbsp;option&nbsp;database.<br>
+&nbsp;<br>
+It&nbsp;will&nbsp;be&nbsp;reloaded&nbsp;if&nbsp;option_add&nbsp;is&nbsp;called.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-option_get"><strong>option_get</strong></a>(self, name, className)</dt><dd><tt>Return&nbsp;the&nbsp;value&nbsp;for&nbsp;an&nbsp;option&nbsp;NAME&nbsp;for&nbsp;this&nbsp;widget<br>
+with&nbsp;CLASSNAME.<br>
+&nbsp;<br>
+Values&nbsp;with&nbsp;higher&nbsp;priority&nbsp;override&nbsp;lower&nbsp;values.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-option_readfile"><strong>option_readfile</strong></a>(self, fileName, priority=None)</dt><dd><tt>Read&nbsp;file&nbsp;FILENAME&nbsp;into&nbsp;the&nbsp;option&nbsp;database.<br>
+&nbsp;<br>
+An&nbsp;optional&nbsp;second&nbsp;parameter&nbsp;gives&nbsp;the&nbsp;numeric<br>
+priority.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-pack_propagate"><strong>pack_propagate</strong></a>(self, flag=['_noarg_'])</dt><dd><tt>Set&nbsp;or&nbsp;get&nbsp;the&nbsp;status&nbsp;for&nbsp;propagation&nbsp;of&nbsp;geometry&nbsp;information.<br>
+&nbsp;<br>
+A&nbsp;boolean&nbsp;argument&nbsp;specifies&nbsp;whether&nbsp;the&nbsp;geometry&nbsp;information<br>
+of&nbsp;the&nbsp;slaves&nbsp;will&nbsp;determine&nbsp;the&nbsp;size&nbsp;of&nbsp;this&nbsp;widget.&nbsp;If&nbsp;no&nbsp;argument<br>
+is&nbsp;given&nbsp;the&nbsp;current&nbsp;setting&nbsp;will&nbsp;be&nbsp;returned.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-pack_slaves"><strong>pack_slaves</strong></a>(self)</dt><dd><tt>Return&nbsp;a&nbsp;list&nbsp;of&nbsp;all&nbsp;slaves&nbsp;of&nbsp;this&nbsp;widget<br>
+in&nbsp;its&nbsp;packing&nbsp;order.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-place_slaves"><strong>place_slaves</strong></a>(self)</dt><dd><tt>Return&nbsp;a&nbsp;list&nbsp;of&nbsp;all&nbsp;slaves&nbsp;of&nbsp;this&nbsp;widget<br>
+in&nbsp;its&nbsp;packing&nbsp;order.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-propagate"><strong>propagate</strong></a> = <a href="#VWSlider-pack_propagate">pack_propagate</a>(self, flag=['_noarg_'])</dt></dl>
+
+<dl><dt><a name="VWSlider-quit"><strong>quit</strong></a>(self)</dt><dd><tt>Quit&nbsp;the&nbsp;Tcl&nbsp;interpreter.&nbsp;All&nbsp;widgets&nbsp;will&nbsp;be&nbsp;destroyed.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-register"><strong>register</strong></a> = <a href="#VWSlider-_register">_register</a>(self, func, subst=None, needcleanup=1)</dt></dl>
+
+<dl><dt><a name="VWSlider-rowconfigure"><strong>rowconfigure</strong></a> = <a href="#VWSlider-grid_rowconfigure">grid_rowconfigure</a>(self, index, cnf={}, **kw)</dt></dl>
+
+<dl><dt><a name="VWSlider-selection_clear"><strong>selection_clear</strong></a>(self, **kw)</dt><dd><tt>Clear&nbsp;the&nbsp;current&nbsp;X&nbsp;selection.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-selection_get"><strong>selection_get</strong></a>(self, **kw)</dt><dd><tt>Return&nbsp;the&nbsp;contents&nbsp;of&nbsp;the&nbsp;current&nbsp;X&nbsp;selection.<br>
+&nbsp;<br>
+A&nbsp;keyword&nbsp;parameter&nbsp;selection&nbsp;specifies&nbsp;the&nbsp;name&nbsp;of<br>
+the&nbsp;selection&nbsp;and&nbsp;defaults&nbsp;to&nbsp;PRIMARY.&nbsp;&nbsp;A&nbsp;keyword<br>
+parameter&nbsp;displayof&nbsp;specifies&nbsp;a&nbsp;widget&nbsp;on&nbsp;the&nbsp;display<br>
+to&nbsp;use.&nbsp;A&nbsp;keyword&nbsp;parameter&nbsp;type&nbsp;specifies&nbsp;the&nbsp;form&nbsp;of&nbsp;data&nbsp;to&nbsp;be<br>
+fetched,&nbsp;defaulting&nbsp;to&nbsp;STRING&nbsp;except&nbsp;on&nbsp;X11,&nbsp;where&nbsp;UTF8_STRING&nbsp;is&nbsp;tried<br>
+before&nbsp;STRING.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-selection_handle"><strong>selection_handle</strong></a>(self, command, **kw)</dt><dd><tt>Specify&nbsp;a&nbsp;function&nbsp;COMMAND&nbsp;to&nbsp;call&nbsp;if&nbsp;the&nbsp;X<br>
+selection&nbsp;owned&nbsp;by&nbsp;this&nbsp;widget&nbsp;is&nbsp;queried&nbsp;by&nbsp;another<br>
+application.<br>
+&nbsp;<br>
+This&nbsp;function&nbsp;must&nbsp;return&nbsp;the&nbsp;contents&nbsp;of&nbsp;the<br>
+selection.&nbsp;The&nbsp;function&nbsp;will&nbsp;be&nbsp;called&nbsp;with&nbsp;the<br>
+arguments&nbsp;OFFSET&nbsp;and&nbsp;LENGTH&nbsp;which&nbsp;allows&nbsp;the&nbsp;chunking<br>
+of&nbsp;very&nbsp;long&nbsp;selections.&nbsp;The&nbsp;following&nbsp;keyword<br>
+parameters&nbsp;can&nbsp;be&nbsp;provided:<br>
+selection&nbsp;-&nbsp;name&nbsp;of&nbsp;the&nbsp;selection&nbsp;(default&nbsp;PRIMARY),<br>
+type&nbsp;-&nbsp;type&nbsp;of&nbsp;the&nbsp;selection&nbsp;(e.g.&nbsp;STRING,&nbsp;FILE_NAME).</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-selection_own"><strong>selection_own</strong></a>(self, **kw)</dt><dd><tt>Become&nbsp;owner&nbsp;of&nbsp;X&nbsp;selection.<br>
+&nbsp;<br>
+A&nbsp;keyword&nbsp;parameter&nbsp;selection&nbsp;specifies&nbsp;the&nbsp;name&nbsp;of<br>
+the&nbsp;selection&nbsp;(default&nbsp;PRIMARY).</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-selection_own_get"><strong>selection_own_get</strong></a>(self, **kw)</dt><dd><tt>Return&nbsp;owner&nbsp;of&nbsp;X&nbsp;selection.<br>
+&nbsp;<br>
+The&nbsp;following&nbsp;keyword&nbsp;parameter&nbsp;can<br>
+be&nbsp;provided:<br>
+selection&nbsp;-&nbsp;name&nbsp;of&nbsp;the&nbsp;selection&nbsp;(default&nbsp;PRIMARY),<br>
+type&nbsp;-&nbsp;type&nbsp;of&nbsp;the&nbsp;selection&nbsp;(e.g.&nbsp;STRING,&nbsp;FILE_NAME).</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-send"><strong>send</strong></a>(self, interp, cmd, *args)</dt><dd><tt>Send&nbsp;Tcl&nbsp;command&nbsp;CMD&nbsp;to&nbsp;different&nbsp;interpreter&nbsp;INTERP&nbsp;to&nbsp;be&nbsp;executed.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-setvar"><strong>setvar</strong></a>(self, name='PY_VAR', value='1')</dt><dd><tt>Set&nbsp;Tcl&nbsp;variable&nbsp;NAME&nbsp;to&nbsp;VALUE.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-size"><strong>size</strong></a> = <a href="#VWSlider-grid_size">grid_size</a>(self)</dt></dl>
+
+<dl><dt><a name="VWSlider-slaves"><strong>slaves</strong></a> = <a href="#VWSlider-pack_slaves">pack_slaves</a>(self)</dt></dl>
+
+<dl><dt><a name="VWSlider-tk_bisque"><strong>tk_bisque</strong></a>(self)</dt><dd><tt>Change&nbsp;the&nbsp;color&nbsp;scheme&nbsp;to&nbsp;light&nbsp;brown&nbsp;as&nbsp;used&nbsp;in&nbsp;Tk&nbsp;3.6&nbsp;and&nbsp;before.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-tk_focusFollowsMouse"><strong>tk_focusFollowsMouse</strong></a>(self)</dt><dd><tt>The&nbsp;widget&nbsp;under&nbsp;mouse&nbsp;will&nbsp;get&nbsp;automatically&nbsp;focus.&nbsp;Can&nbsp;not<br>
+be&nbsp;disabled&nbsp;easily.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-tk_focusNext"><strong>tk_focusNext</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;next&nbsp;widget&nbsp;in&nbsp;the&nbsp;focus&nbsp;order&nbsp;which&nbsp;follows<br>
+widget&nbsp;which&nbsp;has&nbsp;currently&nbsp;the&nbsp;focus.<br>
+&nbsp;<br>
+The&nbsp;focus&nbsp;order&nbsp;first&nbsp;goes&nbsp;to&nbsp;the&nbsp;next&nbsp;child,&nbsp;then&nbsp;to<br>
+the&nbsp;children&nbsp;of&nbsp;the&nbsp;child&nbsp;recursively&nbsp;and&nbsp;then&nbsp;to&nbsp;the<br>
+next&nbsp;sibling&nbsp;which&nbsp;is&nbsp;higher&nbsp;in&nbsp;the&nbsp;stacking&nbsp;order.&nbsp;&nbsp;A<br>
+widget&nbsp;is&nbsp;omitted&nbsp;if&nbsp;it&nbsp;has&nbsp;the&nbsp;takefocus&nbsp;resource&nbsp;set<br>
+to&nbsp;0.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-tk_focusPrev"><strong>tk_focusPrev</strong></a>(self)</dt><dd><tt>Return&nbsp;previous&nbsp;widget&nbsp;in&nbsp;the&nbsp;focus&nbsp;order.&nbsp;See&nbsp;tk_focusNext&nbsp;for&nbsp;details.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-tk_setPalette"><strong>tk_setPalette</strong></a>(self, *args, **kw)</dt><dd><tt>Set&nbsp;a&nbsp;new&nbsp;color&nbsp;scheme&nbsp;for&nbsp;all&nbsp;widget&nbsp;elements.<br>
+&nbsp;<br>
+A&nbsp;single&nbsp;color&nbsp;as&nbsp;argument&nbsp;will&nbsp;cause&nbsp;that&nbsp;all&nbsp;colors&nbsp;of&nbsp;Tk<br>
+widget&nbsp;elements&nbsp;are&nbsp;derived&nbsp;from&nbsp;this.<br>
+Alternatively&nbsp;several&nbsp;keyword&nbsp;parameters&nbsp;and&nbsp;its&nbsp;associated<br>
+colors&nbsp;can&nbsp;be&nbsp;given.&nbsp;The&nbsp;following&nbsp;keywords&nbsp;are&nbsp;valid:<br>
+activeBackground,&nbsp;foreground,&nbsp;selectColor,<br>
+activeForeground,&nbsp;highlightBackground,&nbsp;selectBackground,<br>
+background,&nbsp;highlightColor,&nbsp;selectForeground,<br>
+disabledForeground,&nbsp;insertBackground,&nbsp;troughColor.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-tk_strictMotif"><strong>tk_strictMotif</strong></a>(self, boolean=None)</dt><dd><tt>Set&nbsp;Tcl&nbsp;internal&nbsp;variable,&nbsp;whether&nbsp;the&nbsp;look&nbsp;and&nbsp;feel<br>
+should&nbsp;adhere&nbsp;to&nbsp;Motif.<br>
+&nbsp;<br>
+A&nbsp;parameter&nbsp;of&nbsp;1&nbsp;means&nbsp;adhere&nbsp;to&nbsp;Motif&nbsp;(e.g.&nbsp;no&nbsp;color<br>
+change&nbsp;if&nbsp;mouse&nbsp;passes&nbsp;over&nbsp;slider).<br>
+Returns&nbsp;the&nbsp;set&nbsp;value.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-unbind"><strong>unbind</strong></a>(self, sequence, funcid=None)</dt><dd><tt>Unbind&nbsp;for&nbsp;this&nbsp;widget&nbsp;for&nbsp;event&nbsp;SEQUENCE&nbsp;&nbsp;the<br>
+function&nbsp;identified&nbsp;with&nbsp;FUNCID.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-unbind_all"><strong>unbind_all</strong></a>(self, sequence)</dt><dd><tt>Unbind&nbsp;for&nbsp;all&nbsp;widgets&nbsp;for&nbsp;event&nbsp;SEQUENCE&nbsp;all&nbsp;functions.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-unbind_class"><strong>unbind_class</strong></a>(self, className, sequence)</dt><dd><tt>Unbind&nbsp;for&nbsp;all&nbsp;widgets&nbsp;with&nbsp;bindtag&nbsp;CLASSNAME&nbsp;for&nbsp;event&nbsp;SEQUENCE<br>
+all&nbsp;functions.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-update"><strong>update</strong></a>(self)</dt><dd><tt>Enter&nbsp;event&nbsp;loop&nbsp;until&nbsp;all&nbsp;pending&nbsp;events&nbsp;have&nbsp;been&nbsp;processed&nbsp;by&nbsp;Tcl.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-update_idletasks"><strong>update_idletasks</strong></a>(self)</dt><dd><tt>Enter&nbsp;event&nbsp;loop&nbsp;until&nbsp;all&nbsp;idle&nbsp;callbacks&nbsp;have&nbsp;been&nbsp;called.&nbsp;This<br>
+will&nbsp;update&nbsp;the&nbsp;display&nbsp;of&nbsp;windows&nbsp;but&nbsp;not&nbsp;process&nbsp;events&nbsp;caused&nbsp;by<br>
+the&nbsp;user.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-wait_variable"><strong>wait_variable</strong></a>(self, name='PY_VAR')</dt><dd><tt>Wait&nbsp;until&nbsp;the&nbsp;variable&nbsp;is&nbsp;modified.<br>
+&nbsp;<br>
+A&nbsp;parameter&nbsp;of&nbsp;type&nbsp;IntVar,&nbsp;StringVar,&nbsp;DoubleVar&nbsp;or<br>
+BooleanVar&nbsp;must&nbsp;be&nbsp;given.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-wait_visibility"><strong>wait_visibility</strong></a>(self, window=None)</dt><dd><tt>Wait&nbsp;until&nbsp;the&nbsp;visibility&nbsp;of&nbsp;a&nbsp;WIDGET&nbsp;changes<br>
+(e.g.&nbsp;it&nbsp;appears).<br>
+&nbsp;<br>
+If&nbsp;no&nbsp;parameter&nbsp;is&nbsp;given&nbsp;self&nbsp;is&nbsp;used.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-wait_window"><strong>wait_window</strong></a>(self, window=None)</dt><dd><tt>Wait&nbsp;until&nbsp;a&nbsp;WIDGET&nbsp;is&nbsp;destroyed.<br>
+&nbsp;<br>
+If&nbsp;no&nbsp;parameter&nbsp;is&nbsp;given&nbsp;self&nbsp;is&nbsp;used.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-waitvar"><strong>waitvar</strong></a> = <a href="#VWSlider-wait_variable">wait_variable</a>(self, name='PY_VAR')</dt></dl>
+
+<dl><dt><a name="VWSlider-winfo_atom"><strong>winfo_atom</strong></a>(self, name, displayof=0)</dt><dd><tt>Return&nbsp;integer&nbsp;which&nbsp;represents&nbsp;atom&nbsp;NAME.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_atomname"><strong>winfo_atomname</strong></a>(self, id, displayof=0)</dt><dd><tt>Return&nbsp;name&nbsp;of&nbsp;atom&nbsp;with&nbsp;identifier&nbsp;ID.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_cells"><strong>winfo_cells</strong></a>(self)</dt><dd><tt>Return&nbsp;number&nbsp;of&nbsp;cells&nbsp;in&nbsp;the&nbsp;colormap&nbsp;for&nbsp;this&nbsp;widget.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_children"><strong>winfo_children</strong></a>(self)</dt><dd><tt>Return&nbsp;a&nbsp;list&nbsp;of&nbsp;all&nbsp;widgets&nbsp;which&nbsp;are&nbsp;children&nbsp;of&nbsp;this&nbsp;widget.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_class"><strong>winfo_class</strong></a>(self)</dt><dd><tt>Return&nbsp;window&nbsp;class&nbsp;name&nbsp;of&nbsp;this&nbsp;widget.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_colormapfull"><strong>winfo_colormapfull</strong></a>(self)</dt><dd><tt>Return&nbsp;True&nbsp;if&nbsp;at&nbsp;the&nbsp;last&nbsp;color&nbsp;request&nbsp;the&nbsp;colormap&nbsp;was&nbsp;full.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_containing"><strong>winfo_containing</strong></a>(self, rootX, rootY, displayof=0)</dt><dd><tt>Return&nbsp;the&nbsp;widget&nbsp;which&nbsp;is&nbsp;at&nbsp;the&nbsp;root&nbsp;coordinates&nbsp;ROOTX,&nbsp;ROOTY.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_depth"><strong>winfo_depth</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;number&nbsp;of&nbsp;bits&nbsp;per&nbsp;pixel.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_exists"><strong>winfo_exists</strong></a>(self)</dt><dd><tt>Return&nbsp;true&nbsp;if&nbsp;this&nbsp;widget&nbsp;exists.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_fpixels"><strong>winfo_fpixels</strong></a>(self, number)</dt><dd><tt>Return&nbsp;the&nbsp;number&nbsp;of&nbsp;pixels&nbsp;for&nbsp;the&nbsp;given&nbsp;distance&nbsp;NUMBER<br>
+(e.g.&nbsp;"3c")&nbsp;as&nbsp;float.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_geometry"><strong>winfo_geometry</strong></a>(self)</dt><dd><tt>Return&nbsp;geometry&nbsp;string&nbsp;for&nbsp;this&nbsp;widget&nbsp;in&nbsp;the&nbsp;form&nbsp;"widthxheight+X+Y".</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_height"><strong>winfo_height</strong></a>(self)</dt><dd><tt>Return&nbsp;height&nbsp;of&nbsp;this&nbsp;widget.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_id"><strong>winfo_id</strong></a>(self)</dt><dd><tt>Return&nbsp;identifier&nbsp;ID&nbsp;for&nbsp;this&nbsp;widget.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_interps"><strong>winfo_interps</strong></a>(self, displayof=0)</dt><dd><tt>Return&nbsp;the&nbsp;name&nbsp;of&nbsp;all&nbsp;Tcl&nbsp;interpreters&nbsp;for&nbsp;this&nbsp;display.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_ismapped"><strong>winfo_ismapped</strong></a>(self)</dt><dd><tt>Return&nbsp;true&nbsp;if&nbsp;this&nbsp;widget&nbsp;is&nbsp;mapped.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_manager"><strong>winfo_manager</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;window&nbsp;manager&nbsp;name&nbsp;for&nbsp;this&nbsp;widget.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_name"><strong>winfo_name</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;name&nbsp;of&nbsp;this&nbsp;widget.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_parent"><strong>winfo_parent</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;parent&nbsp;of&nbsp;this&nbsp;widget.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_pathname"><strong>winfo_pathname</strong></a>(self, id, displayof=0)</dt><dd><tt>Return&nbsp;the&nbsp;pathname&nbsp;of&nbsp;the&nbsp;widget&nbsp;given&nbsp;by&nbsp;ID.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_pixels"><strong>winfo_pixels</strong></a>(self, number)</dt><dd><tt>Rounded&nbsp;integer&nbsp;value&nbsp;of&nbsp;winfo_fpixels.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_pointerx"><strong>winfo_pointerx</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;x&nbsp;coordinate&nbsp;of&nbsp;the&nbsp;pointer&nbsp;on&nbsp;the&nbsp;root&nbsp;window.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_pointerxy"><strong>winfo_pointerxy</strong></a>(self)</dt><dd><tt>Return&nbsp;a&nbsp;tuple&nbsp;of&nbsp;x&nbsp;and&nbsp;y&nbsp;coordinates&nbsp;of&nbsp;the&nbsp;pointer&nbsp;on&nbsp;the&nbsp;root&nbsp;window.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_pointery"><strong>winfo_pointery</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;y&nbsp;coordinate&nbsp;of&nbsp;the&nbsp;pointer&nbsp;on&nbsp;the&nbsp;root&nbsp;window.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_reqheight"><strong>winfo_reqheight</strong></a>(self)</dt><dd><tt>Return&nbsp;requested&nbsp;height&nbsp;of&nbsp;this&nbsp;widget.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_reqwidth"><strong>winfo_reqwidth</strong></a>(self)</dt><dd><tt>Return&nbsp;requested&nbsp;width&nbsp;of&nbsp;this&nbsp;widget.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_rgb"><strong>winfo_rgb</strong></a>(self, color)</dt><dd><tt>Return&nbsp;a&nbsp;tuple&nbsp;of&nbsp;integer&nbsp;RGB&nbsp;values&nbsp;in&nbsp;range(65536)&nbsp;for&nbsp;color&nbsp;in&nbsp;this&nbsp;widget.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_rootx"><strong>winfo_rootx</strong></a>(self)</dt><dd><tt>Return&nbsp;x&nbsp;coordinate&nbsp;of&nbsp;upper&nbsp;left&nbsp;corner&nbsp;of&nbsp;this&nbsp;widget&nbsp;on&nbsp;the<br>
+root&nbsp;window.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_rooty"><strong>winfo_rooty</strong></a>(self)</dt><dd><tt>Return&nbsp;y&nbsp;coordinate&nbsp;of&nbsp;upper&nbsp;left&nbsp;corner&nbsp;of&nbsp;this&nbsp;widget&nbsp;on&nbsp;the<br>
+root&nbsp;window.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_screen"><strong>winfo_screen</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;screen&nbsp;name&nbsp;of&nbsp;this&nbsp;widget.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_screencells"><strong>winfo_screencells</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;number&nbsp;of&nbsp;the&nbsp;cells&nbsp;in&nbsp;the&nbsp;colormap&nbsp;of&nbsp;the&nbsp;screen<br>
+of&nbsp;this&nbsp;widget.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_screendepth"><strong>winfo_screendepth</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;number&nbsp;of&nbsp;bits&nbsp;per&nbsp;pixel&nbsp;of&nbsp;the&nbsp;root&nbsp;window&nbsp;of&nbsp;the<br>
+screen&nbsp;of&nbsp;this&nbsp;widget.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_screenheight"><strong>winfo_screenheight</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;number&nbsp;of&nbsp;pixels&nbsp;of&nbsp;the&nbsp;height&nbsp;of&nbsp;the&nbsp;screen&nbsp;of&nbsp;this&nbsp;widget<br>
+in&nbsp;pixel.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_screenmmheight"><strong>winfo_screenmmheight</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;number&nbsp;of&nbsp;pixels&nbsp;of&nbsp;the&nbsp;height&nbsp;of&nbsp;the&nbsp;screen&nbsp;of<br>
+this&nbsp;widget&nbsp;in&nbsp;mm.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_screenmmwidth"><strong>winfo_screenmmwidth</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;number&nbsp;of&nbsp;pixels&nbsp;of&nbsp;the&nbsp;width&nbsp;of&nbsp;the&nbsp;screen&nbsp;of<br>
+this&nbsp;widget&nbsp;in&nbsp;mm.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_screenvisual"><strong>winfo_screenvisual</strong></a>(self)</dt><dd><tt>Return&nbsp;one&nbsp;of&nbsp;the&nbsp;strings&nbsp;directcolor,&nbsp;grayscale,&nbsp;pseudocolor,<br>
+staticcolor,&nbsp;staticgray,&nbsp;or&nbsp;truecolor&nbsp;for&nbsp;the&nbsp;default<br>
+colormodel&nbsp;of&nbsp;this&nbsp;screen.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_screenwidth"><strong>winfo_screenwidth</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;number&nbsp;of&nbsp;pixels&nbsp;of&nbsp;the&nbsp;width&nbsp;of&nbsp;the&nbsp;screen&nbsp;of<br>
+this&nbsp;widget&nbsp;in&nbsp;pixel.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_server"><strong>winfo_server</strong></a>(self)</dt><dd><tt>Return&nbsp;information&nbsp;of&nbsp;the&nbsp;X-Server&nbsp;of&nbsp;the&nbsp;screen&nbsp;of&nbsp;this&nbsp;widget&nbsp;in<br>
+the&nbsp;form&nbsp;"XmajorRminor&nbsp;vendor&nbsp;vendorVersion".</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_toplevel"><strong>winfo_toplevel</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;toplevel&nbsp;widget&nbsp;of&nbsp;this&nbsp;widget.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_viewable"><strong>winfo_viewable</strong></a>(self)</dt><dd><tt>Return&nbsp;true&nbsp;if&nbsp;the&nbsp;widget&nbsp;and&nbsp;all&nbsp;its&nbsp;higher&nbsp;ancestors&nbsp;are&nbsp;mapped.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_visual"><strong>winfo_visual</strong></a>(self)</dt><dd><tt>Return&nbsp;one&nbsp;of&nbsp;the&nbsp;strings&nbsp;directcolor,&nbsp;grayscale,&nbsp;pseudocolor,<br>
+staticcolor,&nbsp;staticgray,&nbsp;or&nbsp;truecolor&nbsp;for&nbsp;the<br>
+colormodel&nbsp;of&nbsp;this&nbsp;widget.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_visualid"><strong>winfo_visualid</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;X&nbsp;identifier&nbsp;for&nbsp;the&nbsp;visual&nbsp;for&nbsp;this&nbsp;widget.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_visualsavailable"><strong>winfo_visualsavailable</strong></a>(self, includeids=False)</dt><dd><tt>Return&nbsp;a&nbsp;list&nbsp;of&nbsp;all&nbsp;visuals&nbsp;available&nbsp;for&nbsp;the&nbsp;screen<br>
+of&nbsp;this&nbsp;widget.<br>
+&nbsp;<br>
+Each&nbsp;item&nbsp;in&nbsp;the&nbsp;list&nbsp;consists&nbsp;of&nbsp;a&nbsp;visual&nbsp;name&nbsp;(see&nbsp;winfo_visual),&nbsp;a<br>
+depth&nbsp;and&nbsp;if&nbsp;includeids&nbsp;is&nbsp;true&nbsp;is&nbsp;given&nbsp;also&nbsp;the&nbsp;X&nbsp;identifier.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_vrootheight"><strong>winfo_vrootheight</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;height&nbsp;of&nbsp;the&nbsp;virtual&nbsp;root&nbsp;window&nbsp;associated&nbsp;with&nbsp;this<br>
+widget&nbsp;in&nbsp;pixels.&nbsp;If&nbsp;there&nbsp;is&nbsp;no&nbsp;virtual&nbsp;root&nbsp;window&nbsp;return&nbsp;the<br>
+height&nbsp;of&nbsp;the&nbsp;screen.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_vrootwidth"><strong>winfo_vrootwidth</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;width&nbsp;of&nbsp;the&nbsp;virtual&nbsp;root&nbsp;window&nbsp;associated&nbsp;with&nbsp;this<br>
+widget&nbsp;in&nbsp;pixel.&nbsp;If&nbsp;there&nbsp;is&nbsp;no&nbsp;virtual&nbsp;root&nbsp;window&nbsp;return&nbsp;the<br>
+width&nbsp;of&nbsp;the&nbsp;screen.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_vrootx"><strong>winfo_vrootx</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;x&nbsp;offset&nbsp;of&nbsp;the&nbsp;virtual&nbsp;root&nbsp;relative&nbsp;to&nbsp;the&nbsp;root<br>
+window&nbsp;of&nbsp;the&nbsp;screen&nbsp;of&nbsp;this&nbsp;widget.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_vrooty"><strong>winfo_vrooty</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;y&nbsp;offset&nbsp;of&nbsp;the&nbsp;virtual&nbsp;root&nbsp;relative&nbsp;to&nbsp;the&nbsp;root<br>
+window&nbsp;of&nbsp;the&nbsp;screen&nbsp;of&nbsp;this&nbsp;widget.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_width"><strong>winfo_width</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;width&nbsp;of&nbsp;this&nbsp;widget.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_x"><strong>winfo_x</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;x&nbsp;coordinate&nbsp;of&nbsp;the&nbsp;upper&nbsp;left&nbsp;corner&nbsp;of&nbsp;this&nbsp;widget<br>
+in&nbsp;the&nbsp;parent.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-winfo_y"><strong>winfo_y</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;y&nbsp;coordinate&nbsp;of&nbsp;the&nbsp;upper&nbsp;left&nbsp;corner&nbsp;of&nbsp;this&nbsp;widget<br>
+in&nbsp;the&nbsp;parent.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="tkinter.html#Pack">tkinter.Pack</a>:<br>
+<dl><dt><a name="VWSlider-forget"><strong>forget</strong></a> = <a href="#VWSlider-pack_forget">pack_forget</a>(self)</dt></dl>
+
+<dl><dt><a name="VWSlider-info"><strong>info</strong></a> = <a href="#VWSlider-pack_info">pack_info</a>(self)</dt></dl>
+
+<dl><dt><a name="VWSlider-pack"><strong>pack</strong></a> = <a href="#VWSlider-pack_configure">pack_configure</a>(self, cnf={}, **kw)</dt></dl>
+
+<dl><dt><a name="VWSlider-pack_configure"><strong>pack_configure</strong></a>(self, cnf={}, **kw)</dt><dd><tt>Pack&nbsp;a&nbsp;widget&nbsp;in&nbsp;the&nbsp;parent&nbsp;widget.&nbsp;Use&nbsp;as&nbsp;options:<br>
+after=widget&nbsp;-&nbsp;pack&nbsp;it&nbsp;after&nbsp;you&nbsp;have&nbsp;packed&nbsp;widget<br>
+anchor=NSEW&nbsp;(or&nbsp;subset)&nbsp;-&nbsp;position&nbsp;widget&nbsp;according&nbsp;to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;given&nbsp;direction<br>
+before=widget&nbsp;-&nbsp;pack&nbsp;it&nbsp;before&nbsp;you&nbsp;will&nbsp;pack&nbsp;widget<br>
+expand=bool&nbsp;-&nbsp;expand&nbsp;widget&nbsp;if&nbsp;parent&nbsp;size&nbsp;grows<br>
+fill=NONE&nbsp;or&nbsp;X&nbsp;or&nbsp;Y&nbsp;or&nbsp;BOTH&nbsp;-&nbsp;fill&nbsp;widget&nbsp;if&nbsp;widget&nbsp;grows<br>
+in=master&nbsp;-&nbsp;use&nbsp;master&nbsp;to&nbsp;contain&nbsp;this&nbsp;widget<br>
+in_=master&nbsp;-&nbsp;see&nbsp;'in'&nbsp;option&nbsp;description<br>
+ipadx=amount&nbsp;-&nbsp;add&nbsp;internal&nbsp;padding&nbsp;in&nbsp;x&nbsp;direction<br>
+ipady=amount&nbsp;-&nbsp;add&nbsp;internal&nbsp;padding&nbsp;in&nbsp;y&nbsp;direction<br>
+padx=amount&nbsp;-&nbsp;add&nbsp;padding&nbsp;in&nbsp;x&nbsp;direction<br>
+pady=amount&nbsp;-&nbsp;add&nbsp;padding&nbsp;in&nbsp;y&nbsp;direction<br>
+side=TOP&nbsp;or&nbsp;BOTTOM&nbsp;or&nbsp;LEFT&nbsp;or&nbsp;RIGHT&nbsp;-&nbsp;&nbsp;where&nbsp;to&nbsp;add&nbsp;this&nbsp;widget.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-pack_forget"><strong>pack_forget</strong></a>(self)</dt><dd><tt>Unmap&nbsp;this&nbsp;widget&nbsp;and&nbsp;do&nbsp;not&nbsp;use&nbsp;it&nbsp;for&nbsp;the&nbsp;packing&nbsp;order.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-pack_info"><strong>pack_info</strong></a>(self)</dt><dd><tt>Return&nbsp;information&nbsp;about&nbsp;the&nbsp;packing&nbsp;options<br>
+for&nbsp;this&nbsp;widget.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="tkinter.html#Place">tkinter.Place</a>:<br>
+<dl><dt><a name="VWSlider-place"><strong>place</strong></a> = <a href="#VWSlider-place_configure">place_configure</a>(self, cnf={}, **kw)</dt></dl>
+
+<dl><dt><a name="VWSlider-place_configure"><strong>place_configure</strong></a>(self, cnf={}, **kw)</dt><dd><tt>Place&nbsp;a&nbsp;widget&nbsp;in&nbsp;the&nbsp;parent&nbsp;widget.&nbsp;Use&nbsp;as&nbsp;options:<br>
+in=master&nbsp;-&nbsp;master&nbsp;relative&nbsp;to&nbsp;which&nbsp;the&nbsp;widget&nbsp;is&nbsp;placed<br>
+in_=master&nbsp;-&nbsp;see&nbsp;'in'&nbsp;option&nbsp;description<br>
+x=amount&nbsp;-&nbsp;locate&nbsp;anchor&nbsp;of&nbsp;this&nbsp;widget&nbsp;at&nbsp;position&nbsp;x&nbsp;of&nbsp;master<br>
+y=amount&nbsp;-&nbsp;locate&nbsp;anchor&nbsp;of&nbsp;this&nbsp;widget&nbsp;at&nbsp;position&nbsp;y&nbsp;of&nbsp;master<br>
+relx=amount&nbsp;-&nbsp;locate&nbsp;anchor&nbsp;of&nbsp;this&nbsp;widget&nbsp;between&nbsp;0.0&nbsp;and&nbsp;1.0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;relative&nbsp;to&nbsp;width&nbsp;of&nbsp;master&nbsp;(1.0&nbsp;is&nbsp;right&nbsp;edge)<br>
+rely=amount&nbsp;-&nbsp;locate&nbsp;anchor&nbsp;of&nbsp;this&nbsp;widget&nbsp;between&nbsp;0.0&nbsp;and&nbsp;1.0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;relative&nbsp;to&nbsp;height&nbsp;of&nbsp;master&nbsp;(1.0&nbsp;is&nbsp;bottom&nbsp;edge)<br>
+anchor=NSEW&nbsp;(or&nbsp;subset)&nbsp;-&nbsp;position&nbsp;anchor&nbsp;according&nbsp;to&nbsp;given&nbsp;direction<br>
+width=amount&nbsp;-&nbsp;width&nbsp;of&nbsp;this&nbsp;widget&nbsp;in&nbsp;pixel<br>
+height=amount&nbsp;-&nbsp;height&nbsp;of&nbsp;this&nbsp;widget&nbsp;in&nbsp;pixel<br>
+relwidth=amount&nbsp;-&nbsp;width&nbsp;of&nbsp;this&nbsp;widget&nbsp;between&nbsp;0.0&nbsp;and&nbsp;1.0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;relative&nbsp;to&nbsp;width&nbsp;of&nbsp;master&nbsp;(1.0&nbsp;is&nbsp;the&nbsp;same&nbsp;width<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;as&nbsp;the&nbsp;master)<br>
+relheight=amount&nbsp;-&nbsp;height&nbsp;of&nbsp;this&nbsp;widget&nbsp;between&nbsp;0.0&nbsp;and&nbsp;1.0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;relative&nbsp;to&nbsp;height&nbsp;of&nbsp;master&nbsp;(1.0&nbsp;is&nbsp;the&nbsp;same<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;height&nbsp;as&nbsp;the&nbsp;master)<br>
+bordermode="inside"&nbsp;or&nbsp;"outside"&nbsp;-&nbsp;whether&nbsp;to&nbsp;take&nbsp;border&nbsp;width&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;master&nbsp;widget&nbsp;into&nbsp;account</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-place_forget"><strong>place_forget</strong></a>(self)</dt><dd><tt>Unmap&nbsp;this&nbsp;widget.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-place_info"><strong>place_info</strong></a>(self)</dt><dd><tt>Return&nbsp;information&nbsp;about&nbsp;the&nbsp;placing&nbsp;options<br>
+for&nbsp;this&nbsp;widget.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="tkinter.html#Grid">tkinter.Grid</a>:<br>
+<dl><dt><a name="VWSlider-grid"><strong>grid</strong></a> = <a href="#VWSlider-grid_configure">grid_configure</a>(self, cnf={}, **kw)</dt></dl>
+
+<dl><dt><a name="VWSlider-grid_configure"><strong>grid_configure</strong></a>(self, cnf={}, **kw)</dt><dd><tt>Position&nbsp;a&nbsp;widget&nbsp;in&nbsp;the&nbsp;parent&nbsp;widget&nbsp;in&nbsp;a&nbsp;grid.&nbsp;Use&nbsp;as&nbsp;options:<br>
+column=number&nbsp;-&nbsp;use&nbsp;cell&nbsp;identified&nbsp;with&nbsp;given&nbsp;column&nbsp;(starting&nbsp;with&nbsp;0)<br>
+columnspan=number&nbsp;-&nbsp;this&nbsp;widget&nbsp;will&nbsp;span&nbsp;several&nbsp;columns<br>
+in=master&nbsp;-&nbsp;use&nbsp;master&nbsp;to&nbsp;contain&nbsp;this&nbsp;widget<br>
+in_=master&nbsp;-&nbsp;see&nbsp;'in'&nbsp;option&nbsp;description<br>
+ipadx=amount&nbsp;-&nbsp;add&nbsp;internal&nbsp;padding&nbsp;in&nbsp;x&nbsp;direction<br>
+ipady=amount&nbsp;-&nbsp;add&nbsp;internal&nbsp;padding&nbsp;in&nbsp;y&nbsp;direction<br>
+padx=amount&nbsp;-&nbsp;add&nbsp;padding&nbsp;in&nbsp;x&nbsp;direction<br>
+pady=amount&nbsp;-&nbsp;add&nbsp;padding&nbsp;in&nbsp;y&nbsp;direction<br>
+row=number&nbsp;-&nbsp;use&nbsp;cell&nbsp;identified&nbsp;with&nbsp;given&nbsp;row&nbsp;(starting&nbsp;with&nbsp;0)<br>
+rowspan=number&nbsp;-&nbsp;this&nbsp;widget&nbsp;will&nbsp;span&nbsp;several&nbsp;rows<br>
+sticky=NSEW&nbsp;-&nbsp;if&nbsp;cell&nbsp;is&nbsp;larger&nbsp;on&nbsp;which&nbsp;sides&nbsp;will&nbsp;this<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;widget&nbsp;stick&nbsp;to&nbsp;the&nbsp;cell&nbsp;boundary</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-grid_forget"><strong>grid_forget</strong></a>(self)</dt><dd><tt>Unmap&nbsp;this&nbsp;widget.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-grid_info"><strong>grid_info</strong></a>(self)</dt><dd><tt>Return&nbsp;information&nbsp;about&nbsp;the&nbsp;options<br>
+for&nbsp;positioning&nbsp;this&nbsp;widget&nbsp;in&nbsp;a&nbsp;grid.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-grid_remove"><strong>grid_remove</strong></a>(self)</dt><dd><tt>Unmap&nbsp;this&nbsp;widget&nbsp;but&nbsp;remember&nbsp;the&nbsp;grid&nbsp;options.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-location"><strong>location</strong></a> = <a href="#VWSlider-grid_location">grid_location</a>(self, x, y)</dt></dl>
+
+<hr>
+Methods inherited from <a href="tkinter.tix.html#Form">tkinter.tix.Form</a>:<br>
+<dl><dt><a name="VWSlider-check"><strong>check</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="VWSlider-form"><strong>form</strong></a> = config(self, cnf={}, **kw)</dt></dl>
+
+<hr>
+Methods inherited from <a href="tkinter.html#XView">tkinter.XView</a>:<br>
+<dl><dt><a name="VWSlider-xview"><strong>xview</strong></a>(self, *args)</dt><dd><tt>Query&nbsp;and&nbsp;change&nbsp;the&nbsp;horizontal&nbsp;position&nbsp;of&nbsp;the&nbsp;view.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-xview_moveto"><strong>xview_moveto</strong></a>(self, fraction)</dt><dd><tt>Adjusts&nbsp;the&nbsp;view&nbsp;in&nbsp;the&nbsp;window&nbsp;so&nbsp;that&nbsp;FRACTION&nbsp;of&nbsp;the<br>
+total&nbsp;width&nbsp;of&nbsp;the&nbsp;canvas&nbsp;is&nbsp;off-screen&nbsp;to&nbsp;the&nbsp;left.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-xview_scroll"><strong>xview_scroll</strong></a>(self, number, what)</dt><dd><tt>Shift&nbsp;the&nbsp;x-view&nbsp;according&nbsp;to&nbsp;NUMBER&nbsp;which&nbsp;is&nbsp;measured&nbsp;in&nbsp;"units"<br>
+or&nbsp;"pages"&nbsp;(WHAT).</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="tkinter.html#YView">tkinter.YView</a>:<br>
+<dl><dt><a name="VWSlider-yview"><strong>yview</strong></a>(self, *args)</dt><dd><tt>Query&nbsp;and&nbsp;change&nbsp;the&nbsp;vertical&nbsp;position&nbsp;of&nbsp;the&nbsp;view.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-yview_moveto"><strong>yview_moveto</strong></a>(self, fraction)</dt><dd><tt>Adjusts&nbsp;the&nbsp;view&nbsp;in&nbsp;the&nbsp;window&nbsp;so&nbsp;that&nbsp;FRACTION&nbsp;of&nbsp;the<br>
+total&nbsp;height&nbsp;of&nbsp;the&nbsp;canvas&nbsp;is&nbsp;off-screen&nbsp;to&nbsp;the&nbsp;top.</tt></dd></dl>
+
+<dl><dt><a name="VWSlider-yview_scroll"><strong>yview_scroll</strong></a>(self, number, what)</dt><dd><tt>Shift&nbsp;the&nbsp;y-view&nbsp;according&nbsp;to&nbsp;NUMBER&nbsp;which&nbsp;is&nbsp;measured&nbsp;in<br>
+"units"&nbsp;or&nbsp;"pages"&nbsp;(WHAT).</tt></dd></dl>
+
+</td></tr>
+</table></td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#eeaa77">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#eeaa77"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><dl><dt><a name="-floor"><strong>floor</strong></a>(x, /)</dt><dd><tt>Return&nbsp;the&nbsp;floor&nbsp;of&nbsp;x&nbsp;as&nbsp;an&nbsp;Integral.<br>
+&nbsp;<br>
+This&nbsp;is&nbsp;the&nbsp;largest&nbsp;integer&nbsp;&lt;=&nbsp;x.</tt></dd></dl>
+ <dl><dt><a name="-ignore"><strong>ignore</strong></a>(obj: Union[Any, Iterable[Any], Iterator[Any]]) -&gt; None</dt></dl>
+</td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#55aa55">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#55aa55"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><strong>Callable</strong> = typing.Callable</td></tr>
+</table>
+</body>
+</html>

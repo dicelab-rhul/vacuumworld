@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html lang="en">
+<head><title>Python: module vacuumworld.gui.components.vwbounds_manager</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body bgcolor="#f0f0f8">
+<table class="heading">
+    <tr style="background-color: #7799ee;">
+        <td class="title" style="vertical-align: bottom">&nbsp;<br>
+            <span style="color: #ffffff; font-family: helvetica, arial,sans-serif;">
+            &nbsp;<br><big><big><strong><a href="vacuumworld.html"><span style="color:">vacuumworld</span></a>.<a href="vacuumworld.gui.html"><span style="color:">gui</span></a>.<a href="vacuumworld.gui.components.html"><span style="color:">components</span></a>.vwbounds_manager</strong></big></big>
+            </span>
+        </td>
+        <td style="vertical-align: bottom; text-align: right;">
+            <span style="color: #ffffff; font-family: helvetica, arial,sans-serif;">
+                <a href=".">index</a><br><a href="file:../vacuumworld/gui/components/vwbounds_manager.py">../vacuumworld/gui/components/vwbounds_manager.py</a>
+            </span>
+        </td>
+    </tr>
+</table>
+
+
+
+
+
+
+
+
+
+
+<p></p>
+
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ee77aa">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#ee77aa"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><dl>
+<dt><span style="font-family:helvetica, arial, sans-serif"><a href="builtins.html#object">builtins.object</a>
+</span></dt><dd>
+<dl>
+<dt><span style="font-family:helvetica, arial, sans-serif"><a href="vacuumworld.gui.components.vwbounds_manager.html#VWBoundsManager">VWBoundsManager</a>(<a href="builtins.html#object">builtins.object</a>)
+</span></dt></dl>
+</dd>
+</dl>
+ 
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ffc8d8">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#000000" face="helvetica, arial"><a name="VWBoundsManager">class <strong>VWBoundsManager</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td>
+    </tr>
+
+    
+        <tr bgcolor="#ffc8d8">
+            <td rowspan=2><tt></tt></td>
+            <td colspan=2><tt><a href="#VWBoundsManager">VWBoundsManager</a>(config:&nbsp;dict[str,&nbsp;typing.Any])&nbsp;-&gt;&nbsp;None<br>
+&nbsp;<br>
+This&nbsp;class&nbsp;provides&nbsp;a&nbsp;quick&nbsp;way&nbsp;to&nbsp;check&nbsp;if&nbsp;two&nbsp;`int`&nbsp;numbers&nbsp;are&nbsp;within&nbsp;the&nbsp;bounds&nbsp;of&nbsp;the&nbsp;`grid_size`&nbsp;specified&nbsp;in&nbsp;the&nbsp;`config`&nbsp;argument.<br>&nbsp;</tt></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            
+    <td width="100%%">Methods defined here:<br>
+<dl><dt><a name="VWBoundsManager-__init__"><strong>__init__</strong></a>(self, config: dict[str, typing.Any]) -&gt; None</dt></dl>
+
+<dl><dt><a name="VWBoundsManager-in_bounds"><strong>in_bounds</strong></a>(self, x: int, y: int) -&gt; bool</dt><dd><tt>WARNING:&nbsp;this&nbsp;method&nbsp;must&nbsp;only&nbsp;be&nbsp;used&nbsp;by&nbsp;the&nbsp;GUI,&nbsp;as&nbsp;the&nbsp;lower&nbsp;bound&nbsp;is&nbsp;`1`&nbsp;(not&nbsp;`0`)&nbsp;and&nbsp;the&nbsp;upper&nbsp;bound&nbsp;is&nbsp;`grid_size&nbsp;-&nbsp;1`&nbsp;(not&nbsp;`grid_size`),&nbsp;both&nbsp;inclusive.<br>
+&nbsp;<br>
+Returns&nbsp;whether&nbsp;or&nbsp;not&nbsp;the&nbsp;provided&nbsp;`x`&nbsp;and&nbsp;`y`&nbsp;integers&nbsp;are&nbsp;within&nbsp;the&nbsp;bounds&nbsp;of&nbsp;the&nbsp;`grid_size`&nbsp;specified&nbsp;in&nbsp;the&nbsp;`config`&nbsp;argument.</tt></dd></dl>
+
+</td></tr>
+</table></td></tr>
+</table>
+</body>
+</html>

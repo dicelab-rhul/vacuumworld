@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html lang="en">
+<head><title>Python: module pystarworldsturbo.environment.environment</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body bgcolor="#f0f0f8">
+<table class="heading">
+    <tr style="background-color: #7799ee;">
+        <td class="title" style="vertical-align: bottom">&nbsp;<br>
+            <span style="color: #ffffff; font-family: helvetica, arial,sans-serif;">
+            &nbsp;<br><big><big><strong><a href="pystarworldsturbo.html"><span style="color:">pystarworldsturbo</span></a>.<a href="pystarworldsturbo.environment.html"><span style="color:">environment</span></a>.environment</strong></big></big>
+            </span>
+        </td>
+        <td style="vertical-align: bottom; text-align: right;">
+            <span style="color: #ffffff; font-family: helvetica, arial,sans-serif;">
+                <a href=".">index</a><br><a href="file:../pystarworldsturbo/environment/environment.py">../pystarworldsturbo/environment/environment.py</a>
+            </span>
+        </td>
+    </tr>
+</table>
+
+
+
+
+
+
+
+
+
+
+<p></p>
+
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#aa55cc">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>`from` Modules</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#aa55cc"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><table width="100%%" summary="list"><tr><td width="25%" valign=top><a href="pystarworldsturbo.environment.physics.action_executor.html">pystarworldsturbo.environment.physics.action_executor</a><br>
+<a href="pystarworldsturbo.common.message.html">pystarworldsturbo.common.message</a><br>
+<a href="pystarworldsturbo.common.action.html">pystarworldsturbo.common.action</a><br>
+</td><td width="25%" valign=top><a href="pystarworldsturbo.elements.sensor.html">pystarworldsturbo.elements.sensor</a><br>
+<a href="pystarworldsturbo.common.exceptions.html">pystarworldsturbo.common.exceptions</a><br>
+<a href="pystarworldsturbo.utils.utils.html">pystarworldsturbo.utils.utils</a><br>
+</td><td width="25%" valign=top><a href="pystarworldsturbo.elements.actor.html">pystarworldsturbo.elements.actor</a><br>
+<a href="pystarworldsturbo.elements.body.html">pystarworldsturbo.elements.body</a><br>
+<a href="pyoptional.pyoptional.html">pyoptional.pyoptional</a><br>
+</td><td width="25%" valign=top><a href="pystarworldsturbo.common.action_result.html">pystarworldsturbo.common.action_result</a><br>
+<a href="pystarworldsturbo.common.perception.html">pystarworldsturbo.common.perception</a><br>
+<a href="pystarworldsturbo.environment.ambient.html">pystarworldsturbo.environment.ambient</a><br>
+</td></tr></table></td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ee77aa">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#ee77aa"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><dl>
+<dt><span style="font-family:helvetica, arial, sans-serif"><a href="builtins.html#object">builtins.object</a>
+</span></dt><dd>
+<dl>
+<dt><span style="font-family:helvetica, arial, sans-serif"><a href="pystarworldsturbo.environment.environment.html#Environment">Environment</a>(<a href="builtins.html#object">builtins.object</a>)
+</span></dt></dl>
+</dd>
+</dl>
+ 
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ffc8d8">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#000000" face="helvetica, arial"><a name="Environment">class <strong>Environment</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td>
+    </tr>
+
+    
+        <tr bgcolor="#ffc8d8">
+            <td rowspan=2><tt></tt></td>
+            <td colspan=2><tt><a href="#Environment">Environment</a>(ambient:&nbsp;pystarworldsturbo.environment.ambient.Ambient,&nbsp;initial_actors:&nbsp;list[pystarworldsturbo.elements.actor.Actor]&nbsp;=&nbsp;[],&nbsp;initial_passive_bodies:&nbsp;list[pystarworldsturbo.elements.body.Body]&nbsp;=&nbsp;[])&nbsp;-&gt;&nbsp;None<br>
+&nbsp;<br>
+<br>&nbsp;</tt></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            
+    <td width="100%%">Methods defined here:<br>
+<dl><dt><a name="Environment-__init__"><strong>__init__</strong></a>(self, ambient: pystarworldsturbo.environment.ambient.Ambient, initial_actors: list[pystarworldsturbo.elements.actor.Actor] = [], initial_passive_bodies: list[pystarworldsturbo.elements.body.Body] = []) -&gt; None</dt></dl>
+
+<dl><dt><a name="Environment-add_actor"><strong>add_actor</strong></a>(self, actor: pystarworldsturbo.elements.actor.Actor) -&gt; None</dt></dl>
+
+<dl><dt><a name="Environment-add_passive_body"><strong>add_passive_body</strong></a>(self, passive_body: pystarworldsturbo.elements.body.Body) -&gt; None</dt></dl>
+
+<dl><dt><a name="Environment-execute_action"><strong>execute_action</strong></a>(self, action: pystarworldsturbo.common.action.Action) -&gt; None</dt></dl>
+
+<dl><dt><a name="Environment-execute_cycle_actions"><strong>execute_cycle_actions</strong></a>(self) -&gt; None</dt></dl>
+
+<dl><dt><a name="Environment-generate_perception_for_actor"><strong>generate_perception_for_actor</strong></a>(self, actor_id: str, action_type: Type[pystarworldsturbo.common.action.Action], action_result: pystarworldsturbo.common.action_result.ActionResult) -&gt; pyoptional.pyoptional.PyOptional[pystarworldsturbo.common.perception.Perception]</dt></dl>
+
+<dl><dt><a name="Environment-get_actor"><strong>get_actor</strong></a>(self, actor_id: str) -&gt; pyoptional.pyoptional.PyOptional[pystarworldsturbo.elements.actor.Actor]</dt></dl>
+
+<dl><dt><a name="Environment-get_actors"><strong>get_actors</strong></a>(self) -&gt; dict[str, pystarworldsturbo.elements.actor.Actor]</dt></dl>
+
+<dl><dt><a name="Environment-get_actors_list"><strong>get_actors_list</strong></a>(self) -&gt; list[pystarworldsturbo.elements.actor.Actor]</dt></dl>
+
+<dl><dt><a name="Environment-get_ambient"><strong>get_ambient</strong></a>(self) -&gt; pystarworldsturbo.environment.ambient.Ambient</dt></dl>
+
+<dl><dt><a name="Environment-get_executor_for"><strong>get_executor_for</strong></a>(self, action: pystarworldsturbo.common.action.Action) -&gt; pyoptional.pyoptional.PyOptional[pystarworldsturbo.environment.physics.action_executor.ActionExecutor]</dt></dl>
+
+<dl><dt><a name="Environment-get_passive_bodies"><strong>get_passive_bodies</strong></a>(self) -&gt; dict[str, pystarworldsturbo.elements.body.Body]</dt></dl>
+
+<dl><dt><a name="Environment-get_passive_bodies_list"><strong>get_passive_bodies_list</strong></a>(self) -&gt; list[pystarworldsturbo.elements.body.Body]</dt></dl>
+
+<dl><dt><a name="Environment-get_passive_body"><strong>get_passive_body</strong></a>(self, passive_body_id: str) -&gt; pyoptional.pyoptional.PyOptional[pystarworldsturbo.elements.body.Body]</dt></dl>
+
+<dl><dt><a name="Environment-remove_actor"><strong>remove_actor</strong></a>(self, actor_id: str) -&gt; None</dt></dl>
+
+<dl><dt><a name="Environment-remove_passive_body"><strong>remove_passive_body</strong></a>(self, passive_body_id: str) -&gt; None</dt></dl>
+
+<dl><dt><a name="Environment-send_message_to_recipients"><strong>send_message_to_recipients</strong></a>(self, message: pystarworldsturbo.common.message.Message, check_sender_identity: bool = True) -&gt; None</dt></dl>
+
+<dl><dt><a name="Environment-send_perception_to_actor"><strong>send_perception_to_actor</strong></a>(self, perception: pystarworldsturbo.common.perception.Perception, actor_id: str) -&gt; None</dt></dl>
+
+<dl><dt><a name="Environment-validate_actions"><strong>validate_actions</strong></a>(self, actions: list[pystarworldsturbo.common.action.Action]) -&gt; None</dt></dl>
+
+</td></tr>
+</table></td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#eeaa77">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#eeaa77"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><dl><dt><a name="-ignore"><strong>ignore</strong></a>(obj: Union[Any, Iterable[Any], Iterator[Any]]) -&gt; None</dt></dl>
+</td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#55aa55">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#55aa55"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><strong>Type</strong> = typing.Type</td></tr>
+</table>
+</body>
+</html>

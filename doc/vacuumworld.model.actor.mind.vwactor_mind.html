@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html lang="en">
+<head><title>Python: module vacuumworld.model.actor.mind.vwactor_mind</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body bgcolor="#f0f0f8">
+<table class="heading">
+    <tr style="background-color: #7799ee;">
+        <td class="title" style="vertical-align: bottom">&nbsp;<br>
+            <span style="color: #ffffff; font-family: helvetica, arial,sans-serif;">
+            &nbsp;<br><big><big><strong><a href="vacuumworld.html"><span style="color:">vacuumworld</span></a>.<a href="vacuumworld.model.html"><span style="color:">model</span></a>.<a href="vacuumworld.model.actor.html"><span style="color:">actor</span></a>.<a href="vacuumworld.model.actor.mind.html"><span style="color:">mind</span></a>.vwactor_mind</strong></big></big>
+            </span>
+        </td>
+        <td style="vertical-align: bottom; text-align: right;">
+            <span style="color: #ffffff; font-family: helvetica, arial,sans-serif;">
+                <a href=".">index</a><br><a href="file:../vacuumworld/model/actor/mind/vwactor_mind.py">../vacuumworld/model/actor/mind/vwactor_mind.py</a>
+            </span>
+        </td>
+    </tr>
+</table>
+
+
+
+
+
+
+
+
+
+
+<p></p>
+
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#aa55cc">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>`from` Modules</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#aa55cc"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><table width="100%%" summary="list"><tr><td width="25%" valign=top><a href="vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.html">vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate</a><br>
+<a href="vacuumworld.common.vwvalidator.html">vacuumworld.common.vwvalidator</a><br>
+</td><td width="25%" valign=top><a href="pystarworldsturbo.elements.mind.html">pystarworldsturbo.elements.mind</a><br>
+<a href="vacuumworld.model.actions.vwactions.html">vacuumworld.model.actions.vwactions</a><br>
+</td><td width="25%" valign=top><a href="pystarworldsturbo.common.message.html">pystarworldsturbo.common.message</a><br>
+<a href="vacuumworld.common.vwobservation.html">vacuumworld.common.vwobservation</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ee77aa">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#ee77aa"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><dl>
+<dt><span style="font-family:helvetica, arial, sans-serif"><a href="pystarworldsturbo.elements.mind.html#Mind">pystarworldsturbo.elements.mind.Mind</a>(<a href="builtins.html#object">builtins.object</a>)
+</span></dt><dd>
+<dl>
+<dt><span style="font-family:helvetica, arial, sans-serif"><a href="vacuumworld.model.actor.mind.vwactor_mind.html#VWMind">VWMind</a>(<a href="pystarworldsturbo.elements.mind.html#Mind">pystarworldsturbo.elements.mind.Mind</a>)
+</span></dt></dl>
+</dd>
+</dl>
+ 
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ffc8d8">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#000000" face="helvetica, arial"><a name="VWMind">class <strong>VWMind</strong></a>(<a href="pystarworldsturbo.elements.mind.html#Mind">pystarworldsturbo.elements.mind.Mind</a>)</font></td>
+    </tr>
+
+    
+        <tr bgcolor="#ffc8d8">
+            <td rowspan=2><tt></tt></td>
+            <td colspan=2><tt><a href="#VWMind">VWMind</a>(surrogate:&nbsp;vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.VWActorMindSurrogate)&nbsp;-&gt;&nbsp;None<br>
+&nbsp;<br>
+This&nbsp;class&nbsp;specifies&nbsp;the&nbsp;mind&nbsp;of&nbsp;a&nbsp;`VWActor`.<br>
+&nbsp;<br>
+The&nbsp;mind&nbsp;has&nbsp;a&nbsp;surrogate,&nbsp;which&nbsp;is&nbsp;an&nbsp;instance&nbsp;of&nbsp;a&nbsp;class&nbsp;that&nbsp;extends&nbsp;`VWActorMindSurrogate`.&nbsp;The&nbsp;surrogate&nbsp;is&nbsp;used&nbsp;to&nbsp;store&nbsp;the&nbsp;state&nbsp;of&nbsp;the&nbsp;mind,&nbsp;and&nbsp;to&nbsp;implement&nbsp;`<a href="#VWMind-revise">revise</a>()`,&nbsp;and&nbsp;`<a href="#VWMind-decide">decide</a>()`.<br>
+&nbsp;<br>
+The&nbsp;mind&nbsp;implements&nbsp;the&nbsp;`<a href="#VWMind-perceive">perceive</a>()`&nbsp;and&nbsp;`<a href="#VWMind-execute">execute</a>()`&nbsp;methods&nbsp;that&nbsp;are&nbsp;called&nbsp;by&nbsp;the&nbsp;body&nbsp;together&nbsp;with&nbsp;`<a href="#VWMind-revise">revise</a>()`&nbsp;and&nbsp;`<a href="#VWMind-decide">decide</a>()`&nbsp;during&nbsp;the&nbsp;`VWActor`&nbsp;cycle.<br>&nbsp;</tt></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            
+    <td width="100%%"><dl><dt>Method resolution order:</dt>
+<dd><a href="vacuumworld.model.actor.mind.vwactor_mind.html#VWMind">VWMind</a></dd>
+<dd><a href="pystarworldsturbo.elements.mind.html#Mind">pystarworldsturbo.elements.mind.Mind</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="VWMind-__init__"><strong>__init__</strong></a>(self, surrogate: vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.VWActorMindSurrogate) -&gt; None</dt></dl>
+
+<dl><dt><a name="VWMind-decide"><strong>decide</strong></a>(self) -&gt; None</dt><dd><tt>Calls&nbsp;the&nbsp;`<a href="#VWMind-decide">decide</a>()`&nbsp;method&nbsp;of&nbsp;the&nbsp;`VWActorMindSurrogate`,&nbsp;and&nbsp;propagates&nbsp;(returns)&nbsp;its&nbsp;return&nbsp;value.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;assumes&nbsp;(via&nbsp;assertions)&nbsp;that&nbsp;the&nbsp;`VWActorMindSurrogate`&nbsp;has&nbsp;a&nbsp;callable&nbsp;`<a href="#VWMind-decide">decide</a>()`&nbsp;method&nbsp;which&nbsp;returns&nbsp;an&nbsp;appropriate&nbsp;value.</tt></dd></dl>
+
+<dl><dt><a name="VWMind-execute"><strong>execute</strong></a>(self) -&gt; Iterable[vacuumworld.model.actions.vwactions.VWAction]</dt><dd><tt>Returns&nbsp;a&nbsp;`list[VWAction]`&nbsp;consisting&nbsp;of&nbsp;each&nbsp;`VWAction`&nbsp;to&nbsp;be&nbsp;attempted.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;assumes&nbsp;(via&nbsp;assertion)&nbsp;that&nbsp;at&nbsp;least&nbsp;one&nbsp;`VWAction`&nbsp;is&nbsp;returned.</tt></dd></dl>
+
+<dl><dt><a name="VWMind-get_surrogate"><strong>get_surrogate</strong></a>(self) -&gt; vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.VWActorMindSurrogate</dt><dd><tt>Returns&nbsp;the&nbsp;`VWActorMindSurrogate`&nbsp;of&nbsp;this&nbsp;`<a href="#VWMind">VWMind</a>`.</tt></dd></dl>
+
+<dl><dt><a name="VWMind-perceive"><strong>perceive</strong></a>(self, observation: vacuumworld.common.vwobservation.VWObservation, messages: Iterable[pystarworldsturbo.common.message.BccMessage]) -&gt; None</dt><dd><tt>Calls&nbsp;the&nbsp;`<a href="#VWMind-perceive">perceive</a>()`&nbsp;method&nbsp;of&nbsp;the&nbsp;`VWActorMindSurrogate`,&nbsp;passing&nbsp;the&nbsp;`observation`&nbsp;and&nbsp;`messages`&nbsp;arguments.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;assumes&nbsp;(via&nbsp;assertions)&nbsp;that&nbsp;the&nbsp;`VWActorMindSurrogate`&nbsp;has&nbsp;a&nbsp;callable&nbsp;`<a href="#VWMind-perceive">perceive</a>()`&nbsp;method&nbsp;which&nbsp;accepts&nbsp;the&nbsp;intended&nbsp;arguments.</tt></dd></dl>
+
+<dl><dt><a name="VWMind-reset_surrogate"><strong>reset_surrogate</strong></a>(self) -&gt; None</dt><dd><tt>Resets&nbsp;the&nbsp;`VWActorMindSurrogate`&nbsp;of&nbsp;this&nbsp;`<a href="#VWMind">VWMind</a>`.</tt></dd></dl>
+
+<dl><dt><a name="VWMind-revise"><strong>revise</strong></a>(self) -&gt; None</dt><dd><tt>Calls&nbsp;the&nbsp;`<a href="#VWMind-revise">revise</a>()`&nbsp;method&nbsp;of&nbsp;the&nbsp;`VWActorMindSurrogate`.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;assumes&nbsp;(via&nbsp;assertions)&nbsp;that&nbsp;the&nbsp;`VWActorMindSurrogate`&nbsp;has&nbsp;a&nbsp;callable&nbsp;`<a href="#VWMind-revise">revise</a>()`&nbsp;method.</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>DECIDE_METHOD_NAME</strong> = 'decide'</dl>
+
+<dl><dt><strong>EXECUTE_METHOD_NAME</strong> = 'execute'</dl>
+
+<dl><dt><strong>PERCEIVE_METHOD_NAME</strong> = 'perceive'</dl>
+
+<dl><dt><strong>REVISE_METHOD_NAME</strong> = 'revise'</dl>
+
+<dl><dt><strong>__annotations__</strong> = {'DECIDE_METHOD_NAME': &lt;class 'str'&gt;, 'EXECUTE_METHOD_NAME': &lt;class 'str'&gt;, 'PERCEIVE_METHOD_NAME': &lt;class 'str'&gt;, 'REVISE_METHOD_NAME': &lt;class 'str'&gt;}</dl>
+
+</td></tr>
+</table></td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#55aa55">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#55aa55"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><strong>Iterable</strong> = typing.Iterable</td></tr>
+</table>
+</body>
+</html>

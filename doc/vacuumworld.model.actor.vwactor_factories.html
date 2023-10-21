@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html lang="en">
+<head><title>Python: module vacuumworld.model.actor.vwactor_factories</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body bgcolor="#f0f0f8">
+<table class="heading">
+    <tr style="background-color: #7799ee;">
+        <td class="title" style="vertical-align: bottom">&nbsp;<br>
+            <span style="color: #ffffff; font-family: helvetica, arial,sans-serif;">
+            &nbsp;<br><big><big><strong><a href="vacuumworld.html"><span style="color:">vacuumworld</span></a>.<a href="vacuumworld.model.html"><span style="color:">model</span></a>.<a href="vacuumworld.model.actor.html"><span style="color:">actor</span></a>.vwactor_factories</strong></big></big>
+            </span>
+        </td>
+        <td style="vertical-align: bottom; text-align: right;">
+            <span style="color: #ffffff; font-family: helvetica, arial,sans-serif;">
+                <a href=".">index</a><br><a href="file:../vacuumworld/model/actor/vwactor_factories.py">../vacuumworld/model/actor/vwactor_factories.py</a>
+            </span>
+        </td>
+    </tr>
+</table>
+
+
+
+
+
+
+
+
+
+
+<p></p>
+
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#aa55cc">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>`from` Modules</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#aa55cc"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><table width="100%%" summary="list"><tr><td width="25%" valign=top><a href="vacuumworld.common.vwuser_difficulty.html">vacuumworld.common.vwuser_difficulty</a><br>
+<a href="vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.html">vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate</a><br>
+<a href="vacuumworld.common.vwcolour.html">vacuumworld.common.vwcolour</a><br>
+</td><td width="25%" valign=top><a href="vacuumworld.model.actor.mind.vwuser_mind.html">vacuumworld.model.actor.mind.vwuser_mind</a><br>
+<a href="vacuumworld.model.actor.vwagent.html">vacuumworld.model.actor.vwagent</a><br>
+<a href="vacuumworld.model.actor.appearance.vwactor_appearance.html">vacuumworld.model.actor.appearance.vwactor_appearance</a><br>
+</td><td width="25%" valign=top><a href="vacuumworld.common.vworientation.html">vacuumworld.common.vworientation</a><br>
+<a href="vacuumworld.model.actor.vwuser.html">vacuumworld.model.actor.vwuser</a><br>
+<a href="vacuumworld.model.actor.mind.vwactor_mind.html">vacuumworld.model.actor.mind.vwactor_mind</a><br>
+</td><td width="25%" valign=top><a href="vacuumworld.model.actor.mind.surrogate.vwuser_mind_surrogate.html">vacuumworld.model.actor.mind.surrogate.vwuser_mind_surrogate</a><br>
+</td></tr></table></td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ee77aa">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#ee77aa"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><dl>
+<dt><span style="font-family:helvetica, arial, sans-serif"><a href="builtins.html#object">builtins.object</a>
+</span></dt><dd>
+<dl>
+<dt><span style="font-family:helvetica, arial, sans-serif"><a href="vacuumworld.model.actor.vwactor_factories.html#VWActorsFactory">VWActorsFactory</a>(<a href="builtins.html#object">builtins.object</a>)
+</span></dt><dt><span style="font-family:helvetica, arial, sans-serif"><a href="vacuumworld.model.actor.vwactor_factories.html#VWCleaningAgentsFactory">VWCleaningAgentsFactory</a>(<a href="builtins.html#object">builtins.object</a>)
+</span></dt><dt><span style="font-family:helvetica, arial, sans-serif"><a href="vacuumworld.model.actor.vwactor_factories.html#VWUsersFactory">VWUsersFactory</a>(<a href="builtins.html#object">builtins.object</a>)
+</span></dt></dl>
+</dd>
+</dl>
+ 
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ffc8d8">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#000000" face="helvetica, arial"><a name="VWActorsFactory">class <strong>VWActorsFactory</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td>
+    </tr>
+
+    
+        <tr bgcolor="#ffc8d8">
+            <td rowspan=2><tt></tt></td>
+            <td colspan=2><tt>This&nbsp;class&nbsp;is&nbsp;a&nbsp;factory&nbsp;for&nbsp;`VWActor`&nbsp;objects.<br>&nbsp;</tt></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            
+    <td width="100%%">Static methods defined here:<br>
+<dl><dt><a name="VWActorsFactory-create_actor"><strong>create_actor</strong></a>(colour: vacuumworld.common.vwcolour.VWColour, orientation: vacuumworld.common.vworientation.VWOrientation, mind_surrogate: Union[vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.VWActorMindSurrogate, vacuumworld.model.actor.mind.surrogate.vwuser_mind_surrogate.VWUserMindSurrogate]) -&gt; Union[tuple[vacuumworld.model.actor.vwagent.VWCleaningAgent, vacuumworld.model.actor.appearance.vwactor_appearance.VWActorAppearance], tuple[vacuumworld.model.actor.vwuser.VWUser, vacuumworld.model.actor.appearance.vwactor_appearance.VWActorAppearance]]</dt><dd><tt>Creates&nbsp;a&nbsp;`VWActor`&nbsp;with&nbsp;the&nbsp;specified&nbsp;`VWColour`,&nbsp;`VWOrientation`&nbsp;and&nbsp;`VWActorMindSurrogate`&nbsp;(or&nbsp;`VWUserMindSurrogate`),&nbsp;and&nbsp;returns&nbsp;it&nbsp;as&nbsp;a&nbsp;`Union[tuple[VWCleaningAgent,&nbsp;VWActorAppearance],&nbsp;tuple[VWUser,&nbsp;VWActorAppearance]]`,<br>
+which&nbsp;is&nbsp;a&nbsp;`VWCleaningAgent`&nbsp;or&nbsp;`VWUser`&nbsp;together&nbsp;with&nbsp;its&nbsp;`VWActorAppearance`&nbsp;or&nbsp;`VWActorAppearance`.</tt></dd></dl>
+
+</td></tr>
+</table> 
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ffc8d8">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#000000" face="helvetica, arial"><a name="VWCleaningAgentsFactory">class <strong>VWCleaningAgentsFactory</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td>
+    </tr>
+
+    
+        <tr bgcolor="#ffc8d8">
+            <td rowspan=2><tt></tt></td>
+            <td colspan=2><tt>This&nbsp;class&nbsp;is&nbsp;a&nbsp;factory&nbsp;for&nbsp;`VWCleaningAgent`&nbsp;objects.<br>&nbsp;</tt></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            
+    <td width="100%%">Static methods defined here:<br>
+<dl><dt><a name="VWCleaningAgentsFactory-create_cleaning_agent"><strong>create_cleaning_agent</strong></a>(colour: vacuumworld.common.vwcolour.VWColour, orientation: vacuumworld.common.vworientation.VWOrientation, mind_surrogate: vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate.VWActorMindSurrogate) -&gt; tuple[vacuumworld.model.actor.vwagent.VWCleaningAgent, vacuumworld.model.actor.appearance.vwactor_appearance.VWActorAppearance]</dt><dd><tt>Creates&nbsp;a&nbsp;`VWCleaningAgent`&nbsp;with&nbsp;the&nbsp;specified&nbsp;`VWColour`,&nbsp;`VWOrientation`&nbsp;and&nbsp;`VWActorMindSurrogate`,&nbsp;and&nbsp;returns&nbsp;it&nbsp;as&nbsp;a&nbsp;`tuple[VWCleaningAgent,&nbsp;VWActorAppearance]`&nbsp;consisting&nbsp;of&nbsp;a&nbsp;`VWCleaningAgent`&nbsp;and&nbsp;its&nbsp;`VWActorAppearance`.</tt></dd></dl>
+
+<dl><dt><a name="VWCleaningAgentsFactory-create_cleaning_agent_from_json_data"><strong>create_cleaning_agent_from_json_data</strong></a>(data: dict[str, str]) -&gt; tuple[vacuumworld.model.actor.vwagent.VWCleaningAgent, vacuumworld.model.actor.appearance.vwactor_appearance.VWActorAppearance]</dt><dd><tt>Creates&nbsp;a&nbsp;`VWCleaningAgent`&nbsp;from&nbsp;JSON&nbsp;`data`,&nbsp;and&nbsp;returns&nbsp;it&nbsp;as&nbsp;a&nbsp;`tuple[VWCleaningAgent,&nbsp;VWActorAppearance]`&nbsp;consisting&nbsp;of&nbsp;a&nbsp;`VWCleaningAgent`&nbsp;and&nbsp;its&nbsp;`VWActorAppearance`.</tt></dd></dl>
+
+</td></tr>
+</table> 
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ffc8d8">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#000000" face="helvetica, arial"><a name="VWUsersFactory">class <strong>VWUsersFactory</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td>
+    </tr>
+
+    
+        <tr bgcolor="#ffc8d8">
+            <td rowspan=2><tt></tt></td>
+            <td colspan=2><tt>This&nbsp;class&nbsp;is&nbsp;a&nbsp;factory&nbsp;for&nbsp;`VWUser`&nbsp;objects.<br>&nbsp;</tt></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            
+    <td width="100%%">Static methods defined here:<br>
+<dl><dt><a name="VWUsersFactory-create_easy_user_from_json_data"><strong>create_easy_user_from_json_data</strong></a>(data: dict[str, typing.Any]) -&gt; tuple[vacuumworld.model.actor.vwuser.VWUser, vacuumworld.model.actor.appearance.vwactor_appearance.VWActorAppearance]</dt><dd><tt>Creates&nbsp;a&nbsp;`VWUser`&nbsp;whose&nbsp;`VWUserDifficulty`&nbsp;is&nbsp;`VWUserDifficulty.easy`&nbsp;from&nbsp;JSON&nbsp;`data`,&nbsp;and&nbsp;returns&nbsp;it&nbsp;as&nbsp;a&nbsp;`tuple[VWUser,&nbsp;VWActorAppearance]`&nbsp;consisting&nbsp;of&nbsp;a&nbsp;`VWUser`&nbsp;and&nbsp;its&nbsp;`VWActorAppearance`.</tt></dd></dl>
+
+<dl><dt><a name="VWUsersFactory-create_hard_user_from_json_data"><strong>create_hard_user_from_json_data</strong></a>(data: dict[str, typing.Any]) -&gt; tuple[vacuumworld.model.actor.vwuser.VWUser, vacuumworld.model.actor.appearance.vwactor_appearance.VWActorAppearance]</dt><dd><tt>Creates&nbsp;a&nbsp;`VWUser`&nbsp;whose&nbsp;`VWUserDifficulty`&nbsp;is&nbsp;`VWUserDifficulty.hard`&nbsp;from&nbsp;JSON&nbsp;`data`,&nbsp;and&nbsp;returns&nbsp;it&nbsp;as&nbsp;a&nbsp;`tuple[VWUser,&nbsp;VWActorAppearance]`&nbsp;consisting&nbsp;of&nbsp;a&nbsp;`VWUser`&nbsp;and&nbsp;its&nbsp;`VWActorAppearance`.</tt></dd></dl>
+
+<dl><dt><a name="VWUsersFactory-create_user"><strong>create_user</strong></a>(difficulty_level: vacuumworld.common.vwuser_difficulty.VWUserDifficulty, orientation: vacuumworld.common.vworientation.VWOrientation) -&gt; tuple[vacuumworld.model.actor.vwuser.VWUser, vacuumworld.model.actor.appearance.vwactor_appearance.VWActorAppearance]</dt></dl>
+
+<dl><dt><a name="VWUsersFactory-create_user_from_json_data"><strong>create_user_from_json_data</strong></a>(data: dict[str, str], difficulty_level: vacuumworld.common.vwuser_difficulty.VWUserDifficulty = 0) -&gt; tuple[vacuumworld.model.actor.vwuser.VWUser, vacuumworld.model.actor.appearance.vwactor_appearance.VWActorAppearance]</dt><dd><tt>Creates&nbsp;a&nbsp;`VWUser`&nbsp;from&nbsp;JSON&nbsp;`data`&nbsp;and&nbsp;`difficulty_level`,&nbsp;and&nbsp;returns&nbsp;it&nbsp;as&nbsp;a&nbsp;`tuple[VWUser,&nbsp;VWActorAppearance]`&nbsp;consisting&nbsp;of&nbsp;a&nbsp;`VWUser`&nbsp;and&nbsp;its&nbsp;`VWActorAppearance`.</tt></dd></dl>
+
+</td></tr>
+</table></td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#55aa55">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#55aa55"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><strong>Union</strong> = typing.Union</td></tr>
+</table>
+</body>
+</html>

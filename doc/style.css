@@ -1,0 +1,29 @@
+table.heading {
+    width: 100%;
+    border-spacing: 0;
+    border-collapse: collapse;
+    border: 0;
+    /*summary="heading"*/
+    font-family: helvetica, arial, sans-serif;
+}
+
+table.heading td {
+    width: 100%;
+    padding: 2px;
+    /*cellspacing: 0;*/
+    /*cellpadding: 2;*/
+    border: 0;
+}
+
+table.heading tr {
+    /*Sematically, what is this*/
+}
+
+table.heading tr td.title {
+       vertical-align: bottom;
+}
+
+.module-name
+{
+    color:#ffffff
+}
