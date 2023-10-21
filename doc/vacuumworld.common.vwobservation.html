@@ -1,0 +1,286 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html lang="en">
+<head><title>Python: module vacuumworld.common.vwobservation</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body bgcolor="#f0f0f8">
+<table class="heading">
+    <tr style="background-color: #7799ee;">
+        <td class="title" style="vertical-align: bottom">&nbsp;<br>
+            <span style="color: #ffffff; font-family: helvetica, arial,sans-serif;">
+            &nbsp;<br><big><big><strong><a href="vacuumworld.html"><span style="color:">vacuumworld</span></a>.<a href="vacuumworld.common.html"><span style="color:">common</span></a>.vwobservation</strong></big></big>
+            </span>
+        </td>
+        <td style="vertical-align: bottom; text-align: right;">
+            <span style="color: #ffffff; font-family: helvetica, arial,sans-serif;">
+                <a href=".">index</a><br><a href="file:../vacuumworld/common/vwobservation.py">../vacuumworld/common/vwobservation.py</a>
+            </span>
+        </td>
+    </tr>
+</table>
+
+
+
+
+
+
+
+
+
+
+<p></p>
+
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#aa55cc">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>`from` Modules</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#aa55cc"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><table width="100%%" summary="list"><tr><td width="25%" valign=top><a href="vacuumworld.model.actions.vwactions.html">vacuumworld.model.actions.vwactions</a><br>
+<a href="vacuumworld.common.vwposition_names.html">vacuumworld.common.vwposition_names</a><br>
+<a href="pyoptional.pyoptional.html">pyoptional.pyoptional</a><br>
+</td><td width="25%" valign=top><a href="pystarworldsturbo.common.action_result.html">pystarworldsturbo.common.action_result</a><br>
+<a href="pystarworldsturbo.common.action_outcome.html">pystarworldsturbo.common.action_outcome</a><br>
+<a href="json.html">json</a><br>
+</td><td width="25%" valign=top><a href="pystarworldsturbo.common.perception.html">pystarworldsturbo.common.perception</a><br>
+<a href="vacuumworld.model.environment.vwlocation.html">vacuumworld.model.environment.vwlocation</a><br>
+<a href="vacuumworld.common.vworientation.html">vacuumworld.common.vworientation</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ee77aa">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#ee77aa"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><dl>
+<dt><span style="font-family:helvetica, arial, sans-serif"><a href="pystarworldsturbo.common.perception.html#Perception">pystarworldsturbo.common.perception.Perception</a>(<a href="pystarworldsturbo.common.event.html#Event">pystarworldsturbo.common.event.Event</a>)
+</span></dt><dd>
+<dl>
+<dt><span style="font-family:helvetica, arial, sans-serif"><a href="vacuumworld.common.vwobservation.html#VWObservation">VWObservation</a>(<a href="pystarworldsturbo.common.perception.html#Perception">pystarworldsturbo.common.perception.Perception</a>)
+</span></dt></dl>
+</dd>
+</dl>
+ 
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ffc8d8">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#000000" face="helvetica, arial"><a name="VWObservation">class <strong>VWObservation</strong></a>(<a href="pystarworldsturbo.common.perception.html#Perception">pystarworldsturbo.common.perception.Perception</a>)</font></td>
+    </tr>
+
+    
+        <tr bgcolor="#ffc8d8">
+            <td rowspan=2><tt></tt></td>
+            <td colspan=2><tt><a href="#VWObservation">VWObservation</a>(action_type:&nbsp;'Type[VWAction]',&nbsp;action_result:&nbsp;'ActionResult',&nbsp;locations_dict:&nbsp;'dict[VWPositionNames,&nbsp;VWLocation]'&nbsp;=&nbsp;{})&nbsp;-&gt;&nbsp;'None'<br>
+&nbsp;<br>
+This&nbsp;class&nbsp;specifies&nbsp;the&nbsp;`<a href="#VWObservation">VWObservation</a>`&nbsp;API.<br>
+&nbsp;<br>
+An&nbsp;`<a href="#VWObservation">VWObservation</a>`&nbsp;is&nbsp;a&nbsp;wrapper&nbsp;for&nbsp;a&nbsp;3x2&nbsp;(or&nbsp;2x3,&nbsp;or&nbsp;2x2,&nbsp;or&nbsp;2x1,&nbsp;or&nbsp;1x2,&nbsp;or&nbsp;1x1,&nbsp;depending&nbsp;on&nbsp;the&nbsp;boundaries)&nbsp;slice&nbsp;of&nbsp;a&nbsp;`VWEnvironment`&nbsp;grid,&nbsp;and&nbsp;a&nbsp;`list`&nbsp;of&nbsp;`ActionResult`&nbsp;elements,&nbsp;each&nbsp;related&nbsp;to&nbsp;an&nbsp;attempted&nbsp;`VWAction`&nbsp;by&nbsp;a&nbsp;certain&nbsp;`VWActor`&nbsp;in&nbsp;the&nbsp;last&nbsp;environmental&nbsp;cycle.<br>&nbsp;</tt></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            
+    <td width="100%%"><dl><dt>Method resolution order:</dt>
+<dd><a href="vacuumworld.common.vwobservation.html#VWObservation">VWObservation</a></dd>
+<dd><a href="pystarworldsturbo.common.perception.html#Perception">pystarworldsturbo.common.perception.Perception</a></dd>
+<dd><a href="pystarworldsturbo.common.event.html#Event">pystarworldsturbo.common.event.Event</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="VWObservation-__init__"><strong>__init__</strong></a>(self, action_type: 'Type[VWAction]', action_result: 'ActionResult', locations_dict: 'dict[VWPositionNames, VWLocation]' = {}) -&gt; 'None'</dt></dl>
+
+<dl><dt><a name="VWObservation-__iter__"><strong>__iter__</strong></a>(self) -&gt; 'Iterator[VWLocation]'</dt></dl>
+
+<dl><dt><a name="VWObservation-__str__"><strong>__str__</strong></a>(self) -&gt; 'str'</dt></dl>
+
+<dl><dt><a name="VWObservation-get_center"><strong>get_center</strong></a>(self) -&gt; 'PyOptional[VWLocation]'</dt><dd><tt>Returns&nbsp;a&nbsp;`PyOptional`&nbsp;wrapping&nbsp;the&nbsp;`VWLocation`&nbsp;at&nbsp;the&nbsp;center&nbsp;of&nbsp;the&nbsp;`VWActor`'s&nbsp;view,&nbsp;or&nbsp;an&nbsp;empty&nbsp;`PyOptional`&nbsp;if&nbsp;there&nbsp;is&nbsp;no&nbsp;`VWLocation`&nbsp;at&nbsp;that&nbsp;position.</tt></dd></dl>
+
+<dl><dt><a name="VWObservation-get_forward"><strong>get_forward</strong></a>(self) -&gt; 'PyOptional[VWLocation]'</dt><dd><tt>Returns&nbsp;a&nbsp;`PyOptional`&nbsp;wrapping&nbsp;the&nbsp;`VWLocation`&nbsp;in&nbsp;front&nbsp;of&nbsp;the&nbsp;`VWActor`,&nbsp;or&nbsp;an&nbsp;empty&nbsp;`PyOptional`&nbsp;if&nbsp;there&nbsp;is&nbsp;no&nbsp;`VWLocation`&nbsp;at&nbsp;that&nbsp;position.</tt></dd></dl>
+
+<dl><dt><a name="VWObservation-get_forwardleft"><strong>get_forwardleft</strong></a>(self) -&gt; 'PyOptional[VWLocation]'</dt><dd><tt>Returns&nbsp;a&nbsp;`PyOptional`&nbsp;wrapping&nbsp;the&nbsp;`VWLocation`&nbsp;to&nbsp;the&nbsp;front-left&nbsp;of&nbsp;the&nbsp;`VWActor`,&nbsp;or&nbsp;an&nbsp;empty&nbsp;`PyOptional`&nbsp;if&nbsp;there&nbsp;is&nbsp;no&nbsp;`VWLocation`&nbsp;at&nbsp;that&nbsp;position.</tt></dd></dl>
+
+<dl><dt><a name="VWObservation-get_forwardright"><strong>get_forwardright</strong></a>(self) -&gt; 'PyOptional[VWLocation]'</dt><dd><tt>Returns&nbsp;a&nbsp;`PyOptional`&nbsp;wrapping&nbsp;the&nbsp;`VWLocation`&nbsp;to&nbsp;the&nbsp;front-right&nbsp;of&nbsp;the&nbsp;`VWActor`,&nbsp;or&nbsp;an&nbsp;empty&nbsp;`PyOptional`&nbsp;if&nbsp;there&nbsp;is&nbsp;no&nbsp;`VWLocation`&nbsp;at&nbsp;that&nbsp;position.</tt></dd></dl>
+
+<dl><dt><a name="VWObservation-get_latest_actions_outcomes_as_dict"><strong>get_latest_actions_outcomes_as_dict</strong></a>(self) -&gt; 'dict[Type[VWAction], list[ActionOutcome]]'</dt><dd><tt>Returns&nbsp;a&nbsp;`dict`&nbsp;mapping&nbsp;each&nbsp;kind&nbsp;of&nbsp;`VWAction`&nbsp;that&nbsp;was&nbsp;attempted&nbsp;by&nbsp;the&nbsp;`VWActor`&nbsp;during&nbsp;the&nbsp;last&nbsp;cycle&nbsp;to&nbsp;its&nbsp;`list[ActionOutcome]`.<br>
+&nbsp;<br>
+The&nbsp;attempt&nbsp;order&nbsp;is&nbsp;not&nbsp;preserved&nbsp;in&nbsp;general,&nbsp;because&nbsp;the&nbsp;returned&nbsp;`dict`&nbsp;exhibits&nbsp;no&nbsp;particular&nbsp;ordering&nbsp;for&nbsp;the&nbsp;keys.</tt></dd></dl>
+
+<dl><dt><a name="VWObservation-get_latest_actions_results"><strong>get_latest_actions_results</strong></a>(self) -&gt; 'list[tuple[Type[VWAction], ActionResult]]'</dt><dd><tt>Returns&nbsp;a&nbsp;`list`&nbsp;of&nbsp;the&nbsp;results&nbsp;of&nbsp;each&nbsp;`VWAction`&nbsp;that&nbsp;was&nbsp;attempted&nbsp;by&nbsp;the&nbsp;`VWActor`&nbsp;during&nbsp;the&nbsp;last&nbsp;cycle.<br>
+&nbsp;<br>
+Each&nbsp;result&nbsp;is&nbsp;represented&nbsp;by&nbsp;a&nbsp;`tuple[Type[VWAction],&nbsp;ActionResult]`,&nbsp;so&nbsp;to&nbsp;preserve&nbsp;both&nbsp;the&nbsp;order&nbsp;of&nbsp;attempt,&nbsp;and&nbsp;the&nbsp;mapping&nbsp;between&nbsp;the&nbsp;kind&nbsp;of&nbsp;`VWAction`&nbsp;and&nbsp;its&nbsp;`ActionResult`.</tt></dd></dl>
+
+<dl><dt><a name="VWObservation-get_left"><strong>get_left</strong></a>(self) -&gt; 'PyOptional[VWLocation]'</dt><dd><tt>Returns&nbsp;a&nbsp;`PyOptional`&nbsp;wrapping&nbsp;the&nbsp;`VWLocation`&nbsp;to&nbsp;the&nbsp;left&nbsp;of&nbsp;the&nbsp;`VWActor`,&nbsp;or&nbsp;an&nbsp;empty&nbsp;`PyOptional`&nbsp;if&nbsp;there&nbsp;is&nbsp;no&nbsp;`VWLocation`&nbsp;at&nbsp;that&nbsp;position.</tt></dd></dl>
+
+<dl><dt><a name="VWObservation-get_location_at"><strong>get_location_at</strong></a>(self, position_name: 'VWPositionNames') -&gt; 'PyOptional[VWLocation]'</dt><dd><tt>Returns&nbsp;a&nbsp;`PyOptional`&nbsp;wrapping&nbsp;the&nbsp;`VWLocation`&nbsp;at&nbsp;the&nbsp;given&nbsp;`VWPositionNames`,&nbsp;or&nbsp;an&nbsp;empty&nbsp;`PyOptional`&nbsp;if&nbsp;there&nbsp;is&nbsp;no&nbsp;`VWLocation`&nbsp;at&nbsp;that&nbsp;position.</tt></dd></dl>
+
+<dl><dt><a name="VWObservation-get_locations"><strong>get_locations</strong></a>(self) -&gt; 'dict[VWPositionNames, VWLocation]'</dt><dd><tt>Returns&nbsp;a&nbsp;`dict`&nbsp;mapping&nbsp;each&nbsp;`VWPositionNames`&nbsp;to&nbsp;the&nbsp;`VWLocation`&nbsp;at&nbsp;that&nbsp;position.<br>
+&nbsp;<br>
+If&nbsp;there&nbsp;is&nbsp;no&nbsp;`VWLocation`&nbsp;at&nbsp;a&nbsp;given&nbsp;position,&nbsp;then&nbsp;the&nbsp;corresponding&nbsp;key&nbsp;is&nbsp;not&nbsp;present&nbsp;in&nbsp;the&nbsp;returned&nbsp;`dict`.</tt></dd></dl>
+
+<dl><dt><a name="VWObservation-get_locations_in_order"><strong>get_locations_in_order</strong></a>(self) -&gt; 'list[PyOptional[VWLocation]]'</dt><dd><tt>Returns&nbsp;a&nbsp;`list`&nbsp;of&nbsp;the&nbsp;`VWLocation`&nbsp;objects&nbsp;in&nbsp;this&nbsp;`<a href="#VWObservation">VWObservation</a>`,&nbsp;in&nbsp;the&nbsp;following&nbsp;order:<br>
+*&nbsp;`VWPositionNames.center`<br>
+*&nbsp;`VWPositionNames.forward`<br>
+*&nbsp;`VWPositionNames.left`<br>
+*&nbsp;`VWPositionNames.right`<br>
+*&nbsp;`VWPositionNames.forwardleft`<br>
+*&nbsp;`VWPositionNames.forwardright`</tt></dd></dl>
+
+<dl><dt><a name="VWObservation-get_observer_id"><strong>get_observer_id</strong></a>(self) -&gt; 'PyOptional[str]'</dt><dd><tt>Returns&nbsp;the&nbsp;`str`&nbsp;ID&nbsp;of&nbsp;the&nbsp;`VWActor`&nbsp;that&nbsp;presumably&nbsp;observed&nbsp;this&nbsp;`<a href="#VWObservation">VWObservation</a>`,&nbsp;or&nbsp;`None`&nbsp;if&nbsp;no&nbsp;observer&nbsp;can&nbsp;be&nbsp;identified.<br>
+&nbsp;<br>
+The&nbsp;observer&nbsp;is&nbsp;assumed&nbsp;to&nbsp;be&nbsp;the&nbsp;`VWActor`&nbsp;whose&nbsp;`VWActorAppearance`&nbsp;is&nbsp;contained&nbsp;by&nbsp;the&nbsp;`VWLocation`&nbsp;at&nbsp;the&nbsp;`VWPositionNames.center`&nbsp;position&nbsp;in&nbsp;this&nbsp;`<a href="#VWObservation">VWObservation</a>`.</tt></dd></dl>
+
+<dl><dt><a name="VWObservation-get_right"><strong>get_right</strong></a>(self) -&gt; 'PyOptional[VWLocation]'</dt><dd><tt>Returns&nbsp;a&nbsp;`PyOptional`&nbsp;wrapping&nbsp;the&nbsp;`VWLocation`&nbsp;to&nbsp;the&nbsp;right&nbsp;of&nbsp;the&nbsp;`VWActor`,&nbsp;or&nbsp;an&nbsp;empty&nbsp;`PyOptional`&nbsp;if&nbsp;there&nbsp;is&nbsp;no&nbsp;`VWLocation`&nbsp;at&nbsp;that&nbsp;position.</tt></dd></dl>
+
+<dl><dt><a name="VWObservation-is_empty"><strong>is_empty</strong></a>(self) -&gt; 'bool'</dt><dd><tt>Returns&nbsp;whether&nbsp;or&nbsp;not&nbsp;this&nbsp;`<a href="#VWObservation">VWObservation</a>`&nbsp;is&nbsp;empty,&nbsp;i.e.&nbsp;whether&nbsp;or&nbsp;not&nbsp;it&nbsp;contains&nbsp;any&nbsp;`VWLocation`.</tt></dd></dl>
+
+<dl><dt><a name="VWObservation-is_wall_immediately_ahead"><strong>is_wall_immediately_ahead</strong></a>(self) -&gt; 'bool'</dt><dd><tt>Returns&nbsp;whether&nbsp;or&nbsp;not&nbsp;there&nbsp;is&nbsp;a&nbsp;wall&nbsp;immediately&nbsp;in&nbsp;front&nbsp;of&nbsp;the&nbsp;`VWActor`.</tt></dd></dl>
+
+<dl><dt><a name="VWObservation-is_wall_immediately_behind"><strong>is_wall_immediately_behind</strong></a>(self) -&gt; 'bool'</dt><dd><tt>Returns&nbsp;whether&nbsp;or&nbsp;not&nbsp;there&nbsp;is&nbsp;a&nbsp;wall&nbsp;immediately&nbsp;behind&nbsp;the&nbsp;`VWActor`.</tt></dd></dl>
+
+<dl><dt><a name="VWObservation-is_wall_immediately_to_the_left"><strong>is_wall_immediately_to_the_left</strong></a>(self) -&gt; 'bool'</dt><dd><tt>Returns&nbsp;whether&nbsp;or&nbsp;not&nbsp;there&nbsp;is&nbsp;a&nbsp;wall&nbsp;immediately&nbsp;to&nbsp;the&nbsp;left&nbsp;of&nbsp;the&nbsp;`VWActor`.</tt></dd></dl>
+
+<dl><dt><a name="VWObservation-is_wall_immediately_to_the_right"><strong>is_wall_immediately_to_the_right</strong></a>(self) -&gt; 'bool'</dt><dd><tt>Returns&nbsp;whether&nbsp;or&nbsp;not&nbsp;there&nbsp;is&nbsp;a&nbsp;wall&nbsp;immediately&nbsp;to&nbsp;the&nbsp;right&nbsp;of&nbsp;the&nbsp;`VWActor`.</tt></dd></dl>
+
+<dl><dt><a name="VWObservation-is_wall_one_step_ahead"><strong>is_wall_one_step_ahead</strong></a>(self) -&gt; 'bool'</dt><dd><tt>Returns&nbsp;whether&nbsp;or&nbsp;not&nbsp;there&nbsp;is&nbsp;a&nbsp;wall&nbsp;one&nbsp;step&nbsp;in&nbsp;front&nbsp;of&nbsp;the&nbsp;`VWActor`.<br>
+&nbsp;<br>
+One&nbsp;step&nbsp;in&nbsp;front&nbsp;means&nbsp;that&nbsp;the&nbsp;`VWLocation`&nbsp;in&nbsp;front&nbsp;of&nbsp;the&nbsp;`VWActor`&nbsp;exists,&nbsp;and&nbsp;has&nbsp;a&nbsp;wall&nbsp;on&nbsp;its&nbsp;`forward`&nbsp;side&nbsp;(w.r.t&nbsp;the&nbsp;`VWOrientation`&nbsp;of&nbsp;the&nbsp;`VWActor`).</tt></dd></dl>
+
+<dl><dt><a name="VWObservation-is_wall_one_step_to_the_left"><strong>is_wall_one_step_to_the_left</strong></a>(self) -&gt; 'bool'</dt><dd><tt>Returns&nbsp;whether&nbsp;or&nbsp;not&nbsp;there&nbsp;is&nbsp;a&nbsp;wall&nbsp;one&nbsp;step&nbsp;to&nbsp;the&nbsp;`left`&nbsp;of&nbsp;the&nbsp;`VWActor`.<br>
+&nbsp;<br>
+One&nbsp;step&nbsp;to&nbsp;the&nbsp;`left`&nbsp;means&nbsp;that&nbsp;the&nbsp;`VWLocation`&nbsp;to&nbsp;the&nbsp;`left`&nbsp;of&nbsp;the&nbsp;`VWActor`&nbsp;exists,&nbsp;and&nbsp;has&nbsp;a&nbsp;wall&nbsp;on&nbsp;its&nbsp;`left`&nbsp;side&nbsp;(w.r.t&nbsp;the&nbsp;`VWOrientation`&nbsp;of&nbsp;the&nbsp;`VWActor`).</tt></dd></dl>
+
+<dl><dt><a name="VWObservation-is_wall_one_step_to_the_right"><strong>is_wall_one_step_to_the_right</strong></a>(self) -&gt; 'bool'</dt><dd><tt>Returns&nbsp;whether&nbsp;or&nbsp;not&nbsp;there&nbsp;is&nbsp;a&nbsp;wall&nbsp;one&nbsp;step&nbsp;to&nbsp;the&nbsp;`right`&nbsp;of&nbsp;the&nbsp;`VWActor`.<br>
+&nbsp;<br>
+One&nbsp;step&nbsp;to&nbsp;the&nbsp;`right`&nbsp;means&nbsp;that&nbsp;the&nbsp;`VWLocation`&nbsp;to&nbsp;the&nbsp;`right`&nbsp;of&nbsp;the&nbsp;`VWActor`&nbsp;exists,&nbsp;and&nbsp;has&nbsp;a&nbsp;wall&nbsp;on&nbsp;its&nbsp;`right`&nbsp;side&nbsp;(w.r.t&nbsp;the&nbsp;`VWOrientation`&nbsp;of&nbsp;the&nbsp;`VWActor`).</tt></dd></dl>
+
+<dl><dt><a name="VWObservation-is_wall_visible_ahead"><strong>is_wall_visible_ahead</strong></a>(self, immediately_ahead: 'bool') -&gt; 'bool'</dt><dd><tt>Depending&nbsp;on&nbsp;the&nbsp;value&nbsp;of&nbsp;`immediately_ahead`,&nbsp;returns&nbsp;either&nbsp;the&nbsp;result&nbsp;of&nbsp;`self.<a href="#VWObservation-is_wall_immediately_ahead">is_wall_immediately_ahead</a>()`&nbsp;or&nbsp;`self.<a href="#VWObservation-is_wall_one_step_ahead">is_wall_one_step_ahead</a>()`.</tt></dd></dl>
+
+<dl><dt><a name="VWObservation-is_wall_visible_somewhere_ahead"><strong>is_wall_visible_somewhere_ahead</strong></a>(self) -&gt; 'bool'</dt><dd><tt>Returns&nbsp;whether&nbsp;or&nbsp;not&nbsp;there&nbsp;is&nbsp;a&nbsp;wall&nbsp;visible&nbsp;somewhere&nbsp;in&nbsp;front&nbsp;of&nbsp;the&nbsp;`VWActor`.<br>
+&nbsp;<br>
+In&nbsp;practice,&nbsp;it&nbsp;returns&nbsp;whether&nbsp;exactly&nbsp;one&nbsp;of&nbsp;`self.<a href="#VWObservation-is_wall_immediately_ahead">is_wall_immediately_ahead</a>()`&nbsp;and&nbsp;`self.<a href="#VWObservation-is_wall_one_step_ahead">is_wall_one_step_ahead</a>()`&nbsp;is&nbsp;`True`.</tt></dd></dl>
+
+<dl><dt><a name="VWObservation-is_wall_visible_somewhere_to_the_left"><strong>is_wall_visible_somewhere_to_the_left</strong></a>(self) -&gt; 'bool'</dt><dd><tt>Returns&nbsp;whether&nbsp;or&nbsp;not&nbsp;there&nbsp;is&nbsp;a&nbsp;wall&nbsp;visible&nbsp;somewhere&nbsp;to&nbsp;the&nbsp;`left`&nbsp;of&nbsp;the&nbsp;`VWActor`.<br>
+&nbsp;<br>
+In&nbsp;practice,&nbsp;it&nbsp;returns&nbsp;whether&nbsp;exactly&nbsp;one&nbsp;of&nbsp;`self.<a href="#VWObservation-is_wall_immediately_to_the_left">is_wall_immediately_to_the_left</a>()`&nbsp;and&nbsp;`self.<a href="#VWObservation-is_wall_one_step_to_the_left">is_wall_one_step_to_the_left</a>()`&nbsp;is&nbsp;`True`.</tt></dd></dl>
+
+<dl><dt><a name="VWObservation-is_wall_visible_somewhere_to_the_right"><strong>is_wall_visible_somewhere_to_the_right</strong></a>(self) -&gt; 'bool'</dt><dd><tt>Returns&nbsp;whether&nbsp;or&nbsp;not&nbsp;there&nbsp;is&nbsp;a&nbsp;wall&nbsp;visible&nbsp;somewhere&nbsp;to&nbsp;the&nbsp;`right`&nbsp;of&nbsp;the&nbsp;`VWActor`.<br>
+&nbsp;<br>
+In&nbsp;practice,&nbsp;it&nbsp;returns&nbsp;whether&nbsp;exactly&nbsp;one&nbsp;of&nbsp;`self.<a href="#VWObservation-is_wall_immediately_to_the_right">is_wall_immediately_to_the_right</a>()`&nbsp;and&nbsp;`self.<a href="#VWObservation-is_wall_one_step_to_the_right">is_wall_one_step_to_the_right</a>()`&nbsp;is&nbsp;`True`.</tt></dd></dl>
+
+<dl><dt><a name="VWObservation-is_wall_visible_to_the_left"><strong>is_wall_visible_to_the_left</strong></a>(self, immediately_to_the_left: 'bool') -&gt; 'bool'</dt><dd><tt>Depending&nbsp;on&nbsp;the&nbsp;value&nbsp;of&nbsp;`immediately_to_the_left`,&nbsp;returns&nbsp;either&nbsp;the&nbsp;result&nbsp;of&nbsp;`self.<a href="#VWObservation-is_wall_immediately_to_the_left">is_wall_immediately_to_the_left</a>()`&nbsp;or&nbsp;`self.<a href="#VWObservation-is_wall_one_step_to_the_left">is_wall_one_step_to_the_left</a>()`.</tt></dd></dl>
+
+<dl><dt><a name="VWObservation-is_wall_visible_to_the_right"><strong>is_wall_visible_to_the_right</strong></a>(self, immediately_to_the_right: 'bool') -&gt; 'bool'</dt><dd><tt>Depending&nbsp;on&nbsp;the&nbsp;value&nbsp;of&nbsp;`immediately_to_the_right`,&nbsp;returns&nbsp;either&nbsp;the&nbsp;result&nbsp;of&nbsp;`self.<a href="#VWObservation-is_wall_immediately_to_the_right">is_wall_immediately_to_the_right</a>()`&nbsp;or&nbsp;`self.<a href="#VWObservation-is_wall_one_step_to_the_right">is_wall_one_step_to_the_right</a>()`.</tt></dd></dl>
+
+<dl><dt><a name="VWObservation-merge_action_result_with_previous_observations"><strong>merge_action_result_with_previous_observations</strong></a>(self, observations: 'Iterable[VWObservation]') -&gt; 'None'</dt><dd><tt>WARNING:&nbsp;This&nbsp;method&nbsp;needs&nbsp;to&nbsp;be&nbsp;public,&nbsp;but&nbsp;it&nbsp;is&nbsp;not&nbsp;part&nbsp;of&nbsp;the&nbsp;public&nbsp;API&nbsp;of&nbsp;the&nbsp;`<a href="#VWObservation">VWObservation</a>`&nbsp;class.<br>
+&nbsp;<br>
+Merges&nbsp;this&nbsp;`<a href="#VWObservation">VWObservation</a>`&nbsp;with&nbsp;another&nbsp;`<a href="#VWObservation">VWObservation</a>`&nbsp;passed&nbsp;as&nbsp;an&nbsp;argument.<br>
+&nbsp;<br>
+There&nbsp;is&nbsp;not&nbsp;change&nbsp;to&nbsp;any&nbsp;`VWLocation`&nbsp;in&nbsp;this&nbsp;`<a href="#VWObservation">VWObservation</a>`.<br>
+&nbsp;<br>
+Each&nbsp;`ActionResult`&nbsp;in&nbsp;the&nbsp;`<a href="#VWObservation">VWObservation</a>`&nbsp;passed&nbsp;as&nbsp;an&nbsp;argument&nbsp;is&nbsp;prepended&nbsp;to&nbsp;the&nbsp;list&nbsp;of&nbsp;`ActionResult`&nbsp;in&nbsp;this&nbsp;`<a href="#VWObservation">VWObservation</a>`,&nbsp;as&nbsp;this&nbsp;`<a href="#VWObservation">VWObservation</a>`&nbsp;is&nbsp;the&nbsp;most&nbsp;recent&nbsp;one.</tt></dd></dl>
+
+<dl><dt><a name="VWObservation-pretty_format"><strong>pretty_format</strong></a>(self) -&gt; 'str'</dt><dd><tt>Returns&nbsp;a&nbsp;pretty-formatted&nbsp;JSON&nbsp;string&nbsp;representation&nbsp;of&nbsp;this&nbsp;`<a href="#VWObservation">VWObservation</a>`,&nbsp;including&nbsp;each&nbsp;perceived&nbsp;`VWLocation`,&nbsp;and&nbsp;the&nbsp;`ActionOutcome`&nbsp;of&nbsp;each&nbsp;`VWAction`&nbsp;that&nbsp;was&nbsp;attempted&nbsp;by&nbsp;the&nbsp;`VWActor`&nbsp;during&nbsp;the&nbsp;last&nbsp;cycle.</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__annotations__</strong> = {}</dl>
+
+</td></tr>
+</table></td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#eeaa77">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#eeaa77"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><dl><dt><a name="-dumps"><strong>dumps</strong></a>(obj, *, skipkeys=False, ensure_ascii=True, check_circular=True, allow_nan=True, cls=None, indent=None, separators=None, default=None, sort_keys=False, **kw)</dt><dd><tt>Serialize&nbsp;``obj``&nbsp;to&nbsp;a&nbsp;JSON&nbsp;formatted&nbsp;``str``.<br>
+&nbsp;<br>
+If&nbsp;``skipkeys``&nbsp;is&nbsp;true&nbsp;then&nbsp;``dict``&nbsp;keys&nbsp;that&nbsp;are&nbsp;not&nbsp;basic&nbsp;types<br>
+(``str``,&nbsp;``int``,&nbsp;``float``,&nbsp;``bool``,&nbsp;``None``)&nbsp;will&nbsp;be&nbsp;skipped<br>
+instead&nbsp;of&nbsp;raising&nbsp;a&nbsp;``TypeError``.<br>
+&nbsp;<br>
+If&nbsp;``ensure_ascii``&nbsp;is&nbsp;false,&nbsp;then&nbsp;the&nbsp;return&nbsp;value&nbsp;can&nbsp;contain&nbsp;non-ASCII<br>
+characters&nbsp;if&nbsp;they&nbsp;appear&nbsp;in&nbsp;strings&nbsp;contained&nbsp;in&nbsp;``obj``.&nbsp;Otherwise,&nbsp;all<br>
+such&nbsp;characters&nbsp;are&nbsp;escaped&nbsp;in&nbsp;JSON&nbsp;strings.<br>
+&nbsp;<br>
+If&nbsp;``check_circular``&nbsp;is&nbsp;false,&nbsp;then&nbsp;the&nbsp;circular&nbsp;reference&nbsp;check<br>
+for&nbsp;container&nbsp;types&nbsp;will&nbsp;be&nbsp;skipped&nbsp;and&nbsp;a&nbsp;circular&nbsp;reference&nbsp;will<br>
+result&nbsp;in&nbsp;an&nbsp;``RecursionError``&nbsp;(or&nbsp;worse).<br>
+&nbsp;<br>
+If&nbsp;``allow_nan``&nbsp;is&nbsp;false,&nbsp;then&nbsp;it&nbsp;will&nbsp;be&nbsp;a&nbsp;``ValueError``&nbsp;to<br>
+serialize&nbsp;out&nbsp;of&nbsp;range&nbsp;``float``&nbsp;values&nbsp;(``nan``,&nbsp;``inf``,&nbsp;``-inf``)&nbsp;in<br>
+strict&nbsp;compliance&nbsp;of&nbsp;the&nbsp;JSON&nbsp;specification,&nbsp;instead&nbsp;of&nbsp;using&nbsp;the<br>
+JavaScript&nbsp;equivalents&nbsp;(``NaN``,&nbsp;``Infinity``,&nbsp;``-Infinity``).<br>
+&nbsp;<br>
+If&nbsp;``indent``&nbsp;is&nbsp;a&nbsp;non-negative&nbsp;integer,&nbsp;then&nbsp;JSON&nbsp;array&nbsp;elements&nbsp;and<br>
+object&nbsp;members&nbsp;will&nbsp;be&nbsp;pretty-printed&nbsp;with&nbsp;that&nbsp;indent&nbsp;level.&nbsp;An&nbsp;indent<br>
+level&nbsp;of&nbsp;0&nbsp;will&nbsp;only&nbsp;insert&nbsp;newlines.&nbsp;``None``&nbsp;is&nbsp;the&nbsp;most&nbsp;compact<br>
+representation.<br>
+&nbsp;<br>
+If&nbsp;specified,&nbsp;``separators``&nbsp;should&nbsp;be&nbsp;an&nbsp;``(item_separator,&nbsp;key_separator)``<br>
+tuple.&nbsp;&nbsp;The&nbsp;default&nbsp;is&nbsp;``(',&nbsp;',&nbsp;':&nbsp;')``&nbsp;if&nbsp;*indent*&nbsp;is&nbsp;``None``&nbsp;and<br>
+``(',',&nbsp;':&nbsp;')``&nbsp;otherwise.&nbsp;&nbsp;To&nbsp;get&nbsp;the&nbsp;most&nbsp;compact&nbsp;JSON&nbsp;representation,<br>
+you&nbsp;should&nbsp;specify&nbsp;``(',',&nbsp;':')``&nbsp;to&nbsp;eliminate&nbsp;whitespace.<br>
+&nbsp;<br>
+``default(obj)``&nbsp;is&nbsp;a&nbsp;function&nbsp;that&nbsp;should&nbsp;return&nbsp;a&nbsp;serializable&nbsp;version<br>
+of&nbsp;obj&nbsp;or&nbsp;raise&nbsp;TypeError.&nbsp;The&nbsp;default&nbsp;simply&nbsp;raises&nbsp;TypeError.<br>
+&nbsp;<br>
+If&nbsp;*sort_keys*&nbsp;is&nbsp;true&nbsp;(default:&nbsp;``False``),&nbsp;then&nbsp;the&nbsp;output&nbsp;of<br>
+dictionaries&nbsp;will&nbsp;be&nbsp;sorted&nbsp;by&nbsp;key.<br>
+&nbsp;<br>
+To&nbsp;use&nbsp;a&nbsp;custom&nbsp;``JSONEncoder``&nbsp;subclass&nbsp;(e.g.&nbsp;one&nbsp;that&nbsp;overrides&nbsp;the<br>
+``.default()``&nbsp;method&nbsp;to&nbsp;serialize&nbsp;additional&nbsp;types),&nbsp;specify&nbsp;it&nbsp;with<br>
+the&nbsp;``cls``&nbsp;kwarg;&nbsp;otherwise&nbsp;``JSONEncoder``&nbsp;is&nbsp;used.</tt></dd></dl>
+</td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#55aa55">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#55aa55"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><strong>Iterable</strong> = typing.Iterable<br>
+<strong>Iterator</strong> = typing.Iterator<br>
+<strong>Type</strong> = typing.Type<br>
+<strong>annotations</strong> = _Feature((3, 7, 0, 'beta', 1), None, 16777216)</td></tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html lang="en">
+<head><title>Python: module vacuumworld.common.vwvalidator</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body bgcolor="#f0f0f8">
+<table class="heading">
+    <tr style="background-color: #7799ee;">
+        <td class="title" style="vertical-align: bottom">&nbsp;<br>
+            <span style="color: #ffffff; font-family: helvetica, arial,sans-serif;">
+            &nbsp;<br><big><big><strong><a href="vacuumworld.html"><span style="color:">vacuumworld</span></a>.<a href="vacuumworld.common.html"><span style="color:">common</span></a>.vwvalidator</strong></big></big>
+            </span>
+        </td>
+        <td style="vertical-align: bottom; text-align: right;">
+            <span style="color: #ffffff; font-family: helvetica, arial,sans-serif;">
+                <a href=".">index</a><br><a href="file:../vacuumworld/common/vwvalidator.py">../vacuumworld/common/vwvalidator.py</a>
+            </span>
+        </td>
+    </tr>
+</table>
+
+
+
+
+
+
+
+
+
+
+<p></p>
+
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#aa55cc">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>`from` Modules</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#aa55cc"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><table width="100%%" summary="list"><tr><td width="25%" valign=top><a href="pydoc.html">pydoc</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ee77aa">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#ee77aa"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><dl>
+<dt><span style="font-family:helvetica, arial, sans-serif"><a href="builtins.html#object">builtins.object</a>
+</span></dt><dd>
+<dl>
+<dt><span style="font-family:helvetica, arial, sans-serif"><a href="vacuumworld.common.vwvalidator.html#VWValidator">VWValidator</a>(<a href="builtins.html#object">builtins.object</a>)
+</span></dt></dl>
+</dd>
+</dl>
+ 
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ffc8d8">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#000000" face="helvetica, arial"><a name="VWValidator">class <strong>VWValidator</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#ffc8d8"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%">Static methods defined here:<br>
+<dl><dt><a name="VWValidator-does_type_match"><strong>does_type_match</strong></a>(t: type, obj: Any) -&gt; bool</dt><dd><tt>Returns&nbsp;True&nbsp;if&nbsp;the&nbsp;given&nbsp;<a href="builtins.html#object">object</a>&nbsp;is&nbsp;of&nbsp;the&nbsp;given&nbsp;type,&nbsp;False&nbsp;otherwise.</tt></dd></dl>
+
+<dl><dt><a name="VWValidator-does_type_match_for_all"><strong>does_type_match_for_all</strong></a>(t: type, *objs: Any) -&gt; bool</dt><dd><tt>Returns&nbsp;True&nbsp;if&nbsp;all&nbsp;of&nbsp;the&nbsp;given&nbsp;objects&nbsp;are&nbsp;of&nbsp;the&nbsp;given&nbsp;type,&nbsp;False&nbsp;otherwise.</tt></dd></dl>
+
+<dl><dt><a name="VWValidator-does_type_match_for_all_elements"><strong>does_type_match_for_all_elements</strong></a>(t: type, iterable: Iterable[Any]) -&gt; bool</dt><dd><tt>Returns&nbsp;True&nbsp;if&nbsp;all&nbsp;of&nbsp;the&nbsp;given&nbsp;elements&nbsp;are&nbsp;of&nbsp;the&nbsp;given&nbsp;type,&nbsp;False&nbsp;otherwise.</tt></dd></dl>
+
+<dl><dt><a name="VWValidator-validate_all_elements_not_none"><strong>validate_all_elements_not_none</strong></a>(iterable: Optional[Iterable[Any]]) -&gt; None</dt><dd><tt>Raises&nbsp;a&nbsp;ValueError&nbsp;if&nbsp;the&nbsp;given&nbsp;iterable&nbsp;is&nbsp;None,&nbsp;or&nbsp;if&nbsp;any&nbsp;of&nbsp;its&nbsp;elements&nbsp;are&nbsp;None.</tt></dd></dl>
+
+<dl><dt><a name="VWValidator-validate_all_not_none"><strong>validate_all_not_none</strong></a>(*objs: Optional[Any]) -&gt; None</dt><dd><tt>Raises&nbsp;a&nbsp;ValueError&nbsp;if&nbsp;any&nbsp;of&nbsp;the&nbsp;given&nbsp;objects&nbsp;are&nbsp;None.</tt></dd></dl>
+
+<dl><dt><a name="VWValidator-validate_not_none"><strong>validate_not_none</strong></a>(obj: Optional[Any]) -&gt; None</dt><dd><tt>Raises&nbsp;a&nbsp;ValueError&nbsp;if&nbsp;the&nbsp;given&nbsp;<a href="builtins.html#object">object</a>&nbsp;is&nbsp;None.</tt></dd></dl>
+
+<dl><dt><a name="VWValidator-validate_type"><strong>validate_type</strong></a>(t: Type[Any], obj: Any) -&gt; None</dt><dd><tt>Raises&nbsp;a&nbsp;ValueError&nbsp;if&nbsp;the&nbsp;given&nbsp;<a href="builtins.html#object">object</a>&nbsp;is&nbsp;not&nbsp;of&nbsp;the&nbsp;given&nbsp;type.</tt></dd></dl>
+
+<dl><dt><a name="VWValidator-validate_type_for_all"><strong>validate_type_for_all</strong></a>(t: type, *objs: Any) -&gt; None</dt><dd><tt>Raises&nbsp;a&nbsp;ValueError&nbsp;if&nbsp;any&nbsp;of&nbsp;the&nbsp;given&nbsp;objects&nbsp;are&nbsp;not&nbsp;of&nbsp;the&nbsp;given&nbsp;type.</tt></dd></dl>
+
+<dl><dt><a name="VWValidator-validate_type_for_all_elements"><strong>validate_type_for_all_elements</strong></a>(t: type, iterable: Iterable[Any]) -&gt; None</dt><dd><tt>Raises&nbsp;a&nbsp;ValueError&nbsp;if&nbsp;any&nbsp;of&nbsp;the&nbsp;given&nbsp;elements&nbsp;are&nbsp;not&nbsp;of&nbsp;the&nbsp;given&nbsp;type.</tt></dd></dl>
+
+<dl><dt><a name="VWValidator-validate_type_from_string"><strong>validate_type_from_string</strong></a>(ts: str, obj: Any) -&gt; None</dt><dd><tt>Raises&nbsp;a&nbsp;ValueError&nbsp;if&nbsp;the&nbsp;given&nbsp;<a href="builtins.html#object">object</a>&nbsp;is&nbsp;not&nbsp;of&nbsp;the&nbsp;given&nbsp;type&nbsp;(given&nbsp;as&nbsp;a&nbsp;`str`).</tt></dd></dl>
+
+</td></tr>
+</table></td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#eeaa77">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#eeaa77"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><dl><dt><a name="-cast"><strong>cast</strong></a>(typ, val)</dt><dd><tt>Cast&nbsp;a&nbsp;value&nbsp;to&nbsp;a&nbsp;type.<br>
+&nbsp;<br>
+This&nbsp;returns&nbsp;the&nbsp;value&nbsp;unchanged.&nbsp;&nbsp;To&nbsp;the&nbsp;type&nbsp;checker&nbsp;this<br>
+signals&nbsp;that&nbsp;the&nbsp;return&nbsp;value&nbsp;has&nbsp;the&nbsp;designated&nbsp;type,&nbsp;but&nbsp;at<br>
+runtime&nbsp;we&nbsp;intentionally&nbsp;don't&nbsp;check&nbsp;anything&nbsp;(we&nbsp;want&nbsp;this<br>
+to&nbsp;be&nbsp;as&nbsp;fast&nbsp;as&nbsp;possible).</tt></dd></dl>
+ <dl><dt><a name="-locate"><strong>locate</strong></a>(path, forceload=0)</dt><dd><tt>Locate&nbsp;an&nbsp;<a href="builtins.html#object">object</a>&nbsp;by&nbsp;name&nbsp;or&nbsp;dotted&nbsp;path,&nbsp;importing&nbsp;as&nbsp;necessary.</tt></dd></dl>
+</td></tr>
+</table>
+
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#55aa55">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td>
+    </tr>
+
+    
+        <tr>
+        <td bgcolor="#55aa55"><tt></tt></td>
+        <td>&nbsp;</td>
+    
+    <td width="100%%"><strong>Iterable</strong> = typing.Iterable<br>
+<strong>Optional</strong> = typing.Optional<br>
+<strong>Type</strong> = typing.Type</td></tr>
+</table>
+</body>
+</html>
