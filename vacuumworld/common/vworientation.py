@@ -3,6 +3,7 @@ from enum import Enum
 from random import choice
 
 from .vwdirection import VWDirection
+from .vwvalidator import VWValidator
 
 
 class VWOrientation(Enum):
@@ -71,10 +72,40 @@ class VWOrientation(Enum):
         '''
         Returns the `VWOrientation` to the `left` or `right` of this `VWOrientation`, depending on the value of `direction`.
         '''
+        VWValidator.validate_not_none(direction)
+        VWValidator.validate_type(VWDirection, direction)
+
         if direction == VWDirection.left:
             return self.get_left()
         else:
             return self.get_right()
+
+    def matches(self, orientation: VWOrientation) -> bool:
+        '''
+        Returns `True` if this `VWOrientation` matches `orientation`.
+        '''
+        VWValidator.validate_not_none(orientation)
+        VWValidator.validate_type(VWOrientation, orientation)
+
+        return self == orientation
+
+    def distance_from(self, orientation: VWOrientation) -> int:
+        '''
+        Returns the minimum distance (in 90-degree turns) from this `VWOrientation` to `orientation`.
+
+        * If `self` and `orientation` are the same, the distance is `0`.
+        * If `self` and `orientation` are opposite, the distance is `2`.
+        * Otherwise, the distance is `1`.
+        '''
+        VWValidator.validate_not_none(orientation)
+        VWValidator.validate_type(VWOrientation, orientation)
+
+        if self == orientation:
+            return 0
+        elif self.get_left() == orientation or self.get_right() == orientation:
+            return 1
+        else:
+            return 2
 
     @staticmethod
     def random() -> VWOrientation:

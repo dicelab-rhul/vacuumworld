@@ -1,10 +1,12 @@
 from tkinter import Event, Tk, Frame, Canvas, Label, StringVar, W, E, X
-from typing import Callable, Any
+from typing import Callable, Any, cast
 from PIL import Image
 from PIL.Image import Image as PILImage
 from PIL.ImageTk import PhotoImage
 from collections import OrderedDict
 from pyoptional.pyoptional import PyOptional
+
+from pystarworldsturbo.utils.json.json_value import JSONValue
 
 from ..vwautocomplete import VWAutocompleteEntry
 from ..buttons.vwbutton import VWButton
@@ -52,12 +54,13 @@ class VWSimulationWindow(Frame):
 
     * Handling mouse movements.
     '''
-    def __init__(self, parent: Tk, config: dict[str, Any], buttons: dict[str, Any], minds: dict[VWColour, VWActorMindSurrogate], env: VWEnvironment, _guide: Callable[..., None], _save: Callable[..., None], _load: Callable[[VWAutocompleteEntry], VWEnvironment], _exit: Callable[..., None], _error: Callable[..., None]) -> None:
+    def __init__(self, parent: Tk, config: dict[str, JSONValue], buttons: dict[str, JSONValue], minds: dict[VWColour, VWActorMindSurrogate], env: VWEnvironment, _guide: Callable[..., None], _save: Callable[..., None], _load: Callable[[VWAutocompleteEntry], VWEnvironment], _exit: Callable[..., None], _error: Callable[..., None]) -> None:
         super(VWSimulationWindow, self).__init__(parent)
 
         self.__parent: Tk = parent
-        self.__config: dict[str, Any] = config
+        self.__config: dict[str, JSONValue] = config
         self.__bounds_manager: VWBoundsManager = VWBoundsManager(config=self.__config)
+        # We need Any here, because we are adding lambda functions to the dict.
         self.__button_data: dict[str, Any] = buttons
         self.__env: VWEnvironment = env
         self.__guide: Callable[..., None] = _guide
@@ -84,13 +87,13 @@ class VWSimulationWindow(Frame):
         # Note: pack() for VWSimulationWindow needs to be called by the caller.
 
     def __create_and_display(self) -> None:
-        self.configure(background=self.__config["bg_colour"])
+        self.configure(background=cast(str, self.__config["bg_colour"]))
 
-        self.__canvas: Canvas = Canvas(self, width=self.__config["grid_size"] + self.__config["location_size"] + 4, height=self.__config["grid_size"] + 1, bd=0, highlightthickness=0)
+        self.__canvas: Canvas = Canvas(self, width=cast(int, self.__config["grid_size"]) + cast(int, self.__config["location_size"]) + 4, height=cast(int, self.__config["grid_size"]) + 1, bd=0, highlightthickness=0)
 
         self.__init_buttons()
 
-        self.__canvas.configure(background=self.__config["bg_colour"])
+        self.__canvas.configure(background=cast(str, self.__config["bg_colour"]))
 
         self.__init_images()
         self.__init_dragables()
@@ -184,18 +187,18 @@ class VWSimulationWindow(Frame):
         _size_frame: Frame = Frame(self.__info_frame, bg=bg)
         self.__size_text: StringVar = StringVar()
         self.__size_text.set(str(self.__config["initial_environment_dim"]))
-        size_label: Label = Label(_size_frame, textvariable=self.__size_text, width=2, font=self.__config["root_font"], bg=bg, fg=self.__config["fg_colour"])
+        size_label: Label = Label(_size_frame, textvariable=self.__size_text, width=2, font=cast(list[str | int], self.__config["root_font"]), bg=bg, fg=cast(str, self.__config["fg_colour"]))
         size_label.grid(row=0, column=1, sticky=E)
 
         _size: StringVar = StringVar()
         _size.set("size:")
-        _size_label: Label = Label(_size_frame, textvariable=_size, font=self.__config["root_font"], bg=bg, fg=self.__config["fg_colour"])
+        _size_label: Label = Label(_size_frame, textvariable=_size, font=cast(list[str | int], self.__config["root_font"]), bg=bg, fg=cast(str, self.__config["fg_colour"]))
         _size_label.grid(row=0, column=0, sticky=W)
         _size_frame.grid(row=0, column=0, stick=W)
 
         self.__coordinate_text: StringVar = StringVar()
         self.__coordinate_text.set(self.__empty_location_coordinates_text)
-        coordinate_label: Label = Label(self.__info_frame, textvariable=self.__coordinate_text, font=self.__config["root_font"], bg=bg, fg=self.__config["fg_colour"])
+        coordinate_label: Label = Label(self.__info_frame, textvariable=self.__coordinate_text, font=cast(list[str | int], self.__config["root_font"]), bg=bg, fg=cast(str, self.__config["fg_colour"]))
         coordinate_label.grid(row=1, column=0, sticky=W)
 
         self.__info_frame.pack(side="left", expand=True)
@@ -206,7 +209,7 @@ class VWSimulationWindow(Frame):
 
         self.__set_button_actions()
 
-        bg: str = self.__config["bg_colour"]
+        bg: str = cast(str, self.__config["bg_colour"])
 
         self.__button_frame: Frame = Frame(self, bg=bg)
 
@@ -215,8 +218,8 @@ class VWSimulationWindow(Frame):
         self.__init_info_frame(bg=bg)
 
     def __init_size_slider(self, parent: Frame, length: int=250) -> None:
-        increments: int = self.__config["max_environment_dim"] - self.__config["min_environment_dim"]
-        self.__grid_scale_slider: VWSlider = VWSlider(parent, self.__config, self.__on_resize, self.__on_resize_slide, length * self.__config["scale"], 16 * self.__config["scale"], slider_width=length * self.__config["scale"]/(increments * 3), increments=increments, start=self.__config["grid_size"]/self.__config["location_size"] - self.__config["min_environment_dim"])
+        increments: int = cast(int, self.__config["max_environment_dim"]) - cast(int, self.__config["min_environment_dim"])
+        self.__grid_scale_slider: VWSlider = VWSlider(parent, self.__config, self.__on_resize, self.__on_resize_slide, length * cast(float, self.__config["scale"]), 16 * cast(float, self.__config["scale"]), slider_width=length * cast(float, self.__config["scale"]) / (increments * 3), increments=increments, start=cast(int, self.__config["grid_size"]) / cast(int, self.__config["location_size"]) - cast(int, self.__config["min_environment_dim"]))
 
         self.__grid_scale_slider.pack(side="top")
 
@@ -226,11 +229,11 @@ class VWSimulationWindow(Frame):
 
         self.__dragables: dict[int, tuple[VWCanvasDragManager, tuple[str, str]]] = {}
 
-        ix: int = self.__config["grid_size"] + self.__config["location_size"] / 2 + 2
-        iy: int = self.__config["location_size"] / 2 + 4
+        ix: int = int(cast(int, self.__config["grid_size"]) + cast(int, self.__config["location_size"]) / 2 + 2)
+        iy: int = int(cast(int, self.__config["location_size"]) / 2 + 4)
 
         for i, key in enumerate(keys):
-            item: int = self.__canvas.create_image(ix, iy + i * self.__config["location_size"], image=self.__all_images_tk[key])
+            item: int = self.__canvas.create_image(ix, iy + i * cast(int, self.__config["location_size"]), image=self.__all_images_tk[key])
             drag_manager: VWCanvasDragManager = VWCanvasDragManager(self.__config, key, self.__env.get_ambient().get_grid_dim(), self.__canvas, item, self.__drag_on_start, self.__drag_on_drop)
             self.__dragables[item] = (drag_manager, key)
 
@@ -246,7 +249,7 @@ class VWSimulationWindow(Frame):
         if not self.__running and self.__bounds_manager.in_bounds(x=event.x, y=event.y):
             self.__deselect()
             self.focus()
-            inc: int = self.__config["grid_size"] / self.__env.get_ambient().get_grid_dim()
+            inc: int = int(cast(int, self.__config["grid_size"]) / self.__env.get_ambient().get_grid_dim())
             coordinate: VWCoord = VWCoord(x=int(event.x / inc), y=int(event.y / inc))
 
             if print_message:
@@ -262,7 +265,7 @@ class VWSimulationWindow(Frame):
 
             print("remove top")
 
-            inc: int = self.__config["grid_size"] / self.__env.get_ambient().get_grid_dim()
+            inc: int = int(cast(int, self.__config["grid_size"]) / self.__env.get_ambient().get_grid_dim())
             coordinate: VWCoord = VWCoord(x=int(event.x / inc), y=int(event.y / inc))
 
             if coordinate in self.__env.get_ambient().get_grid():
@@ -305,7 +308,7 @@ class VWSimulationWindow(Frame):
 
             new_orientation: VWOrientation = working_location.get_actor_appearance().or_else_raise().get_orientation().get(direction=direction)
             actor_colour: VWColour = working_location.get_actor_appearance().or_else_raise().get_colour()
-            inc: int = self.__config["grid_size"] / self.__env.get_ambient().get_grid_dim()
+            inc: int = int(cast(int, self.__config["grid_size"]) / self.__env.get_ambient().get_grid_dim())
             tk_img: PhotoImage = self.__all_images_tk_scaled[(actor_colour.value, new_orientation.value)]
             item: int = self.__canvas.create_image(self.__selected.or_else_raise().get_x() * inc + inc/2, self.__selected.or_else_raise().get_y() * inc + inc/2, image=tk_img)
             self.__canvas_agents[self.__selected.or_else_raise()] = item
@@ -371,7 +374,7 @@ class VWSimulationWindow(Frame):
     def __redraw_loaded_env(self, loaded_env: VWEnvironment) -> None:
         if loaded_env:
             self.__env = loaded_env
-            self.__grid_scale_slider.set_position(self.__env.get_ambient().get_grid_dim() - self.__config["min_environment_dim"])
+            self.__grid_scale_slider.set_position(self.__env.get_ambient().get_grid_dim() - cast(int, self.__config["min_environment_dim"]))
             self.__reset_canvas()
             self.__scaled_tk()
             self.__draw_grid()
@@ -383,7 +386,7 @@ class VWSimulationWindow(Frame):
         '''
         self.__reset_canvas(lines=False)
 
-        inc: int = self.__config["grid_size"] / self.__env.get_ambient().get_grid_dim()
+        inc: int = int(cast(int, self.__config["grid_size"]) / self.__env.get_ambient().get_grid_dim())
 
         for coord, location in self.__env.get_ambient().get_grid().items():
             if location:
@@ -415,7 +418,7 @@ class VWSimulationWindow(Frame):
 
     def __draw_grid(self) -> None:
         env_dim: int = self.__env.get_ambient().get_grid_dim()
-        size: int = self.__config["grid_size"]
+        size: int = cast(int, self.__config["grid_size"])
 
         x: float = 0
         y: float = 0
@@ -436,12 +439,12 @@ class VWSimulationWindow(Frame):
 
     def __init_images(self) -> None:
         # Agents
-        files: list[str] = VWSimulationWindow.__get_location_img_files(self.__config["location_agent_images_path"])
+        files: list[str] = VWSimulationWindow.__get_location_img_files(cast(str, self.__config["location_agent_images_path"]))
         image_names: list[str] = [file.split(".")[0] for file in files]
 
         for img_name in image_names:
-            file_path: str = os.path.join(self.__config["location_agent_images_path"], img_name) + ".png"
-            img: PILImage = VWSimulationWindow.__scale(Image.open(file_path), self.__config["location_size"])
+            file_path: str = os.path.join(cast(str, self.__config["location_agent_images_path"]), img_name) + ".png"
+            img: PILImage = VWSimulationWindow.__scale(Image.open(file_path), cast(int, self.__config["location_size"]))
             images: OrderedDict[str, PILImage] = VWSimulationWindow.__construct_images(img, img_name + "_")
 
             for img_name, img in images.items():
@@ -452,12 +455,12 @@ class VWSimulationWindow(Frame):
                 self.__all_images_tk[img_key] = tk_img
 
         # Dirts
-        files: list[str] = VWSimulationWindow.__get_location_img_files(self.__config["location_dirt_images_path"])
+        files: list[str] = VWSimulationWindow.__get_location_img_files(cast(str, self.__config["location_dirt_images_path"]))
         images_names: list[str] = [file.split(".")[0] for file in files]
 
         for name in images_names:
-            file_path: str = os.path.join(self.__config["location_dirt_images_path"], name) + ".png"
-            img: PILImage = VWSimulationWindow.__scale(Image.open(file_path), self.__config["location_size"])
+            file_path: str = os.path.join(cast(str, self.__config["location_dirt_images_path"]), name) + ".png"
+            img: PILImage = VWSimulationWindow.__scale(Image.open(file_path), cast(int, self.__config["location_size"]))
             img_key: tuple[str, str] = VWSimulationWindow.__get_image_key(name)
             tk_img: PhotoImage = PhotoImage(img)
 
@@ -471,7 +474,8 @@ class VWSimulationWindow(Frame):
         return OrderedDict({name + str(VWOrientation.north): img, name + str(VWOrientation.west): img.copy().rotate(90), name + str(VWOrientation.south): img.copy().rotate(180), name + str(VWOrientation.east): img.copy().rotate(270)})
 
     def __scaled_tk(self) -> None:
-        size: int = min(self.__config["location_size"], self.__config["grid_size"] / self.__env.get_ambient().get_grid_dim())
+        size: int = int(min(cast(int, self.__config["location_size"]), cast(int, self.__config["grid_size"]) / self.__env.get_ambient().get_grid_dim()))
+
         for name, image in self.__all_images.items():
             self.__all_images_tk_scaled[name] = PhotoImage(VWSimulationWindow.__scale(image, size))
 
@@ -482,7 +486,7 @@ class VWSimulationWindow(Frame):
 
     # Resize the grid.
     def __on_resize(self, value: int) -> None:
-        value += self.__config["min_environment_dim"]
+        value += cast(int, self.__config["min_environment_dim"])
 
         if value != self.__env.get_ambient().get_grid_dim():
             self.__env = VWEnvironment.generate_empty_env(config=self.__config, forced_line_dim=value)
@@ -492,14 +496,14 @@ class VWSimulationWindow(Frame):
             self.__draw_grid()
 
     def __on_resize_slide(self, value: int) -> None:
-        self.__size_text.set(str(value + self.__config["min_environment_dim"]))
+        self.__size_text.set(str(value + cast(int, self.__config["min_environment_dim"])))
 
     def __on_leave_canvas(self, _) -> None:
         self.__coordinate_text.set(self.__empty_location_coordinates_text)
 
     def __on_mouse_move(self, event: Event) -> None:
         if self.__bounds_manager.in_bounds(x=event.x, y=event.y):
-            inc: int = self.__config["grid_size"] / self.__env.get_ambient().get_grid_dim()
+            inc: int = int(cast(int, self.__config["grid_size"]) / self.__env.get_ambient().get_grid_dim())
 
             self.__coordinate_text.set(f"({int(event.x / inc)},{int(event.y / inc)})")
         else:
@@ -531,7 +535,7 @@ class VWSimulationWindow(Frame):
                 pass
 
     def __drag_on_drop(self, event: Event, drag_manager: VWCanvasDragManager) -> None:
-        inc: int = self.__config["grid_size"] / self.__env.get_ambient().get_grid_dim()
+        inc: int = int(cast(int, self.__config["grid_size"]) / self.__env.get_ambient().get_grid_dim())
         x: int = int(event.x / inc)
         y: int = int(event.y / inc)
         coord: VWCoord = VWCoord(x=x, y=y)
@@ -627,7 +631,7 @@ class VWSimulationWindow(Frame):
 
         self.__env = VWEnvironment.generate_empty_env(config=self.__config)
 
-        self.__grid_scale_slider.set_position(self.__env.get_ambient().get_grid_dim() - self.__config["min_environment_dim"])
+        self.__grid_scale_slider.set_position(self.__env.get_ambient().get_grid_dim() - cast(int, self.__config["min_environment_dim"]))
 
         self.__init_dragables()
         self.__reset_canvas()
@@ -654,7 +658,8 @@ class VWSimulationWindow(Frame):
         if self.__after_hook.is_present():  # Prevent button spam.
             self.__parent.after_cancel(self.__after_hook.or_else_raise())
 
-        time: int = int(self.__config["time_step"]*1000)
+        time: int = int(cast(float, self.__config["time_step"]) * 1000)
+
         self.__after_hook = PyOptional.of_nullable(self.__parent.after(time, self.__simulate))
 
     def __simulate(self) -> None:
@@ -666,7 +671,7 @@ class VWSimulationWindow(Frame):
                 self.__env.evolve()
                 self.__parent.after(0, self.redraw)
 
-                time: int = int(self.__config["time_step"]*1000)
+                time: int = int(cast(float, self.__config["time_step"]) * 1000)
 
                 if self.__env.can_evolve():
                     self.__after_hook = PyOptional.of_nullable(self.__parent.after(time, self.__simulate))
@@ -710,7 +715,7 @@ class VWSimulationWindow(Frame):
         if self.__after_hook.is_present():  # Prevent button spam.
             self.__parent.after_cancel(self.__after_hook.or_else_raise())
 
-        time = int(self.__config["time_step"]*1000)
+        time = int(cast(float, self.__config["time_step"]) * 1000)
         self.__after_hook = PyOptional.of_nullable(self.__parent.after(time, self.__simulate))
 
     def __pause(self) -> None:
@@ -723,14 +728,14 @@ class VWSimulationWindow(Frame):
         self.__running = False
 
     def __fast(self) -> None:
-        self.__config["time_step_modifier"] /= 2.
-        self.__config["time_step"] = self.__config["time_step_base"] * self.__config["time_step_modifier"] + self.__config["time_step_min"]
+        self.__config["time_step_modifier"] = cast(float, self.__config["time_step_modifier"]) / 2
+        self.__config["time_step"] = cast(float, self.__config["time_step_base"]) * self.__config["time_step_modifier"] + cast(float, self.__config["time_step_min"])
 
         VWSimulationWindow.__print_simulation_speed_message(time_step=self.__config["time_step"])
 
     def __reset_time_step(self) -> None:
-        self.__config["time_step_modifier"] = 1.
-        self.__config["time_step"] = self.__config["time_step_base"] * self.__config["time_step_modifier"] + self.__config["time_step_min"]
+        self.__config["time_step_modifier"] = 1.0
+        self.__config["time_step"] = cast(float, self.__config["time_step_base"]) * self.__config["time_step_modifier"] + cast(float, self.__config["time_step_min"])
 
         VWSimulationWindow.__print_simulation_speed_message(time_step=self.__config["time_step"])
 

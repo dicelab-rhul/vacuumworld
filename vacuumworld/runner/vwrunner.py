@@ -5,6 +5,8 @@ from multiprocessing.synchronize import Event as EventType
 from inspect import getsourcefile
 from signal import signal as handle_signal
 
+from pystarworldsturbo.utils.json.json_value import JSONValue
+
 from ..common.vwcolour import VWColour
 from ..common.vwexceptions import VWSurrogateMindException, VWRunnerException, VWInternalError
 from ..common.vwvalidator import VWValidator
@@ -27,10 +29,10 @@ class VWRunner(Process):
 
     All the arguments passed to `VacuumWorld.run()`are stored and validated here, together with their default values.
     '''
-    def __init__(self, config: dict[str, Any], minds: dict[VWColour, VWActorMindSurrogate], allowed_args: dict[str, Type[Any]], **kwargs: Any) -> None:
+    def __init__(self, config: dict[str, JSONValue], minds: dict[VWColour, VWActorMindSurrogate], allowed_args: dict[str, Type[Any]], **kwargs: Any) -> None:
         super(VWRunner, self).__init__()
 
-        self.__config: dict[str, Any] = config
+        self.__config: dict[str, JSONValue] = config
         self.__minds: dict[VWColour, VWActorMindSurrogate] = minds
         self.__allowed_args: dict[str, Type[Any]] = allowed_args
         self.__args: dict[str, Union[bool, int, float, str, dict[str, int], dict[Type[VWAction], int]]] = {
@@ -59,7 +61,7 @@ class VWRunner(Process):
 
         VWRunner.__set_sigtstp_handler()
 
-    def get_config(self) -> dict[str, Any]:
+    def get_config(self) -> dict[str, JSONValue]:
         '''
         Returns the configuration `dict`.
         '''
@@ -126,10 +128,10 @@ class VWRunner(Process):
         If an error occurs, an empty `VWEnvironment` with a default grid size is generated and returned instead.
         '''
         try:
-            data: dict[str, Any] = {}
+            data: dict[str, JSONValue] = {}
 
             if self.__config["file_to_load"]:
-                data = self.__load_grid_data_from_file(filename=self.__config["file_to_load"])
+                data = self.__load_grid_data_from_file(filename=cast(str, self.__config["file_to_load"]))
 
             return VWEnvironment.from_json(data=data, config=self.__config)
         except Exception:
@@ -252,28 +254,30 @@ class VWRunner(Process):
         self.__config["orange_mind_filename"] = getsourcefile(self.__minds[VWColour.orange].__class__)
         self.__config["green_mind_filename"] = getsourcefile(self.__minds[VWColour.green].__class__)
         self.__config["user_mind_filename"] = getsourcefile(self.__minds[VWColour.user].__class__)
-        self.__config["skip"] |= self.__args["skip"]
-        self.__config["play"] |= self.__args["play"]
+        self.__config["skip"] = cast(bool, self.__config["skip"]) or cast(bool, self.__args["skip"])
+        self.__config["play"] = cast(bool, self.__config["play"]) or cast(bool, self.__args["play"])
 
         assert isinstance(self.__args["speed"], float)
         self.__config["time_step_modifier"] = 1 - self.__args["speed"]
-        self.__config["file_to_load"] = self.__args["load"]
-        self.__config["scale"] = self.__args["scale"]
-        self.__config["x_scale"] = self.__args["scale"]
-        self.__config["y_scale"] = self.__args["scale"]
-        self.__config["tooltips"] &= self.__args["tooltips"]
-        self.__config["total_cycles"] = self.__args["total_cycles"]
-        self.__config["debug"] &= self.__args["debug_enabled"]
+        self.__config["file_to_load"] = cast(str, self.__args["load"])
+        self.__config["scale"] = cast(float, self.__args["scale"])
+        self.__config["x_scale"] = cast(float, self.__args["scale"])
+        self.__config["y_scale"] = cast(float, self.__args["scale"])
+        self.__config["tooltips"] = cast(bool, self.__config["tooltips"]) and cast(bool, self.__args["tooltips"])
+        self.__config["total_cycles"] = cast(int, self.__args["total_cycles"])
+        self.__config["debug"] = cast(bool, self.__config["debug"]) and cast(bool, self.__args["debug_enabled"])
 
     def __scale_config_parameters(self) -> None:
-        self.__config["grid_size"] *= self.__config["scale"]
-        self.__config["button_size"] *= self.__config["scale"]
-        self.__config["location_size"] *= self.__config["scale"]
-        self.__config["root_font"][1] = int(self.__config["root_font"][1] * self.__config["scale"])
-        self.__config["time_step"] = self.__config["time_step"] * self.__config["time_step_modifier"] + self.__config["time_step_min"]
+        self.__config["grid_size"] = cast(int, self.__config["grid_size"]) * cast(float, self.__config["scale"])
+        self.__config["button_size"] = cast(int, self.__config["button_size"]) * cast(float, self.__config["scale"])
+        self.__config["location_size"] = cast(int, self.__config["location_size"]) * cast(float, self.__config["scale"])
 
-    def __load_grid_data_from_file(self, filename: str) -> dict[str, Any]:
-        data: dict[str, Any] = self.__save_state_manager.load_state(filename=filename, no_gui=True)
+        assert isinstance(self.__config["root_font"], list)
+        self.__config["root_font"][1] = int(cast(int, cast(list[str | int], self.__config["root_font"])[1]) * cast(float, self.__config["scale"]))
+        self.__config["time_step"] = cast(float, self.__config["time_step"]) * cast(float, self.__config["time_step_modifier"]) + cast(float, self.__config["time_step_min"])
+
+    def __load_grid_data_from_file(self, filename: str) -> dict[str, JSONValue]:
+        data: dict[str, JSONValue] = self.__save_state_manager.load_state(filename=filename, no_gui=True)
 
         if data:
             print("The saved grid was successfully loaded.")
@@ -305,7 +309,7 @@ class VWRunner(Process):
         print()
 
     def __manage_sender_id_spoofing_rule(self) -> None:
-        VWCommunicativeAction.SENDER_ID_SPOOFING_ALLOWED = self.__config["sender_id_spoofing_allowed"]
+        VWCommunicativeAction.SENDER_ID_SPOOFING_ALLOWED = cast(bool, self.__config["sender_id_spoofing_allowed"])
 
     def __manage_debug_flag(self) -> None:
         if self.__config["debug"] is None or not isinstance(self.__config["debug"], bool):
@@ -320,9 +324,9 @@ class VWRunner(Process):
         VWActorBehaviourDebugger.DEBUG_ENABLED = self.__config["debug"]
 
         if self.__config["debug_test"]:
-            VWActorBehaviourDebugger.PRIMES = self.__config["debug_primes_test"]
+            VWActorBehaviourDebugger.PRIMES = cast(list[int], self.__config["debug_primes_test"])
         else:
-            VWActorBehaviourDebugger.PRIMES = self.__config["debug_primes"]
+            VWActorBehaviourDebugger.PRIMES = cast(list[int], self.__config["debug_primes"])
 
     @staticmethod
     def __set_sigtstp_handler() -> None:

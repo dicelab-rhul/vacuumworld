@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import cast
 
 from pystarworldsturbo.common.identifiable import Identifiable
+from pystarworldsturbo.utils.json.json_value import JSONValue
 
 from ...common.vwcolour import VWColour
 from ...common.vwvalidator import VWValidator
@@ -34,7 +35,7 @@ class VWDirtAppearance(Identifiable):
         '''
         return VWDirtAppearance(dirt_id=self.get_id(), progressive_id=self.get_progressive_id(), colour=self.__colour)
 
-    def to_json(self) -> dict[str, str]:
+    def to_json(self) -> dict[str, JSONValue]:
         '''
         Returns a JSON representation of this `VWDirtAppearance`.
 
@@ -44,7 +45,7 @@ class VWDirtAppearance(Identifiable):
             "colour": str(self.__colour)
         }
 
-    def to_json_with_ids(self) -> dict[str, str]:
+    def to_json_with_ids(self) -> dict[str, JSONValue]:
         '''
         Returns a JSON representation of this `VWDirtAppearance`, including its ID and progressive ID.
         '''

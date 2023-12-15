@@ -1,9 +1,10 @@
 from __future__ import annotations
-from typing import cast, Union, Any
+from typing import cast
 from random import randint
 from pyoptional.pyoptional import PyOptional
 
 from pystarworldsturbo.environment.location_appearance import LocationAppearance
+from pystarworldsturbo.utils.json.json_value import JSONValue
 
 from ...common.vwcoordinates import VWCoord
 from ...common.vwcolour import VWColour
@@ -221,13 +222,13 @@ class VWLocation(LocationAppearance):
         else:
             return VWLocation(coord=self.__coord, actor_appearance=self.__actor_appearance.map(lambda a: a.deep_copy()), dirt_appearance=self.__dirt_appearance.map(lambda d: d.deep_copy()), wall=self.__wall)
 
-    def to_json(self, include_ids: bool=False) -> dict[str, dict[str, Any]]:
+    def to_json(self, include_ids: bool=False) -> dict[str, JSONValue]:
         '''
         Returns a JSON representation of this `VWLocation`.
 
         No `VWActor` IDs, no `VWActor` progressive IDs, and no `VWUserDifficulty` are included.
         '''
-        location: dict[str, dict[str, Any]] = {
+        location: dict[str, JSONValue] = {
             "coords": self.__coord.to_json(),
             "wall": {
                 str(VWOrientation.north): self.has_wall_on_north(),
@@ -245,7 +246,7 @@ class VWLocation(LocationAppearance):
 
         return location
 
-    def pretty_format(self, include_ids: bool=True) -> dict[str, Union[dict[str, str], dict[str, int], dict[str, bool]]]:
+    def pretty_format(self, include_ids: bool=True) -> dict[str, JSONValue]:
         '''
         Returns a pretty-formatted JSON string representation of this `VWLocation`.
 

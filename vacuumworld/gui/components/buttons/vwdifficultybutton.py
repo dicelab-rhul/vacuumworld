@@ -3,7 +3,9 @@ from PIL import Image
 from PIL.ImageTk import PhotoImage
 from PIL.Image import Image as PILImage
 from tkinter import Frame
-from typing import Any
+from typing import cast
+
+from pystarworldsturbo.utils.json.json_value import JSONValue
 
 from .vwbutton import VWButton
 
@@ -14,14 +16,14 @@ class VWDifficultyButton(VWButton):
 
     It extends the `VWButton` class.
     '''
-    def __init__(self, parent: Frame, config: dict[str, Any], img: PILImage, fun: Callable[..., None], tip_text: str) -> None:
+    def __init__(self, parent: Frame, config: dict[str, JSONValue], img: PILImage, fun: Callable[..., None], tip_text: str) -> None:
         super(VWDifficultyButton, self).__init__(parent=parent, config=config, img=img, fun=self.onclick, tip_text=tip_text)
 
         self.__rfun: Callable[..., None] = fun
-        self.__difficulty: int = config["default_user_mind_level"]
+        self.__difficulty: int = cast(int, config["default_user_mind_level"])
         self.__imgs: list[PhotoImage] = [PhotoImage(img)]
 
-        self.__imgs.extend([VWDifficultyButton.next_image(img, i * (255/(len(config["user_mind_levels"])-1))) for i in range(1, len(config["user_mind_levels"]))])
+        self.__imgs.extend([VWDifficultyButton.next_image(img, i * (255/(len(cast(list[int], config["user_mind_levels"]))-1))) for i in range(1, len(cast(list[int], config["user_mind_levels"])))])
 
         self.set_img(self.__imgs[self.__difficulty])
         self.get_button().config(image=self.get_img())
