@@ -2,6 +2,8 @@ from __future__ import annotations
 from typing import Union, Iterator
 from random import randint
 
+from pystarworldsturbo.utils.json.json_value import JSONValue
+
 from .vworientation import VWOrientation
 from .vwvalidator import VWValidator
 
@@ -133,7 +135,7 @@ class VWCoord():
         '''
         return VWCoord(x=self.__x, y=self.__y)
 
-    def to_json(self) -> dict[str, int]:
+    def to_json(self) -> dict[str, JSONValue]:
         '''
         Returns a JSON representation of this `VWCoord`.
         '''

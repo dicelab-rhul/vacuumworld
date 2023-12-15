@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import cast
 
 from pystarworldsturbo.elements.actor_appearance import ActorAppearance
+from pystarworldsturbo.utils.json.json_value import JSONValue
 
 from ....common.vwcolour import VWColour
 from ....common.vworientation import VWOrientation
@@ -93,7 +94,7 @@ class VWActorAppearance(ActorAppearance):
 
     # Note that the actor IDs, progressive IDs, and the user difficulty level are not stored.
     # Therefore, on load the actors will have fresh IDs and progressive IDs, and the user will be in whichever mode is the default one.
-    def to_json(self) -> dict[str, str]:
+    def to_json(self) -> dict[str, JSONValue]:
         '''
         Returns a JSON representation of this `VWActorAppearance`.
 
@@ -104,7 +105,7 @@ class VWActorAppearance(ActorAppearance):
             "orientation": str(self.__orientation)
         }
 
-    def to_json_with_ids(self) -> dict[str, str]:
+    def to_json_with_ids(self) -> dict[str, JSONValue]:
         '''
         Returns a JSON representation of this `VWActorAppearance`.
 

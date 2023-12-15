@@ -1,4 +1,6 @@
-from typing import Union, Any
+from typing import Union, cast
+
+from pystarworldsturbo.utils.json.json_value import JSONValue
 
 from .mind.surrogate.vwactor_mind_surrogate import VWActorMindSurrogate
 from .mind.surrogate.vwuser_mind_surrogate import VWUserMindSurrogate
@@ -35,14 +37,14 @@ class VWCleaningAgentsFactory():
             raise IOError("Error while constructing the cleaning agent.")
 
     @staticmethod
-    def create_cleaning_agent_from_json_data(data: dict[str, str]) -> tuple[VWCleaningAgent, VWActorAppearance]:
+    def create_cleaning_agent_from_json_data(data: dict[str, JSONValue]) -> tuple[VWCleaningAgent, VWActorAppearance]:
         '''
         Creates a `VWCleaningAgent` from JSON `data`, and returns it as a `tuple[VWCleaningAgent, VWActorAppearance]` consisting of a `VWCleaningAgent` and its `VWActorAppearance`.
         '''
         try:
-            assert isinstance(data, dict) and "colour" in data and "orientation" in data and "surrogate_mind_file" in data
+            assert isinstance(data, dict) and "colour" in data and "orientation" in data and "surrogate_mind_file" in data and "surrogate_mind_class_name" in data
 
-            agent_mind_surrogate: VWActorMindSurrogate = VWActorMindSurrogate.load_from_file(surrogate_mind_file=data["surrogate_mind_file"], surrogate_mind_class_name=data["surrogate_mind_class_name"])
+            agent_mind_surrogate: VWActorMindSurrogate = VWActorMindSurrogate.load_from_file(surrogate_mind_file=cast(str, data["surrogate_mind_file"]), surrogate_mind_class_name=cast(str, data["surrogate_mind_class_name"]))
 
             assert isinstance(agent_mind_surrogate, VWActorMindSurrogate) and not isinstance(agent_mind_surrogate, VWUserMindSurrogate)
 
@@ -73,7 +75,7 @@ class VWUsersFactory():
             raise IOError("Error while constructing the user.")
 
     @staticmethod
-    def create_user_from_json_data(data: dict[str, str], difficulty_level: VWUserDifficulty=VWUserDifficulty.easy) -> tuple[VWUser, VWActorAppearance]:
+    def create_user_from_json_data(data: dict[str, JSONValue], difficulty_level: VWUserDifficulty=VWUserDifficulty.easy) -> tuple[VWUser, VWActorAppearance]:
         '''
         Creates a `VWUser` from JSON `data` and `difficulty_level`, and returns it as a `tuple[VWUser, VWActorAppearance]` consisting of a `VWUser` and its `VWActorAppearance`.
         '''
@@ -94,14 +96,14 @@ class VWUsersFactory():
             raise IOError("Could not parse a user from the JSON data.")
 
     @staticmethod
-    def create_easy_user_from_json_data(data: dict[str, Any]) -> tuple[VWUser, VWActorAppearance]:
+    def create_easy_user_from_json_data(data: dict[str, JSONValue]) -> tuple[VWUser, VWActorAppearance]:
         '''
         Creates a `VWUser` whose `VWUserDifficulty` is `VWUserDifficulty.easy` from JSON `data`, and returns it as a `tuple[VWUser, VWActorAppearance]` consisting of a `VWUser` and its `VWActorAppearance`.
         '''
         return VWUsersFactory.create_user_from_json_data(data=data, difficulty_level=VWUserDifficulty.easy)
 
     @staticmethod
-    def create_hard_user_from_json_data(data: dict[str, Any]) -> tuple[VWUser, VWActorAppearance]:
+    def create_hard_user_from_json_data(data: dict[str, JSONValue]) -> tuple[VWUser, VWActorAppearance]:
         '''
         Creates a `VWUser` whose `VWUserDifficulty` is `VWUserDifficulty.hard` from JSON `data`, and returns it as a `tuple[VWUser, VWActorAppearance]` consisting of a `VWUser` and its `VWActorAppearance`.
         '''

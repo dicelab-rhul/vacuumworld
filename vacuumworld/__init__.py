@@ -1,4 +1,4 @@
-from typing import Type, Optional, Any
+from typing import Type, Optional, Any, cast
 from sys import version_info
 from traceback import print_exc
 from signal import signal as handle_signal
@@ -8,6 +8,7 @@ from screeninfo import get_monitors as get_monitors_with_screeninfo, ScreenInfoE
 from pymonitors import get_monitors as get_monitors_with_pymonitors
 from pyoptional.pyoptional import PyOptional
 from subprocess import call
+from pystarworldsturbo.utils.json.json_value import JSONValue
 
 from .vwconfig_manager import VWConfigManager
 from .model.actor.mind.surrogate.vwactor_mind_surrogate import VWActorMindSurrogate
@@ -48,7 +49,7 @@ class VacuumWorld():
         VacuumWorld.__python_version_check()
         VacuumWorld.__set_sigtstp_handler()
 
-        self.__config: dict[str, Any] = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
+        self.__config: dict[str, JSONValue] = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
 
         self.__vw_version_check()
 
@@ -103,7 +104,7 @@ class VacuumWorld():
             return False
 
     def __vw_version_check(self) -> None:
-        version_number: str = self.__config["version_number"]
+        version_number: str = cast(str, self.__config["version_number"])
         remote_version_number: str = VacuumWorld.__get_remote_version_number()
 
         outdated: bool = VacuumWorld.__compare_version_numbers_and_print_message(version_number, remote_version_number)
@@ -156,9 +157,9 @@ class VacuumWorld():
             return ""
 
         try:
-            remote_config: dict[str, Any] = VWConfigManager.load_config_from_file(config_file_path=remote_config_path, load_additional_config=False)
+            remote_config: dict[str, JSONValue] = VWConfigManager.load_config_from_file(config_file_path=remote_config_path, load_additional_config=False)
 
-            return remote_config["version_number"]
+            return cast(str, remote_config["version_number"])
         except Exception:
             return ""
         finally:

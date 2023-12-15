@@ -3,8 +3,9 @@ from re import match
 from random import choice
 from string import ascii_letters
 from tkinter.filedialog import asksaveasfile, askopenfile
-from typing import Any
 from pyoptional.pyoptional import PyOptional
+
+from pystarworldsturbo.utils.json.json_value import JSONValue
 
 from ..model.environment.vwenvironment import VWEnvironment
 
@@ -56,14 +57,14 @@ class VWSaveStateManager():
         '''
         assert env
 
-        state: dict[str, Any] = env.to_json()
+        state: dict[str, JSONValue] = env.to_json()
 
         if filename and not self.__file_exists(filename) and match(self.__vw_file_regex, filename):
             return self.__quick_save(state=state, filename=filename)
         else:
             return self.__save_dialog(state=state, filename=filename)
 
-    def __quick_save(self, state: dict[str, Any], filename: str) -> bool:
+    def __quick_save(self, state: dict[str, JSONValue], filename: str) -> bool:
         assert filename
 
         try:
@@ -73,7 +74,7 @@ class VWSaveStateManager():
         except Exception:
             return False
 
-    def __save_dialog(self, state: dict[str, Any], filename: str) -> bool:
+    def __save_dialog(self, state: dict[str, JSONValue], filename: str) -> bool:
         try:
             if not filename:
                 filename = "".join(choice(ascii_letters) for _ in range(self.__random_file_name_length)) + self.__vw_saved_state_extension
@@ -88,7 +89,7 @@ class VWSaveStateManager():
         except Exception:
             return False
 
-    def load_state(self, filename: str="", no_gui: bool=False) -> dict[str, Any]:
+    def load_state(self, filename: str="", no_gui: bool=False) -> dict[str, JSONValue]:
         '''
         Loads the state of a `VWEnvironment` from a file.
 
@@ -101,7 +102,7 @@ class VWSaveStateManager():
         else:
             return self.__load_dialog(filename)
 
-    def __quick_load(self, filename: str) -> dict[str, Any]:
+    def __quick_load(self, filename: str) -> dict[str, JSONValue]:
         assert filename
 
         try:
@@ -110,7 +111,7 @@ class VWSaveStateManager():
         except Exception:
             return {}
 
-    def __load_dialog(self, file: str="") -> dict[str, Any]:
+    def __load_dialog(self, file: str="") -> dict[str, JSONValue]:
         try:
             with PyOptional.of_nullable(askopenfile(mode="rb", initialdir=self.__files_dir, initialfile=file)).or_else_raise() as f:
                 return load(fp=f)

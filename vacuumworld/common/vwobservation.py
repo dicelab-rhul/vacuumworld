@@ -1,11 +1,12 @@
 from __future__ import annotations
-from typing import Iterable, Type, Iterator, Any
+from typing import Iterable, Type, Iterator
 from json import dumps
 from pyoptional.pyoptional import PyOptional
 
 from pystarworldsturbo.common.action_outcome import ActionOutcome
 from pystarworldsturbo.common.perception import Perception
 from pystarworldsturbo.common.action_result import ActionResult
+from pystarworldsturbo.utils.json.json_value import JSONValue
 
 from .vwposition_names import VWPositionNames
 from .vworientation import VWOrientation
@@ -309,14 +310,18 @@ class VWObservation(Perception):
     def __format_perceived_locations(self) -> list[str]:
         return [f"{pos.name}: {loc}" for pos, loc in self.__locations.items()]
 
-    def pretty_format(self) -> str:
+    def to_json(self) -> dict[str, JSONValue]:
         '''
-        Returns a pretty-formatted JSON string representation of this `VWObservation`, including each perceived `VWLocation`, and the `ActionOutcome` of each `VWAction` that was attempted by the `VWActor` during the last cycle.
+        Returns a JSON serialisable `dict[str, JSONValue]` representation of this `VWObservation`, including each perceived `VWLocation`, and the `ActionOutcome` of each `VWAction` that was attempted by the `VWActor` during the last cycle.
         '''
-        observation_dict: dict[str, Any] = {
+        return {
             # The `.name` is necessary because `ActionOutcome` is an `Enum` and `Enum` objects are not JSON serialisable.
             "Action outcomes": [{action_type.__name__: action_result.get_outcome().name} for action_type, action_result in self.__action_results],
             "Perceived locations": {pos.name: loc.pretty_format() for pos, loc in self.__locations.items() if loc}
         }
 
-        return dumps(observation_dict, indent=4)
+    def pretty_format(self) -> str:
+        '''
+        Returns a pretty-formatted JSON string representation of this `VWObservation`, including each perceived `VWLocation`, and the `ActionOutcome` of each `VWAction` that was attempted by the `VWActor` during the last cycle.
+        '''
+        return dumps(self.to_json(), indent=4)

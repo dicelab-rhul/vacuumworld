@@ -1,8 +1,10 @@
-from typing import Type, Any
+from typing import Type, Any, cast
 from tkinter import Tk
 from webbrowser import open_new_tab
 from json import load
 from math import floor
+
+from pystarworldsturbo.utils.json.json_value import JSONValue
 
 from .vwrunner import VWRunner
 from ..gui.components.vwautocomplete import VWAutocompleteEntry
@@ -21,10 +23,10 @@ class VWGUIRunner(VWRunner):
 
     The VacuumWorld GUI is built on the top of the `tkinter` library.
     '''
-    def __init__(self, config: dict[str, Any], minds: dict[VWColour, VWActorMindSurrogate], allowed_args: dict[str, Type[Any]], **kwargs: Any) -> None:
+    def __init__(self, config: dict[str, JSONValue], minds: dict[VWColour, VWActorMindSurrogate], allowed_args: dict[str, Type[Any]], **kwargs: Any) -> None:
         super(VWGUIRunner, self).__init__(config=config, minds=minds, allowed_args=allowed_args, **kwargs)
 
-        self.__button_data: dict[str, dict[str, str]] = self.__load_button_data()
+        self.__button_data: dict[str, JSONValue] = self.__load_button_data()
         self.__already_centered: bool = False
 
     def run(self) -> None:
@@ -39,7 +41,7 @@ class VWGUIRunner(VWRunner):
             self.__root: Tk = Tk()
             self.__root.title(f"VacuumWorld v{self.get_config()['version_number']}")
             self.__root.protocol("WM_DELETE_WINDOW", self.kill)
-            self.__root.configure(background=self.get_config()["bg_colour"])
+            self.__root.configure(background=cast(str, self.get_config()["bg_colour"]))
 
             # A fresh one will be created if there is nothing to load.
             env: VWEnvironment = self.load_env()
@@ -91,7 +93,7 @@ class VWGUIRunner(VWRunner):
         self.kill()
 
     def __guide(self) -> None:
-        open_new_tab(url=self.get_config()["project_wiki_url"])
+        open_new_tab(url=cast(str, self.get_config()["project_wiki_url"]))
 
     def __start(self, env: VWEnvironment) -> None:
         if hasattr(self, f"_{type(self).__name__}__initial_window") and self.__initial_window:
@@ -115,14 +117,14 @@ class VWGUIRunner(VWRunner):
     def __load(self, saveloadmenu: VWAutocompleteEntry) -> VWEnvironment:
         filename: str = saveloadmenu.get_var().get()
 
-        data: dict[str, Any] = self.get_save_state_manager().load_state(filename=filename)
+        data: dict[str, JSONValue] = self.get_save_state_manager().load_state(filename=filename)
 
         return VWEnvironment.from_json(data=data, config=self.get_config())
 
     def __center_and_adapt_to_resolution(self) -> None:
         if not self.__already_centered:
-            w: int = self.__root.winfo_reqwidth() * self.get_config()["x_scale"]
-            h: int = self.__root.winfo_reqheight() * self.get_config()["y_scale"]
+            w: int = int(self.__root.winfo_reqwidth() * cast(float, self.get_config()["x_scale"]))
+            h: int = int(self.__root.winfo_reqheight() * cast(float, self.get_config()["y_scale"]))
             sw: int = self.__root.winfo_screenwidth()
             sh: int = self.__root.winfo_screenheight()
             x: int = floor((sw / 2) - w - w/4 + w/26)
@@ -131,6 +133,6 @@ class VWGUIRunner(VWRunner):
             self.__root.geometry("+%d+%d" % (x, y))
             self.__already_centered = True
 
-    def __load_button_data(self) -> dict[str, dict[str, str]]:
+    def __load_button_data(self) -> dict[str, JSONValue]:
         with open(os.path.join(str(self.get_config()["button_data_path"]), str(self.get_config()["button_data_file"])), "r") as f:
             return load(fp=f)

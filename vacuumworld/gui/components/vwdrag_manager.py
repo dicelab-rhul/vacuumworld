@@ -1,7 +1,9 @@
 from tkinter import Canvas, Event
-from typing import Callable, Any
+from typing import Callable, cast
 from math import floor
 from PIL.ImageTk import PhotoImage
+
+from pystarworldsturbo.utils.json.json_value import JSONValue
 
 from .vwbounds_manager import VWBoundsManager
 
@@ -10,8 +12,8 @@ class VWCanvasDragManager():
     '''
     This class speficies the behaviour of a drag manager for a `Canvas` object.
     '''
-    def __init__(self, config: dict[str, Any], key: tuple[str, str], grid_dim: int, canvas: Canvas, item: int, on_start_callback: Callable[..., None], on_drop_callback: Callable[..., None]) -> None:
-        self.__config: dict[str, Any] = config
+    def __init__(self, config: dict[str, JSONValue], key: tuple[str, str], grid_dim: int, canvas: Canvas, item: int, on_start_callback: Callable[..., None], on_drop_callback: Callable[..., None]) -> None:
+        self.__config: dict[str, JSONValue] = config
         self.__bounds_manager: VWBoundsManager = VWBoundsManager(config=config)
 
         self.__x: int = 0
@@ -47,13 +49,13 @@ class VWCanvasDragManager():
 
         Moves the `Image` object across the canvas.
         '''
-        inc: int = self.__config["grid_size"] / self.__grid_dim
+        inc: int = int(cast(int, self.__config["grid_size"]) / self.__grid_dim)
         x: int = int(event.x / inc) * inc + floor(inc / 2) + 1
         y: int = int(event.y / inc) * inc + floor(inc / 2) + 1
 
         if event.x < 0 or event.y < 0 or not self.__bounds_manager.in_bounds(x=x, y=y):
             self.__canvas.itemconfigure(self.__drag, state="hidden")
-        elif x <= self.__config["grid_size"] and y <= self.__config["grid_size"] and self.__bounds_manager.in_bounds(x=x, y=y):
+        elif x <= cast(int, self.__config["grid_size"]) and y <= cast(int, self.__config["grid_size"]) and self.__bounds_manager.in_bounds(x=x, y=y):
             self.__canvas.itemconfigure(self.__drag, state="normal")
 
         # To prevent unnecessary re-renderings.
