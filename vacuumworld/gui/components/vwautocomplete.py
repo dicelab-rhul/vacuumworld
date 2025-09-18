@@ -59,7 +59,7 @@ class VWAutocompleteEntry(Entry):
 
         if words:
             if not self.__lb_up:
-                self.__lb = PyOptional.of(Listbox(self.__dropdown_parent, font=self.__font, height=self.__height))
+                self.__lb = PyOptional[Listbox].of(Listbox(self.__dropdown_parent, font=self.__font, height=self.__height))
 
                 self.__lb.or_else_raise().bind("<Double-Button-1>", self.__selection)
                 self.__lb.or_else_raise().place(x=self.winfo_x(), y=self.winfo_y()+self.winfo_height())

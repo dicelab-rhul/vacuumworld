@@ -41,7 +41,7 @@ class VWObservation(Perception):
         if VWPositionNames.center not in self.__locations or not self.__locations[VWPositionNames.center] or not self.__locations[VWPositionNames.center].has_actor():
             return PyOptional[str].empty()
         else:
-            return PyOptional.of(self.__locations[VWPositionNames.center].get_actor_appearance().or_else_raise().get_id())
+            return PyOptional[str].of(self.__locations[VWPositionNames.center].get_actor_appearance().or_else_raise().get_id())
 
     def get_latest_actions_results(self) -> list[tuple[Type[VWAction], ActionResult]]:
         '''
@@ -116,7 +116,7 @@ class VWObservation(Perception):
         '''
         Returns a `PyOptional` wrapping the `VWLocation` at the given `VWPositionNames`, or an empty `PyOptional` if there is no `VWLocation` at that position.
         '''
-        return PyOptional.of(self.__locations[position_name]) if position_name in self.__locations else PyOptional[VWLocation].empty()
+        return PyOptional[VWLocation].of(self.__locations[position_name]) if position_name in self.__locations else PyOptional[VWLocation].empty()
 
     def get_locations_in_order(self) -> list[PyOptional[VWLocation]]:
         '''
@@ -128,43 +128,43 @@ class VWObservation(Perception):
         * `VWPositionNames.forwardleft`
         * `VWPositionNames.forwardright`
         '''
-        return [PyOptional.of(self.__locations[position]) if position in self.__locations else PyOptional.empty() for position in VWPositionNames.elements_in_order()]
+        return [PyOptional[VWLocation].of(self.__locations[position]) if position in self.__locations else PyOptional.empty() for position in VWPositionNames.elements_in_order()]
 
     def get_center(self) -> PyOptional[VWLocation]:
         '''
         Returns a `PyOptional` wrapping the `VWLocation` at the center of the `VWActor`'s view, or an empty `PyOptional` if there is no `VWLocation` at that position.
         '''
-        return PyOptional.of(self.__locations[VWPositionNames.center]) if VWPositionNames.center in self.__locations else PyOptional[VWLocation].empty()
+        return PyOptional[VWLocation].of(self.__locations[VWPositionNames.center]) if VWPositionNames.center in self.__locations else PyOptional[VWLocation].empty()
 
     def get_forward(self) -> PyOptional[VWLocation]:
         '''
         Returns a `PyOptional` wrapping the `VWLocation` in front of the `VWActor`, or an empty `PyOptional` if there is no `VWLocation` at that position.
         '''
-        return PyOptional.of(self.__locations[VWPositionNames.forward]) if VWPositionNames.forward in self.__locations else PyOptional[VWLocation].empty()
+        return PyOptional[VWLocation].of(self.__locations[VWPositionNames.forward]) if VWPositionNames.forward in self.__locations else PyOptional[VWLocation].empty()
 
     def get_left(self) -> PyOptional[VWLocation]:
         '''
         Returns a `PyOptional` wrapping the `VWLocation` to the left of the `VWActor`, or an empty `PyOptional` if there is no `VWLocation` at that position.
         '''
-        return PyOptional.of(self.__locations[VWPositionNames.left]) if VWPositionNames.left in self.__locations else PyOptional[VWLocation].empty()
+        return PyOptional[VWLocation].of(self.__locations[VWPositionNames.left]) if VWPositionNames.left in self.__locations else PyOptional[VWLocation].empty()
 
     def get_right(self) -> PyOptional[VWLocation]:
         '''
         Returns a `PyOptional` wrapping the `VWLocation` to the right of the `VWActor`, or an empty `PyOptional` if there is no `VWLocation` at that position.
         '''
-        return PyOptional.of(self.__locations[VWPositionNames.right]) if VWPositionNames.right in self.__locations else PyOptional[VWLocation].empty()
+        return PyOptional[VWLocation].of(self.__locations[VWPositionNames.right]) if VWPositionNames.right in self.__locations else PyOptional[VWLocation].empty()
 
     def get_forwardleft(self) -> PyOptional[VWLocation]:
         '''
         Returns a `PyOptional` wrapping the `VWLocation` to the front-left of the `VWActor`, or an empty `PyOptional` if there is no `VWLocation` at that position.
         '''
-        return PyOptional.of(self.__locations[VWPositionNames.forwardleft]) if VWPositionNames.forwardleft in self.__locations else PyOptional[VWLocation].empty()
+        return PyOptional[VWLocation].of(self.__locations[VWPositionNames.forwardleft]) if VWPositionNames.forwardleft in self.__locations else PyOptional[VWLocation].empty()
 
     def get_forwardright(self) -> PyOptional[VWLocation]:
         '''
         Returns a `PyOptional` wrapping the `VWLocation` to the front-right of the `VWActor`, or an empty `PyOptional` if there is no `VWLocation` at that position.
         '''
-        return PyOptional.of(self.__locations[VWPositionNames.forwardright]) if VWPositionNames.forwardright in self.__locations else PyOptional[VWLocation].empty()
+        return PyOptional[VWLocation].of(self.__locations[VWPositionNames.forwardright]) if VWPositionNames.forwardright in self.__locations else PyOptional[VWLocation].empty()
 
     def is_wall_immediately_ahead(self) -> bool:
         '''
