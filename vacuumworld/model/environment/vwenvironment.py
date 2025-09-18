@@ -248,7 +248,7 @@ class VWEnvironment(Environment):
 
         coord: VWCoord = self.get_actor_position(actor_id=actor_id)
 
-        return PyOptional.of_nullable(self.get_ambient().generate_perception(actor_position=coord, action_type=action_type, action_result=action_result))
+        return PyOptional[VWObservation].of_nullable(self.get_ambient().generate_perception(actor_position=coord, action_type=action_type, action_result=action_result))
 
     def get_actor_position(self, actor_id: str) -> VWCoord:
         '''
@@ -314,7 +314,7 @@ class VWEnvironment(Environment):
     def __get_actor_surrogate_mind_file(self, actor_id: str) -> str:
         assert actor_id in self.get_actors()
 
-        return PyOptional.of_nullable(getsourcefile(self.get_actor(actor_id=actor_id).or_else_raise().get_mind().get_surrogate().__class__)).or_else_raise()
+        return PyOptional[str].of_nullable(getsourcefile(self.get_actor(actor_id=actor_id).or_else_raise().get_mind().get_surrogate().__class__)).or_else_raise()
 
     # Note that the actor IDs, progressive IDs, and the user difficulty level are not stored.
     # Therefore, on load the actors will have fresh IDs and progressive IDs, and the user will be in easy mode.
@@ -393,7 +393,7 @@ class VWEnvironment(Environment):
 
             actor, actor_appearance = VWCleaningAgentsFactory.create_cleaning_agent_from_json_data(data=location_data["actor"]) if location_data["actor"]["colour"] != str(VWColour.user) else VWUsersFactory.create_user_from_json_data(data=location_data["actor"])
 
-            return PyOptional.of(cast(VWActor, actor)), PyOptional.of(actor_appearance)
+            return PyOptional[VWActor].of(cast(VWActor, actor)), PyOptional[VWActorAppearance].of(actor_appearance)
         else:
             return PyOptional[VWActor].empty(), PyOptional[VWActorAppearance].empty()
 
@@ -405,7 +405,7 @@ class VWEnvironment(Environment):
             dirt = VWDirt(colour=VWColour(location_data["dirt"]["colour"]))
             dirt_appearance = VWDirtAppearance(dirt_id=dirt.get_id(), progressive_id=dirt.get_progressive_id(), colour=dirt.get_colour())
 
-            return PyOptional.of(dirt),  PyOptional.of(dirt_appearance)
+            return PyOptional[VWDirt].of(dirt),  PyOptional[VWDirtAppearance].of(dirt_appearance)
         else:
             return PyOptional[VWDirt].empty(), PyOptional[VWDirtAppearance].empty()
 
@@ -502,20 +502,20 @@ class VWEnvironment(Environment):
         green_agent_coord, orange_agent_coord, white_agent_coord, user_coord = VWEnvironment.generate_mutually_exclusive_coordinates_for_testing(amount=4, grid_size=grid_size)
         green_dirt_coord, orange_dirt_coord = VWEnvironment.generate_mutually_exclusive_coordinates_for_testing(amount=2, grid_size=grid_size)
 
-        env.get_ambient().get_grid()[green_agent_coord] = VWLocation(coord=green_agent_coord, actor_appearance=PyOptional.of(green_agent_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=green_agent_coord, grid_size=grid_size))
-        env.get_ambient().get_grid()[orange_agent_coord] = VWLocation(coord=orange_agent_coord, actor_appearance=PyOptional.of(orange_agent_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=orange_agent_coord, grid_size=grid_size))
-        env.get_ambient().get_grid()[white_agent_coord] = VWLocation(coord=white_agent_coord, actor_appearance=PyOptional.of(white_agent_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=white_agent_coord, grid_size=grid_size))
-        env.get_ambient().get_grid()[user_coord] = VWLocation(coord=user_coord, actor_appearance=PyOptional.of(user_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=user_coord, grid_size=grid_size))
+        env.get_ambient().get_grid()[green_agent_coord] = VWLocation(coord=green_agent_coord, actor_appearance=PyOptional[VWActorAppearance].of(green_agent_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=green_agent_coord, grid_size=grid_size))
+        env.get_ambient().get_grid()[orange_agent_coord] = VWLocation(coord=orange_agent_coord, actor_appearance=PyOptional[VWActorAppearance].of(orange_agent_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=orange_agent_coord, grid_size=grid_size))
+        env.get_ambient().get_grid()[white_agent_coord] = VWLocation(coord=white_agent_coord, actor_appearance=PyOptional[VWActorAppearance].of(white_agent_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=white_agent_coord, grid_size=grid_size))
+        env.get_ambient().get_grid()[user_coord] = VWLocation(coord=user_coord, actor_appearance=PyOptional[VWActorAppearance].of(user_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=user_coord, grid_size=grid_size))
 
         if green_dirt_coord in env.get_ambient().get_grid():
             env.get_ambient().get_grid()[green_dirt_coord].add_dirt(dirt_appearance=green_dirt_appearance)
         else:
-            env.get_ambient().get_grid()[green_dirt_coord] = VWLocation(coord=green_dirt_coord, dirt_appearance=PyOptional.of(green_dirt_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=green_dirt_coord, grid_size=grid_size))
+            env.get_ambient().get_grid()[green_dirt_coord] = VWLocation(coord=green_dirt_coord, dirt_appearance=PyOptional[VWDirtAppearance].of(green_dirt_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=green_dirt_coord, grid_size=grid_size))
 
         if orange_dirt_coord in env.get_ambient().get_grid():
             env.get_ambient().get_grid()[orange_dirt_coord].add_dirt(dirt_appearance=orange_dirt_appearance)
         else:
-            env.get_ambient().get_grid()[orange_dirt_coord] = VWLocation(coord=orange_dirt_coord, dirt_appearance=PyOptional.of(orange_dirt_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=orange_dirt_coord, grid_size=grid_size))
+            env.get_ambient().get_grid()[orange_dirt_coord] = VWLocation(coord=orange_dirt_coord, dirt_appearance=PyOptional[VWDirtAppearance].of(orange_dirt_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=orange_dirt_coord, grid_size=grid_size))
 
         return env, grid_size
 

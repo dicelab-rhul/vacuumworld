@@ -72,7 +72,7 @@ class VWLocation(LocationAppearance):
         '''
         assert self.__actor_appearance.is_empty()
 
-        self.__actor_appearance = PyOptional.of(actor_appearance)
+        self.__actor_appearance = PyOptional[VWActorAppearance].of(actor_appearance)
 
     def has_actor(self) -> bool:
         '''
@@ -128,7 +128,7 @@ class VWLocation(LocationAppearance):
         '''
         assert self.__dirt_appearance.is_empty()
 
-        self.__dirt_appearance = PyOptional.of(dirt_appearance)
+        self.__dirt_appearance = PyOptional[VWDirtAppearance].of(dirt_appearance)
 
     def has_dirt(self) -> bool:
         '''

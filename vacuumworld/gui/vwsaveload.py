@@ -3,6 +3,7 @@ from re import match
 from random import choice
 from string import ascii_letters
 from tkinter.filedialog import asksaveasfile, askopenfile
+from typing import IO, Any
 from pyoptional.pyoptional import PyOptional
 
 from pystarworldsturbo.utils.json.json_value import JSONValue
@@ -81,7 +82,7 @@ class VWSaveStateManager():
             elif not filename.endswith(self.__vw_saved_state_extension):
                 filename += self.__vw_saved_state_extension
 
-            with PyOptional.of_nullable(asksaveasfile(mode="w", initialdir=self.__files_dir, initialfile=filename, defaultextension=self.__vw_saved_state_extension)).or_else_raise() as f:
+            with PyOptional[IO[Any]].of_nullable(asksaveasfile(mode="w", initialdir=self.__files_dir, initialfile=filename, defaultextension=self.__vw_saved_state_extension)).or_else_raise() as f:
                 dump(obj=state, fp=f, indent=4)
                 return True
         except AttributeError:
@@ -113,7 +114,7 @@ class VWSaveStateManager():
 
     def __load_dialog(self, file: str="") -> dict[str, JSONValue]:
         try:
-            with PyOptional.of_nullable(askopenfile(mode="rb", initialdir=self.__files_dir, initialfile=file)).or_else_raise() as f:
+            with PyOptional[IO[Any]].of_nullable(askopenfile(mode="rb", initialdir=self.__files_dir, initialfile=file)).or_else_raise() as f:
                 return load(fp=f)
         except AttributeError:
             return {}

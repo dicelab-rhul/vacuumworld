@@ -255,10 +255,10 @@ class VWSimulationWindow(Frame):
             if print_message:
                 print(f"SELECT: selected location {coordinate}.")
 
-            self.__selected = PyOptional.of(coordinate)
+            self.__selected = PyOptional[VWCoord].of(coordinate)
             xx: int = coordinate.get_x() * inc
             yy: int = coordinate.get_y() * inc
-            self.__rectangle_selected = PyOptional.of(self.__canvas.create_rectangle((xx, yy, xx + inc, yy + inc), fill="", width=3))
+            self.__rectangle_selected = PyOptional[int].of(self.__canvas.create_rectangle((xx, yy, xx + inc, yy + inc), fill="", width=3))
 
     def __remove_top(self, event: Event) -> None:
         if not self.__running and self.__bounds_manager.in_bounds(x=event.x, y=event.y):
@@ -359,14 +359,14 @@ class VWSimulationWindow(Frame):
         loaded_env: PyOptional[VWEnvironment] = PyOptional.empty()
 
         try:
-            loaded_env = PyOptional.of(self.__load(load_menu))
+            loaded_env = PyOptional[VWEnvironment].of(self.__load(load_menu))
         except Exception:
             if self.__config["file_to_load"] not in (None, ""):
                 print(f"Something went wrong. Could not load any grid from {self.__config['file_to_load']}")
             else:
                 print("Something went wrong. Could not load any grid.")
 
-            loaded_env = PyOptional.of(VWEnvironment.generate_empty_env(config=self.__config))
+            loaded_env = PyOptional[VWEnvironment].of(VWEnvironment.generate_empty_env(config=self.__config))
         finally:
             if loaded_env.is_present():
                 self.__redraw_loaded_env(loaded_env=loaded_env.or_else_raise())
@@ -660,7 +660,7 @@ class VWSimulationWindow(Frame):
 
         time: int = int(cast(float, self.__config["time_step"]) * 1000)
 
-        self.__after_hook = PyOptional.of_nullable(self.__parent.after(time, self.__simulate))
+        self.__after_hook = PyOptional[str].of_nullable(self.__parent.after(time, self.__simulate))
 
     def __simulate(self) -> None:
         try:
@@ -674,7 +674,7 @@ class VWSimulationWindow(Frame):
                 time: int = int(cast(float, self.__config["time_step"]) * 1000)
 
                 if self.__env.can_evolve():
-                    self.__after_hook = PyOptional.of_nullable(self.__parent.after(time, self.__simulate))
+                    self.__after_hook = PyOptional[str].of_nullable(self.__parent.after(time, self.__simulate))
                 else:
                     self.__stop()
                     self.__reset()
@@ -716,7 +716,7 @@ class VWSimulationWindow(Frame):
             self.__parent.after_cancel(self.__after_hook.or_else_raise())
 
         time = int(cast(float, self.__config["time_step"]) * 1000)
-        self.__after_hook = PyOptional.of_nullable(self.__parent.after(time, self.__simulate))
+        self.__after_hook = PyOptional[str].of_nullable(self.__parent.after(time, self.__simulate))
 
     def __pause(self) -> None:
         print("INFO: pause")

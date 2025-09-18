@@ -131,12 +131,12 @@ class VWActor(Actor):
         self.get_mind().decide()
 
         # Attempt the execution of the `list[VWAction]` decided by the mind.
-        actions_to_attempt: list[VWAction] = self.get_mind().execute()
+        actions_to_attempt: Iterable[VWAction] = self.get_mind().execute()
 
         # Attempt `list[VWAction]`.
         self.__attempt_actions(actions=actions_to_attempt)
 
-    def __attempt_actions(self, actions: list[VWAction]) -> None:
+    def __attempt_actions(self, actions: Iterable[VWAction]) -> None:
         for action in actions:
             self.get_mind().get_surrogate().update_effort(increment=action.get_effort())
 
