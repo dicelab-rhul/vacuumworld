@@ -32,10 +32,13 @@ class VWActorMindSurrogate():
         "decide": {"number_of_params_excluding_self": 0, "return_type": [Iterable[VWAction], Iterable[VWPhysicalAction], Iterable[VWCommunicativeAction]]},
     }
 
-    def __init__(self, skip_ai_setup: bool=False) -> None:
+    def __init__(self) -> None:
         self.__effort: int = 0
 
-        if not skip_ai_setup:
+        under_pytest = "pytest" in sys.modules or os.getenv("PYTEST_CURRENT_TEST") is not None or os.getenv("PYTEST_XDIST_WORKER") is not None
+        skip_gemini_setup: bool = under_pytest or os.getenv("VW_SKIP_AI_SETUP", "").strip().lower() in {"1","true","yes","on"}
+
+        if not skip_gemini_setup:
             self.__gemini_client: GeminiClient = GeminiClient(model_name="gemini-2.0-flash")
 
     def get_effort(self) -> int:
