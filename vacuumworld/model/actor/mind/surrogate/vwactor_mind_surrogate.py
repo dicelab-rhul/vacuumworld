@@ -32,9 +32,11 @@ class VWActorMindSurrogate():
         "decide": {"number_of_params_excluding_self": 0, "return_type": [Iterable[VWAction], Iterable[VWPhysicalAction], Iterable[VWCommunicativeAction]]},
     }
 
-    def __init__(self) -> None:
+    def __init__(self, skip_ai_setup: bool=False) -> None:
         self.__effort: int = 0
-        self.__gemini_client: GeminiClient = GeminiClient(model_name="gemini-2.0-flash")
+
+        if not skip_ai_setup:
+            self.__gemini_client: GeminiClient = GeminiClient(model_name="gemini-2.0-flash")
 
     def get_effort(self) -> int:
         '''

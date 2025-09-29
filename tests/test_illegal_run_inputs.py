@@ -168,9 +168,9 @@ class TestIllegalRunInputs(TestCase):
 
         self.__config: dict[str, Any] = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH, load_additional_config=False)
         self.__minds: dict[VWColour, VWActorMindSurrogate] = {
-            VWColour.green: VWHystereticMindSurrogate(),
-            VWColour.orange: VWHystereticMindSurrogate(),
-            VWColour.white: VWHystereticMindSurrogate()
+            VWColour.green: VWHystereticMindSurrogate(skip_ai_setup=True),
+            VWColour.orange: VWHystereticMindSurrogate(skip_ai_setup=True),
+            VWColour.white: VWHystereticMindSurrogate(skip_ai_setup=True)
         }
 
     def test_illegal_speed_value(self) -> None:
