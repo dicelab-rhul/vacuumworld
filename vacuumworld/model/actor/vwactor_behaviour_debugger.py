@@ -1,7 +1,7 @@
 from time import time_ns
 from math import prod
 from base64 import b64decode
-from playsound import playsound as do_debug
+from playsound3 import playsound as do_debug
 
 import os
 

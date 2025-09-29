@@ -31,7 +31,7 @@ dependencies: list[str] = [
     "requests",
     "google-genai",
     "python-dotenv",
-    "playsound",
+    "playsound3",
     "pyjoptional>=1.1.2",
     "pymonitors>=1.0.2"
 ]
