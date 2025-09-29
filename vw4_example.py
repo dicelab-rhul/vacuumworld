@@ -4,7 +4,6 @@ from typing import Iterable
 
 from vacuumworld import run
 from vacuumworld.model.actions.vwactions import VWAction
-from vacuumworld.model.actions.vwidle_action import VWIdleAction
 from vacuumworld.model.actions.vwbroadcast_action import VWBroadcastAction
 from vacuumworld.model.actions.vweffort import VWActionEffort
 from vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate import VWActorMindSurrogate
@@ -25,7 +24,7 @@ class MyMind(VWActorMindSurrogate):
 
     def decide(self) -> Iterable[VWAction]:
         # Replace this trivial decision process with something meaningful.
-        return [VWIdleAction(), VWBroadcastAction(message="Hello!", sender_id=self.get_own_id())]
+        return [self.decide_physical_with_ai(prompt="Unconditionally return 'VWIdleAction' (no quotes)."), VWBroadcastAction(message="Hello!", sender_id=self.get_own_id())]
 
 
 if __name__ == "__main__":

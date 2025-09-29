@@ -14,9 +14,7 @@ author_email: str = "vw@dicelab-rhul.org"
 license: str = "GNU3"
 classifiers: list[str] = [
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3 :: Only",
     "Development Status :: 4 - Beta",
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
@@ -31,7 +29,9 @@ dependencies: list[str] = [
     "screeninfo",
     "tk",
     "requests",
-    "playsound",
+    "google-genai",
+    "python-dotenv",
+    "playsound3",
     "pyjoptional>=1.1.2",
     "pymonitors>=1.0.2"
 ]
