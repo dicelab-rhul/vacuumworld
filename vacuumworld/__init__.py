@@ -27,7 +27,7 @@ import signal as signal_module
 class VacuumWorld():
     CONFIG_FILE_NAME: str = "config.json"
     CONFIG_FILE_PATH: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), CONFIG_FILE_NAME)
-    MIN_PYTHON_VERSION: tuple[int, int] = (3, 10)
+    MIN_PYTHON_VERSION: tuple[int, int] = (3, 13)
     ALLOWED_RUN_ARGS: dict[str, Type[Any]] = {
         "default_mind": VWActorMindSurrogate,
         "green_mind": VWActorMindSurrogate,
