@@ -229,7 +229,7 @@ class VacuumWorld():
 
     def __get_runner(self, runner_type: Type[VWRunner], minds: dict[VWColour, VWActorMindSurrogate], **kwargs: Any) -> PyOptional[VWRunner]:
         try:
-            return PyOptional.of(runner_type(config=self.__config, minds=minds, allowed_args=VacuumWorld.ALLOWED_RUN_ARGS, **kwargs))
+            return PyOptional[VWRunner].of(runner_type(config=self.__config, minds=minds, allowed_args=VacuumWorld.ALLOWED_RUN_ARGS, **kwargs))
         except VWRunnerException as e:
             print(f"ERROR: {e.args[0] if len(e.args) > 0 and e.args[0] else 'Unknown error.'}\n")
 
@@ -299,4 +299,4 @@ def run(default_mind: Optional[VWActorMindSurrogate]=None, white_mind: Optional[
     # The use of `Optional` instead of `PyOptional` for the arguments is intentional, so that the user can avoid wrapping the minds in `PyOptional`.
     vw: VacuumWorld = VacuumWorld()
 
-    vw.run(default_mind=PyOptional.of_nullable(default_mind), white_mind=PyOptional.of_nullable(white_mind), green_mind=PyOptional.of_nullable(green_mind), orange_mind=PyOptional.of_nullable(orange_mind), **kwargs)
+    vw.run(default_mind=PyOptional[VWActorMindSurrogate].of_nullable(default_mind), white_mind=PyOptional[VWActorMindSurrogate].of_nullable(white_mind), green_mind=PyOptional[VWActorMindSurrogate].of_nullable(green_mind), orange_mind=PyOptional[VWActorMindSurrogate].of_nullable(orange_mind), **kwargs)
