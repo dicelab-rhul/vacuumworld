@@ -21,7 +21,7 @@ classifiers: list[str] = [
     "Operating System :: OS Independent",
 ]
 dependencies: list[str] = [
-    "pystarworldsturbo>=1.2.8",
+    "pystarworldsturbo>=1.2.9",
     "pillow",
     "wheel",
     "ipython",
@@ -32,7 +32,7 @@ dependencies: list[str] = [
     "google-genai",
     "python-dotenv",
     "playsound3",
-    "pyjoptional>=1.1.2",
+    "pyjoptional>=1.1.3",
     "pymonitors>=1.0.2"
 ]
 
