@@ -28,6 +28,9 @@ class VWLLMActorMindSurrogate(VWActorMindSurrogate):
         if not skip_gemini_setup:
             self.__gemini_client: GeminiClient = GeminiClient(model_name=VWEnvironment.LLM_MODEL, dot_env_path=dot_env_path)
 
+    def provide_context(self, context: str) -> GenerateContentResponse:
+        return self.__gemini_client.query(prompt=context)
+
     def decide_physical_with_ai(self, prompt: str) -> VWPhysicalAction:
         response: GenerateContentResponse = self.__gemini_client.query(prompt=prompt)
         action: VWAction = self.parse_gemini_response(response=response)
