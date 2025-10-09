@@ -107,7 +107,7 @@ class TestExecutors(TestCase):
         Both the cases of an empty (i.e., equivalent to `VWBroadcastAction`) and a non-empty list of recipients are tested.
         '''
         custom_sender_id: str = self.__randbytes(randint(1, 16)).hex()
-        self.__test_speak_action(custom_sender_id=PyOptional.of(custom_sender_id))
+        self.__test_speak_action(custom_sender_id=PyOptional[str].of(custom_sender_id))
 
     def __test_speak_action(self, custom_sender_id: PyOptional[str]=PyOptional.empty()) -> None:
         speak_executor: VWSpeakExecutor = VWSpeakExecutor()
@@ -173,7 +173,7 @@ class TestExecutors(TestCase):
         Tests the execution of a `VWBroadcastAction` by a `VWBroadcastExecutor` with `sender_id` spoofing (i.e., with a custom randon sender ID).
         '''
         custom_sender_id: str = self.__randbytes(randint(1, 16)).hex()
-        self.__test_broadcast_action(custom_sender_id=PyOptional.of(custom_sender_id))
+        self.__test_broadcast_action(custom_sender_id=PyOptional[str].of(custom_sender_id))
 
     def __test_broadcast_action(self, custom_sender_id: PyOptional[str]=PyOptional.empty()) -> None:
         broadcast_executor: VWBroadcastExecutor = VWBroadcastExecutor()

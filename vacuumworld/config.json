@@ -9,6 +9,7 @@
     "skip": false,
     "play": false,
     "file_to_load": "",
+    "llm_model": "gemini-2.0-flash",
     "default_monitor_number": 0,
     "scale": -1,
     "x_scale": -1,

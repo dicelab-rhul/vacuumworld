@@ -57,11 +57,16 @@ class VWEnvironment(Environment):
     * A physical/communicative evolution phase, in which each `VWActor` potentially attempts to modify the `VWEnvironment` via a `VWPhysicalAction`, and potentially engages in communications via a `VWCommunicativeAction`.
     Only one `VWPhysicalAction` and one `VWCommunicativeAction` can be attempted per cycle per `VWActor`.
     '''
+
+    LLM_MODEL: str = "unknown"
+    
     def __init__(self, config: dict[str, JSONValue], ambient: VWAmbient, initial_actors: list[VWActor]=[], initial_dirts: list[VWDirt]=[]) -> None:
         super(VWEnvironment, self).__init__(ambient=ambient, initial_actors=[a for a in initial_actors if VWValidator.does_type_match(t=Actor, obj=a)], initial_passive_bodies=[d for d in initial_dirts if VWValidator.does_type_match(t=Body, obj=d)])
 
         self.__cycle: int = -1
         self.__config: dict[str, JSONValue] = config
+
+        VWEnvironment.LLM_MODEL = cast(str, self.__config.get("llm_model", VWEnvironment.LLM_MODEL))
 
     def can_evolve(self) -> bool:
         '''

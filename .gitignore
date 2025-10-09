@@ -134,6 +134,7 @@ dmypy.json
 
 # Examples not to be included in the repo
 examples_not_to_commit/
+tutorials/
 vw4_test.py
 cw1.py
 cw2.py

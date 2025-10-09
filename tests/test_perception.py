@@ -179,7 +179,7 @@ class TestPerception(TestCase):
     def __generate_random_actor_appearances(self) -> list[PyOptional[VWActorAppearance]]:
         # The `VWLocation` at `PositionNames.center` must always have a `VWActorAppearance` (i.e., the observer) in it.
         # In particular, the first element of this list must be a `VWActorAppearance`.
-        return [PyOptional.empty() if randfloat() < 0.5 and i > 0 else PyOptional.of(self.__generate_random_actor_appearance()) for i in range(self.__number_of_locations)]
+        return [PyOptional.empty() if randfloat() < 0.5 and i > 0 else PyOptional[VWActorAppearance].of(self.__generate_random_actor_appearance()) for i in range(self.__number_of_locations)]
 
     def __generate_random_actor_appearance(self) -> VWActorAppearance:
         actor_id: str = str(uuid4())
@@ -190,7 +190,7 @@ class TestPerception(TestCase):
         return VWActorAppearance(actor_id=actor_id, progressive_id=str(self.__progressive_id), colour=colour, orientation=orientation)
 
     def __generate_random_dirt_appearances(self) -> list[PyOptional[VWDirtAppearance]]:
-        return [PyOptional.empty() if randfloat() < 0.5 else PyOptional.of(self.__generate_random_dirt_appearance()) for _ in range(self.__number_of_locations)]
+        return [PyOptional.empty() if randfloat() < 0.5 else PyOptional[VWDirtAppearance].of(self.__generate_random_dirt_appearance()) for _ in range(self.__number_of_locations)]
 
     def __generate_random_dirt_appearance(self) -> VWDirtAppearance:
         dirt_id: str = str(uuid4())
@@ -205,7 +205,7 @@ class TestPerception(TestCase):
         for i in range(len(coords)):
             coord: VWCoord = coords[i]
             position = VWPositionNames.elements()[i]
-            locations_dict[position] = PyOptional.of(VWLocation(coord=coord, actor_appearance=actors[i], dirt_appearance=dirts[i], wall=VWEnvironment.generate_wall_from_coordinates(coord=coord, grid_size=grid_size))) if coord.in_bounds(min_x=0, max_x=grid_size-1, min_y=0, max_y=grid_size-1) else PyOptional[VWLocation].empty()
+            locations_dict[position] = PyOptional[VWLocation].of(VWLocation(coord=coord, actor_appearance=actors[i], dirt_appearance=dirts[i], wall=VWEnvironment.generate_wall_from_coordinates(coord=coord, grid_size=grid_size))) if coord.in_bounds(min_x=0, max_x=grid_size-1, min_y=0, max_y=grid_size-1) else PyOptional[VWLocation].empty()
 
         return {k: v.or_else_raise() for k, v in locations_dict.items() if v.is_present()}
 

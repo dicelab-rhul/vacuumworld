@@ -2,7 +2,7 @@
 
 from unittest import main, TestCase
 from random import randint
-from typing import NamedTuple, Type, Any
+from typing import NamedTuple, Any
 from pyoptional.pyoptional import PyOptional
 
 from vacuumworld import VacuumWorld
@@ -102,8 +102,11 @@ class TestLocationAndCoordinates(TestCase):
             self.assertEqual(hash(c), hash(other))
             self.assertEqual(str(c), str(other))
 
-            old_coord: Type[NamedTuple] = NamedTuple("old_coord", x=int, y=int)
-            oc = old_coord(x=x, y=y)
+            class OldCoord(NamedTuple):
+                x: int
+                y: int
+
+            oc: OldCoord = OldCoord(x=x, y=y)
 
             self.assertEqual(c.get_x(), oc.x)
             self.assertEqual(c.get_y(), oc.y)
@@ -130,12 +133,12 @@ class TestLocationAndCoordinates(TestCase):
             fl: VWCoord = c.forwardleft(orientation=a1.get_orientation())
             fr: VWCoord = c.forwardright(orientation=a1.get_orientation())
 
-            center: VWLocation = VWLocation(coord=c, actor_appearance=PyOptional.of(a1), wall=VWEnvironment.generate_wall_from_coordinates(coord=c, grid_size=grid_size))
+            center: VWLocation = VWLocation(coord=c, actor_appearance=PyOptional[VWActorAppearance].of(a1), wall=VWEnvironment.generate_wall_from_coordinates(coord=c, grid_size=grid_size))
             left: VWLocation = VWLocation(coord=l, wall=VWEnvironment.generate_wall_from_coordinates(coord=l, grid_size=grid_size))
-            right: VWLocation = VWLocation(coord=r, actor_appearance=PyOptional.of(a2), dirt_appearance=PyOptional.of(d1), wall=VWEnvironment.generate_wall_from_coordinates(coord=r, grid_size=grid_size))
-            forward: VWLocation = VWLocation(coord=f, dirt_appearance=PyOptional.of(d2), wall=VWEnvironment.generate_wall_from_coordinates(coord=f, grid_size=grid_size))
-            forwardleft: VWLocation = VWLocation(coord=fl, actor_appearance=PyOptional.of(u1), wall=VWEnvironment.generate_wall_from_coordinates(coord=fl, grid_size=grid_size))
-            forwardright: VWLocation = VWLocation(coord=fr, actor_appearance=PyOptional.of(u2), dirt_appearance=PyOptional.of(d3), wall=VWEnvironment.generate_wall_from_coordinates(coord=fr, grid_size=grid_size))
+            right: VWLocation = VWLocation(coord=r, actor_appearance=PyOptional[VWActorAppearance].of(a2), dirt_appearance=PyOptional[VWDirtAppearance].of(d1), wall=VWEnvironment.generate_wall_from_coordinates(coord=r, grid_size=grid_size))
+            forward: VWLocation = VWLocation(coord=f, dirt_appearance=PyOptional[VWDirtAppearance].of(d2), wall=VWEnvironment.generate_wall_from_coordinates(coord=f, grid_size=grid_size))
+            forwardleft: VWLocation = VWLocation(coord=fl, actor_appearance=PyOptional[VWActorAppearance].of(u1), wall=VWEnvironment.generate_wall_from_coordinates(coord=fl, grid_size=grid_size))
+            forwardright: VWLocation = VWLocation(coord=fr, actor_appearance=PyOptional[VWActorAppearance].of(u2), dirt_appearance=PyOptional[VWDirtAppearance].of(d3), wall=VWEnvironment.generate_wall_from_coordinates(coord=fr, grid_size=grid_size))
 
             self.assertEqual(center.get_coord(), c)
             self.assertEqual(center.get_actor_appearance().or_else_raise(), a1)
