@@ -1,29 +1,26 @@
 from __future__ import annotations
 from typing import Any, Iterable, Type
+from abc import ABC, abstractmethod
 from inspect import signature
 from importlib import import_module
-from google.genai.types import GenerateContentResponse
 
 from pystarworldsturbo.common.message import BccMessage
-from pyoptional.pyoptional import PyOptional
 
 from ....actions.vwactions import VWAction
 from ....actions.vwactions import VWPhysicalAction
 from ....actions.vwactions import VWCommunicativeAction
-from ....actions.vwidle_action import VWIdleAction
 from .....model.actor.appearance.vwactor_appearance import VWActorAppearance
 from .....common.vwobservation import VWObservation
 from .....common.vwcolour import VWColour
 from .....common.vworientation import VWOrientation
 from .....common.vwcoordinates import VWCoord
 from .....common.vwexceptions import VWLoadException, VWSurrogateMindException
-from .....gemini.client import GeminiClient
 
 import os
 import sys
 
 
-class VWActorMindSurrogate():
+class VWActorMindSurrogate(ABC):
     '''
     This class specifies the surrogate for the `VWMind` of a `VWActor`. It is an abstract class.
     '''
@@ -34,12 +31,6 @@ class VWActorMindSurrogate():
 
     def __init__(self) -> None:
         self.__effort: int = 0
-
-        under_pytest = "pytest" in sys.modules or os.getenv("PYTEST_CURRENT_TEST") is not None or os.getenv("PYTEST_XDIST_WORKER") is not None
-        skip_gemini_setup: bool = under_pytest or os.getenv("VW_SKIP_AI_SETUP", "").strip().lower() in {"1","true","yes","on"}
-
-        if not skip_gemini_setup:
-            self.__gemini_client: GeminiClient = GeminiClient(model_name="gemini-2.0-flash")
 
     def get_effort(self) -> int:
         '''
@@ -111,41 +102,23 @@ class VWActorMindSurrogate():
         self.__latest_observation: VWObservation = observation
         self.__latest_received_messages: Iterable[BccMessage] = messages if messages else []
 
+    @abstractmethod
     def revise(self) -> None:
         '''
-        This method must be overridden by a subclass. Failure to do so will result in a `NotImplementedError`.
+        This method must be overridden by a subclass.
 
         Revises the internal state of this `VWActorMindSurrogate` based on the latest received `VWObservation` and `Iterable[BccMessage]`.
         '''
-        raise NotImplementedError("This method must be implemented by a subclass.")
+        ...
 
+    @abstractmethod
     def decide(self) -> Iterable[VWAction]:
         '''
-        This method must be overridden by a subclass. Failure to do so will result in a `NotImplementedError`.
+        This method must be overridden by a subclass.
 
         Decides the next `Iterable[VWAction]` to be performed by the `VWActor` based on the internal state of this `VWActorMindSurrogate`.
         '''
-        raise NotImplementedError("This method must be implemented by a subclass.")
-
-    def decide_physical_with_ai(self, prompt: str) -> VWPhysicalAction:
-        response: GenerateContentResponse = self.__gemini_client.query(prompt=prompt)
-        action: VWAction = VWActorMindSurrogate.__parse_gemini_response(response=response)
-
-        if isinstance(action, VWPhysicalAction):
-            return action
-        else:
-            raise VWSurrogateMindException(f"The Gemini model did not return a valid VWPhysicalAction. Response: {response}")
-
-    @staticmethod
-    def __parse_gemini_response(response: GenerateContentResponse) -> VWAction:
-        # TODO: Implement a proper parser based on the expected response format.
-        maybe_text: PyOptional[str] = PyOptional[str].of_nullable(response.text)
-        text: str = maybe_text.or_else("").strip()
-
-        if text == "VWIdleAction":
-            return VWIdleAction()
-        else:
-            raise VWSurrogateMindException(f"Could not parse Gemini response: {response}")
+        ...
 
     @staticmethod
     def validate(mind: VWActorMindSurrogate, colour: VWColour, surrogate_mind_type: Type[Any]) -> None:

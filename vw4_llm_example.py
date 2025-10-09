@@ -4,15 +4,17 @@ from typing import Iterable, override
 
 from vacuumworld import run
 from vacuumworld.model.actions.vwactions import VWAction
-from vacuumworld.model.actions.vwidle_action import VWIdleAction
 from vacuumworld.model.actions.vwbroadcast_action import VWBroadcastAction
 from vacuumworld.model.actions.vweffort import VWActionEffort
-from vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate import VWActorMindSurrogate
+from vacuumworld.model.actor.mind.surrogate.vw_llm_actor_mind_surrogate import VWLLMActorMindSurrogate
+
+from google.genai.types import GenerateContentResponse
 
 
-class MyMind(VWActorMindSurrogate):
+class MyMind(VWLLMActorMindSurrogate):
     def __init__(self) -> None:
-        super(MyMind, self).__init__()
+        # A `.env` file must be present in the same directory as this script, containing the GEMINI_API_KEY variable.
+        super(MyMind, self).__init__(dot_env_path=".env")
 
         # Add here all the attributes you need/want.
 
@@ -27,7 +29,15 @@ class MyMind(VWActorMindSurrogate):
     @override
     def decide(self) -> Iterable[VWAction]:
         # Replace this trivial decision process with something meaningful.
-        return [VWIdleAction(), VWBroadcastAction(message="Hello!", sender_id=self.get_own_id())]
+        return [self.decide_physical_with_ai(prompt="Unconditionally return 'VWIdleAction' (no quotes)."), VWBroadcastAction(message="Hello!", sender_id=self.get_own_id())]
+
+    @override
+    def parse_gemini_response(self, response: GenerateContentResponse) -> VWAction:
+        # Parse the response from the Gemini model and return a valid VWAction.
+
+        print(f"Gemini response: {response}")
+
+        raise NotImplementedError("You must implement the parse_gemini_response method to parse the Gemini model's response and return a valid VWAction.")
 
 
 if __name__ == "__main__":

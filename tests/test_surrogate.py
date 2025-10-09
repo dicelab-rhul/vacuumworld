@@ -34,6 +34,12 @@ class TmpSurrogateMind(VWActorMindSurrogate):
         for message in messages:
             ignore(message)
 
+    def revise(self) -> None:
+        '''
+        This method does nothing.
+        '''
+        pass
+
     def decide(self) -> Iterable[VWAction]:
         '''
         This method always returns a `VWIdleAction`.
@@ -55,7 +61,7 @@ class TestSurrogate(TestCase):
         '''
         Tests the loading and validity of `VWHystereticMindSurrogate` objects.
         '''
-        surrogate_file_path: PyOptional[str] = PyOptional.of_nullable(getsourcefile(VWHystereticMindSurrogate))
+        surrogate_file_path: PyOptional[str] = PyOptional[str].of_nullable(getsourcefile(VWHystereticMindSurrogate))
 
         self.assertTrue(surrogate_file_path.is_present())
         self.assertTrue(os.path.isfile(surrogate_file_path.or_else_raise()))

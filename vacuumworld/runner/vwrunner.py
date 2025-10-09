@@ -258,6 +258,7 @@ class VWRunner(Process):
         self.__config["play"] = cast(bool, self.__config["play"]) or cast(bool, self.__args["play"])
 
         assert isinstance(self.__args["speed"], float)
+
         self.__config["time_step_modifier"] = 1 - self.__args["speed"]
         self.__config["file_to_load"] = cast(str, self.__args["load"])
         self.__config["scale"] = cast(float, self.__args["scale"])

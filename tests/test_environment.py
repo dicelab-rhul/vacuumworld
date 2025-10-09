@@ -10,6 +10,7 @@ from vacuumworld.common.vwcoordinates import VWCoord
 from vacuumworld.common.vwcolour import VWColour
 from vacuumworld.common.vworientation import VWOrientation
 from vacuumworld.common.vwuser_difficulty import VWUserDifficulty
+from vacuumworld.model.actor.appearance.vwactor_appearance import VWActorAppearance
 from vacuumworld.model.actor.mind.surrogate.vwhysteretic_mind_surrogate import VWHystereticMindSurrogate
 from vacuumworld.model.actor.vwactor_factories import VWCleaningAgentsFactory, VWUsersFactory
 from vacuumworld.model.dirt.vwdirt_appearance import VWDirtAppearance
@@ -82,9 +83,9 @@ class TestEnvironment(TestCase):
 
         green_agent_coord, orange_agent_coord, white_agent_coord = VWEnvironment.generate_mutually_exclusive_coordinates_for_testing(amount=3, grid_size=grid_size)
 
-        env.get_ambient().get_grid()[green_agent_coord] = VWLocation(coord=green_agent_coord, actor_appearance=PyOptional.of(green_agent_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=green_agent_coord, grid_size=grid_size))
-        env.get_ambient().get_grid()[orange_agent_coord] = VWLocation(coord=orange_agent_coord, actor_appearance=PyOptional.of(orange_agent_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=orange_agent_coord, grid_size=grid_size))
-        env.get_ambient().get_grid()[white_agent_coord] = VWLocation(coord=white_agent_coord, actor_appearance=PyOptional.of(white_agent_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=white_agent_coord, grid_size=grid_size))
+        env.get_ambient().get_grid()[green_agent_coord] = VWLocation(coord=green_agent_coord, actor_appearance=PyOptional[VWActorAppearance].of(green_agent_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=green_agent_coord, grid_size=grid_size))
+        env.get_ambient().get_grid()[orange_agent_coord] = VWLocation(coord=orange_agent_coord, actor_appearance=PyOptional[VWActorAppearance].of(orange_agent_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=orange_agent_coord, grid_size=grid_size))
+        env.get_ambient().get_grid()[white_agent_coord] = VWLocation(coord=white_agent_coord, actor_appearance=PyOptional[VWActorAppearance].of(white_agent_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=white_agent_coord, grid_size=grid_size))
 
         self.assertEqual(len(env.get_actors()), 3)
         self.assertEqual(len(env.get_actors_list()), 3)
@@ -123,8 +124,8 @@ class TestEnvironment(TestCase):
 
         green_dirt_coord, orange_dirt_coord = VWEnvironment.generate_mutually_exclusive_coordinates_for_testing(amount=2, grid_size=grid_size)
 
-        env.get_ambient().get_grid()[green_dirt_coord] = VWLocation(coord=green_dirt_coord, dirt_appearance=PyOptional.of(green_dirt_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=green_dirt_coord, grid_size=grid_size))
-        env.get_ambient().get_grid()[orange_dirt_coord] = VWLocation(coord=orange_dirt_coord, dirt_appearance=PyOptional.of(orange_dirt_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=orange_dirt_coord, grid_size=grid_size))
+        env.get_ambient().get_grid()[green_dirt_coord] = VWLocation(coord=green_dirt_coord, dirt_appearance=PyOptional[VWDirtAppearance].of(green_dirt_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=green_dirt_coord, grid_size=grid_size))
+        env.get_ambient().get_grid()[orange_dirt_coord] = VWLocation(coord=orange_dirt_coord, dirt_appearance=PyOptional[VWDirtAppearance].of(orange_dirt_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=orange_dirt_coord, grid_size=grid_size))
 
         self.assertEqual(len(env.get_passive_bodies()), 2)
         self.assertEqual(len(env.get_passive_bodies_list()), 2)
@@ -160,7 +161,7 @@ class TestEnvironment(TestCase):
 
         user_coord: VWCoord = VWCoord(x=randint(0, grid_size - 1), y=randint(0, grid_size - 1))
 
-        env.get_ambient().get_grid()[user_coord] = VWLocation(coord=user_coord, actor_appearance=PyOptional.of(user_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=user_coord, grid_size=grid_size))
+        env.get_ambient().get_grid()[user_coord] = VWLocation(coord=user_coord, actor_appearance=PyOptional[VWActorAppearance].of(user_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=user_coord, grid_size=grid_size))
 
         self.assertEqual(len(env.get_actors()), 1)
         self.assertEqual(len(env.get_actors_list()), 1)
@@ -213,20 +214,20 @@ class TestEnvironment(TestCase):
         green_agent_coord, orange_agent_coord, white_agent_coord, user_coord = VWEnvironment.generate_mutually_exclusive_coordinates_for_testing(amount=4, grid_size=grid_size)
         green_dirt_coord, orange_dirt_coord = VWEnvironment.generate_mutually_exclusive_coordinates_for_testing(amount=2, grid_size=grid_size)
 
-        env.get_ambient().get_grid()[green_agent_coord] = VWLocation(coord=green_agent_coord, actor_appearance=PyOptional.of(green_agent_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=green_agent_coord, grid_size=grid_size))
-        env.get_ambient().get_grid()[orange_agent_coord] = VWLocation(coord=orange_agent_coord, actor_appearance=PyOptional.of(orange_agent_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=orange_agent_coord, grid_size=grid_size))
-        env.get_ambient().get_grid()[white_agent_coord] = VWLocation(coord=white_agent_coord, actor_appearance=PyOptional.of(white_agent_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=white_agent_coord, grid_size=grid_size))
-        env.get_ambient().get_grid()[user_coord] = VWLocation(coord=user_coord, actor_appearance=PyOptional.of(user_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=user_coord, grid_size=grid_size))
+        env.get_ambient().get_grid()[green_agent_coord] = VWLocation(coord=green_agent_coord, actor_appearance=PyOptional[VWActorAppearance].of(green_agent_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=green_agent_coord, grid_size=grid_size))
+        env.get_ambient().get_grid()[orange_agent_coord] = VWLocation(coord=orange_agent_coord, actor_appearance=PyOptional[VWActorAppearance].of(orange_agent_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=orange_agent_coord, grid_size=grid_size))
+        env.get_ambient().get_grid()[white_agent_coord] = VWLocation(coord=white_agent_coord, actor_appearance=PyOptional[VWActorAppearance].of(white_agent_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=white_agent_coord, grid_size=grid_size))
+        env.get_ambient().get_grid()[user_coord] = VWLocation(coord=user_coord, actor_appearance=PyOptional[VWActorAppearance].of(user_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=user_coord, grid_size=grid_size))
 
         if green_dirt_coord in env.get_ambient().get_grid():
             env.get_ambient().get_grid()[green_dirt_coord].add_dirt(dirt_appearance=green_dirt_appearance)
         else:
-            env.get_ambient().get_grid()[green_dirt_coord] = VWLocation(coord=green_dirt_coord, dirt_appearance=PyOptional.of(green_dirt_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=green_dirt_coord, grid_size=grid_size))
+            env.get_ambient().get_grid()[green_dirt_coord] = VWLocation(coord=green_dirt_coord, dirt_appearance=PyOptional[VWDirtAppearance].of(green_dirt_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=green_dirt_coord, grid_size=grid_size))
 
         if orange_dirt_coord in env.get_ambient().get_grid():
             env.get_ambient().get_grid()[orange_dirt_coord].add_dirt(dirt_appearance=orange_dirt_appearance)
         else:
-            env.get_ambient().get_grid()[orange_dirt_coord] = VWLocation(coord=orange_dirt_coord, dirt_appearance=PyOptional.of(orange_dirt_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=orange_dirt_coord, grid_size=grid_size))
+            env.get_ambient().get_grid()[orange_dirt_coord] = VWLocation(coord=orange_dirt_coord, dirt_appearance=PyOptional[VWDirtAppearance].of(orange_dirt_appearance), wall=VWEnvironment.generate_wall_from_coordinates(coord=orange_dirt_coord, grid_size=grid_size))
 
         self.assertEqual(len(env.get_actors()), 4)
         self.assertEqual(len(env.get_actors_list()), 4)
