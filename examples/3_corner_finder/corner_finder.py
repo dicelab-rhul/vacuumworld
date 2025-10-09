@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from typing import Iterable
+from typing import Iterable, override
 from pyoptional.pyoptional import PyOptional
 
 from vacuumworld import run
@@ -25,6 +25,7 @@ class MyMind(VWActorMindSurrogate):
 
         self.__corner_found: bool = False
 
+    @override
     def revise(self) -> None:
         if not self.__corner_found and self.__can_see_corner():
             coord: PyOptional[VWCoord] = self.__get_visible_corner_coordinates()
@@ -35,6 +36,7 @@ class MyMind(VWActorMindSurrogate):
 
             self.__corner_found = True
 
+    @override
     def decide(self) -> Iterable[VWAction]:
         # If we've found a corner, don't do anything else.
         if self.__corner_found:
@@ -63,7 +65,7 @@ class MyMind(VWActorMindSurrogate):
         # We return a `PyOptional` wrapping the coordinates of the first corner `VWLocation` we can see.
         # We always check the current `VWObservation` in the same order of `VWPositionNames` (`center`, `forward`, `left`, `right`, `forwardleft`, `forwardright`).
         # We return an empty `PyOptional` if we can't see any corner.
-        return PyOptional.of_nullable(next((loc.or_else_raise().get_coord() for loc in self.get_latest_observation().get_locations_in_order() if loc.is_present() and loc.or_else_raise().is_corner()), None))
+        return PyOptional[VWCoord].of_nullable(next((loc.or_else_raise().get_coord() for loc in self.get_latest_observation().get_locations_in_order() if loc.is_present() and loc.or_else_raise().is_corner()), None))
 
 
 if __name__ == "__main__":

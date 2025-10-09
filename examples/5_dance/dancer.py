@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from random import randint, choice
-from typing import Iterable, cast
+from typing import Iterable, cast, override
 from pyoptional.pyoptional import PyOptional
 
 from pystarworldsturbo.common.content_type import MessageContentType
@@ -40,7 +40,7 @@ class ColourMind(DanceMind):
 
         self.__leader: bool = self.get_own_colour() == VWColour.orange  # Am I the orange agent? Orange is the leader.
 
-        for message in map(lambda m: m.get_content(), self.get_latest_received_messages()):
+        for message in (m.get_content() for m in self.get_latest_received_messages()):
             self.__parse_message(message=message)
 
     def __parse_message(self, message: MessageContentType) -> None:
@@ -59,7 +59,7 @@ class ColourMind(DanceMind):
             assert all(isinstance(x, int) for x in message[1])
 
             if message[0] == "goto" and isinstance(message[1][0], int) and isinstance(message[1][1], int):
-                self.__target_loc = PyOptional.of(VWCoord(x=message[1][0], y=message[1][1]))
+                self.__target_loc = PyOptional[VWCoord].of(VWCoord(x=message[1][0], y=message[1][1]))
             elif message[0] == "dance" and isinstance(message[1][0], int) and isinstance(message[1][1], int):
                 self.__dance_time = [time for time in message[1] if isinstance(time, int)]
             else:
@@ -85,6 +85,7 @@ class ColourMind(DanceMind):
         else:
             return True
 
+    @override
     def decide(self) -> Iterable[VWAction]:
         '''
         This is a slightly more complex function which implements some teleo-reactive
@@ -117,7 +118,7 @@ class ColourMind(DanceMind):
         # no meeting point agreed and leader -> choose and broadcast meeting point
         elif self.__target_loc.is_empty() and self.__leader:
             loc1, loc2 = ColourMind.__gen_meeting_locs()
-            self.__target_loc = PyOptional.of(loc1)
+            self.__target_loc = PyOptional[VWCoord].of(loc1)
 
             return [VWBroadcastAction(message=["goto", [loc2.get_x(), loc2.get_y()]], sender_id=self.get_own_id())]
         # Rule 3:

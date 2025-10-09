@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from typing import Iterable
+from typing import Iterable, override
 
 from vacuumworld import run
 from vacuumworld.model.actions.vwactions import VWAction
@@ -22,12 +22,14 @@ class MyMind(VWActorMindSurrogate):
         # Example of a target location set in advance.
         self.__target_coords: VWCoord = VWCoord(2, 6)
 
+    @override
     def revise(self) -> None:
         self.__temporal_distance_to_target_if_move: int = self.__compute_minimum_temporal_distance_from_target(hypotetical_orientation=self.get_own_orientation())
         self.__temporal_distance_to_target_if_turn_left: int = self.__compute_minimum_temporal_distance_from_target(hypotetical_orientation=self.get_own_orientation().get_left())
         self.__temporal_distance_to_target_if_turn_right: int = self.__compute_minimum_temporal_distance_from_target(hypotetical_orientation=self.get_own_orientation().get_right())
         self.__minimum_temporal_distance: int = min(self.__temporal_distance_to_target_if_move, self.__temporal_distance_to_target_if_turn_left, self.__temporal_distance_to_target_if_turn_right)
 
+    @override
     def decide(self) -> Iterable[VWAction]:
         if self.__target_coords == self.get_own_position():
             return [VWIdleAction()]

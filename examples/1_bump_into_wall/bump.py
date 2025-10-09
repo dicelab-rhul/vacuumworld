@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from typing import Iterable
+from typing import Iterable, override
 
 from vacuumworld import run
 from vacuumworld.model.actions.vwactions import VWAction
@@ -14,11 +14,17 @@ from vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate import VWActo
 
 
 class MyMind(VWActorMindSurrogate):
+    '''
+    A mind that bumps into walls.
+
+    This is just for demonstration purposes. Ordinarily, you would want to avoid bumping into walls thanks to the `VWObservation` size and content.
+    '''
     def __init__(self) -> None:
         super(MyMind, self).__init__()
 
         # Add here all the attributes you need/want.
 
+    @override
     def revise(self) -> None:
         # Do something with the observation, the messages, and the effort instead of simply storing/printing them.
 
@@ -42,6 +48,7 @@ class MyMind(VWActorMindSurrogate):
         else:
             return [VWTurnAction(VWDirection.left)]
 
+    @override
     def decide(self) -> Iterable[VWAction]:
         if self.get_latest_observation().is_wall_immediately_ahead():
             return [VWIdleAction(), VWBroadcastAction(message="I am at the edge!", sender_id=self.get_own_id())]
