@@ -6,19 +6,19 @@ import os
 
 
 class GeminiClient():
-    def __init__(self, model_name: str) -> None:
+    def __init__(self, model_name: str, dot_env_path: str) -> None:
         self.__model_name: str = model_name
 
-        self.__load_gemini_api_key()
+        self.__load_gemini_api_key(dot_env_path=dot_env_path)
 
         self.__client: Client = Client(api_key=os.environ["GEMINI_API_KEY"])
 
     def query(self, prompt: str) -> GenerateContentResponse:
         return self.__client.models.generate_content(model=self.__model_name, contents=prompt)
 
-    def __load_gemini_api_key(self) -> None:
+    def __load_gemini_api_key(self, dot_env_path: str) -> None:
         try:
-            load_dotenv()
+            load_dotenv(dotenv_path=dot_env_path)
 
             gemini_api_key: str = os.getenv("GEMINI_API_KEY", "")
 

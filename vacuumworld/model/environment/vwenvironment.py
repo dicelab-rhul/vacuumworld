@@ -59,7 +59,7 @@ class VWEnvironment(Environment):
     '''
 
     LLM_MODEL: str = "unknown"
-    
+
     def __init__(self, config: dict[str, JSONValue], ambient: VWAmbient, initial_actors: list[VWActor]=[], initial_dirts: list[VWDirt]=[]) -> None:
         super(VWEnvironment, self).__init__(ambient=ambient, initial_actors=[a for a in initial_actors if VWValidator.does_type_match(t=Actor, obj=a)], initial_passive_bodies=[d for d in initial_dirts if VWValidator.does_type_match(t=Body, obj=d)])
 

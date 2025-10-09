@@ -13,7 +13,8 @@ from google.genai.types import GenerateContentResponse
 
 class MyMind(VWLLMActorMindSurrogate):
     def __init__(self) -> None:
-        super(MyMind, self).__init__()
+        # A `.env` file must be present in the same directory as this script, containing the GEMINI_API_KEY variable.
+        super(MyMind, self).__init__(dot_env_path=".env")
 
         # Add here all the attributes you need/want.
 
