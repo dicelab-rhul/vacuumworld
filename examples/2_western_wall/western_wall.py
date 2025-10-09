@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from typing import Iterable
+from typing import Iterable, override
 
 from vacuumworld import run
 from vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate import VWActorMindSurrogate
@@ -14,6 +14,8 @@ from vacuumworld.common.vwdirection import VWDirection
 class MyMind(VWActorMindSurrogate):
     '''
     The goal of this surrogate mind is to make the actor directly face the western wall.
+
+    This is just for demonstration purposes. Ordinarily, you would want to avoid bumping into walls thanks to the `VWObservation` size and content.
     '''
 
     def __init__(self) -> None:
@@ -21,6 +23,7 @@ class MyMind(VWActorMindSurrogate):
 
         self.__facing_left_wall: bool = False
 
+    @override
     def revise(self) -> None:
         # We are done.
         if not self.__facing_left_wall and self.get_own_appearance().is_facing_west() and self.get_latest_observation().is_wall_immediately_ahead():
@@ -31,6 +34,7 @@ class MyMind(VWActorMindSurrogate):
         elif not self.__facing_left_wall and self.get_own_appearance().is_facing_west() and self.get_latest_observation().is_wall_one_step_ahead():
             print("Almost there! One more step and I'll be at the western wall.")
 
+    @override
     def decide(self) -> Iterable[VWAction]:
         # Once we have found the western wall, we remain idle.
         if self.__facing_left_wall:

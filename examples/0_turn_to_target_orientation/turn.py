@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from typing import Iterable
+from typing import Iterable, override
 
 from vacuumworld import run
 from vacuumworld.model.actions.vwactions import VWAction
@@ -29,6 +29,7 @@ class MyMind(VWActorMindSurrogate):
         else:
             return VWTurnAction(VWDirection.right)
 
+    @override
     def revise(self) -> None:
         # Do something with the observation, the messages, and the effort instead of simply storing/printing them.
 
@@ -36,6 +37,7 @@ class MyMind(VWActorMindSurrogate):
         print(f"Messages: {[str(m) for m in self.get_latest_received_messages()]}")
         print(f"Current effort since the beginning of the simulation: {self.get_effort()}.")
 
+    @override
     def decide(self) -> Iterable[VWAction]:
         # Example of a sub-behaviour (you could simply
         # list here the behaviour of the function, but

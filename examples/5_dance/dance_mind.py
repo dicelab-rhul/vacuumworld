@@ -1,3 +1,6 @@
+from typing import override
+from abc import abstractmethod
+
 from vacuumworld.model.actor.mind.surrogate.vwactor_mind_surrogate import VWActorMindSurrogate
 
 
@@ -10,6 +13,7 @@ class DanceMind(VWActorMindSurrogate):
     def get_tick(self) -> int:
         return self.__tick
 
+    @override
     def revise(self) -> None:
         '''
         This is the base revise function for updating the agent state.
@@ -21,5 +25,6 @@ class DanceMind(VWActorMindSurrogate):
 
         self.sub_revise()
 
+    @abstractmethod
     def sub_revise(self) -> None:
-        raise NotImplementedError()
+        ...

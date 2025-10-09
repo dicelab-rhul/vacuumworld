@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from typing import Iterable, Type, cast
+from typing import Iterable, Type, cast, override
 from random import randint
 
 from vacuumworld import run
@@ -20,10 +20,12 @@ class WallMind(VWActorMindSurrogate):
 
         # Add here all the attributes you need/want.
 
+    @override
     def revise(self) -> None:
         # No need to revise anything.
         pass
 
+    @override
     def decide(self) -> Iterable[VWAction]:
         return [cast(VWAction, self.__random_physical_action())] + [cast(VWAction, self.__broadcast_possible_physical_actions())]
 
@@ -48,9 +50,9 @@ class WallMind(VWActorMindSurrogate):
 
         assert 0 <= roll < len(pool)
 
-        if roll == 0 and isinstance(pool[0], Type) and issubclass(pool[0], VWTurnAction):
+        if roll == 0 and issubclass(pool[0], VWTurnAction):
             return pool[0](direction=VWDirection.left)
-        elif roll == 1 and isinstance(pool[1], Type) and issubclass(pool[1], VWTurnAction):
+        elif roll == 1 and issubclass(pool[1], VWTurnAction):
             return pool[1](direction=VWDirection.right)
         else:
             assert VWMoveAction in pool
