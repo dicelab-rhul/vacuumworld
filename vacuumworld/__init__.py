@@ -124,7 +124,7 @@ class VacuumWorld():
 
         temp_dir: str = mkdtemp(prefix="vacuumworld_update_")
         cloning_command: list[str] = ["git", "clone", cast(str, self.__config["project_repo_url"]), "--depth", "1", temp_dir]
-        pip_command: list[str] = ["pip", "install", temp_dir]
+        pip_command: list[str] = ["pip", "install", "--upgrade", temp_dir]
 
         try:
             result: int = call(cloning_command)
