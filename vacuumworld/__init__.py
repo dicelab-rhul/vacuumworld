@@ -8,6 +8,11 @@ from screeninfo import get_monitors as get_monitors_with_screeninfo, ScreenInfoE
 from pymonitors import get_monitors as get_monitors_with_pymonitors
 from pyoptional.pyoptional import PyOptional
 from subprocess import call
+from tempfile import mkdtemp, mkstemp
+from tomllib import load as load_toml
+from shutil import rmtree
+from importlib.metadata import version
+
 from pystarworldsturbo.utils.json.json_value import JSONValue
 
 from .vwconfig_manager import VWConfigManager
@@ -104,25 +109,28 @@ class VacuumWorld():
             return False
 
     def __vw_version_check(self) -> None:
-        version_number: str = cast(str, self.__config["version_number"])
-        remote_version_number: str = VacuumWorld.__get_remote_version_number()
+        version_number: str = version("vacuumworld")
+        remote_version_number: str = self.__get_remote_version_number()
 
-        outdated: bool = VacuumWorld.__compare_version_numbers_and_print_message(version_number, remote_version_number)
+        outdated: bool = self.__compare_version_numbers_and_print_message(version_number, remote_version_number)
 
         if outdated:
-            VacuumWorld.__attempt_auto_update()
+            self.__attempt_auto_update()
 
-    @staticmethod
-    def __attempt_auto_update() -> None:
+    def __attempt_auto_update(self) -> None:
         print("Attempting to update VacuumWorld automatically...")
 
+        temp_dir: str = mkdtemp(prefix="vacuumworld_update_")
+        cloning_command: list[str] = ["git", "clone", cast(str, self.__config["project_repo_url"]), "--depth", "1", temp_dir]
+        pip_command: list[str] = ["pip", "install", "-e", temp_dir]
+
         try:
-            result: int = call(["git", "pull"])
+            result: int = call(cloning_command)
 
             if result != 0:
                 raise IOError()
 
-            result = call(["pip", "install", "-e", "."])
+            result = call(pip_command)
 
             if result != 0:
                 raise IOError()
@@ -130,44 +138,61 @@ class VacuumWorld():
             print("Done.")
         except Exception:
             print("WARNING: Could not update VacuumWorld automatically. Please update VacuumWorld manually.")
+        finally:
+            if os.path.exists(temp_dir):
+                rmtree(temp_dir)
 
-    @staticmethod
-    def __download_remote_config() -> str:
+    def __download_remote_pyproject(self) -> str:
+        """
+        Downloads the remote pyproject.toml from the GitHub repository (raw content)
+        and stores it temporarily. Returns the local file path, or an empty string on failure.
+        """
         try:
-            remote_config_url: str = f"https://raw.githubusercontent.com/dicelab-rhul/vacuumworld/main/vacuumworld/{VacuumWorld.CONFIG_FILE_NAME}"
-            remote_config_downloaded_name: str = f"remote_{VacuumWorld.CONFIG_FILE_NAME}"
+            remote_toml_url = f"{self.__config["project_repo_raw_content_url"]}pyproject.toml"
 
-            response: Response = get(remote_config_url, allow_redirects=True, timeout=5)
+            fd, temp_path = mkstemp(prefix="vacuumworld_remote_pyproject_", suffix=".toml")
 
-            if response and response.status_code == 200:
-                with open(remote_config_downloaded_name, "w") as remote_config_file:
-                    remote_config_file.write(response.text)
+            os.close(fd)
 
-                return remote_config_downloaded_name
-            else:
-                raise IOError("Could not download remote config file.")
+            response: Response = get(remote_toml_url, allow_redirects=True, timeout=5)
+            response.raise_for_status()
+
+            with open(temp_path, "w", encoding="utf-8") as remote_file:
+                remote_file.write(response.text)
+
+            return temp_path
+
         except Exception:
             return ""
 
-    @staticmethod
-    def __get_remote_version_number() -> str:
-        remote_config_path: str = VacuumWorld.__download_remote_config()
+    def __get_remote_version_number(self) -> str:
+        '''
+        Reads the [project].version field from the remote pyproject.toml.
 
-        if not remote_config_path:
+        Returns the version string, or "" on failure.
+        '''
+        remote_path: str = self.__download_remote_pyproject()
+
+        if not remote_path:
             return ""
 
         try:
-            remote_config: dict[str, JSONValue] = VWConfigManager.load_config_from_file(config_file_path=remote_config_path, load_additional_config=False)
+            with open(remote_path, "rb") as i_f:
+                pyproject_data: dict[str, Any] = load_toml(i_f)
 
-            return cast(str, remote_config["version_number"])
+            project_data: dict[str, Any] = pyproject_data.get("project", {})
+            version: str = project_data.get("version", "")
+
+            return version
         except Exception:
             return ""
         finally:
-            if os.path.exists(remote_config_path):
-                os.remove(remote_config_path)
+            try:
+                os.remove(remote_path)
+            except OSError:
+                pass
 
-    @staticmethod
-    def __compare_version_numbers_and_print_message(version_number: str, remote_version_number: str) -> bool:
+    def __compare_version_numbers_and_print_message(self, version_number: str, remote_version_number: str) -> bool:
         if not version_number or "." not in version_number:
             print("WARNING: Could not check whether or not your version of VacuumWorld is up-to-date because the version number is malformed.\n")
 
