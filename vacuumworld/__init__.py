@@ -56,6 +56,8 @@ class VacuumWorld():
 
         self.__config: dict[str, JSONValue] = VWConfigManager.load_config_from_file(config_file_path=VacuumWorld.CONFIG_FILE_PATH)
 
+        self.__config["version_number"] = version("vacuumworld")
+
         self.__vw_version_check()
 
     def run(self, default_mind: PyOptional[VWActorMindSurrogate]=PyOptional.empty(), white_mind: PyOptional[VWActorMindSurrogate]=PyOptional.empty(), green_mind: PyOptional[VWActorMindSurrogate]=PyOptional.empty(), orange_mind: PyOptional[VWActorMindSurrogate]=PyOptional.empty(), **kwargs: Any) -> None:
@@ -109,7 +111,7 @@ class VacuumWorld():
             return False
 
     def __vw_version_check(self) -> None:
-        version_number: str = version("vacuumworld")
+        version_number: str = cast(str, self.__config["version_number"])
         remote_version_number: str = self.__get_remote_version_number()
 
         outdated: bool = self.__compare_version_numbers_and_print_message(version_number, remote_version_number)
@@ -198,7 +200,8 @@ class VacuumWorld():
 
             return True  # Conservative approach (i.e., consider VW outdated).
 
-        print(f"VacuumWorld version: {version_number}.\n")
+        print(f"VacuumWorld version (local): {version_number}.")
+        print(f"VacuumWorld version (remote): {remote_version_number}.\n")
 
         if not remote_version_number or "." not in remote_version_number:
             print("WARNING: Could not check whether or not your version of VacuumWorld is up-to-date because it was not possible to get a well formed latest version number.\n")
