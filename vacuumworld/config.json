@@ -65,6 +65,7 @@
     ],
     "project_repo_url": "https://github.com/dicelab-rhul/vacuumworld",
     "project_wiki_url": "https://github.com/dicelab-rhul/vacuumworld/wiki",
+    "project_repo_raw_content_url": "https://raw.githubusercontent.com/dicelab-rhul/vacuumworld/main/",
     "initial_environment_dim": 8,
     "min_environment_dim": 3,
     "max_environment_dim": 13,
@@ -75,6 +76,5 @@
     "debug": true,
     "debug_primes": [7, 11, 101],
     "debug_test": false,
-    "debug_primes_test": [1, 1, 5],
-    "version_number": "4.4.0"
+    "debug_primes_test": [1, 1, 5]
 }
