@@ -45,8 +45,9 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/dicelab-rhul/vacuumworld"  # ← replace with actual repo URL
+Homepage = "https://github.com/dicelab-rhul/vacuumworld"
 
 [tool.setuptools.packages.find]
-where = ["vacuumworld"]
+where = ["."]
 include = ["vacuumworld*"]
+
