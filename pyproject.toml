@@ -50,4 +50,3 @@ Homepage = "https://github.com/dicelab-rhul/vacuumworld"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["vacuumworld*"]
-
