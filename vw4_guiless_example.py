@@ -18,8 +18,10 @@ class MyMind(VWActorMindSurrogate):
 
     @override
     def revise(self) -> None:
-        # Do something with the observation, the messages, and the effort instead of simply storing/printing them.
+        # Do something with the observation, the messages, and the effort, as needed.
 
+        # For demonstration purposes, we will print perceptions and effort.
+        # Remove if not needed, or use a proper logging mechanism.
         print(f"Observation:\n{self.get_latest_observation().pretty_format()}")
         print(f"Messages: {[str(m) for m in self.get_latest_received_messages()]}")
         print(f"Current effort since the beginning of the simulation: {self.get_effort()}.")
