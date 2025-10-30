@@ -225,12 +225,12 @@ class TestIllegalRunInputs(TestCase):
         for value in [{"donald": 1}, {"goofy": 2}, {"mickey": 3}, {"minnie": 4}]:
             self.assertRaises(ValueError, VWGUIlessRunner, config=self.__config, minds=self.__minds, allowed_args=VacuumWorld.ALLOWED_RUN_ARGS, efforts=value)
 
-    def test_illegal_debug_flag(self) -> None:
+    def test_illegal_randomness_flag(self) -> None:
         '''
         Tests various illegal `debug_enabled` values.
         '''
         for value in [-1, -8.8, "whatever", ["foo", "bar"], {1: 1}, ("a", "b", "c")]:
-            self.assertRaises(TypeError, VWGUIlessRunner, config=self.__config, minds=self.__minds, allowed_args=VacuumWorld.ALLOWED_RUN_ARGS, debug_enabled=value)
+            self.assertRaises(TypeError, VWGUIlessRunner, config=self.__config, minds=self.__minds, allowed_args=VacuumWorld.ALLOWED_RUN_ARGS, randomness_enabled=value)
 
     def test_illegal_minds_combination(self) -> None:
         '''
@@ -258,7 +258,7 @@ class TestIllegalRunInputs(TestCase):
             MalformedDecideSurrogateMind()
         ]
 
-        vw_allowed_run_args_backup: dict[str, Type[Any]] = {k: v for k, v in VacuumWorld.ALLOWED_RUN_ARGS.items()}
+        vw_allowed_run_args_backup: dict[str, Type[Any]] = dict(VacuumWorld.ALLOWED_RUN_ARGS.items())
 
         for mind in malformed_minds:
             for colour in VWColour:

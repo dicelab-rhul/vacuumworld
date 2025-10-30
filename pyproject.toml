@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vacuumworld"
-version = "4.4.1"
+version = "4.4.2"
 description = "VacuumWorld: an agent platform for cleaning robots."
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -31,7 +31,6 @@ classifiers = [
 dependencies = [
     "pystarworldsturbo>=1.2.9",
     "pillow",
-    "wheel",
     "ipython",
     "pytest",
     "screeninfo",
@@ -39,7 +38,7 @@ dependencies = [
     "requests",
     "google-genai",
     "python-dotenv",
-    "playsound3",
+    "pygame",
     "pyjoptional>=1.1.3",
     "pymonitors>=1.0.2"
 ]

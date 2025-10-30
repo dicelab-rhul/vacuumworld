@@ -47,7 +47,7 @@ class VacuumWorld():
         "tooltips": bool,
         "efforts": dict[str, int],
         "total_cycles": int,
-        "debug_enabled": bool
+        "randomness_enabled": bool
     }
 
     def __init__(self) -> None:
@@ -185,14 +185,16 @@ class VacuumWorld():
             project_data: dict[str, Any] = pyproject_data.get("project", {})
             version: str = project_data.get("version", "")
 
+            os.remove(remote_path)
+
             return version
         except Exception:
-            return ""
-        finally:
             try:
                 os.remove(remote_path)
             except OSError:
                 pass
+
+            return ""
 
     def __compare_version_numbers_and_print_message(self, version_number: str, remote_version_number: str) -> bool:
         if not version_number or "." not in version_number:

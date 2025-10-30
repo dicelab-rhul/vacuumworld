@@ -14,8 +14,8 @@ from ..model.actions.vwactions import VWAction, VWCommunicativeAction
 from ..model.actions.vweffort import VWActionEffort
 from ..model.actor.mind.surrogate.vwactor_mind_surrogate import VWActorMindSurrogate
 from ..model.actor.mind.surrogate.vwuser_mind_surrogate import VWUserMindSurrogate
-from ..model.actor.vwactor_behaviour_debugger import VWActorBehaviourDebugger
 from ..model.environment.vwenvironment import VWEnvironment
+from ..model.environment.vwrandomness import VWRandomEventTrigger
 from ..gui.vwsaveload import VWSaveStateManager
 
 import signal as signal_module
@@ -45,7 +45,7 @@ class VWRunner(Process):
             "tooltips": kwargs.get("tooltips", True),
             "total_cycles": kwargs.get("total_cycles", 0),
             "efforts": kwargs.get("efforts", {}),
-            "debug_enabled": kwargs.get("debug_enabled", True)
+            "randomness_enabled": kwargs.get("randomness_enabled", True)
         }
         self.__save_state_manager: VWSaveStateManager = VWSaveStateManager()
         self.__forceful_stop: bool = False
@@ -189,7 +189,7 @@ class VWRunner(Process):
         self.__validate_tooltips()
         self.__validate_total_cycles()
         self.__validate_efforts()
-        self.__validate_debug_enabled_flag()
+        self.__validate_randomness_enabled_flag()
 
     def __validate_play_load(self) -> None:
         if not isinstance(self.__args["play"], self.__allowed_args["play"]):
@@ -235,16 +235,16 @@ class VWRunner(Process):
     def __validate_efforts(self) -> None:
         if not isinstance(self.__args["efforts"], dict):
             raise TypeError(f"Invalid type for argument `efforts`: it should be `dict[str, int]`, but it is `{type(self.__args['efforts'])}`")
-        elif not VWValidator.does_type_match_for_all_elements(t=str, iterable=[key for key in self.__args["efforts"].keys()]):
+        elif not VWValidator.does_type_match_for_all_elements(t=str, iterable=list(self.__args["efforts"].keys())):
             raise TypeError("Invalid type for argument `efforts`: it should be `dict[str, int]`, but there is at least a key that is not a `str`")
-        elif not VWValidator.does_type_match_for_all_elements(t=int, iterable=[value for value in self.__args["efforts"].values()]):
+        elif not VWValidator.does_type_match_for_all_elements(t=int, iterable=list(self.__args["efforts"].values())):
             raise TypeError("Invalid type for argument `efforts`: it should be `dict[str, int]`, but there is at least a value that is not an `int`")
-        elif not all([effort_name in VWActionEffort.EFFORTS for effort_name in self.__args["efforts"]]):
-            raise ValueError(f"Invalid effort name: it should be one of {[k for k in VWActionEffort.EFFORTS]}, but it is `{[e for e in self.__args['efforts'] if e not in VWActionEffort.EFFORTS][0]}`")
+        elif not all(effort_name in VWActionEffort.EFFORTS for effort_name in self.__args["efforts"]):
+            raise ValueError(f"Invalid effort name: it should be one of {list(VWActionEffort.EFFORTS)}, but it is `{[e for e in self.__args['efforts'] if e not in VWActionEffort.EFFORTS][0]}`")
 
-    def __validate_debug_enabled_flag(self) -> None:
-        if not isinstance(self.__args["debug_enabled"], self.__allowed_args["debug_enabled"]):
-            raise TypeError("Argument `debug_enabled` must be a boolean.")
+    def __validate_randomness_enabled_flag(self) -> None:
+        if not isinstance(self.__args["randomness_enabled"], self.__allowed_args["randomness_enabled"]):
+            raise TypeError("Argument `randomness_enabled` must be a boolean.")
 
     def __override_default_config(self) -> None:
         # The content of `self.__minds` has already been validated in `__validate_minds()`.
@@ -266,7 +266,7 @@ class VWRunner(Process):
         self.__config["y_scale"] = cast(float, self.__args["scale"])
         self.__config["tooltips"] = cast(bool, self.__config["tooltips"]) and cast(bool, self.__args["tooltips"])
         self.__config["total_cycles"] = cast(int, self.__args["total_cycles"])
-        self.__config["debug"] = cast(bool, self.__config["debug"]) and cast(bool, self.__args["debug_enabled"])
+        self.__config["randomness_enabled"] = cast(bool, self.__config["randomness_enabled"]) and cast(bool, self.__args["randomness_enabled"])
 
     def __scale_config_parameters(self) -> None:
         self.__config["grid_size"] = cast(int, self.__config["grid_size"]) * cast(float, self.__config["scale"])
@@ -313,21 +313,21 @@ class VWRunner(Process):
         VWCommunicativeAction.SENDER_ID_SPOOFING_ALLOWED = cast(bool, self.__config["sender_id_spoofing_allowed"])
 
     def __manage_debug_flag(self) -> None:
-        if self.__config["debug"] is None or not isinstance(self.__config["debug"], bool):
-            raise VWInternalError("The debug flag is not valid.")
-        elif self.__config["debug_test"] is None or not isinstance(self.__config["debug_test"], bool):
-            raise VWInternalError("The debug test flag is not valid.")
-        elif self.__config["debug_primes"] is None or not isinstance(self.__config["debug_primes"], list) or any([not isinstance(p, int) for p in cast(list[Any], self.__config["debug_primes"])]):
-            raise VWInternalError("The list of debug primes is not valid.")
-        elif self.__config["debug_primes_test"] is None or not isinstance(self.__config["debug_primes_test"], list) or any([not isinstance(p, int) for p in cast(list[Any], self.__config["debug_primes_test"])]):
-            raise VWInternalError("The list of test debug primes is not valid.")
+        if self.__config["randomness_enabled"] is None or not isinstance(self.__config["randomness_enabled"], bool):
+            raise VWInternalError("The `randomness enabled` flag is not valid.")
+        elif self.__config["randomness_test"] is None or not isinstance(self.__config["randomness_test"], bool):
+            raise VWInternalError("The `randomness test` flag is not valid.")
+        elif self.__config["randomness_basic_primes"] is None or not isinstance(self.__config["randomness_basic_primes"], list) or any(not isinstance(p, int) for p in cast(list[Any], self.__config["randomness_basic_primes"])):
+            raise VWInternalError("The list of basic primes is not valid.")
+        elif self.__config["randomness_basic_primes_test"] is None or not isinstance(self.__config["randomness_basic_primes_test"], list) or any(not isinstance(p, int) for p in cast(list[Any], self.__config["randomness_basic_primes_test"])):
+            raise VWInternalError("The list of test basic primes is not valid.")
 
-        VWActorBehaviourDebugger.DEBUG_ENABLED = self.__config["debug"]
+        VWRandomEventTrigger.ENABLED = self.__config["randomness_enabled"]
 
-        if self.__config["debug_test"]:
-            VWActorBehaviourDebugger.PRIMES = cast(list[int], self.__config["debug_primes_test"])
+        if self.__config["randomness_test"]:
+            VWRandomEventTrigger.PRIMES = cast(list[int], self.__config["randomness_basic_primes_test"])
         else:
-            VWActorBehaviourDebugger.PRIMES = cast(list[int], self.__config["debug_primes"])
+            VWRandomEventTrigger.PRIMES = cast(list[int], self.__config["randomness_basic_primes"])
 
     @staticmethod
     def __set_sigtstp_handler() -> None:
