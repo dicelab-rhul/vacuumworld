@@ -235,12 +235,12 @@ class VWRunner(Process):
     def __validate_efforts(self) -> None:
         if not isinstance(self.__args["efforts"], dict):
             raise TypeError(f"Invalid type for argument `efforts`: it should be `dict[str, int]`, but it is `{type(self.__args['efforts'])}`")
-        elif not VWValidator.does_type_match_for_all_elements(t=str, iterable=[key for key in self.__args["efforts"].keys()]):
+        elif not VWValidator.does_type_match_for_all_elements(t=str, iterable=list(self.__args["efforts"].keys())):
             raise TypeError("Invalid type for argument `efforts`: it should be `dict[str, int]`, but there is at least a key that is not a `str`")
-        elif not VWValidator.does_type_match_for_all_elements(t=int, iterable=[value for value in self.__args["efforts"].values()]):
+        elif not VWValidator.does_type_match_for_all_elements(t=int, iterable=list(self.__args["efforts"].values())):
             raise TypeError("Invalid type for argument `efforts`: it should be `dict[str, int]`, but there is at least a value that is not an `int`")
-        elif not all([effort_name in VWActionEffort.EFFORTS for effort_name in self.__args["efforts"]]):
-            raise ValueError(f"Invalid effort name: it should be one of {[k for k in VWActionEffort.EFFORTS]}, but it is `{[e for e in self.__args['efforts'] if e not in VWActionEffort.EFFORTS][0]}`")
+        elif not all(effort_name in VWActionEffort.EFFORTS for effort_name in self.__args["efforts"]):
+            raise ValueError(f"Invalid effort name: it should be one of {list(VWActionEffort.EFFORTS)}, but it is `{[e for e in self.__args['efforts'] if e not in VWActionEffort.EFFORTS][0]}`")
 
     def __validate_randomness_enabled_flag(self) -> None:
         if not isinstance(self.__args["randomness_enabled"], self.__allowed_args["randomness_enabled"]):
