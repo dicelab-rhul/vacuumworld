@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vacuumworld"
-version = "4.4.1"
+version = "4.4.2"
 description = "VacuumWorld: an agent platform for cleaning robots."
 readme = "README.md"
 license = { file = "LICENSE" }
