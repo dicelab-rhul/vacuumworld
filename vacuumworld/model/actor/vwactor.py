@@ -6,13 +6,13 @@ from pystarworldsturbo.elements.actor import Actor
 from pystarworldsturbo.elements.sensor import Sensor
 from pystarworldsturbo.elements.actuator import Actuator
 
-from .vwactor_behaviour_debugger import VWActorBehaviourDebugger
 from .mind.vwactor_mind import VWMind
 from .appendices.vwsensors import VWSensor, VWListeningSensor, VWObservationSensor
 from .appendices.vwactuators import VWActuator, VWCommunicativeActuator
 from ..actions.vwactions import VWAction, VWPhysicalAction, VWCommunicativeAction
 from ..actions.vwspeak_action import VWSpeakAction
 from ..actions.vwbroadcast_action import VWBroadcastAction
+from ..environment.vwrandomness import VWRandomEventTrigger
 from ...common.vwobservation import VWObservation
 from ...common.vwexceptions import VWActionAttemptException, VWPerceptionException
 from ...common.vwvalidator import VWValidator
@@ -115,8 +115,8 @@ class VWActor(Actor):
         * `decide()`
         * `execute()`
         '''
-        # If debug is disabled, this call will do nothing.
-        VWActorBehaviourDebugger.debug()
+        # If randomness is disabled, this call will do nothing.
+        VWRandomEventTrigger.activate()
 
         # Fetch the perceptions.
         observation, messages = self.__get_percepts()
