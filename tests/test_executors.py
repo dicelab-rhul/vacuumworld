@@ -113,7 +113,7 @@ class TestExecutors(TestCase):
         speak_executor: VWSpeakExecutor = VWSpeakExecutor()
         env, _ = VWEnvironment.generate_random_env_for_testing(custom_grid_size=True, config=self.__config)
 
-        self.__test_messages_delivery(messages=self.__message_content_list, speak_executor=speak_executor, env=env, custom_sender_id=custom_sender_id, recipients=[a_id for a_id in env.get_actors()])
+        self.__test_messages_delivery(messages=self.__message_content_list, speak_executor=speak_executor, env=env, custom_sender_id=custom_sender_id, recipients=list(env.get_actors()))
         self.__test_messages_delivery(messages=self.__message_content_list, speak_executor=speak_executor, env=env, custom_sender_id=custom_sender_id, recipients=[])
 
     def __test_messages_delivery(self, messages: list[Any], speak_executor: VWSpeakExecutor, env: VWEnvironment, custom_sender_id: PyOptional[str], recipients: list[str]) -> None:

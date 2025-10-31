@@ -30,7 +30,7 @@ class VWPositionNames(Enum):
         '''
         Returns a `list` of all the elements of this `Enum`.
         '''
-        return [position_name for position_name in cls]
+        return list(cls)
 
     @classmethod
     def values(cls) -> list[str]:

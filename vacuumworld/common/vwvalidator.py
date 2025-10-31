@@ -16,7 +16,7 @@ class VWValidator():
         '''
         Raises a ValueError if any of the given objects are None.
         '''
-        if any([obj is None for obj in objs]):
+        if any(obj is None for obj in objs):
             raise ValueError("One or more objects are None.")
 
     @staticmethod
@@ -24,7 +24,7 @@ class VWValidator():
         '''
         Raises a ValueError if the given iterable is None, or if any of its elements are None.
         '''
-        if iterable is None or any([obj is None for obj in iterable]):
+        if iterable is None or any(obj is None for obj in iterable):
             raise ValueError("Either the iterable, or one or more of its elements are None.")
 
     @staticmethod
@@ -76,7 +76,7 @@ class VWValidator():
         '''
         assert t is not None and isinstance(objs, Iterable)
 
-        return all([isinstance(obj, t) for obj in objs])
+        return all(isinstance(obj, t) for obj in objs)
 
     @staticmethod
     def validate_type_for_all_elements(t: type, iterable: Iterable[Any]) -> None:
@@ -96,4 +96,4 @@ class VWValidator():
         '''
         assert t is not None and isinstance(iterable, Iterable)
 
-        return all([isinstance(elm, t) for elm in iterable])
+        return all(isinstance(elm, t) for elm in iterable)

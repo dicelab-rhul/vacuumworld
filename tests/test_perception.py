@@ -116,13 +116,13 @@ class TestPerception(TestCase):
 
                         actions_outcomes: dict[Type[VWAction], list[ActionOutcome]] = communicative_observation.get_latest_actions_outcomes_as_dict()
 
-                        self.assertTrue(len(actions_outcomes) == 2)
-                        self.assertTrue(physical_action_type in actions_outcomes)
-                        self.assertTrue(communicative_action_type in actions_outcomes)
+                        self.assertEqual(2, len(actions_outcomes))
+                        self.assertIn(physical_action_type, actions_outcomes)
+                        self.assertIn(communicative_action_type, actions_outcomes)
                         self.assertTrue(VWValidator.does_type_match(t=list, obj=actions_outcomes[physical_action_type]))
-                        self.assertTrue(all([VWValidator.does_type_match(t=ActionOutcome, obj=action_outcome) for action_outcome in actions_outcomes[physical_action_type]]))
+                        self.assertTrue(all(VWValidator.does_type_match(t=ActionOutcome, obj=action_outcome) for action_outcome in actions_outcomes[physical_action_type]))
                         self.assertTrue(VWValidator.does_type_match(t=list, obj=actions_outcomes[communicative_action_type]))
-                        self.assertTrue(all([VWValidator.does_type_match(t=ActionOutcome, obj=action_outcome) for action_outcome in actions_outcomes[communicative_action_type]]))
+                        self.assertTrue(all(VWValidator.does_type_match(t=ActionOutcome, obj=action_outcome) for action_outcome in actions_outcomes[communicative_action_type]))
                         self.assertIn(physical_action_outcome, actions_outcomes[physical_action_type])
                         self.assertIn(communicative_action_outcome, actions_outcomes[communicative_action_type])
 
@@ -134,13 +134,13 @@ class TestPerception(TestCase):
 
         actions_outcomes: dict[Type[VWAction], list[ActionOutcome]] = o.get_latest_actions_outcomes_as_dict()
 
-        self.assertTrue(len(actions_outcomes) == 1)
-        self.assertTrue(action_type in actions_outcomes)
+        self.assertEqual(1, len(actions_outcomes))
+        self.assertIn(action_type, actions_outcomes)
 
         action_outcomes: list[ActionOutcome] = actions_outcomes[action_type]
 
         self.assertTrue(VWValidator.does_type_match(t=list, obj=action_outcomes))
-        self.assertTrue(all([VWValidator.does_type_match(t=ActionOutcome, obj=action_outcome) for action_outcome in action_outcomes]))
+        self.assertTrue(all(VWValidator.does_type_match(t=ActionOutcome, obj=action_outcome) for action_outcome in action_outcomes))
         self.assertIn(action_outcome, action_outcomes)
 
     def __check_locations(self, o: VWObservation, positions: list[VWPositionNames], coords: list[VWCoord], actors: list[PyOptional[VWActorAppearance]], dirts: list[PyOptional[VWDirtAppearance]]) -> None:

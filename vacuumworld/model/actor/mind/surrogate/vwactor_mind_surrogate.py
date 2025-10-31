@@ -26,7 +26,7 @@ class VWActorMindSurrogate(ABC):
     '''
     MUST_BE_DEFINED: dict[str, Any] = {
         "revise": {"number_of_params_excluding_self": 0, "return_type": [None, "None", "NoneType"]},
-        "decide": {"number_of_params_excluding_self": 0, "return_type": [Iterable[VWAction], Iterable[VWPhysicalAction], Iterable[VWCommunicativeAction]]},
+        "decide": {"number_of_params_excluding_self": 0, "return_type": [Iterable[VWAction], Iterable[VWPhysicalAction], Iterable[VWCommunicativeAction]]}
     }
 
     def __init__(self) -> None:
@@ -86,7 +86,7 @@ class VWActorMindSurrogate(ABC):
 
         Updates the cumulative effort of the `VWActor` by `increment`.
         '''
-        assert int is not None and isinstance(increment, int)
+        assert increment is not None and isinstance(increment, int)
 
         self.__effort += increment
 

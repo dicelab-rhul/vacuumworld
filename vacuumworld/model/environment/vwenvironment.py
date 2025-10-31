@@ -152,10 +152,10 @@ class VWEnvironment(Environment):
         # The check that at least one `VWAction` (and no more than `n`) is attempted has already been done in `__validate_number_of_actions()`. Hence, this is an assertion, and not a conditional statement.
         assert 0 < len(actions) <= n
 
-        if sum(map(lambda action: isinstance(action, VWPhysicalAction), actions)) > n_physical:
+        if sum(isinstance(a, VWPhysicalAction) for a in actions) > n_physical:
             raise VWActionAttemptException(f"Too many physical actions were attempted. There is a hard limit of {n_physical} physical action, and {n_communicative} communicative action per actor per cycle.")
 
-        if sum(map(lambda action: isinstance(action, VWCommunicativeAction), actions)) > n_communicative:
+        if sum(isinstance(a, VWCommunicativeAction) for a in actions) > n_communicative:
             raise VWActionAttemptException(f"Too many communicative actions were attempted. There is a hard limit of {n_physical} physical action, and {n_communicative} communicative action per actor per cycle.")
 
     def get_executor_for(self, action: Action) -> PyOptional[ActionExecutor]:
