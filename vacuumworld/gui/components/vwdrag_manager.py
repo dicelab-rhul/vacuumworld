@@ -1,6 +1,5 @@
 from tkinter import Canvas, Event
 from typing import Callable, cast
-from math import floor
 from PIL.ImageTk import PhotoImage
 
 from pystarworldsturbo.utils.json.json_value import JSONValue
@@ -16,8 +15,8 @@ class VWCanvasDragManager():
         self.__config: dict[str, JSONValue] = config
         self.__bounds_manager: VWBoundsManager = VWBoundsManager(config=config)
 
-        self.__x: int = 0
-        self.__y: int = 0
+        self.__x: float = 0.0
+        self.__y: float = 0.0
 
         self.__grid_dim: int = grid_dim
         self.__canvas: Canvas = canvas
@@ -45,23 +44,30 @@ class VWCanvasDragManager():
 
     def on_drag(self, event: Event) -> None:
         '''
-        This method is called when the user is dragging the `Image` object.
-
-        Moves the `Image` object across the canvas.
+        Move the image while dragging, aligned to the correct float-based grid.
         '''
-        inc: int = int(cast(int, self.__config["grid_size"]) / self.__grid_dim)
-        x: int = int(event.x / inc) * inc + floor(inc / 2) + 1
-        y: int = int(event.y / inc) * inc + floor(inc / 2) + 1
+        grid_size: int = cast(int, self.__config["grid_size"])
+        inc: float = grid_size / self.__grid_dim
+        env_dim: int = self.__grid_dim
+        x_index: int = min(int(event.x // inc), env_dim - 1)
+        y_index: int = min(int(event.y // inc), env_dim - 1)
 
-        if event.x < 0 or event.y < 0 or not self.__bounds_manager.in_bounds(x=x, y=y):
+        # Center of the target cell
+        x: float = x_index * inc + inc / 2
+        y: float = y_index * inc + inc / 2
+
+        # Check bounds based on raw cursor position, not snapped center
+        if not self.__bounds_manager.in_bounds(x=event.x, y=event.y):
             self.__canvas.itemconfigure(self.__drag, state="hidden")
-        elif x <= cast(int, self.__config["grid_size"]) and y <= cast(int, self.__config["grid_size"]) and self.__bounds_manager.in_bounds(x=x, y=y):
+
+            return
+        else:
             self.__canvas.itemconfigure(self.__drag, state="normal")
 
-        # To prevent unnecessary re-renderings.
+        # Only move if actually changed
         if x != self.__x or y != self.__y:
-            dx: int = x - self.__x
-            dy: int = y - self.__y
+            dx = x - self.__x
+            dy = y - self.__y
             self.__canvas.move(self.__drag, dx, dy)
             self.__x = x
             self.__y = y

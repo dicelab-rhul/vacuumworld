@@ -1,4 +1,4 @@
-from typing import Type, Any
+from typing import Type, Any, cast
 from time import sleep
 
 from pystarworldsturbo.utils.json.json_value import JSONValue
@@ -54,9 +54,12 @@ class VWGUIlessRunner(VWRunner):
         if env.get_current_cycle_number() >= 0:
             print(f"\nEnvironment at the end of cycle {env.get_current_cycle_number()}:\n\n{env}\n")
 
-        sleep(int(self.get_config()["time_step"]))
+        time_step: float = cast(float, self.get_config()["time_step"])
+        total_cycles: int = cast(int, self.get_config()["total_cycles"])
 
-        if self.get_config()["total_cycles"] > 0 and env.get_current_cycle_number() == self.get_config()["total_cycles"]:
+        sleep(int(time_step))
+
+        if total_cycles > 0 and env.get_current_cycle_number() == total_cycles:
             print("INFO: end of cycles.")
 
             self.kill()

@@ -1,7 +1,7 @@
 from tkinter import Event, Tk, Frame, Canvas, Label, StringVar, W, E, X
 from typing import Callable, Any, cast
 from PIL import Image
-from PIL.Image import Image as PILImage
+from PIL.Image import Image as PILImage, Resampling
 from PIL.ImageTk import PhotoImage
 from collections import OrderedDict
 from pyoptional.pyoptional import PyOptional
@@ -81,10 +81,26 @@ class VWSimulationWindow(Frame):
         self.__all_images_tk: dict[tuple[str, str], PhotoImage] = {}  # Will store all tk images.
         self.__all_images_tk_scaled: dict[tuple[str, str], PhotoImage] = {}  # Will store all tk images scaled to fit grid.
         self.__grid_lines: list[int] = []  # Will store line objects.
+        self.__image_refs: list[PhotoImage] = []  # Need to keep references to PhotoImage to avoid garbage collection.
 
         self.__create_and_display()
 
         # Note: pack() for VWSimulationWindow needs to be called by the caller.
+
+    def __create_image(self, x: int | float, y: int | float, img: PILImage | PhotoImage) -> int:
+        """
+        Create a Tkinter canvas image from either a PIL or PhotoImage, and
+        keep a reference so it doesn't get garbage-collected.
+        """
+        # Ensure we have a PhotoImage
+        converted_img: PhotoImage = img if isinstance(img, PhotoImage) else PhotoImage(img)
+
+        # Keep a reference so the image persists
+        if converted_img not in self.__image_refs:
+            self.__image_refs.append(converted_img)
+
+        # Create the image on the canvas
+        return self.__canvas.create_image(x, y, image=converted_img)
 
     def __create_and_display(self) -> None:
         self.configure(background=cast(str, self.__config["bg_colour"]))
@@ -113,7 +129,7 @@ class VWSimulationWindow(Frame):
         self.__canvas.bind("<Leave>", self.__on_leave_canvas)
 
     def __load_button_image(self, button_name: str) -> PILImage:
-        return VWSimulationWindow.__scale(Image.open(os.path.join(str(self.__config["button_data_path"]), str(self.__button_data[button_name]["image_file"]))), self.__config["button_size"])
+        return VWSimulationWindow.__scale(Image.open(os.path.join(str(self.__config["button_data_path"]), str(self.__button_data[button_name]["image_file"]))), cast(int, self.__config["button_size"]))
 
     def __set_button_actions(self) -> None:
         self.__button_data["play"]["action"] = self.__play
@@ -233,7 +249,7 @@ class VWSimulationWindow(Frame):
         iy: int = int(cast(int, self.__config["location_size"]) / 2 + 4)
 
         for i, key in enumerate(keys):
-            item: int = self.__canvas.create_image(ix, iy + i * cast(int, self.__config["location_size"]), image=self.__all_images_tk[key])
+            item: int = self.__create_image(x=ix, y=iy + i * cast(int, self.__config["location_size"]), img=self.__all_images[key])
             drag_manager: VWCanvasDragManager = VWCanvasDragManager(self.__config, key, self.__env.get_ambient().get_grid_dim(), self.__canvas, item, self.__drag_on_start, self.__drag_on_drop)
             self.__dragables[item] = (drag_manager, key)
 
@@ -249,24 +265,33 @@ class VWSimulationWindow(Frame):
         if not self.__running and self.__bounds_manager.in_bounds(x=event.x, y=event.y):
             self.__deselect()
             self.focus()
-            inc: int = int(cast(int, self.__config["grid_size"]) / self.__env.get_ambient().get_grid_dim())
-            coordinate: VWCoord = VWCoord(x=int(event.x / inc), y=int(event.y / inc))
+
+            env_dim: int = self.__env.get_ambient().get_grid_dim()
+            size: int = cast(int, self.__config["grid_size"])
+            inc: float = size / env_dim
+            x: int = min(int(event.x // inc), env_dim - 1)
+            y: int = min(int(event.y // inc), env_dim - 1)
+            coordinate: VWCoord = VWCoord(x=x, y=y)
 
             if print_message:
                 print(f"SELECT: selected location {coordinate}.")
 
             self.__selected = PyOptional[VWCoord].of(coordinate)
-            xx: int = coordinate.get_x() * inc
-            yy: int = coordinate.get_y() * inc
-            self.__rectangle_selected = PyOptional[int].of(self.__canvas.create_rectangle((xx, yy, xx + inc, yy + inc), fill="", width=3))
+            xx: float = coordinate.get_x() * inc
+            yy: float = coordinate.get_y() * inc
+            self.__rectangle_selected = PyOptional[int].of(self.__canvas.create_rectangle((xx + 1, yy + 1, xx + inc, yy + inc), fill="", width=3))
 
     def __remove_top(self, event: Event) -> None:
         if not self.__running and self.__bounds_manager.in_bounds(x=event.x, y=event.y):
 
             print("remove top")
 
-            inc: int = int(cast(int, self.__config["grid_size"]) / self.__env.get_ambient().get_grid_dim())
-            coordinate: VWCoord = VWCoord(x=int(event.x / inc), y=int(event.y / inc))
+            env_dim: int = self.__env.get_ambient().get_grid_dim()
+            size: int = cast(int, self.__config["grid_size"])
+            inc: float = size / env_dim
+            x: int = min(int(event.x // inc), env_dim - 1)
+            y: int = min(int(event.y // inc), env_dim - 1)
+            coordinate: VWCoord = VWCoord(x=x, y=y)
 
             if coordinate in self.__env.get_ambient().get_grid():
                 location: VWLocation = self.__env.get_ambient().get_location_interface(coord=coordinate)
@@ -308,9 +333,11 @@ class VWSimulationWindow(Frame):
 
             new_orientation: VWOrientation = working_location.get_actor_appearance().or_else_raise().get_orientation().get(direction=direction)
             actor_colour: VWColour = working_location.get_actor_appearance().or_else_raise().get_colour()
-            inc: int = int(cast(int, self.__config["grid_size"]) / self.__env.get_ambient().get_grid_dim())
+            env_dim: int = self.__env.get_ambient().get_grid_dim()
+            size: int = cast(int, self.__config["grid_size"])
+            inc: float = size / env_dim
             tk_img: PhotoImage = self.__all_images_tk_scaled[(actor_colour.value, new_orientation.value)]
-            item: int = self.__canvas.create_image(self.__selected.or_else_raise().get_x() * inc + inc/2, self.__selected.or_else_raise().get_y() * inc + inc/2, image=tk_img)
+            item: int = self.__create_image(x=self.__selected.or_else_raise().get_x() * inc + inc/2, y=self.__selected.or_else_raise().get_y() * inc + inc/2, img=tk_img)
             self.__canvas_agents[self.__selected.or_else_raise()] = item
 
             self.__env.turn_actor(coord=self.__selected.or_else_raise(), direction=direction)
@@ -356,7 +383,7 @@ class VWSimulationWindow(Frame):
             self.__canvas.tag_raise(self.__rectangle_selected.or_else_raise())
 
     def __load_and_redraw(self, load_menu: VWAutocompleteEntry) -> None:
-        loaded_env: PyOptional[VWEnvironment] = PyOptional.empty()
+        loaded_env: PyOptional[VWEnvironment] = PyOptional[VWEnvironment].empty()
 
         try:
             loaded_env = PyOptional[VWEnvironment].of(self.__load(load_menu))
@@ -386,19 +413,21 @@ class VWSimulationWindow(Frame):
         '''
         self.__reset_canvas(lines=False)
 
-        inc: int = int(cast(int, self.__config["grid_size"]) / self.__env.get_ambient().get_grid_dim())
+        env_dim: int = self.__env.get_ambient().get_grid_dim()
+        size: int = cast(int, self.__config["grid_size"])
+        inc: float = size / env_dim
 
         for coord, location in self.__env.get_ambient().get_grid().items():
             if location:
                 self.__redraw_location(coord=coord, location=location, inc=inc)
 
-    def __redraw_location(self, coord: VWCoord, location: VWLocation, inc: int) -> None:
+    def __redraw_location(self, coord: VWCoord, location: VWLocation, inc: float) -> None:
         assert location
 
         if location.has_actor():
             actor_appearance: VWActorAppearance = location.get_actor_appearance().or_else_raise()
             tk_img: PhotoImage = self.__all_images_tk_scaled[(actor_appearance.get_colour().value, actor_appearance.get_orientation().value)]
-            item: int = self.__canvas.create_image(coord.get_x() * inc + inc/2, coord.get_y() * inc + inc/2, image=tk_img)
+            item: int = self.__create_image(x=coord.get_x() * inc + inc/2, y=coord.get_y() * inc + inc/2, img=tk_img)
 
             self.__canvas_agents[coord] = item
 
@@ -410,7 +439,7 @@ class VWSimulationWindow(Frame):
         if location.has_dirt():
             dirt_appearance: VWDirtAppearance = location.get_dirt_appearance().or_else_raise()
             tk_img: PhotoImage = self.__all_images_tk_scaled[(dirt_appearance.get_colour().value, "dirt")]
-            item: int = self.__canvas.create_image(coord.get_x() * inc + inc/2, coord.get_y() * inc + inc/2, image=tk_img)
+            item: int = self.__create_image(x=coord.get_x() * inc + inc/2, y=coord.get_y() * inc + inc/2, img=tk_img)
 
             self.__canvas_dirts[coord] = item
 
@@ -420,8 +449,8 @@ class VWSimulationWindow(Frame):
         env_dim: int = self.__env.get_ambient().get_grid_dim()
         size: int = cast(int, self.__config["grid_size"])
 
-        x: float = 0
-        y: float = 0
+        x: float = 0.0
+        y: float = 0.0
         inc: float = size / env_dim
 
         for _ in range(env_dim + 1):
@@ -482,7 +511,8 @@ class VWSimulationWindow(Frame):
     @staticmethod
     def __scale(img: PILImage, lsize: int) -> PILImage:
         scale: float = lsize / max(img.width, img.height)
-        return img.resize((int(img.width * scale), int(img.height * scale)), Image.BICUBIC)
+
+        return img.resize((int(img.width * scale), int(img.height * scale)), Resampling.BICUBIC)
 
     # Resize the grid.
     def __on_resize(self, value: int) -> None:
@@ -498,22 +528,26 @@ class VWSimulationWindow(Frame):
     def __on_resize_slide(self, value: int) -> None:
         self.__size_text.set(str(value + cast(int, self.__config["min_environment_dim"])))
 
-    def __on_leave_canvas(self, _) -> None:
+    def __on_leave_canvas(self, _: Any) -> None:
         self.__coordinate_text.set(self.__empty_location_coordinates_text)
 
     def __on_mouse_move(self, event: Event) -> None:
         if self.__bounds_manager.in_bounds(x=event.x, y=event.y):
-            inc: int = int(cast(int, self.__config["grid_size"]) / self.__env.get_ambient().get_grid_dim())
+            env_dim: int = self.__env.get_ambient().get_grid_dim()
+            size: int = cast(int, self.__config["grid_size"])
+            inc: float = size / env_dim
+            x: int = min(int(event.x // inc), env_dim - 1)
+            y: int = min(int(event.y // inc), env_dim - 1)
 
-            self.__coordinate_text.set(f"({int(event.x / inc)},{int(event.y / inc)})")
+            self.__coordinate_text.set(f"({x},{y})")
         else:
             self.__coordinate_text.set(self.__empty_location_coordinates_text)
 
     def __drag_on_start(self, event: Event) -> None:
-        drag_manager, img_key = self.__dragables[event.widget.find_closest(event.x, event.y)[0]]
+        drag_manager, img_key = self.__dragables[cast(Canvas, event.widget).find_closest(event.x, event.y)[0]]
 
         drag_manager.set_drag_image(self.__all_images_tk_scaled[img_key])
-        drag_manager.set_drag(self.__canvas.create_image(event.x, event.y, image=drag_manager.get_drag_image()))
+        drag_manager.set_drag(self.__create_image(x=event.x, y=event.y, img=drag_manager.get_drag_image()))
 
         self.__canvas.itemconfigure(drag_manager.get_drag(), state="hidden")
         self.__canvas.tag_lower(drag_manager.get_drag())
@@ -535,9 +569,11 @@ class VWSimulationWindow(Frame):
                 pass
 
     def __drag_on_drop(self, event: Event, drag_manager: VWCanvasDragManager) -> None:
-        inc: int = int(cast(int, self.__config["grid_size"]) / self.__env.get_ambient().get_grid_dim())
-        x: int = int(event.x / inc)
-        y: int = int(event.y / inc)
+        env_dim: int = self.__env.get_ambient().get_grid_dim()
+        size: int = cast(int, self.__config["grid_size"])
+        inc: float = size / env_dim
+        x: int = min(int(event.x // inc), env_dim - 1)
+        y: int = min(int(event.y // inc), env_dim - 1)
         coord: VWCoord = VWCoord(x=x, y=y)
 
         # Update the environment state.

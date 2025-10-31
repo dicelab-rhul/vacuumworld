@@ -15,9 +15,9 @@ class VWAutocompleteEntry(Entry):
         self.__dropdown_parent: Frame = args[0]
         self.__lista: list[str] = lista
         self.__var: StringVar = self["textvariable"] if "textvariable" in kwargs else StringVar()
-        self.__font: tuple[Any] = kwargs.get("font", None)
+        self.__font: Any = kwargs.get("font", None)
 
-        self.__var.trace("w", self.__changed)
+        self.__var.trace(mode="w", callback=self.__changed)
 
         self.__height: int = int(height)
 

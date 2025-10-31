@@ -291,7 +291,7 @@ class VWRunner(Process):
 
     def __assign_efforts_to_actions(self) -> None:
         # The content of `self.__args` has already been validated in `__validate_optional_args()`.
-        assert self.__args["efforts"] is not None and isinstance(self.__args["efforts"], dict) and all([isinstance(key, (str, Type))] for key in self.__args["efforts"].keys()) and all([isinstance(value, int) for value in self.__args["efforts"].values()])
+        assert self.__args["efforts"] is not None and isinstance(self.__args["efforts"], dict) and all([isinstance(key, (str, Type))] for key in self.__args["efforts"].keys()) and all(isinstance(value, int) for value in self.__args["efforts"].values())
 
         for k, v in self.__args["efforts"].items():
             if isinstance(k, Type):

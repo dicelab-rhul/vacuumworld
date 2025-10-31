@@ -87,7 +87,7 @@ class VacuumWorld():
                 raise ScreenInfoError("No monitor found by `screeninfo`.")
         except Exception:
             for monitor in get_monitors_with_pymonitors(print_info=False):
-                if monitor.data["successfully_parsed"] and all([dimension in monitor.data for dimension in ["width", "height"]]) and monitor.data["width"] > 0 and monitor.data["height"] > 0:
+                if monitor.data["successfully_parsed"] and all(dimension in monitor.data for dimension in ["width", "height"]) and monitor.data["width"] > 0 and monitor.data["height"] > 0:
                     return True
 
             return False

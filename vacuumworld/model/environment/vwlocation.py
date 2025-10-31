@@ -30,7 +30,7 @@ class VWLocation(LocationAppearance):
 
     Each of the four sides of `VWLocation` may contain a (`bool`) wall. However, the sides exhibiting a wall must be consecutive.
     '''
-    def __init__(self, coord: VWCoord, actor_appearance: PyOptional[VWActorAppearance]=PyOptional.empty(), dirt_appearance: PyOptional[VWDirtAppearance]=PyOptional.empty(), wall: dict[VWOrientation, bool]={orientation: False for orientation in VWOrientation}) -> None:
+    def __init__(self, coord: VWCoord, actor_appearance: PyOptional[VWActorAppearance]=PyOptional.empty(), dirt_appearance: PyOptional[VWDirtAppearance]=PyOptional.empty(), wall: dict[VWOrientation, bool]=dict.fromkeys(VWOrientation, False)) -> None:
         assert coord is not None
 
         self.__coord: VWCoord = coord
@@ -319,7 +319,7 @@ class VWLocation(LocationAppearance):
 
         Generates and returns a random `dict` mapping each `VWOrientation` to a `bool` specifying whether or not there is a wall on the side identified by that particular `VWOrientation`.
         '''
-        wall: dict[VWOrientation, bool] = {orientation: False for orientation in VWOrientation}
+        wall: dict[VWOrientation, bool] = dict.fromkeys(VWOrientation, False)
         roll: int = randint(1, 8)
 
         if roll == 1:

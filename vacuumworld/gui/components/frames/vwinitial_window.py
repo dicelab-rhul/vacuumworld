@@ -1,7 +1,7 @@
 from tkinter import Tk, Frame, Canvas
 from typing import Callable, Any, cast
 from PIL import Image
-from PIL.Image import Image as PILImage
+from PIL.Image import Image as PILImage, Resampling
 from PIL.ImageTk import PhotoImage
 
 from pystarworldsturbo.utils.json.json_value import JSONValue
@@ -38,7 +38,7 @@ class VWInitialWindow(Frame):
         self.configure(background=cast(str, self.__config["bg_colour"]))
         self.__canvas: Canvas = Canvas(self, width=cast(int, self.__config["grid_size"]) + 1, height=cast(int, self.__config["grid_size"]) + 1, bd=0, highlightthickness=0)
 
-        self.__img_tk: PhotoImage = PhotoImage(Image.open(cast(str, self.__config["main_menu_image_path"])).resize((int(cast(int, self.__config["grid_size"])), int(cast(int, self.__config["grid_size"]))), Image.BICUBIC))
+        self.__img_tk: PhotoImage = PhotoImage(Image.open(cast(str, self.__config["main_menu_image_path"])).resize((int(cast(int, self.__config["grid_size"])), int(cast(int, self.__config["grid_size"]))), Resampling.BICUBIC))
         self.__image: int = self.__canvas.create_image(int(cast(int, self.__config["grid_size"]) / 2), int(cast(int, self.__config["grid_size"]) / 2), image=self.__img_tk)
 
         self.__button_frame: Frame = Frame(self)
@@ -64,7 +64,7 @@ class VWInitialWindow(Frame):
         action: Callable[..., None] = self.__button_data[button_name]["action"]
         text: str = self.__button_data[button_name]["text"]
         image: PILImage = Image.open(os.path.join(str(self.__config["button_data_path"]), str(self.__button_data[button_name]["image_file"])))
-        image = image.resize((int(image.width), int(image.height)), Image.BICUBIC)
+        image = image.resize(size=(int(image.width), int(image.height)), resample=Resampling.BICUBIC)
         tip_text: str = self.__button_data[button_name]["tip_text"]
 
         return VWButton(parent=parent, config=self.__config, img=image, fun=action, text=text, tip_text=tip_text)

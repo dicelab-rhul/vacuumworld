@@ -95,7 +95,7 @@ class VWActor(Actor):
 
         if listening_sensor.is_present():
             while listening_sensor.get().has_perception():
-                messages += [m for m in listening_sensor.get().source()]
+                messages += list(listening_sensor.get().source())
 
         return messages
 

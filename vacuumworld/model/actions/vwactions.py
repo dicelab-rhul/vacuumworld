@@ -47,7 +47,7 @@ class VWCommunicativeAction(VWAction):
         VWCommunicativeAction.__validate_message(message=message)
         VWCommunicativeAction.__validate_recipients(recipients=recipients)
 
-        self.__message: Message = Message(content=message, recipient_ids=[recipient for recipient in recipients], sender_id=sender_id)
+        self.__message: Message = Message(content=message, recipient_ids=list(recipients), sender_id=sender_id)
 
     @staticmethod
     def __validate_message(message: MessageContentType) -> None:
